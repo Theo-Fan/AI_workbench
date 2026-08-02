@@ -1,0 +1,3638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI工作台</title>
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     ============================================================ */
+  :root {
+    /* color — light */
+    --bg: #f7fbff;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --overlay-bg: rgba(20, 30, 45, 0.4);
+    --primary: #4a9eff;
+    --primary-hover: #3a8eef;
+    --primary-light: #e8f2ff;
+    --primary-soft: #f0f7ff;
+    --text-main: #2c3e50;
+    --text-sub: #8da0b3;
+    --text-muted: #b0c4d8;
+    --border: #eef4fb;
+    --shadow: 0 2px 12px rgba(74, 158, 255, 0.06);
+    --shadow-hover: 0 4px 20px rgba(74, 158, 255, 0.12);
+    --shadow-pop: 0 8px 40px rgba(0, 0, 0, 0.15);
+    --danger: #ff6b6b;
+    --success: #52c41a;
+    --warning: #faad14;
+    --success-soft: #e8f8ee;
+    --warning-soft: #fff7e6;
+    --danger-soft: #fff0f0;
+    --neutral-soft: #f0f0f0;
+    --skeleton-base: #eef4fb;
+    --skeleton-shine: #f8fcff;
+
+    /* shape */
+    --radius: 16px;
+    --radius-sm: 10px;
+
+    /* spacing scale (4px base) */
+    --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
+    --sp-6: 24px; --sp-7: 28px; --sp-8: 32px; --sp-9: 36px; --sp-10: 40px;
+
+    /* typography scale */
+    --fs-display: 28px;
+    --fs-h1: 22px;
+    --fs-h2: 15px;
+    --fs-body: 14px;
+    --fs-small: 13px;
+    --fs-caption: 12px;
+    --fs-micro: 11px;
+
+    /* z-index convention */
+    --z-nav: 100;
+    --z-drawer: 200;
+    --z-backdrop: 190;
+    --z-modal: 1000;
+    --z-palette: 1100;
+    --z-onboard: 1200;
+    --z-toast: 2000;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f141b;
+    --sidebar-bg: #151c26;
+    --card-bg: #1a2330;
+    --overlay-bg: rgba(0, 0, 0, 0.55);
+    --primary: #5aa9ff;
+    --primary-hover: #7dbdff;
+    --primary-light: #1d2f45;
+    --primary-soft: #1b2839;
+    --text-main: #e6edf5;
+    --text-sub: #9db0c4;
+    --text-muted: #5c7089;
+    --border: #24303f;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.45);
+    --shadow-pop: 0 8px 40px rgba(0, 0, 0, 0.6);
+    --success-soft: #16301f;
+    --warning-soft: #35290e;
+    --danger-soft: #3a1d1d;
+    --neutral-soft: #232d3b;
+    --skeleton-base: #223041;
+    --skeleton-shine: #2b3c50;
+  }
+
+  /* ============================================================
+     BASE
+     ============================================================ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ============================================================
+     SIDEBAR
+     ============================================================ */
+  .sidebar {
+    width: 240px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    transition: background 0.2s ease, transform 0.25s ease;
+    z-index: var(--z-nav);
+  }
+
+  .sidebar-header {
+    padding: var(--sp-7) var(--sp-6) var(--sp-5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebar-header .logo {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4a9eff, #7db8ff);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header .title { font-size: 16px; font-weight: 600; color: var(--text-main); }
+  .sidebar-header .subtitle { font-size: var(--fs-micro); color: var(--text-muted); margin-top: 1px; }
+
+  .sync-indicator {
+    margin: 0 var(--sp-4) var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--sp-2);
+    font-size: var(--fs-micro);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .sync-indicator.connected { background: var(--success-soft); color: var(--success); }
+  .sync-indicator.saving { background: var(--primary-soft); color: var(--primary); }
+  .sync-indicator.local { background: var(--warning-soft); color: var(--warning); }
+  .sync-indicator.offline { background: var(--neutral-soft); color: var(--text-muted); }
+  .sync-indicator.error { background: var(--danger-soft); color: var(--danger); cursor: pointer; }
+  .sync-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  .sync-indicator.connected .sync-dot { background: var(--success); }
+  .sync-indicator.saving .sync-dot { background: var(--primary); animation: pulse 0.8s infinite; }
+  .sync-indicator.local .sync-dot { background: var(--warning); }
+  .sync-indicator.offline .sync-dot { background: var(--text-muted); animation: none; }
+  .sync-indicator.error .sync-dot { background: var(--danger); animation: none; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .menu-scroll { flex: 1; overflow-y: auto; }
+
+  .menu-group { padding: var(--sp-2) var(--sp-3); }
+
+  .menu-group-label {
+    font-size: var(--fs-micro); color: var(--text-muted);
+    padding: var(--sp-2) var(--sp-3) 6px; letter-spacing: 1px; font-weight: 500;
+  }
+
+  .menu-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px var(--sp-3); border-radius: var(--radius-sm);
+    cursor: pointer; font-size: var(--fs-body); color: var(--text-sub);
+    transition: all 0.2s ease; margin-bottom: 2px; user-select: none;
+    min-height: 38px;
+  }
+
+  .menu-item .icon {
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+
+  .menu-item:hover { background: var(--primary-soft); color: var(--text-main); }
+
+  .menu-item.active {
+    background: var(--primary); color: #fff; font-weight: 500;
+    box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
+  }
+  .menu-item.active .icon { color: #fff; }
+
+  .sidebar-footer {
+    padding: var(--sp-3) var(--sp-4) var(--sp-5);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  .theme-toggle {
+    flex: 1;
+    display: flex; align-items: center; gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: transparent; color: var(--text-sub);
+    font-size: var(--fs-caption); cursor: pointer; font-family: inherit;
+    transition: all 0.2s;
+    min-height: 36px;
+  }
+  .theme-toggle:hover { background: var(--primary-soft); color: var(--text-main); }
+
+  .kbd-hint {
+    font-size: var(--fs-micro); color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 2px 7px; cursor: pointer; background: transparent; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .kbd-hint:hover { color: var(--primary); border-color: var(--primary); }
+
+  /* Hamburger (mobile) */
+  .hamburger {
+    display: none;
+    position: fixed; top: 14px; left: 14px; z-index: var(--z-drawer);
+    width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--card-bg); color: var(--text-main);
+    font-size: 18px; cursor: pointer; box-shadow: var(--shadow);
+    align-items: center; justify-content: center;
+  }
+
+  .drawer-backdrop {
+    display: none;
+    position: fixed; inset: 0; z-index: var(--z-backdrop);
+    background: var(--overlay-bg);
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .drawer-backdrop.show { opacity: 1; }
+
+  /* ============================================================
+     MAIN
+     ============================================================ */
+  .main { flex: 1; min-height: 0; overflow-y: auto; padding: var(--sp-8) var(--sp-9) 120px; }
+  .bottom-spacer { height: 80px; }
+
+  .page-enter { animation: pageIn 0.22s ease; }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .main-header { margin-bottom: var(--sp-6); display: flex; justify-content: space-between; align-items: flex-start; gap: var(--sp-4); flex-wrap: wrap; }
+  .main-header h1 { font-size: var(--fs-h1); font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+  .main-header .date { font-size: var(--fs-small); color: var(--text-muted); }
+  .header-actions { display: flex; gap: var(--sp-2); }
+
+  /* ============================================================
+     CARDS
+     ============================================================ */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--sp-5);
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    border: 1px solid var(--border);
+  }
+  .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-4); gap: var(--sp-2); }
+  .card-title { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-h2); font-weight: 600; color: var(--text-main); }
+  .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+
+  .card-tag {
+    font-size: var(--fs-micro); padding: 3px 10px; border-radius: 20px;
+    background: var(--primary-light); color: var(--primary); font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .card-actions { display: flex; gap: 6px; }
+  .card-btn {
+    width: 26px; height: 26px; border-radius: 7px; border: none;
+    background: var(--primary-soft); color: var(--primary); cursor: pointer;
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .card-btn:hover { background: var(--primary); color: #fff; }
+
+  /* ============================================================
+     TASK LIST
+     ============================================================ */
+  .task-list { list-style: none; }
+  .task-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: var(--sp-2) 0; font-size: var(--fs-small); color: var(--text-sub);
+    position: relative;
+    animation: itemIn 0.25s ease both;
+  }
+
+  @keyframes itemIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .task-checkbox {
+    width: 18px; height: 18px; border: 2px solid var(--text-muted);
+    border-radius: 5px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .task-checkbox.done { background: var(--primary); border-color: var(--primary); color: #fff; font-size: var(--fs-micro); }
+  .task-item.done .task-text { text-decoration: line-through; color: var(--text-muted); }
+
+  .task-text { flex: 1; cursor: pointer; }
+  .task-text-edit {
+    flex: 1; border: 1px solid var(--primary); border-radius: 5px;
+    padding: 2px 6px; font-size: var(--fs-small); font-family: inherit;
+    color: var(--text-main); outline: none; background: var(--card-bg);
+  }
+
+  .task-delete {
+    opacity: 0; width: 22px; height: 22px; border-radius: 5px; border: none;
+    background: transparent; color: var(--danger); cursor: pointer;
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s; flex-shrink: 0;
+  }
+  .task-item:hover .task-delete { opacity: 1; }
+  .task-delete:hover { background: var(--danger-soft); }
+
+  .add-task-row {
+    display: flex; gap: var(--sp-2); margin-top: var(--sp-2);
+  }
+  .add-task-input {
+    flex: 1; border: 1px dashed var(--text-muted); border-radius: var(--sp-2);
+    padding: 7px var(--sp-3); font-size: var(--fs-small); font-family: inherit;
+    color: var(--text-main); outline: none; transition: border-color 0.2s;
+    background: transparent; min-width: 0;
+  }
+  .add-task-input:focus { border-style: solid; border-color: var(--primary); }
+  .add-task-input::placeholder { color: var(--text-muted); }
+
+  .add-task-input.input-error {
+    border-color: var(--danger); border-style: solid;
+    animation: shake 0.4s ease;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .inspire-add-form {
+    display: flex; flex-direction: column; gap: var(--sp-2); margin-top: 10px;
+    width: 100%; box-sizing: border-box;
+  }
+  .inspire-add-form .add-task-input {
+    width: 100%; box-sizing: border-box; min-width: 0;
+  }
+  .inspire-add-form .add-btn { align-self: flex-end; }
+
+  .add-btn {
+    padding: 7px 14px; border-radius: var(--sp-2); border: none;
+    background: var(--primary); color: #fff; font-size: var(--fs-small);
+    cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap;
+  }
+  .add-btn:hover { background: var(--primary-hover); }
+  .add-btn:disabled { background: var(--text-muted); cursor: not-allowed; }
+
+  .clear-done-row {
+    margin-top: var(--sp-2);
+    text-align: right;
+  }
+  .clear-done-btn {
+    border: none; background: transparent; color: var(--text-muted);
+    font-size: var(--fs-caption); cursor: pointer; font-family: inherit;
+    padding: 4px 8px; border-radius: 6px; transition: all 0.2s;
+  }
+  .clear-done-btn:hover { color: var(--danger); background: var(--danger-soft); }
+
+  /* ============================================================
+     PROGRESS RING / BARS
+     ============================================================ */
+  .progress-ring { display: flex; align-items: center; gap: var(--sp-5); }
+  .ring-svg { transform: rotate(-90deg); }
+  .ring-track { stroke: var(--primary-soft); }
+  .ring-fill { stroke: var(--primary); transition: stroke-dashoffset 0.6s ease; stroke-linecap: round; }
+
+  .ring-wrap { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+  .ring-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .ring-percent { font-size: var(--fs-h1); font-weight: 700; color: var(--primary); }
+  .ring-label { font-size: var(--fs-micro); color: var(--text-muted); margin-top: 2px; }
+
+  .progress-info { flex: 1; }
+  .progress-info .label { font-size: var(--fs-small); color: var(--text-sub); margin-bottom: 4px; }
+  .progress-info .value { font-size: 20px; font-weight: 600; color: var(--text-main); }
+  .progress-info .hint { font-size: var(--fs-caption); color: var(--text-muted); margin-top: 2px; }
+
+  .bar-item { margin-bottom: 14px; }
+  .bar-item:last-child { margin-bottom: 0; }
+  .bar-header { display: flex; justify-content: space-between; font-size: var(--fs-caption); color: var(--text-sub); margin-bottom: 6px; }
+  .bar-track { height: 6px; background: var(--primary-soft); border-radius: 10px; overflow: hidden; cursor: pointer; }
+  .bar-track-readonly { cursor: default; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, #4a9eff, #7db8ff); border-radius: 10px; transition: width 0.5s ease; }
+
+  .bar-value-group { display: inline-flex; align-items: center; gap: 3px; margin-left: auto; }
+  .bar-value-edit {
+    font-size: var(--fs-caption); color: var(--primary); border: 1px solid var(--primary);
+    border-radius: 4px; padding: 0 4px; width: 50px; font-family: inherit; outline: none;
+    text-align: center; background: var(--card-bg);
+  }
+  .bar-value-text { font-size: var(--fs-caption); color: var(--primary); font-weight: 600; }
+
+  /* ============================================================
+     CHECK-IN
+     ============================================================ */
+  .checkin-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.2s;
+    animation: itemIn 0.25s ease both;
+    min-height: 40px;
+  }
+  .checkin-row:last-child { border-bottom: none; }
+  .checkin-row:hover { background: var(--primary-soft); border-radius: 6px; padding-left: 6px; padding-right: 6px; }
+
+  .checkin-name { font-size: var(--fs-small); color: var(--text-sub); display: flex; align-items: center; gap: var(--sp-2); }
+  .checkin-name .ci-icon { font-size: 16px; }
+
+  .checkin-status { font-size: var(--fs-caption); padding: 3px var(--sp-3); border-radius: 20px; font-weight: 500; transition: all 0.2s; }
+  .checkin-status.done { background: var(--success-soft); color: var(--success); }
+  .checkin-status.pending { background: var(--warning-soft); color: var(--warning); }
+
+  /* Heatmap */
+  .heatmap-wrap { overflow-x: auto; padding-bottom: var(--sp-2); }
+  .heatmap {
+    display: grid;
+    grid-template-rows: repeat(7, 11px);
+    grid-auto-flow: column;
+    grid-auto-columns: 11px;
+    gap: 3px;
+  }
+  .hm-cell { width: 11px; height: 11px; border-radius: 3px; background: var(--primary-soft); }
+  .hm-cell.h1 { background: rgba(74,158,255,0.35); }
+  .hm-cell.h2 { background: rgba(74,158,255,0.55); }
+  .hm-cell.h3 { background: rgba(74,158,255,0.78); }
+  .hm-cell.h4 { background: var(--primary); }
+  .hm-cell.future { background: transparent; }
+  .heatmap-legend {
+    display: flex; align-items: center; gap: 4px; justify-content: flex-end;
+    font-size: var(--fs-micro); color: var(--text-muted); margin-top: var(--sp-2);
+  }
+  .heatmap-legend .hm-cell { display: inline-block; }
+
+  /* Fitness plan rows */
+  .fit-plan-row {
+    display: flex; align-items: center; gap: var(--sp-2);
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    animation: itemIn 0.25s ease both;
+  }
+  .fit-plan-row:last-child { border-bottom: none; }
+  .fit-plan-row .fp-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
+  .fit-plan-row .fp-main { flex: 1; min-width: 0; cursor: pointer; }
+  .fit-plan-row .fp-name { font-size: var(--fs-small); color: var(--text-main); }
+  .fit-plan-row .fp-target { font-size: var(--fs-micro); color: var(--text-muted); margin-top: 2px; }
+  .fit-plan-row.done .fp-name { text-decoration: line-through; color: var(--text-muted); }
+
+  .fit-log-row {
+    display: flex; align-items: center; gap: var(--sp-2);
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: var(--fs-small);
+  }
+  .fit-log-row:last-child { border-bottom: none; }
+  .fit-log-row .fl-icon { font-size: 15px; flex-shrink: 0; }
+  .fit-log-row .fl-main { flex: 1; min-width: 0; }
+  .fit-log-row .fl-title { color: var(--text-main); }
+  .fit-log-row .fl-meta { font-size: var(--fs-micro); color: var(--text-muted); margin-top: 2px; }
+
+  .chip-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-sub); font-size: var(--fs-caption);
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .chip:hover { border-color: var(--primary); color: var(--primary); }
+  .chip.selected { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+  .fit-add-form { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: 10px; }
+  .fit-add-row { display: flex; gap: var(--sp-2); }
+  .fit-add-row .add-task-input { flex: 1; }
+  .fit-select {
+    border: 1px dashed var(--text-muted); border-radius: var(--sp-2);
+    padding: 7px var(--sp-3); font-size: var(--fs-small); font-family: inherit;
+    color: var(--text-main); outline: none; background: transparent; cursor: pointer;
+  }
+  .fit-select:focus { border-style: solid; border-color: var(--primary); }
+
+  /* ============================================================
+     INSPIRE / NEWS ITEMS
+     ============================================================ */
+  .inspire-item {
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    position: relative;
+    animation: itemIn 0.25s ease both;
+  }
+  .inspire-item:last-child { border-bottom: none; }
+  .inspire-title { font-size: var(--fs-small); color: var(--text-main); font-weight: 500; margin-bottom: 4px; }
+  .inspire-desc { font-size: var(--fs-caption); color: var(--text-muted); line-height: 1.5; }
+
+  .inspire-delete {
+    position: absolute; top: 10px; right: 0;
+    opacity: 0; width: 22px; height: 22px; border-radius: 5px; border: none;
+    background: transparent; color: var(--danger); cursor: pointer;
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s;
+  }
+  .inspire-item:hover .inspire-delete { opacity: 1; }
+  .inspire-delete:hover { background: var(--danger-soft); }
+
+  /* ============================================================
+     STATS
+     ============================================================ */
+  .stat-row { display: flex; gap: var(--sp-4); margin-top: 14px; }
+  .stat-box {
+    flex: 1; text-align: center; background: var(--primary-soft);
+    border-radius: var(--radius-sm); padding: var(--sp-3) var(--sp-2);
+    transition: background 0.2s; cursor: pointer;
+  }
+  .stat-box:hover { background: var(--primary-light); }
+  .stat-box.readonly { cursor: default; }
+  .stat-box.readonly:hover { background: var(--primary-soft); }
+  .stat-num { font-size: 20px; font-weight: 700; color: var(--primary); }
+  .stat-label { font-size: var(--fs-micro); color: var(--text-muted); margin-top: 2px; }
+
+  .stat-num-edit {
+    font-size: 20px; font-weight: 700; color: var(--primary);
+    border: 1px solid var(--primary); border-radius: 5px;
+    padding: 0 4px; width: 100%; text-align: center; font-family: inherit;
+    outline: none; background: var(--card-bg);
+  }
+
+  /* ============================================================
+     EMPTY STATE
+     ============================================================ */
+  .empty-state {
+    text-align: center; padding: var(--sp-8) var(--sp-5);
+    color: var(--text-muted); font-size: var(--fs-small);
+  }
+  .empty-state .emoji { font-size: 36px; margin-bottom: var(--sp-3); }
+  .empty-state .empty-text { margin-bottom: 2px; }
+  .empty-state .empty-hint { font-size: var(--fs-caption); opacity: 0.8; }
+
+  /* ============================================================
+     SKELETON
+     ============================================================ */
+  .skel {
+    position: relative; overflow: hidden;
+    background: var(--skeleton-base); border-radius: 6px;
+  }
+  .skel::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, var(--skeleton-shine), transparent);
+    animation: shimmer 1.4s infinite;
+    transform: translateX(-100%);
+  }
+  @keyframes shimmer {
+    to { transform: translateX(100%); }
+  }
+  .skel-card {
+    background: var(--card-bg); border-radius: var(--radius);
+    padding: 22px; border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .skel-line { height: 12px; margin-bottom: var(--sp-3); }
+  .skel-title { height: 16px; width: 40%; margin-bottom: var(--sp-5); }
+
+  /* ============================================================
+     MODAL
+     ============================================================ */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: var(--overlay-bg); z-index: var(--z-modal);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: var(--card-bg); border-radius: var(--radius); padding: var(--sp-7);
+    width: 420px; max-width: 90vw; max-height: 85vh; overflow-y: auto;
+    box-shadow: var(--shadow-pop);
+    transform: scale(0.95); transition: transform 0.2s;
+    border: 1px solid var(--border);
+  }
+  .modal-overlay.show .modal { transform: scale(1); }
+
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 18px; color: var(--text-main); }
+  .modal-field { margin-bottom: 14px; }
+  .modal-field label { display: block; font-size: var(--fs-caption); color: var(--text-sub); margin-bottom: 6px; }
+  .modal-field input, .modal-field textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: var(--sp-2);
+    padding: 9px var(--sp-3); font-size: var(--fs-body); font-family: inherit;
+    color: var(--text-main); outline: none; transition: border-color 0.2s;
+    background: var(--bg);
+  }
+  .modal-field input:focus, .modal-field textarea:focus { border-color: var(--primary); }
+  .modal-field textarea { resize: vertical; min-height: 60px; }
+
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: var(--sp-5); flex-wrap: wrap; }
+  .modal-btn {
+    padding: var(--sp-2) 18px; border-radius: var(--sp-2); border: none;
+    font-size: var(--fs-small); cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .modal-btn.cancel { background: var(--neutral-soft); color: var(--text-sub); }
+  .modal-btn.cancel:hover { background: var(--border); }
+  .modal-btn.confirm { background: var(--primary); color: #fff; }
+  .modal-btn.confirm:hover { background: var(--primary-hover); }
+  .modal-btn.danger { background: var(--danger); color: #fff; }
+  .modal-btn.danger:hover { background: #e55; }
+  .modal-btn.outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+  .modal-btn.outline:hover { background: var(--primary-soft); }
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  .toast-container {
+    position: fixed; bottom: var(--sp-6); right: var(--sp-6); z-index: var(--z-toast);
+    display: flex; flex-direction: column; gap: var(--sp-2);
+    max-width: min(360px, calc(100vw - 32px));
+  }
+  .toast {
+    background: var(--card-bg); border-radius: var(--radius-sm); padding: 10px 18px;
+    font-size: var(--fs-small); color: var(--text-main); box-shadow: var(--shadow-pop);
+    display: flex; align-items: center; gap: var(--sp-2);
+    animation: toastIn 0.3s ease; border-left: 3px solid var(--primary);
+    border: 1px solid var(--border); border-left-width: 3px;
+  }
+  .toast.success { border-left-color: var(--success); }
+  .toast.warning { border-left-color: var(--warning); }
+  .toast.error { border-left-color: var(--danger); }
+  .toast-action {
+    border: none; background: var(--primary-soft); color: var(--primary);
+    font-size: var(--fs-caption); font-weight: 600; cursor: pointer;
+    padding: 4px 10px; border-radius: 6px; font-family: inherit;
+    margin-left: auto; white-space: nowrap; transition: all 0.2s;
+  }
+  .toast-action:hover { background: var(--primary); color: #fff; }
+
+  @keyframes toastIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastOut {
+    to { transform: translateX(100%); opacity: 0; }
+  }
+
+  /* ============================================================
+     COMMAND PALETTE
+     ============================================================ */
+  .palette-overlay {
+    position: fixed; inset: 0; z-index: var(--z-palette);
+    background: var(--overlay-bg);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 12vh;
+    opacity: 0; pointer-events: none; transition: opacity 0.18s;
+  }
+  .palette-overlay.show { opacity: 1; pointer-events: auto; }
+  .palette {
+    width: 560px; max-width: 92vw;
+    background: var(--card-bg); border-radius: var(--radius);
+    box-shadow: var(--shadow-pop); border: 1px solid var(--border);
+    overflow: hidden;
+    transform: translateY(-8px); transition: transform 0.18s;
+  }
+  .palette-overlay.show .palette { transform: translateY(0); }
+  .palette-input-row {
+    display: flex; align-items: center; gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5); border-bottom: 1px solid var(--border);
+  }
+  .palette-input-row .p-icon { font-size: 16px; color: var(--text-muted); }
+  .palette-input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 15px; color: var(--text-main); font-family: inherit;
+  }
+  .palette-input::placeholder { color: var(--text-muted); }
+  .palette-kbd {
+    font-size: var(--fs-micro); color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 5px; padding: 2px 6px;
+  }
+  .palette-list { max-height: 320px; overflow-y: auto; padding: var(--sp-2); }
+  .palette-group-label {
+    font-size: var(--fs-micro); color: var(--text-muted);
+    padding: var(--sp-2) var(--sp-3) 4px; letter-spacing: 0.5px;
+  }
+  .palette-item {
+    display: flex; align-items: center; gap: var(--sp-3);
+    padding: 9px var(--sp-3); border-radius: var(--radius-sm);
+    cursor: pointer; font-size: var(--fs-small); color: var(--text-main);
+  }
+  .palette-item .pi-icon { width: 22px; text-align: center; flex-shrink: 0; }
+  .palette-item .pi-meta { margin-left: auto; font-size: var(--fs-micro); color: var(--text-muted); flex-shrink: 0; }
+  .palette-item.selected { background: var(--primary-soft); }
+  .palette-item.selected .pi-meta { color: var(--primary); }
+  .palette-empty { padding: var(--sp-8); text-align: center; color: var(--text-muted); font-size: var(--fs-small); }
+
+  /* ============================================================
+     ONBOARDING
+     ============================================================ */
+  .onboard-overlay {
+    position: fixed; inset: 0; z-index: var(--z-onboard);
+    background: var(--overlay-bg);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  .onboard-overlay.show { opacity: 1; pointer-events: auto; }
+  .onboard {
+    width: 460px; max-width: 92vw;
+    background: var(--card-bg); border-radius: var(--radius);
+    padding: var(--sp-8); box-shadow: var(--shadow-pop);
+    border: 1px solid var(--border); text-align: center;
+  }
+  .onboard .ob-emoji { font-size: 44px; margin-bottom: var(--sp-4); }
+  .onboard .ob-title { font-size: 18px; font-weight: 600; margin-bottom: var(--sp-3); color: var(--text-main); }
+  .onboard .ob-desc { font-size: var(--fs-small); color: var(--text-sub); line-height: 1.7; margin-bottom: var(--sp-6); text-align: left; }
+  .onboard .ob-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: var(--sp-5); }
+  .onboard .ob-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: all 0.2s; }
+  .onboard .ob-dot.active { background: var(--primary); width: 20px; border-radius: 4px; }
+  .onboard .ob-actions { display: flex; gap: var(--sp-3); justify-content: center; }
+
+  /* ============================================================
+     SETTINGS
+     ============================================================ */
+  .settings-card {
+    background: var(--card-bg); border-radius: var(--radius); padding: var(--sp-6);
+    box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: var(--sp-5);
+  }
+  .settings-card h3 { font-size: var(--fs-h2); font-weight: 600; margin-bottom: var(--sp-4); color: var(--text-main); }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--sp-3) 0; border-bottom: 1px solid var(--border);
+    gap: var(--sp-3); flex-wrap: wrap;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-size: var(--fs-body); color: var(--text-main); }
+  .settings-desc { font-size: var(--fs-caption); color: var(--text-muted); margin-top: 3px; line-height: 1.6; }
+  .settings-value { font-size: var(--fs-small); color: var(--text-sub); }
+
+  .btn {
+    padding: var(--sp-2) var(--sp-4); border-radius: var(--sp-2); border: none;
+    font-size: var(--fs-small); cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+  .btn-outline:hover { background: var(--primary-soft); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+  .btn-danger:hover { background: var(--danger-soft); }
+  .btn-sm { padding: 4px 10px; font-size: var(--fs-caption); }
+
+  .theme-seg { display: flex; gap: 6px; }
+  .theme-seg-btn {
+    padding: 6px 14px; border-radius: var(--sp-2); border: 1px solid var(--border);
+    background: transparent; color: var(--text-sub); font-size: var(--fs-caption);
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .theme-seg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .storage-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px var(--sp-3); border-radius: 20px; font-size: var(--fs-caption); font-weight: 500;
+  }
+  .storage-badge.fsaa { background: var(--success-soft); color: var(--success); }
+  .storage-badge.local { background: var(--warning-soft); color: var(--warning); }
+
+  .trash-item {
+    display: flex; align-items: center; gap: var(--sp-3);
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: var(--fs-small);
+  }
+  .trash-item:last-child { border-bottom: none; }
+  .trash-item .t-text { flex: 1; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .trash-item .t-meta { font-size: var(--fs-micro); color: var(--text-muted); flex-shrink: 0; }
+
+  code.inline-code {
+    background: var(--primary-soft); padding: 1px 5px; border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  /* ============================================================
+     TREND CHART
+     ============================================================ */
+  .trend-chart { width: 100%; height: auto; display: block; }
+  .trend-dot { fill: var(--primary); }
+  .trend-line { stroke: var(--primary); stroke-width: 2; fill: none; }
+  .trend-area { fill: rgba(74, 158, 255, 0.12); }
+  .trend-label { font-size: 9px; fill: var(--text-muted); }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  /* Mid: icon rail */
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .sidebar { width: 72px; }
+    .sidebar-header { padding: var(--sp-5) 0 var(--sp-4); justify-content: center; }
+    .sidebar-header .title, .sidebar-header .subtitle { display: none; }
+    .sync-indicator { margin: 0 10px var(--sp-2); padding: var(--sp-2); justify-content: center; }
+    .sync-indicator #syncText { display: none; }
+    .menu-group { padding: var(--sp-2) 10px; }
+    .menu-group-label { display: none; }
+    .menu-item { justify-content: center; padding: 10px; }
+    .menu-item .label { display: none; }
+    .menu-item .icon { font-size: 18px; }
+    .sidebar-footer { flex-direction: column; padding: var(--sp-3) 10px var(--sp-4); }
+    .theme-toggle { justify-content: center; padding: var(--sp-2); }
+    .theme-toggle .tt-label { display: none; }
+    .main { padding: var(--sp-6) var(--sp-5) 120px; }
+  }
+
+  /* Mobile: drawer */
+  @media (max-width: 767px) {
+    .hamburger { display: flex; }
+    .drawer-backdrop { display: block; pointer-events: none; }
+    .drawer-backdrop.show { pointer-events: auto; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      transform: translateX(-105%);
+      box-shadow: var(--shadow-pop);
+      z-index: var(--z-drawer);
+      width: 260px;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main { padding: 64px var(--sp-4) 120px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .menu-item { min-height: 44px; }
+    .stat-row { flex-wrap: wrap; }
+    .stat-box { min-width: 80px; }
+    .modal { padding: var(--sp-5); }
+    .toast-container { bottom: var(--sp-4); right: var(--sp-4); }
+  }
+
+  /* Large */
+  @media (min-width: 1600px) {
+    .main { padding-left: 56px; padding-right: 56px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Hamburger (mobile) ===== -->
+<button class="hamburger" id="hamburger" aria-label="打开菜单">☰</button>
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+<!-- ===== Sidebar ===== -->
+<aside class="sidebar" id="sidebar" role="navigation" aria-label="主导航">
+  <div class="sidebar-header">
+    <div class="logo">✦</div>
+    <div>
+      <div class="title">AI工作台</div>
+      <div class="subtitle">AI Workspace</div>
+    </div>
+  </div>
+
+  <div class="sync-indicator offline" id="syncIndicator" role="status" aria-live="polite">
+    <span class="sync-dot"></span>
+    <span id="syncText">初始化中…</span>
+  </div>
+
+  <div class="menu-scroll">
+    <div class="menu-group">
+      <div class="menu-group-label">日常管理</div>
+      <div class="menu-item active" data-page="dashboard" title="工作台首页"><span class="icon">⌂</span><span class="label">工作台首页</span></div>
+      <div class="menu-item" data-page="daily-plan" title="每日计划"><span class="icon">📋</span><span class="label">每日计划</span></div>
+      <div class="menu-item" data-page="fitness" title="健身打卡"><span class="icon">💪</span><span class="label">健身打卡</span></div>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-group-label">内容创作</div>
+      <div class="menu-item" data-page="inspiration" title="选题灵感"><span class="icon">💡</span><span class="label">选题灵感</span></div>
+      <div class="menu-item" data-page="review" title="内容复盘"><span class="icon">📊</span><span class="label">内容复盘</span></div>
+      <div class="menu-item" data-page="comic" title="AI 漫剧"><span class="icon">🎬</span><span class="label">AI 漫剧</span></div>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-group-label">学习成长</div>
+      <div class="menu-item" data-page="ai-learn" title="AI 学习"><span class="icon">🤖</span><span class="label">AI 学习</span></div>
+      <div class="menu-item" data-page="english" title="英语学习"><span class="icon">📖</span><span class="label">英语学习</span></div>
+      <div class="menu-item" data-page="research" title="科研"><span class="icon">🔬</span><span class="label">科研</span></div>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-group-label">资讯</div>
+      <div class="menu-item" data-page="news" title="新闻热点"><span class="icon">📰</span><span class="label">新闻热点</span></div>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-group-label">系统</div>
+      <div class="menu-item" data-page="settings" title="数据管理"><span class="icon">⚙️</span><span class="label">数据管理</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+      <span id="themeIcon">🌞</span><span class="tt-label" id="themeLabel">浅色模式</span>
+    </button>
+    <button class="kbd-hint" id="kbdHelpBtn" title="快捷键帮助">?</button>
+  </div>
+</aside>
+
+<!-- ===== Main ===== -->
+<main class="main" id="mainContent" role="main">
+  <!-- Skeleton shown while loading -->
+  <div class="card-grid">
+    <div class="skel-card"><div class="skel skel-title"></div><div class="skel skel-line"></div><div class="skel skel-line"></div><div class="skel skel-line" style="width:70%"></div></div>
+    <div class="skel-card"><div class="skel skel-title"></div><div class="skel skel-line"></div><div class="skel skel-line" style="width:60%"></div><div class="skel skel-line"></div></div>
+    <div class="skel-card"><div class="skel skel-title"></div><div class="skel skel-line" style="width:80%"></div><div class="skel skel-line"></div><div class="skel skel-line" style="width:55%"></div></div>
+    <div class="skel-card"><div class="skel skel-title"></div><div class="skel skel-line"></div><div class="skel skel-line" style="width:75%"></div><div class="skel skel-line"></div></div>
+    <div class="skel-card"><div class="skel skel-title"></div><div class="skel skel-line" style="width:65%"></div><div class="skel skel-line"></div><div class="skel skel-line"></div></div>
+    <div class="skel-card"><div class="skel skel-title"></div><div class="skel skel-line"></div><div class="skel skel-line" style="width:70%"></div><div class="skel skel-line" style="width:50%"></div></div>
+  </div>
+</main>
+
+<!-- ===== Modal ===== -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- ===== Command Palette ===== -->
+<div class="palette-overlay" id="paletteOverlay">
+  <div class="palette" role="dialog" aria-label="全局搜索">
+    <div class="palette-input-row">
+      <span class="p-icon">🔍</span>
+      <input class="palette-input" id="paletteInput" placeholder="搜索任务、灵感、页面… 输入 > 执行命令" autocomplete="off" />
+      <span class="palette-kbd">Esc</span>
+    </div>
+    <div class="palette-list" id="paletteList"></div>
+  </div>
+</div>
+
+<!-- ===== Onboarding ===== -->
+<div class="onboard-overlay" id="onboardOverlay">
+  <div class="onboard" id="onboardContent" role="dialog" aria-label="新手引导"></div>
+</div>
+
+<!-- ===== Toast ===== -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<script>
+// ========================================================================
+// DEFAULT DATA (v3.0)
+// ========================================================================
+const DEFAULT_DATA = {
+  "version": "3.0",
+  "meta": { "revision": 0, "deviceId": "", "savedAt": "" },
+  "settings": { "theme": "system", "onboarded": false },
+  "trash": [],
+  "checkinHistory": {},
+  "weeklyTrend": [],
+  "tasks": {
+    "dashboard": [
+      { "id": "d1", "text": "写一篇 AI 工具测评文章", "done": true },
+      { "id": "d2", "text": "整理本周选题灵感库", "done": true },
+      { "id": "d3", "text": "复盘上周内容数据", "done": true },
+      { "id": "d4", "text": "录制漫剧分镜脚本", "done": false },
+      { "id": "d5", "text": "英语精读 30 分钟", "done": false },
+      { "id": "d6", "text": "阅读论文 1 篇", "done": false }
+    ],
+    "dailyPlan": {
+      "morning": [
+        { "id": "m1", "text": "AI 工具测评文章", "done": true },
+        { "id": "m2", "text": "整理选题灵感库", "done": true },
+        { "id": "m3", "text": "漫剧分镜脚本", "done": false }
+      ],
+      "afternoon": [
+        { "id": "a1", "text": "复盘上周内容数据", "done": true },
+        { "id": "a2", "text": "英语精读 30 分钟", "done": false },
+        { "id": "a3", "text": "阅读论文 1 篇", "done": false }
+      ],
+      "evening": [
+        { "id": "e1", "text": "整理明日选题", "done": false },
+        { "id": "e2", "text": "社群互动回复", "done": false },
+        { "id": "e3", "text": "睡前冥想 15 分钟", "done": false }
+      ]
+    },
+    "aiLearn": [
+      { "id": "al1", "text": "完成提示词进阶课程第 5 节", "done": true },
+      { "id": "al2", "text": "实践：用 GPT 搭建工作流", "done": true },
+      { "id": "al3", "text": "阅读 Agent 框架文档", "done": false },
+      { "id": "al4", "text": "整理学习笔记输出文章", "done": false }
+    ],
+    "english": [
+      { "id": "en1", "text": "精读外刊 1 篇（30min）", "done": false },
+      { "id": "en2", "text": "背单词 50 个", "done": false },
+      { "id": "en3", "text": "听力练习 20 分钟", "done": false },
+      { "id": "en4", "text": "口语模仿 3 段", "done": false }
+    ],
+    "comicStoryboard": [
+      { "id": "cs1", "text": "场景 9：深夜书房", "done": false },
+      { "id": "cs2", "text": "场景 10：灵感迸发", "done": false },
+      { "id": "cs3", "text": "场景 11：奋笔疾书", "done": false },
+      { "id": "cs4", "text": "场景 12：发布时刻", "done": false }
+    ],
+    "researchPapers": [
+      { "id": "rp1", "text": "Survey: LLM for Academic Writing", "done": true },
+      { "id": "rp2", "text": "Paper: Prompt Engineering in Research", "done": true },
+      { "id": "rp3", "text": "Paper: RAG for Literature Review", "done": true },
+      { "id": "rp4", "text": "Paper: Multi-Agent for Research", "done": false }
+    ]
+  },
+  "checkins": {
+    "daily": [
+      { "id": "c1", "icon": "🏃", "name": "晨跑 3km", "done": true },
+      { "id": "c2", "icon": "📚", "name": "AI 学习", "done": true },
+      { "id": "c3", "icon": "📝", "name": "内容创作", "done": true },
+      { "id": "c4", "icon": "📖", "name": "英语精读", "done": false },
+      { "id": "c5", "icon": "🧘", "name": "睡前冥想", "done": false }
+    ]
+  },
+  "stats": {
+    "dashboard": { "focusHours": "4h", "output": "3" },
+    "fitness": { "goal": 7 }
+  },
+  "fitness": {
+    "types": [
+      { "id": "ft-run", "icon": "🏃", "name": "跑步", "unit": "km" },
+      { "id": "ft-stairs", "icon": "🪜", "name": "爬楼梯", "unit": "层" },
+      { "id": "ft-swim", "icon": "🏊", "name": "游泳", "unit": "m" },
+      { "id": "ft-strength", "icon": "🏋️", "name": "力量训练", "unit": "组" },
+      { "id": "ft-cycle", "icon": "🚴", "name": "骑行", "unit": "km" },
+      { "id": "ft-yoga", "icon": "🧘", "name": "瑜伽", "unit": "分钟" }
+    ],
+    "plan": [
+      { "id": "fp1", "day": "周一", "typeId": "ft-run", "target": "3km", "done": true },
+      { "id": "fp2", "day": "周二", "typeId": "ft-strength", "target": "4 组", "done": true },
+      { "id": "fp3", "day": "周三", "typeId": "ft-yoga", "target": "30 分钟", "done": true },
+      { "id": "fp4", "day": "周四", "typeId": "ft-cycle", "target": "10km", "done": true },
+      { "id": "fp5", "day": "周五", "typeId": "ft-run", "target": "3km", "done": true },
+      { "id": "fp6", "day": "周六", "typeId": "ft-swim", "target": "500m", "done": false },
+      { "id": "fp7", "day": "周日", "typeId": "ft-stairs", "target": "30 层", "done": false }
+    ],
+    "logs": [
+      { "id": "fl1", "date": "2026-07-27", "typeId": "ft-run", "duration": 25, "calories": 210, "note": "晨跑 3km" },
+      { "id": "fl2", "date": "2026-07-28", "typeId": "ft-strength", "duration": 40, "calories": 260, "note": "胸背训练" },
+      { "id": "fl3", "date": "2026-07-29", "typeId": "ft-yoga", "duration": 30, "calories": 90, "note": "" },
+      { "id": "fl4", "date": "2026-07-30", "typeId": "ft-cycle", "duration": 45, "calories": 380, "note": "通勤骑行" },
+      { "id": "fl5", "date": "2026-07-31", "typeId": "ft-run", "duration": 24, "calories": 205, "note": "晨跑 3km" }
+    ]
+  },
+  "inspirations": {
+    "ideas": [
+      { "id": "i1", "title": "AI 辅助科研工作流全攻略", "desc": "从文献检索到论文写作，一套完整流程" },
+      { "id": "i2", "title": "用 AI 漫剧讲好一个故事", "desc": "分镜设计 + 提示词工程实战" },
+      { "id": "i3", "title": "英语学习 100 天打卡总结", "desc": "方法论 + 工具 + 踩坑经验" },
+      { "id": "i4", "title": "健身打卡数据可视化", "desc": "用图表展示你的运动轨迹" },
+      { "id": "i5", "title": "每日计划工具横评", "desc": "5 款主流工具深度对比" },
+      { "id": "i6", "title": "创作者的一天 vlog", "desc": "记录高效创作的完整一天" }
+    ],
+    "trends": [
+      { "id": "t1", "title": "🔥 AI Agent 实战", "desc": "自动化工作流是当前最大热点" },
+      { "id": "t2", "title": "🔥 AI 漫剧/短剧", "desc": "短内容消费持续增长" },
+      { "id": "t3", "title": "📈 终身学习方法论", "desc": "知识焦虑驱动学习类内容需求" },
+      { "id": "t4", "title": "📈 健康生活方式", "desc": "运动 + 冥想类内容受众扩大" }
+    ],
+    "sources": [
+      { "id": "s1", "title": "📌 社群热议话题", "desc": "读者提问和讨论中挖掘痛点" },
+      { "id": "s2", "title": "📌 热搜榜单", "desc": "结合热点做时效性内容" },
+      { "id": "s3", "title": "📌 个人实践复盘", "desc": "把踩过的坑变成内容" },
+      { "id": "s4", "title": "📌 跨领域迁移", "desc": "把 A 领域方法用到 B 领域" }
+    ]
+  },
+  "review": {
+    "week": 31,
+    "stats": { "published": 5, "reads": "2.3w", "interactions": 186 },
+    "interactionRate": 43,
+    "topContent": [
+      { "id": "tc1", "rank": "🥇", "title": "AI 工具测评：5 款神器横评", "desc": "阅读 8.2k · 互动 72 · 收藏 340" },
+      { "id": "tc2", "rank": "🥈", "title": "创作者时间管理术", "desc": "阅读 5.6k · 互动 45 · 收藏 210" },
+      { "id": "tc3", "rank": "🥉", "title": "英语学习 30 天心得", "desc": "阅读 4.1k · 互动 38 · 收藏 180" }
+    ],
+    "actions": {
+      "continue": "AI 工具类选题互动最高，持续深耕",
+      "start": "增加漫剧类视觉内容，抓住短内容红利",
+      "stop": "纯文字长文阅读完成率低，改为图文"
+    }
+  },
+  "comic": {
+    "current": { "title": "《AI 创作者的日常》第 3 集", "storyboards": "8/12" },
+    "published": [
+      { "id": "p1", "title": "第 1 集 · 灵感来了", "desc": "播放 1.2w · 点赞 230" },
+      { "id": "p2", "title": "第 2 集 · 卡壳时刻", "desc": "播放 8.6k · 点赞 180" }
+    ]
+  },
+  "learning": {
+    "ai": {
+      "resources": [
+        { "id": "lr1", "title": "📚 提示词工程指南", "desc": "系统化学习提示词设计方法论" },
+        { "id": "lr2", "title": "📚 LangChain 实战教程", "desc": "从零搭建 AI 应用开发能力" },
+        { "id": "lr3", "title": "📚 AI 绘画原理与实践", "desc": "理解扩散模型，掌握出图技巧" }
+      ]
+    },
+    "english": {
+      "challenge": { "current": 28, "total": 100, "streak": 12 }
+    },
+    "research": {
+      "current": { "title": "AI 辅助科研写作效率研究", "desc": "探索 LLM 对论文写作流程的影响与优化" },
+      "milestones": [
+        { "id": "ms1", "icon": "✅", "title": "文献调研", "desc": "已完成 · 收集 32 篇相关文献", "status": "done" },
+        { "id": "ms2", "icon": "🔵", "title": "实验设计", "desc": "进行中 · 预计 2 周内完成", "status": "active" },
+        { "id": "ms3", "icon": "⚪", "title": "数据收集", "desc": "待开始", "status": "pending" },
+        { "id": "ms4", "icon": "⚪", "title": "论文撰写", "desc": "待开始", "status": "pending" }
+      ]
+    }
+  },
+  "weeklyReview": {
+    "week": 31,
+    "good": "连续 5 天更新内容，选题质量提升明显",
+    "improve": "科研文献阅读偏少，下周需增加投入",
+    "focus": "AI 漫剧系列上线 + 英语打卡满 30 天"
+  },
+  "news": {
+    "tech": [
+      { "id": "n1", "title": "🔥 GPT-5 发布引发行业讨论", "desc": "多模态能力大幅提升，推理成本下降 40%" },
+      { "id": "n2", "title": "🔥 国产大模型百花齐放", "desc": "多家厂商发布开源模型，性能逼近 GPT-4" },
+      { "id": "n3", "title": "📈 AI Agent 商业化加速", "desc": "多家创业公司获得大额融资" }
+    ],
+    "creation": [
+      { "id": "cn1", "title": "📰 短剧市场持续增长", "desc": "AI 生成内容占比提升，创作门槛降低" },
+      { "id": "cn2", "title": "📰 知识付费回暖", "desc": "AI 学习类课程需求旺盛" },
+      { "id": "cn3", "title": "📰 内容平台算法更新", "desc": "推荐机制更注重完播率和互动" }
+    ],
+    "hotlist": [
+      { "id": "h1", "title": "1. AI 编程助手普及", "desc": "开发者使用率突破 60%" },
+      { "id": "h2", "title": "2. 终身学习理念走红", "desc": "\"学习如何学习\"成热门话题" },
+      { "id": "h3", "title": "3. 数字健康关注升温", "desc": "屏幕时间管理工具需求增长" },
+      { "id": "h4", "title": "4. AI 绘画版权争议", "desc": "行业规范逐步建立中" },
+      { "id": "h5", "title": "5. 远程办公常态化", "desc": "混合办公模式成为主流" }
+    ]
+  }
+};
+
+// ========================================================================
+// CONSTANTS
+// ========================================================================
+const STORAGE_KEY = 'creator-workspace-data';
+const IDB_DB = 'workspace-fs';
+const IDB_STORE = 'handles';
+const DEVICE_KEY = 'workspace-device-id';
+const TRASH_KEEP_DAYS = 30;
+const BACKUP_INTERVAL = 5 * 60 * 1000;
+const BACKUP_KEEP = 5;
+
+const DEVICE_ID = (() => {
+  let id = null;
+  try { id = localStorage.getItem(DEVICE_KEY); } catch (e) { /* ignore */ }
+  if (!id) {
+    id = 'dev-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    try { localStorage.setItem(DEVICE_KEY, id); } catch (e) { /* ignore */ }
+  }
+  return id;
+})();
+
+// ========================================================================
+// STORAGE LAYER (with conflict detection + rolling backups)
+// ========================================================================
+class StorageManager {
+  constructor() {
+    this.mode = 'local';       // 'fsaa' | 'local'
+    this.dirHandle = null;
+    this.fileHandle = null;
+    this.lastSaved = null;
+    this._lastRevision = -1;   // revision we last read/wrote
+    this._lastBackup = 0;
+  }
+
+  get isFSAASupported() {
+    return 'showDirectoryPicker' in window;
+  }
+
+  _idbPut(key, val) {
+    return new Promise((resolve) => {
+      const req = indexedDB.open(IDB_DB, 1);
+      req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+      req.onsuccess = () => {
+        const tx = req.result.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put(val, key);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => resolve(false);
+      };
+      req.onerror = () => resolve(false);
+    });
+  }
+
+  _idbGet(key) {
+    return new Promise((resolve) => {
+      const req = indexedDB.open(IDB_DB, 1);
+      req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+      req.onsuccess = () => {
+        const tx = req.result.transaction(IDB_STORE, 'readonly');
+        const getReq = tx.objectStore(IDB_STORE).get(key);
+        getReq.onsuccess = () => resolve(getReq.result || null);
+        getReq.onerror = () => resolve(null);
+      };
+      req.onerror = () => resolve(null);
+    });
+  }
+
+  async init() {
+    if (this.isFSAASupported) {
+      this.dirHandle = await this._idbGet('dirHandle');
+      if (this.dirHandle) {
+        const perm = await this.dirHandle.queryPermission({ mode: 'readwrite' });
+        if (perm === 'granted') {
+          this.mode = 'fsaa';
+          this.fileHandle = await this._getFileHandle();
+          return true;
+        }
+        try {
+          const req = await this.dirHandle.requestPermission({ mode: 'readwrite' });
+          if (req === 'granted') {
+            this.mode = 'fsaa';
+            this.fileHandle = await this._getFileHandle();
+            return true;
+          }
+        } catch (e) { /* ignore */ }
+      }
+    }
+    this.mode = 'local';
+    return false;
+  }
+
+  async _getFileHandle() {
+    try {
+      return await this.dirHandle.getFileHandle('workspace.json', { create: true });
+    } catch (e) {
+      console.error('getFileHandle error:', e);
+      return null;
+    }
+  }
+
+  async connect() {
+    if (!this.isFSAASupported) {
+      throw new Error('当前浏览器不支持文件系统访问 API，请使用 Chrome 或 Edge 浏览器');
+    }
+    this.dirHandle = await window.showDirectoryPicker();
+    await this._idbPut('dirHandle', this.dirHandle);
+    this.fileHandle = await this._getFileHandle();
+    this.mode = 'fsaa';
+
+    const existing = await this.read();
+    if (!existing) {
+      await this.write(DEFAULT_DATA, { force: true });
+    }
+    return true;
+  }
+
+  async disconnect() {
+    this.dirHandle = null;
+    this.fileHandle = null;
+    this.mode = 'local';
+    this._lastRevision = -1;
+    await this._idbPut('dirHandle', null);
+  }
+
+  async read() {
+    if (this.mode === 'fsaa' && this.fileHandle) {
+      try {
+        const file = await this.fileHandle.getFile();
+        const text = await file.text();
+        if (!text.trim()) return null;
+        const data = JSON.parse(text);
+        this._lastRevision = (data.meta && typeof data.meta.revision === 'number') ? data.meta.revision : 0;
+        return data;
+      } catch (e) {
+        console.error('FSAA read error:', e);
+        return null;
+      }
+    } else {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        this._lastRevision = (data.meta && typeof data.meta.revision === 'number') ? data.meta.revision : 0;
+        return data;
+      } catch (e) {
+        return null;
+      }
+    }
+  }
+
+  // Returns { ok: true } or { conflict: true, remote } or { ok: false }
+  async write(data, { force = false } = {}) {
+    if (!data.meta) data.meta = {};
+
+    // Conflict check (fsaa only): did another device write since our last sync?
+    if (!force && this.mode === 'fsaa' && this.fileHandle) {
+      try {
+        const file = await this.fileHandle.getFile();
+        const text = await file.text();
+        if (text.trim()) {
+          const remote = JSON.parse(text);
+          const remoteRev = (remote.meta && typeof remote.meta.revision === 'number') ? remote.meta.revision : 0;
+          const remoteDev = remote.meta && remote.meta.deviceId;
+          if (remoteRev > this._lastRevision && remoteDev && remoteDev !== DEVICE_ID) {
+            return { conflict: true, remote };
+          }
+        }
+      } catch (e) { /* read failure should not block write */ }
+    }
+
+    data.meta.revision = (typeof data.meta.revision === 'number' ? data.meta.revision : 0) + 1;
+    data.meta.deviceId = DEVICE_ID;
+    data.meta.savedAt = new Date().toISOString();
+    data.lastSaved = data.meta.savedAt;
+    this.lastSaved = data.lastSaved;
+
+    let ok = false;
+    if (this.mode === 'fsaa' && this.fileHandle) {
+      try {
+        const writable = await this.fileHandle.createWritable();
+        await writable.write(JSON.stringify(data, null, 2));
+        await writable.close();
+        ok = true;
+      } catch (e) {
+        console.error('FSAA write error:', e);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e2) { /* ignore */ }
+        ok = false;
+      }
+    } else {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        ok = true;
+      } catch (e) {
+        console.error('localStorage write error:', e);
+        ok = false;
+      }
+    }
+
+    if (ok) {
+      this._lastRevision = data.meta.revision;
+      this._maybeBackup(data);
+    }
+    return { ok };
+  }
+
+  // Rolling backup: at most once per BACKUP_INTERVAL, keep BACKUP_KEEP newest
+  async _maybeBackup(data) {
+    if (this.mode !== 'fsaa' || !this.dirHandle) return;
+    const now = Date.now();
+    if (now - this._lastBackup < BACKUP_INTERVAL) return;
+    this._lastBackup = now;
+    try {
+      const bd = await this.dirHandle.getDirectoryHandle('backups', { create: true });
+      const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+      const fh = await bd.getFileHandle('workspace-' + stamp + '.json', { create: true });
+      const w = await fh.createWritable();
+      await w.write(JSON.stringify(data, null, 2));
+      await w.close();
+      const names = [];
+      for await (const n of bd.keys()) {
+        if (n.startsWith('workspace-') && n.endsWith('.json')) names.push(n);
+      }
+      names.sort();
+      while (names.length > BACKUP_KEEP) {
+        await bd.removeEntry(names.shift());
+      }
+    } catch (e) {
+      console.warn('backup failed:', e);
+    }
+  }
+
+  async requestPermission() {
+    if (this.dirHandle) {
+      const perm = await this.dirHandle.requestPermission({ mode: 'readwrite' });
+      if (perm === 'granted') {
+        this.mode = 'fsaa';
+        this.fileHandle = await this._getFileHandle();
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+// ========================================================================
+// STATE
+// ========================================================================
+const storage = new StorageManager();
+let DATA = null;
+let currentPage = 'dashboard';
+let saveState = 'idle';         // 'idle' | 'saving' | 'saved' | 'error'
+let conflictOpen = false;
+let undoState = null;           // { tid, timer }
+
+// ========================================================================
+// UTILITIES
+// ========================================================================
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function todayKey(d = new Date()) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + day;
+}
+
+function weekNum(d = new Date()) {
+  const onejan = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+}
+
+function isTypingTarget(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
+}
+
+// ========================================================================
+// TOAST (with optional action button)
+// ========================================================================
+function showToast(msg, type = '', opts = {}) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  const span = document.createElement('span');
+  span.textContent = msg;
+  toast.appendChild(span);
+
+  let dismissed = false;
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    toast.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }
+
+  if (opts.actionLabel && typeof opts.onAction === 'function') {
+    const btn = document.createElement('button');
+    btn.className = 'toast-action';
+    btn.textContent = opts.actionLabel;
+    btn.addEventListener('click', () => {
+      opts.onAction();
+      dismiss();
+    });
+    toast.appendChild(btn);
+  }
+
+  container.appendChild(toast);
+  const ttl = opts.duration || (opts.actionLabel ? 5000 : 2200);
+  setTimeout(dismiss, ttl);
+  return { dismiss };
+}
+
+// ========================================================================
+// MODAL
+// ========================================================================
+function showModal(html) {
+  const overlay = document.getElementById('modalOverlay');
+  const content = document.getElementById('modalContent');
+  content.innerHTML = html;
+  overlay.classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modalOverlay') closeModal();
+});
+
+// ========================================================================
+// SAVE (with 3-state indicator + conflict handling)
+// ========================================================================
+const scheduleSave = debounce(() => { flushSave(); }, 800);
+
+function save() {
+  setSaveState('saving');
+  scheduleSave();
+}
+
+async function flushSave() {
+  if (!DATA) return;
+  setSaveState('saving');
+  const result = await storage.write(DATA);
+  if (result && result.conflict) {
+    handleConflict(result.remote);
+    return;
+  }
+  setSaveState(result && result.ok ? 'saved' : 'error');
+}
+
+function setSaveState(state) {
+  saveState = state;
+  updateSyncIndicator();
+}
+
+function updateSyncIndicator() {
+  const el = document.getElementById('syncIndicator');
+  const text = document.getElementById('syncText');
+  if (!el || !text) return;
+
+  if (saveState === 'error') {
+    el.className = 'sync-indicator error';
+    text.textContent = '保存失败 · 点击重试';
+    return;
+  }
+  if (saveState === 'saving') {
+    el.className = 'sync-indicator saving';
+    text.textContent = '保存中…';
+    return;
+  }
+  if (storage.mode === 'fsaa') {
+    el.className = 'sync-indicator connected';
+    const time = storage.lastSaved ? new Date(storage.lastSaved).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '';
+    text.textContent = '已同步' + (time ? ' · ' + time : '');
+  } else {
+    el.className = 'sync-indicator local';
+    text.textContent = '本地存储（点击数据管理连接 iCloud）';
+  }
+}
+
+document.getElementById('syncIndicator').addEventListener('click', () => {
+  if (saveState === 'error') flushSave();
+});
+
+// --- Conflict resolution ---
+function handleConflict(remote) {
+  if (conflictOpen) return;
+  conflictOpen = true;
+  const remoteTime = remote.meta && remote.meta.savedAt
+    ? new Date(remote.meta.savedAt).toLocaleString('zh-CN')
+    : '未知时间';
+  showModal(
+    '<div class="modal-title">⚠️ 检测到同步冲突</div>' +
+    '<p style="font-size:14px;color:var(--text-sub);line-height:1.7;">' +
+    '数据已在另一台设备上更新（' + escapeHTML(remoteTime) + '）。<br>' +
+    '继续保存将覆盖对方的修改。请选择处理方式：' +
+    '</p>' +
+    '<div class="modal-actions" style="flex-direction:column;align-items:stretch;">' +
+    '<button class="modal-btn confirm" id="conflictLoadRemote">加载远端数据（推荐）</button>' +
+    '<button class="modal-btn outline" id="conflictExportLocal">导出本地副本后加载远端</button>' +
+    '<button class="modal-btn danger" id="conflictKeepLocal">保留本地，覆盖远端</button>' +
+    '</div>'
+  );
+  document.getElementById('conflictLoadRemote').addEventListener('click', () => {
+    closeModal(); conflictOpen = false;
+    DATA = mergeDefaults(remote, DEFAULT_DATA);
+    storage._lastRevision = (remote.meta && remote.meta.revision) || 0;
+    renderPage(currentPage);
+    setSaveState('saved');
+    showToast('已加载远端最新数据', 'success');
+  });
+  document.getElementById('conflictExportLocal').addEventListener('click', () => {
+    closeModal(); conflictOpen = false;
+    exportData('workspace-local-backup');
+    DATA = mergeDefaults(remote, DEFAULT_DATA);
+    storage._lastRevision = (remote.meta && remote.meta.revision) || 0;
+    renderPage(currentPage);
+    setSaveState('saved');
+    showToast('本地副本已导出，远端数据已加载', 'success');
+  });
+  document.getElementById('conflictKeepLocal').addEventListener('click', async () => {
+    closeModal(); conflictOpen = false;
+    const r = await storage.write(DATA, { force: true });
+    setSaveState(r.ok ? 'saved' : 'error');
+    showToast(r.ok ? '已用本地数据覆盖远端' : '覆盖失败', r.ok ? 'warning' : 'error');
+  });
+}
+
+// ========================================================================
+// THEME MANAGER
+// ========================================================================
+const themeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+function currentThemePref() {
+  return (DATA && DATA.settings && DATA.settings.theme) || 'system';
+}
+
+function applyTheme() {
+  const pref = currentThemePref();
+  const resolved = pref === 'system' ? (themeMedia.matches ? 'dark' : 'light') : pref;
+  document.documentElement.dataset.theme = resolved;
+  const icon = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  if (icon && label) {
+    if (pref === 'light') { icon.textContent = '🌞'; label.textContent = '浅色模式'; }
+    else if (pref === 'dark') { icon.textContent = '🌙'; label.textContent = '深色模式'; }
+    else { icon.textContent = '🖥️'; label.textContent = '跟随系统'; }
+  }
+}
+
+function cycleTheme() {
+  const order = ['light', 'dark', 'system'];
+  const cur = currentThemePref();
+  const next = order[(order.indexOf(cur) + 1) % order.length];
+  DATA.settings.theme = next;
+  applyTheme();
+  save();
+  renderPage(currentPage);
+  showToast(next === 'light' ? '已切换到浅色模式' : next === 'dark' ? '已切换到深色模式' : '已跟随系统主题', 'success');
+}
+
+function setTheme(pref) {
+  DATA.settings.theme = pref;
+  applyTheme();
+  save();
+  renderPage(currentPage);
+}
+
+themeMedia.addEventListener('change', () => {
+  if (currentThemePref() === 'system') applyTheme();
+});
+
+document.getElementById('themeToggle').addEventListener('click', cycleTheme);
+
+// ========================================================================
+// DATA PATH HELPERS
+// ========================================================================
+function getNestedData(path) {
+  const parts = path.split('.');
+  let obj = DATA;
+  for (const p of parts) { if (obj == null) return undefined; obj = obj[p]; }
+  return obj;
+}
+
+function setNestedData(path, value) {
+  const parts = path.split('.');
+  let obj = DATA;
+  for (let i = 0; i < parts.length - 1; i++) obj = obj[parts[i]];
+  obj[parts[parts.length - 1]] = value;
+}
+
+function mergeDefaults(data, defaults) {
+  for (const key in defaults) {
+    if (!(key in data)) {
+      data[key] = JSON.parse(JSON.stringify(defaults[key]));
+    } else if (typeof defaults[key] === 'object' && !Array.isArray(defaults[key]) && defaults[key] !== null) {
+      mergeDefaults(data[key], defaults[key]);
+    }
+  }
+  return data;
+}
+
+// ========================================================================
+// CALC HELPERS
+// ========================================================================
+function calcTaskPercent(tasks) {
+  if (!tasks || tasks.length === 0) return 0;
+  return Math.round(tasks.filter(t => t.done).length / tasks.length * 100);
+}
+
+function calcAllTasksPercent() {
+  const dp = DATA.tasks.dailyPlan;
+  const all = [
+    ...DATA.tasks.dashboard, ...dp.morning, ...dp.afternoon, ...dp.evening,
+    ...DATA.tasks.aiLearn, ...DATA.tasks.english,
+    ...DATA.tasks.comicStoryboard, ...DATA.tasks.researchPapers
+  ];
+  return calcTaskPercent(all);
+}
+
+function countAllTasks() {
+  const dp = DATA.tasks.dailyPlan;
+  const all = [
+    ...DATA.tasks.dashboard, ...dp.morning, ...dp.afternoon, ...dp.evening,
+    ...DATA.tasks.aiLearn, ...DATA.tasks.english,
+    ...DATA.tasks.comicStoryboard, ...DATA.tasks.researchPapers
+  ];
+  return { done: all.filter(t => t.done).length, total: all.length };
+}
+
+function todayCN() {
+  const d = new Date();
+  return (d.getMonth() + 1) + '月' + d.getDate() + '日 周' + '日一二三四五六'[d.getDay()];
+}
+
+// ========================================================================
+// CHECK-IN HISTORY + STREAK (module linkage: auto-computed)
+// ========================================================================
+function recordCheckinToday() {
+  DATA.checkinHistory[todayKey()] = DATA.checkins.daily.filter(c => c.done).length;
+}
+
+function checkinThreshold() {
+  return Math.max(1, Math.ceil((DATA.checkins.daily.length || 5) * 0.6));
+}
+
+function calcStreak() {
+  const th = checkinThreshold();
+  const qualifies = (key) => (DATA.checkinHistory[key] || 0) >= th;
+  let streak = 0;
+  const d = new Date();
+  if (!qualifies(todayKey(d))) d.setDate(d.getDate() - 1); // today still in progress
+  while (qualifies(todayKey(d))) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+    if (streak > 370) break;
+  }
+  return streak;
+}
+
+// ========================================================================
+// FITNESS HELPERS (types / plan / logs)
+// ========================================================================
+function fitnessType(typeId) {
+  return (DATA.fitness.types || []).find(t => t.id === typeId) || { id: typeId, icon: '🏅', name: '其他', unit: '' };
+}
+
+function weekStartKey(d = new Date()) {
+  const day = d.getDay(); // 0=Sun
+  const diff = day === 0 ? 6 : day - 1; // Monday as week start
+  const m = new Date(d);
+  m.setDate(d.getDate() - diff);
+  return todayKey(m);
+}
+
+function weekLogs() {
+  const start = weekStartKey();
+  return (DATA.fitness.logs || []).filter(l => l.date >= start);
+}
+
+function weekStats() {
+  const logs = weekLogs();
+  return {
+    sessions: logs.length,
+    duration: logs.reduce((s, l) => s + (parseInt(l.duration) || 0), 0),
+    calories: logs.reduce((s, l) => s + (parseInt(l.calories) || 0), 0)
+  };
+}
+
+// Fitness streak: consecutive days with >= 1 workout log
+function calcFitnessStreak() {
+  const dates = new Set((DATA.fitness.logs || []).map(l => l.date));
+  let streak = 0;
+  const d = new Date();
+  if (!dates.has(todayKey(d))) d.setDate(d.getDate() - 1);
+  while (dates.has(todayKey(d))) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+    if (streak > 370) break;
+  }
+  return streak;
+}
+
+// Heatmap based on workout log counts per day
+function fitnessHeatmapHTML() {
+  const weeks = 25;
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(start.getDate() - (weeks * 7 - 1));
+  start.setDate(start.getDate() - start.getDay());
+
+  const counts = {};
+  for (const l of (DATA.fitness.logs || [])) {
+    counts[l.date] = (counts[l.date] || 0) + 1;
+  }
+
+  let cells = '';
+  const cursor = new Date(start);
+  for (let i = 0; i < weeks * 7; i++) {
+    if (cursor > today) {
+      cells += '<div class="hm-cell future"></div>';
+    } else {
+      const key = todayKey(cursor);
+      const c = counts[key] || 0;
+      const lvl = c === 0 ? '' : c === 1 ? 'h2' : c === 2 ? 'h3' : 'h4';
+      cells += '<div class="hm-cell ' + lvl + '" title="' + key + ' · ' + c + ' 次训练"></div>';
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return '<div class="heatmap-wrap"><div class="heatmap">' + cells + '</div>' +
+    '<div class="heatmap-legend">少 ' +
+    '<span class="hm-cell"></span><span class="hm-cell h2"></span>' +
+    '<span class="hm-cell h3"></span><span class="hm-cell h4"></span> 多</div></div>';
+}
+
+// Migrate legacy checkins.fitness -> fitness.plan (one-time)
+function migrateFitnessData() {
+  if (DATA.checkins && Array.isArray(DATA.checkins.fitness)) {
+    const iconMap = { '🏃': 'ft-run', '🏋️': 'ft-strength', '🧘': 'ft-yoga', '🚴': 'ft-cycle', '🏊': 'ft-swim', '🪜': 'ft-stairs' };
+    if (!DATA.fitness) DATA.fitness = JSON.parse(JSON.stringify(DEFAULT_DATA.fitness));
+    DATA.fitness.plan = DATA.checkins.fitness.map(c => {
+      const parts = (c.name || '').split(' ');
+      return {
+        id: c.id || uid(),
+        day: parts[0] || '',
+        typeId: iconMap[c.icon] || 'ft-run',
+        target: parts.slice(1).join(' '),
+        done: !!c.done
+      };
+    });
+    delete DATA.checkins.fitness;
+  }
+  if (DATA.stats && DATA.stats.fitness && ('running' in DATA.stats.fitness || 'strength' in DATA.stats.fitness)) {
+    DATA.stats.fitness = { goal: DATA.stats.fitness.goal || 7 };
+  }
+}
+
+// ========================================================================
+// HEATMAP (last 25 weeks)
+// ========================================================================
+function heatmapHTML() {
+  const total = DATA.checkins.daily.length || 5;
+  const weeks = 25;
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(start.getDate() - (weeks * 7 - 1));
+  start.setDate(start.getDate() - start.getDay()); // align to Sunday
+
+  let cells = '';
+  const cursor = new Date(start);
+  for (let i = 0; i < weeks * 7; i++) {
+    if (cursor > today) {
+      cells += '<div class="hm-cell future"></div>';
+    } else {
+      const key = todayKey(cursor);
+      const c = DATA.checkinHistory[key] || 0;
+      let lvl = '';
+      if (c > 0) {
+        const ratio = c / total;
+        lvl = ratio <= 0.4 ? 'h1' : ratio <= 0.6 ? 'h2' : ratio < 1 ? 'h3' : 'h4';
+      }
+      cells += '<div class="hm-cell ' + lvl + '" title="' + key + ' · ' + c + '/' + total + ' 项打卡"></div>';
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return '<div class="heatmap-wrap"><div class="heatmap">' + cells + '</div>' +
+    '<div class="heatmap-legend">少 ' +
+    '<span class="hm-cell"></span><span class="hm-cell h1"></span><span class="hm-cell h2"></span>' +
+    '<span class="hm-cell h3"></span><span class="hm-cell h4"></span> 多</div></div>';
+}
+
+// ========================================================================
+// WEEKLY TREND
+// ========================================================================
+function recordWeeklyTrend() {
+  if (!Array.isArray(DATA.weeklyTrend)) DATA.weeklyTrend = [];
+  const wk = weekNum();
+  const rate = calcAllTasksPercent();
+  const existing = DATA.weeklyTrend.find(w => w.week === wk);
+  if (existing) existing.rate = rate;
+  else DATA.weeklyTrend.push({ week: wk, rate });
+  DATA.weeklyTrend = DATA.weeklyTrend.slice(-8);
+}
+
+function trendChartHTML() {
+  const data = (DATA.weeklyTrend || []).slice(-8);
+  if (data.length < 2) {
+    return emptyStateHTML('📈', '趋势数据积累中', '持续使用几天后，这里会显示近 8 周完成率走势');
+  }
+  const W = 300, H = 80, pad = 14;
+  const stepX = (W - pad * 2) / (data.length - 1);
+  const pts = data.map((d, i) => [
+    Math.round(pad + i * stepX),
+    Math.round(H - pad - (d.rate / 100) * (H - pad * 2 - 8))
+  ]);
+  const line = pts.map(p => p.join(',')).join(' ');
+  const area = pad + ',' + (H - pad) + ' ' + line + ' ' + (W - pad) + ',' + (H - pad);
+  let dots = '', labels = '';
+  pts.forEach((p, i) => {
+    dots += '<circle class="trend-dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3"/>';
+    labels += '<text class="trend-label" x="' + p[0] + '" y="' + (H - 2) + '" text-anchor="middle">W' + data[i].week + '</text>';
+  });
+  return '<svg class="trend-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="近8周完成率趋势">' +
+    '<polygon class="trend-area" points="' + area + '"/>' +
+    '<polyline class="trend-line" points="' + line + '"/>' + dots + labels + '</svg>';
+}
+
+// ========================================================================
+// TRASH (soft delete + undo + 30-day purge)
+// ========================================================================
+function purgeTrash() {
+  const cutoff = Date.now() - TRASH_KEEP_DAYS * 86400000;
+  const before = DATA.trash.length;
+  DATA.trash = DATA.trash.filter(t => new Date(t.deletedAt).getTime() > cutoff);
+  return before - DATA.trash.length;
+}
+
+function softDelete(path, id) {
+  const arr = getNestedData(path);
+  if (!Array.isArray(arr)) return;
+  const idx = arr.findIndex(x => x.id === id);
+  if (idx === -1) return;
+  const item = arr[idx];
+  arr.splice(idx, 1);
+  const entry = { tid: uid(), path: path, item: item, deletedAt: new Date().toISOString() };
+  DATA.trash.unshift(entry);
+  save();
+  rerender();
+  showToast('已删除', '', {
+    actionLabel: '撤销',
+    onAction: () => restoreTrashEntry(entry.tid, idx)
+  });
+}
+
+function restoreTrashEntry(tid, origIdx) {
+  const ti = DATA.trash.findIndex(t => t.tid === tid);
+  if (ti === -1) return;
+  const entry = DATA.trash[ti];
+  DATA.trash.splice(ti, 1);
+  const target = getNestedData(entry.path);
+  if (Array.isArray(target)) {
+    const at = typeof origIdx === 'number' ? Math.min(origIdx, target.length) : target.length;
+    target.splice(at, 0, entry.item);
+  }
+  save();
+  rerender();
+  showToast('已恢复', 'success');
+}
+
+function clearDoneTasks(paths) {
+  const entries = [];
+  let cleared = 0;
+  for (const path of paths) {
+    const arr = getNestedData(path);
+    if (!Array.isArray(arr)) continue;
+    for (let i = arr.length - 1; i >= 0; i--) {
+      if (arr[i].done) {
+        entries.unshift({ tid: uid(), path: path, item: arr[i], deletedAt: new Date().toISOString() });
+        arr.splice(i, 1);
+        cleared++;
+      }
+    }
+  }
+  if (cleared === 0) return;
+  DATA.trash = entries.concat(DATA.trash);
+  save();
+  rerender();
+  showToast('已清除 ' + cleared + ' 项已完成任务', 'success', {
+    actionLabel: '撤销',
+    onAction: () => {
+      for (const e of entries) {
+        const ti = DATA.trash.findIndex(t => t.tid === e.tid);
+        if (ti !== -1) {
+          DATA.trash.splice(ti, 1);
+          const target = getNestedData(e.path);
+          if (Array.isArray(target)) target.push(e.item);
+        }
+      }
+      save();
+      rerender();
+      showToast('已恢复', 'success');
+    }
+  });
+}
+
+function trashItemLabel(item) {
+  if (item.text) return item.text;
+  if (item.title) return item.title;
+  if (item.typeId) {
+    const t = fitnessType(item.typeId);
+    return t.icon + ' ' + (item.day ? item.day + ' · ' : '') + t.name + (item.target ? ' · ' + item.target : '');
+  }
+  return '(未命名)';
+}
+
+function trashListHTML() {
+  if (!DATA.trash.length) {
+    return emptyStateHTML('🗑️', '回收站是空的', '删除的内容会在这里保留 ' + TRASH_KEEP_DAYS + ' 天');
+  }
+  let html = DATA.trash.slice(0, 20).map(t => {
+    const label = trashItemLabel(t.item);
+    const time = new Date(t.deletedAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return '<div class="trash-item">' +
+      '<span class="t-text" title="' + escapeHTML(label) + '">' + escapeHTML(label) + '</span>' +
+      '<span class="t-meta">' + time + '</span>' +
+      '<button class="btn btn-outline btn-sm" data-trash-restore="' + t.tid + '">恢复</button>' +
+      '<button class="btn btn-danger btn-sm" data-trash-del="' + t.tid + '">彻底删除</button>' +
+      '</div>';
+  }).join('');
+  if (DATA.trash.length > 20) {
+    html += '<div class="settings-desc" style="padding-top:8px;">… 以及更早的 ' + (DATA.trash.length - 20) + ' 条</div>';
+  }
+  html += '<div style="margin-top:12px;text-align:right;"><button class="btn btn-danger btn-sm" data-action="empty-trash">清空回收站</button></div>';
+  return html;
+}
+
+// ========================================================================
+// RENDER HELPERS
+// ========================================================================
+function emptyStateHTML(emoji, text, hint) {
+  return '<div class="empty-state">' +
+    '<div class="emoji">' + emoji + '</div>' +
+    '<div class="empty-text">' + escapeHTML(text) + '</div>' +
+    (hint ? '<div class="empty-hint">' + escapeHTML(hint) + '</div>' : '') +
+    '</div>';
+}
+
+function ringHTML(percent, label, value, hint) {
+  const r = 34, c = 2 * Math.PI * r;
+  const offset = c * (1 - percent / 100);
+  return '<div class="progress-ring">' +
+    '<div class="ring-wrap">' +
+      '<svg class="ring-svg" width="80" height="80" aria-hidden="true">' +
+        '<circle class="ring-track" cx="40" cy="40" r="' + r + '" fill="none" stroke-width="7"/>' +
+        '<circle class="ring-fill" cx="40" cy="40" r="' + r + '" fill="none" stroke-width="7" stroke-dasharray="' + c + '" stroke-dashoffset="' + offset + '"/>' +
+      '</svg>' +
+      '<div class="ring-center"><div class="ring-percent">' + percent + '%</div></div>' +
+    '</div>' +
+    '<div class="progress-info">' +
+      '<div class="label">' + escapeHTML(label) + '</div>' +
+      '<div class="value">' + escapeHTML(value) + '</div>' +
+      (hint ? '<div class="hint">' + escapeHTML(hint) + '</div>' : '') +
+    '</div>' +
+  '</div>';
+}
+
+function barHTMLAuto(name, value) {
+  return '<div class="bar-item">' +
+    '<div class="bar-header"><span>' + escapeHTML(name) + '</span>' +
+      '<span class="bar-value-group"><span class="bar-value-text">' + value + '%</span></span>' +
+    '</div>' +
+    '<div class="bar-track bar-track-readonly"><div class="bar-fill" style="width:' + value + '%"></div></div>' +
+  '</div>';
+}
+
+// Editable bar — only for non-completion metrics (review.interaction)
+function barHTML(category, id, name, value) {
+  return '<div class="bar-item">' +
+    '<div class="bar-header"><span>' + escapeHTML(name) + '</span>' +
+      '<span class="bar-value-group">' +
+        '<input class="bar-value-edit" data-cat="' + category + '" data-id="' + id + '" type="number" min="0" max="100" value="' + value + '" aria-label="' + escapeHTML(name) + '百分比">%' +
+      '</span>' +
+    '</div>' +
+    '<div class="bar-track" data-cat="' + category + '" data-id="' + id + '"><div class="bar-fill" style="width:' + value + '%"></div></div>' +
+  '</div>';
+}
+
+function taskListHTML(path, tasks) {
+  let html = '<ul class="task-list">';
+  if (!tasks || tasks.length === 0) {
+    html += emptyStateHTML('📝', '暂无任务', '在下方输入框添加第一条任务');
+  } else {
+    for (const t of tasks) {
+      html += '<li class="task-item ' + (t.done ? 'done' : '') + '">' +
+        '<div class="task-checkbox ' + (t.done ? 'done' : '') + '" data-path="' + path + '" data-id="' + t.id + '" role="checkbox" aria-checked="' + t.done + '" tabindex="0">' + (t.done ? '✓' : '') + '</div>' +
+        '<span class="task-text" data-path="' + path + '" data-id="' + t.id + '" title="双击编辑">' + escapeHTML(t.text) + '</span>' +
+        '<button class="task-delete" data-path="' + path + '" data-id="' + t.id + '" title="删除" aria-label="删除任务">✕</button>' +
+      '</li>';
+    }
+  }
+  html += '</ul>';
+  html += '<div class="add-task-row">' +
+    '<input class="add-task-input" data-path="' + path + '" placeholder="添加任务，回车快速创建" aria-label="添加任务">' +
+    '<button class="add-btn" data-path="' + path + '">添加</button>' +
+  '</div>';
+  const doneCount = (tasks || []).filter(t => t.done).length;
+  if (doneCount > 0) {
+    html += '<div class="clear-done-row"><button class="clear-done-btn" data-clear-path="' + path + '">清除已完成（' + doneCount + '）</button></div>';
+  }
+  return html;
+}
+
+function checkinHTML(category, items) {
+  if (!items || items.length === 0) return emptyStateHTML('✅', '暂无打卡项', '');
+  let html = '';
+  for (const c of items) {
+    html += '<div class="checkin-row" data-cat="' + category + '" data-id="' + c.id + '" role="button" tabindex="0" aria-pressed="' + c.done + '">' +
+      '<div class="checkin-name"><span class="ci-icon">' + c.icon + '</span> ' + escapeHTML(c.name) + '</div>' +
+      '<span class="checkin-status ' + (c.done ? 'done' : 'pending') + '">' + (c.done ? '已完成' : '待完成') + '</span>' +
+    '</div>';
+  }
+  return html;
+}
+
+function inspireListHTML(path, items) {
+  let html = '';
+  if (!items || items.length === 0) {
+    html += emptyStateHTML('💡', '暂无内容', '在下方添加第一条');
+  } else {
+    for (const i of items) {
+      html += '<div class="inspire-item">' +
+        '<div class="inspire-title">' + escapeHTML(i.title) + '</div>' +
+        '<div class="inspire-desc">' + escapeHTML(i.desc) + '</div>' +
+        '<button class="inspire-delete" data-path="' + path + '" data-id="' + i.id + '" title="删除" aria-label="删除">✕</button>' +
+      '</div>';
+    }
+  }
+  html += '<div class="inspire-add-form">' +
+    '<input class="add-task-input" data-cat="' + path + '" data-field="title" placeholder="标题" aria-label="标题">' +
+    '<input class="add-task-input" data-cat="' + path + '" data-field="desc" placeholder="描述" aria-label="描述">' +
+    '<button class="add-btn" data-cat="' + path + '">添加</button>' +
+  '</div>';
+  return html;
+}
+
+// Read-only list with modal-based add (topContent / published / resources)
+function simpleListHTML(path, items, emptyEmoji, emptyText) {
+  if (!items || items.length === 0) {
+    return emptyStateHTML(emptyEmoji || '📭', emptyText || '暂无内容', '点击右上角 + 添加');
+  }
+  return items.map(i =>
+    '<div class="inspire-item">' +
+      '<div class="inspire-title">' + (i.rank ? escapeHTML(i.rank + ' ') : '') + escapeHTML(i.title) + '</div>' +
+      '<div class="inspire-desc">' + escapeHTML(i.desc) + '</div>' +
+      '<button class="inspire-delete" data-path="' + path + '" data-id="' + i.id + '" title="删除" aria-label="删除">✕</button>' +
+    '</div>'
+  ).join('');
+}
+
+function statBox(path, value, label, readonly) {
+  if (readonly) {
+    return '<div class="stat-box readonly"><div class="stat-num">' + escapeHTML(String(value)) + '</div><div class="stat-label">' + escapeHTML(label) + '</div></div>';
+  }
+  return '<div class="stat-box"><div class="stat-num" data-stat="' + path + '" title="点击编辑">' + escapeHTML(String(value)) + '</div><div class="stat-label">' + escapeHTML(label) + '</div></div>';
+}
+
+const MS_CYCLE = { pending: 'active', active: 'done', done: 'pending' };
+const MS_ICON = { pending: '⚪', active: '🔵', done: '✅' };
+
+function milestoneHTML() {
+  const ms = DATA.learning.research.milestones;
+  if (!ms.length) return emptyStateHTML('🚩', '暂无里程碑', '点击右上角 + 添加');
+  return ms.map(m =>
+    '<div class="checkin-row" data-ms="' + m.id + '" role="button" tabindex="0" title="点击切换状态">' +
+      '<div class="checkin-name"><span class="ci-icon">' + MS_ICON[m.status] + '</span>' +
+        '<div><div style="color:var(--text-main);font-weight:500;">' + escapeHTML(m.title) + '</div>' +
+        '<div style="font-size:11px;color:var(--text-muted);">' + escapeHTML(m.desc) + '</div></div>' +
+      '</div>' +
+      '<button class="inspire-delete" style="position:static;opacity:1;flex-shrink:0;" data-ms-del="' + m.id + '" title="删除" aria-label="删除里程碑">✕</button>' +
+    '</div>'
+  ).join('');
+}
+
+// ========================================================================
+// PAGES
+// ========================================================================
+const PAGES = {
+  dashboard: {
+    title: '工作台首页',
+    render: () => {
+      const tasks = DATA.tasks.dashboard;
+      const done = tasks.filter(t => t.done).length;
+      const percent = calcTaskPercent(tasks);
+      const checkins = DATA.checkins.daily;
+      const ciDone = checkins.filter(c => c.done).length;
+      const inspirations = DATA.inspirations.ideas.slice(0, 3);
+      const streak = calcStreak();
+
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>今日概览</div><span class="card-tag">' + todayCN() + '</span></div>' +
+          ringHTML(percent, '今日完成度', done + ' / ' + tasks.length + ' 项任务', percent === 100 ? '全部完成，太棒了！' : '继续加油') +
+          '<div class="stat-row">' +
+            statBox('stats.dashboard.focusHours', DATA.stats.dashboard.focusHours, '专注时长') +
+            statBox('stats.dashboard.output', DATA.stats.dashboard.output, '今日产出') +
+            statBox(null, streak + ' 天', '连续打卡', true) +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>今日任务</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' +
+          taskListHTML('tasks.dashboard', tasks) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>每日打卡</div><span class="card-tag">' + ciDone + '/' + checkins.length + '</span></div>' +
+          checkinHTML('daily', checkins) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>学习进度</div><span class="card-tag">自动</span></div>' +
+          barHTMLAuto('AI 学习', calcTaskPercent(DATA.tasks.aiLearn)) +
+          barHTMLAuto('英语学习', calcTaskPercent(DATA.tasks.english)) +
+          barHTMLAuto('科研文献', calcTaskPercent(DATA.tasks.researchPapers)) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>最新灵感</div><span class="card-tag">' + DATA.inspirations.ideas.length + ' 条</span></div>' +
+          (inspirations.length === 0 ? emptyStateHTML('💡', '暂无灵感', '去「选题灵感」页添加第一条') :
+            inspirations.map(i =>
+              '<div class="inspire-item"><div class="inspire-title">' + escapeHTML(i.title) + '</div>' +
+              '<div class="inspire-desc">' + escapeHTML(i.desc) + '</div></div>').join('')) +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  'daily-plan': {
+    title: '每日计划',
+    render: () => {
+      const dp = DATA.tasks.dailyPlan;
+      const wr = DATA.weeklyReview;
+      const slots = [
+        { key: 'morning', label: '上午 · 专注时段', icon: '🌅' },
+        { key: 'afternoon', label: '下午 · 执行时段', icon: '☀️' },
+        { key: 'evening', label: '晚上 · 复盘时段', icon: '🌙' }
+      ];
+      let cards = slots.map(s => {
+        const tasks = dp[s.key];
+        const done = tasks.filter(t => t.done).length;
+        return '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>' + s.icon + ' ' + s.label + '</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' +
+          taskListHTML('tasks.dailyPlan.' + s.key, tasks) +
+        '</div>';
+      }).join('');
+
+      cards += '<div class="card">' +
+        '<div class="card-header"><div class="card-title"><span class="dot"></span>本周复盘</div><span class="card-tag">第' + wr.week + '周</span></div>' +
+        '<div class="inspire-item"><div class="inspire-title">👍 做得好的</div><div class="inspire-desc" contenteditable="true" data-wr="good">' + escapeHTML(wr.good) + '</div></div>' +
+        '<div class="inspire-item"><div class="inspire-title">📈 待改进</div><div class="inspire-desc" contenteditable="true" data-wr="improve">' + escapeHTML(wr.improve) + '</div></div>' +
+        '<div class="inspire-item"><div class="inspire-title">🎯 下周重点</div><div class="inspire-desc" contenteditable="true" data-wr="focus">' + escapeHTML(wr.focus) + '</div></div>' +
+        '<div class="clear-done-row"><button class="clear-done-btn" data-action="rollover-plan">结转未完成任务到明天</button></div>' +
+      '</div>';
+
+      return '<div class="card-grid">' + cards + '</div>';
+    }
+  },
+
+  fitness: {
+    title: '健身打卡',
+    render: () => {
+      const fit = DATA.fitness;
+      const plan = fit.plan || [];
+      const pDone = plan.filter(p => p.done).length;
+      const pPercent = calcTaskPercent(plan);
+      const ws = weekStats();
+      const streak = calcFitnessStreak();
+      const goal = (DATA.stats.fitness && DATA.stats.fitness.goal) || 7;
+      const logs = (fit.logs || []).slice(-8).reverse();
+
+      // Plan rows
+      let planHTML = '';
+      if (plan.length === 0) {
+        planHTML = emptyStateHTML('🏋️', '本周还没有健身任务', '在下方添加本周训练计划');
+      } else {
+        for (const p of plan) {
+          const t = fitnessType(p.typeId);
+          planHTML += '<div class="fit-plan-row' + (p.done ? ' done' : '') + '" data-plan-toggle="' + p.id + '">' +
+            '<span class="fp-icon">' + t.icon + '</span>' +
+            '<div class="fp-main"><div class="fp-name">' + escapeHTML(p.day + ' · ' + t.name) + '</div>' +
+            (p.target ? '<div class="fp-target">目标 ' + escapeHTML(p.target) + '</div>' : '') + '</div>' +
+            '<span class="checkin-status ' + (p.done ? 'done' : 'pending') + '">' + (p.done ? '已完成' : '待完成') + '</span>' +
+            '<button class="inspire-delete" style="position:static;opacity:1;flex-shrink:0;" data-path="fitness.plan" data-id="' + p.id + '" title="删除" aria-label="删除任务">✕</button>' +
+          '</div>';
+        }
+      }
+      // Plan add form: day select + type select + target input
+      const dayOpts = ['周一','周二','周三','周四','周五','周六','周日'].map(d =>
+        '<option value="' + d + '">' + d + '</option>').join('');
+      const typeOpts = (fit.types || []).map(t =>
+        '<option value="' + t.id + '">' + t.icon + ' ' + escapeHTML(t.name) + '</option>').join('');
+      planHTML += '<div class="fit-add-form">' +
+        '<div class="fit-add-row">' +
+          '<select class="fit-select" id="planDay">' + dayOpts + '</select>' +
+          '<select class="fit-select" id="planType" style="flex:1;">' + typeOpts + '</select>' +
+        '</div>' +
+        '<div class="fit-add-row">' +
+          '<input class="add-task-input" id="planTarget" placeholder="目标（如 3km / 30 分钟 / 4 组）" aria-label="目标">' +
+          '<button class="add-btn" data-action="add-plan-item">添加</button>' +
+        '</div>' +
+      '</div>';
+
+      // Log rows
+      let logsHTML = '';
+      if (logs.length === 0) {
+        logsHTML = emptyStateHTML('📋', '暂无训练记录', '完成打卡或手动记录一次训练');
+      } else {
+        for (const l of logs) {
+          const t = fitnessType(l.typeId);
+          const meta = [];
+          if (l.duration) meta.push(l.duration + ' 分钟');
+          if (l.calories) meta.push(l.calories + ' 千卡');
+          meta.push(l.date.slice(5));
+          logsHTML += '<div class="fit-log-row">' +
+            '<span class="fl-icon">' + t.icon + '</span>' +
+            '<div class="fl-main"><div class="fl-title">' + escapeHTML(t.name) + (l.note ? ' · ' + escapeHTML(l.note) : '') + '</div>' +
+            '<div class="fl-meta">' + escapeHTML(meta.join(' · ')) + '</div></div>' +
+            '<button class="inspire-delete" style="position:static;opacity:1;flex-shrink:0;" data-path="fitness.logs" data-id="' + l.id + '" title="删除" aria-label="删除记录">✕</button>' +
+          '</div>';
+        }
+      }
+
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>本周任务</div><span class="card-tag">' + pDone + '/' + plan.length + '</span></div>' +
+          planHTML +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>本周数据</div><span class="card-tag">自动统计</span></div>' +
+          ringHTML(pPercent, '任务完成度', pDone + ' / ' + plan.length + ' 项', pDone >= goal ? '已达标，太棒了！' : '再完成 ' + Math.max(0, goal - pDone) + ' 项就达标啦') +
+          '<div class="stat-row">' +
+            statBox(null, ws.sessions + ' 次', '训练次数', true) +
+            statBox(null, ws.duration + ' min', '总时长', true) +
+            statBox(null, ws.calories + ' kcal', '总消耗', true) +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>连续训练</div><span class="card-tag">🔥 按记录计算</span></div>' +
+          '<div style="text-align:center;padding:20px 0;">' +
+            '<div style="font-size:48px;font-weight:700;color:var(--primary);">' + streak + '</div>' +
+            '<div style="font-size:14px;color:var(--text-sub);margin-top:6px;">天连续训练</div>' +
+            '<div style="font-size:12px;color:var(--text-muted);margin-top:12px;">' + (streak >= 30 ? '🏆 已达成 30 天里程碑！' : '距 30 天里程碑还差 ' + Math.max(0, 30 - streak) + ' 天') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header">' +
+            '<div class="card-title"><span class="dot"></span>训练记录</div>' +
+            '<div class="card-actions"><button class="card-btn" data-action="add-workout-log" title="记录一次训练">+</button></div>' +
+          '</div>' +
+          logsHTML +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>训练热力图</div><span class="card-tag">近 25 周</span></div>' +
+          fitnessHeatmapHTML() +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  inspiration: {
+    title: '选题灵感',
+    render: () => {
+      const ins = DATA.inspirations;
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>本周灵感库</div><span class="card-tag">' + ins.ideas.length + ' 条</span></div>' +
+          inspireListHTML('inspirations.ideas', ins.ideas) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>热门方向</div><span class="card-tag">趋势</span></div>' +
+          inspireListHTML('inspirations.trends', ins.trends) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>灵感来源</div><span class="card-tag">渠道</span></div>' +
+          inspireListHTML('inspirations.sources', ins.sources) +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  review: {
+    title: '内容复盘',
+    render: () => {
+      const rv = DATA.review;
+      const all = countAllTasks();
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>上周数据概览</div><span class="card-tag">第' + rv.week + '周</span></div>' +
+          '<div class="stat-row" style="margin-top:0;">' +
+            statBox('review.stats.published', rv.stats.published, '发布内容') +
+            statBox('review.stats.reads', rv.stats.reads, '阅读量') +
+            statBox('review.stats.interactions', rv.stats.interactions, '互动数') +
+          '</div>' +
+          barHTMLAuto('内容完成率（全部任务）', calcAllTasksPercent()) +
+          barHTML('review.interaction', 'ri', '互动转化率', rv.interactionRate) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>完成率趋势</div><span class="card-tag">近 8 周</span></div>' +
+          trendChartHTML() +
+          '<div class="settings-desc" style="margin-top:8px;">当前共 ' + all.done + '/' + all.total + ' 项任务已完成（自动汇总）</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header">' +
+            '<div class="card-title"><span class="dot"></span>表现最佳</div>' +
+            '<div class="card-actions"><button class="card-btn" data-action="add-topcontent" title="添加">+</button></div>' +
+          '</div>' +
+          simpleListHTML('review.topContent', rv.topContent, '🏆', '暂无内容') +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>复盘总结</div><span class="card-tag">行动项</span></div>' +
+          '<div class="inspire-item"><div class="inspire-title">✅ 继续做</div><div class="inspire-desc" contenteditable="true" data-review-action="continue">' + escapeHTML(rv.actions.continue) + '</div></div>' +
+          '<div class="inspire-item"><div class="inspire-title">⚠️ 开始做</div><div class="inspire-desc" contenteditable="true" data-review-action="start">' + escapeHTML(rv.actions.start) + '</div></div>' +
+          '<div class="inspire-item"><div class="inspire-title">❌ 停止做</div><div class="inspire-desc" contenteditable="true" data-review-action="stop">' + escapeHTML(rv.actions.stop) + '</div></div>' +
+          '<div class="clear-done-row"><button class="clear-done-btn" data-action="gen-weekly-draft">✨ 自动生成本周小结</button></div>' +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  comic: {
+    title: 'AI 漫剧',
+    render: () => {
+      const cm = DATA.comic;
+      const sb = DATA.tasks.comicStoryboard;
+      const sbDone = sb.filter(t => t.done).length;
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>当前制作</div><span class="card-tag">进行中</span></div>' +
+          '<div class="inspire-item">' +
+            '<div class="inspire-title" contenteditable="true" data-comic="title">' + escapeHTML(cm.current.title) + '</div>' +
+            '<div class="inspire-desc">分镜进度：' + sbDone + ' / ' + sb.length + '（自动）</div>' +
+          '</div>' +
+          barHTMLAuto('完成进度', calcTaskPercent(sb)) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>分镜任务</div><span class="card-tag">' + sbDone + '/' + sb.length + '</span></div>' +
+          taskListHTML('tasks.comicStoryboard', sb) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header">' +
+            '<div class="card-title"><span class="dot"></span>已发布</div>' +
+            '<div class="card-actions"><button class="card-btn" data-action="add-published" title="添加">+</button></div>' +
+          '</div>' +
+          simpleListHTML('comic.published', cm.published, '🎬', '暂无已发布剧集') +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  'ai-learn': {
+    title: 'AI 学习',
+    render: () => {
+      const ai = DATA.learning.ai;
+      const tasks = DATA.tasks.aiLearn;
+      const done = tasks.filter(t => t.done).length;
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>学习任务</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' +
+          barHTMLAuto('学习任务完成度', calcTaskPercent(tasks)) +
+          taskListHTML('tasks.aiLearn', tasks) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header">' +
+            '<div class="card-title"><span class="dot"></span>学习资源</div>' +
+            '<div class="card-actions"><button class="card-btn" data-action="add-resource" title="添加">+</button></div>' +
+          '</div>' +
+          simpleListHTML('learning.ai.resources', ai.resources, '📚', '暂无学习资源') +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  english: {
+    title: '英语学习',
+    render: () => {
+      const en = DATA.learning.english;
+      const tasks = DATA.tasks.english;
+      const done = tasks.filter(t => t.done).length;
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>100 天挑战</div><span class="card-tag">第 ' + en.challenge.current + ' 天</span></div>' +
+          ringHTML(Math.round(en.challenge.current / en.challenge.total * 100), '挑战进度', en.challenge.current + ' / ' + en.challenge.total + ' 天', '连续 ' + en.challenge.streak + ' 天') +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>今日任务</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' +
+          barHTMLAuto('英语任务完成度', calcTaskPercent(tasks)) +
+          taskListHTML('tasks.english', tasks) +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  research: {
+    title: '科研',
+    render: () => {
+      const rs = DATA.learning.research;
+      const papers = DATA.tasks.researchPapers;
+      const pDone = papers.filter(t => t.done).length;
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>当前课题</div><span class="card-tag">进行中</span></div>' +
+          '<div class="inspire-item">' +
+            '<div class="inspire-title" contenteditable="true" data-research="title">' + escapeHTML(rs.current.title) + '</div>' +
+            '<div class="inspire-desc" contenteditable="true" data-research="desc">' + escapeHTML(rs.current.desc) + '</div>' +
+          '</div>' +
+          barHTMLAuto('总体进度（里程碑）', Math.round(rs.milestones.filter(m => m.status === 'done').length / Math.max(1, rs.milestones.length) * 100)) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>研究里程碑</div><span class="card-tag">点击切换状态</span></div>' +
+          milestoneHTML() +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>文献阅读</div><span class="card-tag">' + pDone + '/' + papers.length + '</span></div>' +
+          barHTMLAuto('文献阅读', calcTaskPercent(papers)) +
+          taskListHTML('tasks.researchPapers', papers) +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  news: {
+    title: '新闻热点',
+    render: () => {
+      const n = DATA.news;
+      return '<div class="card-grid">' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>科技动态</div><span class="card-tag">' + n.tech.length + ' 条</span></div>' +
+          inspireListHTML('news.tech', n.tech) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>创作资讯</div><span class="card-tag">' + n.creation.length + ' 条</span></div>' +
+          inspireListHTML('news.creation', n.creation) +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>热榜趋势</div><span class="card-tag">TOP ' + n.hotlist.length + '</span></div>' +
+          inspireListHTML('news.hotlist', n.hotlist) +
+        '</div>' +
+      '</div>';
+    }
+  },
+
+  settings: {
+    title: '数据管理',
+    render: () => {
+      const isFSAA = storage.mode === 'fsaa';
+      const all = countAllTasks();
+      const inspCount = DATA.inspirations.ideas.length + DATA.inspirations.trends.length + DATA.inspirations.sources.length;
+      const theme = currentThemePref();
+      const icloudPath = '~/Library/Mobile Documents/com~apple~CloudDocs/WorkBuddy/AI工作台/data/';
+
+      return '<div class="settings-card">' +
+        '<h3>🎨 外观</h3>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">主题模式</div><div class="settings-desc">浅色 / 深色 / 跟随系统自动切换</div></div>' +
+          '<div class="theme-seg">' +
+            '<button class="theme-seg-btn' + (theme === 'light' ? ' active' : '') + '" data-theme="light">🌞 浅色</button>' +
+            '<button class="theme-seg-btn' + (theme === 'dark' ? ' active' : '') + '" data-theme="dark">🌙 深色</button>' +
+            '<button class="theme-seg-btn' + (theme === 'system' ? ' active' : '') + '" data-theme="system">🖥️ 系统</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="settings-card">' +
+        '<h3>☁️ 数据同步</h3>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">存储方式</div>' +
+          '<div class="settings-desc">' + (isFSAA ? '已连接到 data/ 文件夹，数据将通过 iCloud 自动同步' : '未连接。连接后数据保存到 data/workspace.json，通过 iCloud 在设备间同步') + '</div></div>' +
+          '<span class="storage-badge ' + (isFSAA ? 'fsaa' : 'local') + '">' + (isFSAA ? '✓ 文件同步' : '本地存储') + '</span>' +
+        '</div>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">数据文件夹</div>' +
+          '<div class="settings-desc"><code class="inline-code">' + icloudPath + '</code></div></div>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+            (isFSAA
+              ? '<button class="btn btn-outline btn-sm" data-action="reconnect">重新授权</button><button class="btn btn-danger btn-sm" data-action="disconnect">断开</button>'
+              : '<button class="btn btn-primary btn-sm" data-action="connect">连接数据文件夹</button>') +
+          '</div>' +
+        '</div>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">上次保存</div></div>' +
+          '<span class="settings-value">' + (storage.lastSaved ? new Date(storage.lastSaved).toLocaleString('zh-CN') : '—') + '</span>' +
+        '</div>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">数据版本</div><div class="settings-desc">修订号 r' + (DATA.meta.revision || 0) + ' · 设备 ' + (DATA.meta.deviceId || DEVICE_ID).slice(0, 12) + '</div></div>' +
+          '<span class="settings-value">v' + (DATA.version || '3.0') + '</span>' +
+        '</div>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">自动备份</div><div class="settings-desc">写入时每 5 分钟在 <code class="inline-code">data/backups/</code> 保留最近 ' + BACKUP_KEEP + ' 份快照</div></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="settings-card">' +
+        '<h3>🗑️ 回收站</h3>' +
+        trashListHTML() +
+      '</div>' +
+
+      '<div class="settings-card">' +
+        '<h3>📦 数据操作</h3>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">备份与恢复</div><div class="settings-desc">导出为 JSON 文件，或从备份文件恢复</div></div>' +
+          '<div style="display:flex;gap:8px;"><button class="btn btn-outline btn-sm" data-action="export">导出</button><button class="btn btn-outline btn-sm" data-action="import">导入</button></div>' +
+        '</div>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">数据概览</div><div class="settings-desc">任务 ' + all.done + '/' + all.total + ' · 灵感 ' + inspCount + ' 条 · 回收站 ' + DATA.trash.length + ' 条</div></div>' +
+        '</div>' +
+        '<div class="settings-row">' +
+          '<div><div class="settings-label">重置数据</div><div class="settings-desc">恢复为初始示例数据（当前数据会先自动导出备份）</div></div>' +
+          '<button class="btn btn-danger btn-sm" data-action="reset">重置</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="settings-card">' +
+        '<h3>📖 使用说明</h3>' +
+        '<div class="settings-desc" style="line-height:1.8;">' +
+          '<p><strong>1. 文件系统同步（推荐）：</strong>连接当前目录下的 <code class="inline-code">data/</code> 文件夹（完整路径 <code class="inline-code">' + icloudPath + '</code>），数据保存为 <code class="inline-code">workspace.json</code>。由于该目录在 iCloud 中，数据会自动在所有设备间同步。</p>' +
+          '<p><strong>2. 本地存储：</strong>未连接数据文件夹时，数据保存在浏览器 localStorage 中，仅在当前浏览器可用。可通过「导出 / 导入」手动迁移。</p>' +
+          '<p><strong>3. 快捷键：</strong><code class="inline-code">Cmd/Ctrl + K</code> 全局搜索 · <code class="inline-code">N</code> 新建任务 · <code class="inline-code">1-9</code> 切换页面 · <code class="inline-code">?</code> 快捷键帮助</p>' +
+          '<p><strong>4. 提示：</strong>在另一台设备上打开本页面时，导航到 <code class="inline-code">~/Library/Mobile Documents/com~apple~CloudDocs/WorkBuddy/AI工作台/</code> 选择 <code class="inline-code">data/</code> 文件夹即可恢复同步（<code class="inline-code">~</code> 代表用户主目录，自动适配不同用户名）。</p>' +
+        '</div>' +
+        '<div class="settings-row" style="margin-top:8px;">' +
+          '<div><div class="settings-label">新手引导</div></div>' +
+          '<button class="btn btn-outline btn-sm" data-action="show-onboarding">重新查看</button>' +
+        '</div>' +
+      '</div>';
+    }
+  }
+};
+
+// ========================================================================
+// PAGE RENDERING + NAVIGATION
+// ========================================================================
+const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'research', 'news', 'settings'];
+
+function renderPage(pageId) {
+  const page = PAGES[pageId];
+  if (!page) return;
+  currentPage = pageId;
+
+  document.querySelectorAll('.menu-item').forEach(m => {
+    m.classList.toggle('active', m.dataset.page === pageId);
+  });
+
+  const main = document.getElementById('mainContent');
+  main.innerHTML =
+    '<div class="page-enter">' +
+      '<div class="main-header">' +
+        '<div><h1>' + page.title + '</h1><div class="date">' + todayCN() + ' · 第' + weekNum() + '周</div></div>' +
+        '<div class="header-actions">' +
+          '<button class="btn btn-outline btn-sm" data-action="open-palette" title="Cmd/Ctrl+K">🔍 搜索</button>' +
+        '</div>' +
+      '</div>' +
+      page.render() +
+      '<div class="bottom-spacer"></div>' +
+    '</div>';
+  main.scrollTop = 0;
+
+  // Close mobile drawer after navigation
+  closeDrawer();
+}
+
+function rerender() {
+  const main = document.getElementById('mainContent');
+  const scrollTop = main.scrollTop;
+  const page = PAGES[currentPage];
+  if (!page) return;
+  const enter = main.querySelector('.page-enter');
+  if (enter) {
+    enter.classList.remove('page-enter'); // avoid replaying animation on data updates
+    enter.innerHTML =
+      '<div class="main-header">' +
+        '<div><h1>' + page.title + '</h1><div class="date">' + todayCN() + ' · 第' + weekNum() + '周</div></div>' +
+        '<div class="header-actions">' +
+          '<button class="btn btn-outline btn-sm" data-action="open-palette" title="Cmd/Ctrl+K">🔍 搜索</button>' +
+        '</div>' +
+      '</div>' +
+      page.render() +
+      '<div class="bottom-spacer"></div>';
+    main.scrollTop = scrollTop;
+  } else {
+    renderPage(currentPage);
+    main.scrollTop = scrollTop;
+  }
+}
+
+document.querySelectorAll('.menu-item').forEach(m => {
+  m.addEventListener('click', () => renderPage(m.dataset.page));
+});
+
+// --- Mobile drawer ---
+function openDrawer() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('drawerBackdrop').classList.add('show');
+}
+function closeDrawer() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('drawerBackdrop').classList.remove('show');
+}
+document.getElementById('hamburger').addEventListener('click', openDrawer);
+document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+
+// ========================================================================
+// DATA MUTATIONS
+// ========================================================================
+function addTask(path, text) {
+  const arr = getNestedData(path);
+  if (!Array.isArray(arr)) return;
+  arr.push({ id: uid(), text: text, done: false });
+  save();
+  rerender();
+  showToast('已添加', 'success');
+}
+
+function toggleTask(path, id) {
+  const arr = getNestedData(path);
+  if (!Array.isArray(arr)) return;
+  const t = arr.find(x => x.id === id);
+  if (!t) return;
+  t.done = !t.done;
+  recordWeeklyTrend();
+  save();
+  rerender();
+}
+
+function addInspire(path, title, desc) {
+  const arr = getNestedData(path);
+  if (!Array.isArray(arr)) return;
+  arr.push({ id: uid(), title: title, desc: desc || '' });
+  save();
+  rerender();
+}
+
+function toggleCheckin(cat, id) {
+  const arr = DATA.checkins[cat];
+  if (!Array.isArray(arr)) return;
+  const c = arr.find(x => x.id === id);
+  if (!c) return;
+  c.done = !c.done;
+  if (cat === 'daily') recordCheckinToday();
+  save();
+  rerender();
+}
+
+// Rollover unfinished daily-plan tasks ("结转未完成到明天")
+function rolloverPlan() {
+  const dp = DATA.tasks.dailyPlan;
+  let moved = 0;
+  for (const key of ['morning', 'afternoon', 'evening']) {
+    const remaining = dp[key].filter(t => !t.done);
+    const doneItems = dp[key].filter(t => t.done);
+    for (const item of doneItems) {
+      DATA.trash.unshift({ tid: uid(), path: 'tasks.dailyPlan.' + key, item: item, deletedAt: new Date().toISOString() });
+      moved++;
+    }
+    dp[key] = remaining.map(t => ({ id: uid(), text: t.text, done: false }));
+  }
+  save();
+  rerender();
+  showToast(moved > 0 ? '已归档 ' + moved + ' 项已完成任务，未完成任务已结转' : '未完成任务已结转到明天', 'success');
+}
+
+// Auto-generate weekly review draft from live data (P3)
+function genWeeklyDraft() {
+  const all = countAllTasks();
+  const pct = calcAllTasksPercent();
+  const streak = calcStreak();
+  const checkinsDone = DATA.checkins.daily.filter(c => c.done).length;
+  const ideas = DATA.inspirations.ideas.length;
+
+  DATA.weeklyReview.week = weekNum();
+  DATA.weeklyReview.good = '本周完成任务 ' + all.done + '/' + all.total + '（' + pct + '%），连续打卡 ' + streak + ' 天';
+  const weak = [];
+  if (calcTaskPercent(DATA.tasks.english) < 50) weak.push('英语学习');
+  if (calcTaskPercent(DATA.tasks.researchPapers) < 50) weak.push('科研文献');
+  if (calcTaskPercent(DATA.tasks.aiLearn) < 50) weak.push('AI 学习');
+  DATA.weeklyReview.improve = weak.length ? weak.join('、') + ' 完成率偏低，下周需增加投入' : '各领域进度均衡，继续保持';
+  DATA.weeklyReview.focus = '灵感库已积累 ' + ideas + ' 条选题，优先转化 2-3 条为正式内容';
+  save();
+  rerender();
+  showToast('已根据当前数据生成本周小结', 'success');
+}
+
+// ========================================================================
+// MODAL-BASED ADD (topContent / published / resource / milestone)
+// ========================================================================
+function showAddModal(title, fields, onSubmit) {
+  const fieldsHTML = fields.map((f, i) =>
+    '<div class="modal-field"><label>' + escapeHTML(f.label) + '</label>' +
+    '<input id="modalField' + i + '" placeholder="' + escapeHTML(f.placeholder || '') + '"></div>'
+  ).join('');
+  showModal(
+    '<div class="modal-title">' + escapeHTML(title) + '</div>' + fieldsHTML +
+    '<div class="modal-actions">' +
+      '<button class="modal-btn cancel" id="modalCancel">取消</button>' +
+      '<button class="modal-btn confirm" id="modalOk">添加</button>' +
+    '</div>'
+  );
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('modalOk').addEventListener('click', () => {
+    const values = fields.map((f, i) => document.getElementById('modalField' + i).value.trim());
+    if (!values[0]) {
+      document.getElementById('modalField0').style.borderColor = 'var(--danger)';
+      return;
+    }
+    closeModal();
+    onSubmit(values);
+  });
+  const first = document.getElementById('modalField0');
+  if (first) first.focus();
+}
+
+function showConfirm(title, message, confirmLabel, onConfirm) {
+  showModal(
+    '<div class="modal-title">' + escapeHTML(title) + '</div>' +
+    '<p style="font-size:14px;color:var(--text-sub);line-height:1.7;">' + message + '</p>' +
+    '<div class="modal-actions">' +
+      '<button class="modal-btn cancel" id="modalCancel">取消</button>' +
+      '<button class="modal-btn danger" id="modalOk">' + escapeHTML(confirmLabel) + '</button>' +
+    '</div>'
+  );
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('modalOk').addEventListener('click', () => { closeModal(); onConfirm(); });
+}
+
+// ========================================================================
+// WORKOUT LOG MODAL (complete plan item / standalone log)
+// ========================================================================
+function openWorkoutModal(planItem) {
+  const types = DATA.fitness.types || [];
+  let selectedType = planItem ? planItem.typeId : (types[0] && types[0].id);
+
+  const chips = types.map(t =>
+    '<button class="chip' + (t.id === selectedType ? ' selected' : '') + '" data-chip="' + t.id + '">' + t.icon + ' ' + escapeHTML(t.name) + '</button>'
+  ).join('');
+
+  const title = planItem
+    ? '完成打卡 · ' + planItem.day + ' ' + fitnessType(planItem.typeId).name
+    : '记录一次训练';
+
+  showModal(
+    '<div class="modal-title">' + escapeHTML(title) + '</div>' +
+    '<div class="modal-field"><label>健身类型</label><div class="chip-picker" id="chipPicker">' + chips + '</div></div>' +
+    '<div class="modal-field"><label>时长（分钟）</label><input id="wlDuration" type="number" min="0" placeholder="如 30"></div>' +
+    '<div class="modal-field"><label>消耗（千卡）</label><input id="wlCalories" type="number" min="0" placeholder="如 250"></div>' +
+    '<div class="modal-field"><label>备注（可选）</label><input id="wlNote" placeholder="如 晨跑 3km"></div>' +
+    '<div class="modal-actions">' +
+      '<button class="modal-btn cancel" id="modalCancel">取消</button>' +
+      (planItem ? '<button class="modal-btn outline" id="wlSkip">不记数据，直接打卡</button>' : '') +
+      '<button class="modal-btn confirm" id="modalOk">' + (planItem ? '记录并完成' : '保存记录') + '</button>' +
+    '</div>'
+  );
+
+  document.getElementById('chipPicker').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    selectedType = chip.dataset.chip;
+    document.querySelectorAll('#chipPicker .chip').forEach(c =>
+      c.classList.toggle('selected', c.dataset.chip === selectedType));
+  });
+
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+
+  const doLog = (withData) => {
+    if (withData) {
+      const dur = parseInt(document.getElementById('wlDuration').value) || 0;
+      const cal = parseInt(document.getElementById('wlCalories').value) || 0;
+      const note = document.getElementById('wlNote').value.trim();
+      DATA.fitness.logs.push({
+        id: uid(), date: todayKey(), typeId: selectedType,
+        duration: dur, calories: cal, note: note
+      });
+    }
+    if (planItem) planItem.done = true;
+    closeModal();
+    save();
+    rerender();
+    showToast(planItem ? '打卡完成，数据已记录 💪' : '训练记录已保存', 'success');
+  };
+
+  document.getElementById('modalOk').addEventListener('click', () => doLog(true));
+  const skipBtn = document.getElementById('wlSkip');
+  if (skipBtn) skipBtn.addEventListener('click', () => doLog(false));
+
+  const durInput = document.getElementById('wlDuration');
+  if (durInput) durInput.focus();
+}
+
+// ========================================================================
+// EXPORT / IMPORT / RESET
+// ========================================================================
+function exportData(prefix) {
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (prefix || 'workspace') + '-' + todayKey() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 100);
+  showToast('已导出数据文件', 'success');
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.addEventListener('change', async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!data.version) throw new Error('bad format');
+      DATA = mergeDefaults(data, DEFAULT_DATA);
+      recordCheckinToday();
+      applyTheme();
+      save();
+      renderPage(currentPage);
+      showToast('数据导入成功', 'success');
+    } catch (err) {
+      showToast('导入失败：文件格式错误', 'error');
+    }
+  });
+  input.click();
+}
+
+function resetData() {
+  showConfirm('重置数据', '将恢复为初始示例数据。当前数据会先自动导出一份备份到下载目录。', '重置', () => {
+    exportData('workspace-before-reset');
+    DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    DATA.settings.onboarded = true;
+    applyTheme();
+    save();
+    renderPage(currentPage);
+    showToast('已重置为示例数据', 'success');
+  });
+}
+
+// ========================================================================
+// COMMAND PALETTE (Cmd/Ctrl+K)
+// ========================================================================
+const COMMANDS = [
+  { id: 'cmd-theme', icon: '🌙', text: '切换主题', run: () => cycleTheme() },
+  { id: 'cmd-export', icon: '📤', text: '导出数据', run: () => exportData('workspace') },
+  { id: 'cmd-import', icon: '📥', text: '导入数据', run: () => importData() },
+  { id: 'cmd-clear-done', icon: '🧹', text: '清除当前页已完成任务', run: () => clearDoneOnPage() },
+  { id: 'cmd-rollover', icon: '⏭️', text: '结转未完成任务到明天', run: () => rolloverPlan() },
+  { id: 'cmd-weekly', icon: '✨', text: '自动生成本周小结', run: () => genWeeklyDraft() },
+  { id: 'cmd-settings', icon: '⚙️', text: '打开数据管理', run: () => renderPage('settings') },
+  { id: 'cmd-onboard', icon: '🎓', text: '查看新手引导', run: () => startOnboarding(true) },
+  { id: 'cmd-trash', icon: '🗑️', text: '清空回收站', run: () => emptyTrash() }
+];
+
+let paletteItems = [];
+let paletteIndex = 0;
+
+function clearDoneOnPage() {
+  const map = {
+    'dashboard': ['tasks.dashboard'],
+    'daily-plan': ['tasks.dailyPlan.morning', 'tasks.dailyPlan.afternoon', 'tasks.dailyPlan.evening'],
+    'ai-learn': ['tasks.aiLearn'],
+    'english': ['tasks.english'],
+    'comic': ['tasks.comicStoryboard'],
+    'research': ['tasks.researchPapers']
+  };
+  const paths = map[currentPage];
+  if (!paths) { showToast('当前页面没有任务列表', 'warning'); return; }
+  clearDoneTasks(paths);
+}
+
+function emptyTrash() {
+  if (!DATA.trash.length) { showToast('回收站已经是空的', 'warning'); return; }
+  showConfirm('清空回收站', '将永久删除回收站中的 ' + DATA.trash.length + ' 条内容，此操作不可撤销。', '清空', () => {
+    DATA.trash = [];
+    save();
+    rerender();
+    showToast('回收站已清空', 'success');
+  });
+}
+
+function buildPaletteIndex() {
+  const items = [];
+  // Pages
+  for (const pid of PAGE_ORDER) {
+    const p = PAGES[pid];
+    if (p) items.push({ type: 'page', icon: '📄', text: p.title, meta: '页面', run: () => renderPage(pid) });
+  }
+  // Tasks
+  const taskGroups = [
+    ['tasks.dashboard', '工作台'],
+    ['tasks.dailyPlan.morning', '上午计划'],
+    ['tasks.dailyPlan.afternoon', '下午计划'],
+    ['tasks.dailyPlan.evening', '晚上计划'],
+    ['tasks.aiLearn', 'AI学习'],
+    ['tasks.english', '英语'],
+    ['tasks.comicStoryboard', '漫剧分镜'],
+    ['tasks.researchPapers', '科研文献']
+  ];
+  for (const [path, label] of taskGroups) {
+    const arr = getNestedData(path) || [];
+    for (const t of arr) {
+      items.push({
+        type: 'task', icon: t.done ? '✅' : '⬜', text: t.text, meta: label,
+        run: () => { toggleTask(path, t.id); }
+      });
+    }
+  }
+  // Inspirations + news
+  const inspGroups = [
+    ['inspirations.ideas', '灵感'], ['inspirations.trends', '趋势'], ['inspirations.sources', '来源'],
+    ['news.tech', '科技'], ['news.creation', '创作'], ['news.hotlist', '热榜']
+  ];
+  for (const [path, label] of inspGroups) {
+    const arr = getNestedData(path) || [];
+    for (const i of arr) {
+      items.push({
+        type: 'inspire', icon: '💡', text: i.title, meta: label,
+        run: () => renderPage(path.startsWith('news') ? 'news' : 'inspiration')
+      });
+    }
+  }
+  return items;
+}
+
+function openPalette() {
+  document.getElementById('paletteOverlay').classList.add('show');
+  const input = document.getElementById('paletteInput');
+  input.value = '';
+  renderPaletteList('');
+  setTimeout(() => input.focus(), 50);
+}
+
+function closePalette() {
+  document.getElementById('paletteOverlay').classList.remove('show');
+}
+
+function renderPaletteList(query) {
+  const q = query.trim();
+  const list = document.getElementById('paletteList');
+
+  if (q.startsWith('>')) {
+    const cq = q.slice(1).trim().toLowerCase();
+    paletteItems = COMMANDS.filter(c => !cq || c.text.toLowerCase().includes(cq))
+      .map(c => ({ type: 'cmd', icon: c.icon, text: c.text, meta: '命令', run: c.run }));
+  } else {
+    const all = buildPaletteIndex();
+    paletteItems = q
+      ? all.filter(i => i.text.toLowerCase().includes(q.toLowerCase())).slice(0, 30)
+      : all.filter(i => i.type === 'page').concat(all.filter(i => i.type !== 'page').slice(0, 12));
+  }
+  paletteIndex = 0;
+
+  if (!paletteItems.length) {
+    list.innerHTML = '<div class="palette-empty">没有匹配的结果</div>';
+    return;
+  }
+
+  let lastMeta = null;
+  list.innerHTML = paletteItems.map((item, idx) => {
+    let groupLabel = '';
+    if (item.meta !== lastMeta) {
+      groupLabel = '<div class="palette-group-label">' + escapeHTML(item.meta) + '</div>';
+      lastMeta = item.meta;
+    }
+    return groupLabel +
+      '<div class="palette-item' + (idx === paletteIndex ? ' selected' : '') + '" data-idx="' + idx + '">' +
+        '<span class="pi-icon">' + item.icon + '</span>' +
+        '<span>' + escapeHTML(item.text) + '</span>' +
+        '<span class="pi-meta">' + escapeHTML(item.meta) + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function runPaletteItem(idx) {
+  const item = paletteItems[idx];
+  if (!item) return;
+  closePalette();
+  item.run();
+}
+
+document.getElementById('paletteInput').addEventListener('input', (e) => renderPaletteList(e.target.value));
+document.getElementById('paletteInput').addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); paletteIndex = Math.min(paletteIndex + 1, paletteItems.length - 1); renderPaletteList(document.getElementById('paletteInput').value); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); paletteIndex = Math.max(paletteIndex - 1, 0); renderPaletteList(document.getElementById('paletteInput').value); }
+  else if (e.key === 'Enter') { e.preventDefault(); runPaletteItem(paletteIndex); }
+  else if (e.key === 'Escape') { closePalette(); }
+});
+document.getElementById('paletteList').addEventListener('click', (e) => {
+  const item = e.target.closest('.palette-item');
+  if (item) runPaletteItem(parseInt(item.dataset.idx, 10));
+});
+document.getElementById('paletteOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'paletteOverlay') closePalette();
+});
+
+// ========================================================================
+// KEYBOARD SHORTCUTS
+// ========================================================================
+function showShortcutsHelp() {
+  showModal(
+    '<div class="modal-title">⌨️ 快捷键</div>' +
+    '<div style="font-size:13px;color:var(--text-sub);line-height:2;">' +
+    '<div><code class="inline-code">Cmd/Ctrl + K</code> 全局搜索 / 命令面板</div>' +
+    '<div><code class="inline-code">N</code> 聚焦当前页新建任务输入框</div>' +
+    '<div><code class="inline-code">1 ~ 9</code> 快速切换页面</div>' +
+    '<div><code class="inline-code">Enter</code> 在输入框中快速添加</div>' +
+    '<div><code class="inline-code">Esc</code> 关闭弹窗 / 面板</div>' +
+    '<div><code class="inline-code">?</code> 显示本帮助</div>' +
+    '</div>' +
+    '<div class="modal-actions"><button class="modal-btn confirm" id="modalOk">知道了</button></div>'
+  );
+  document.getElementById('modalOk').addEventListener('click', closeModal);
+}
+
+document.getElementById('kbdHelpBtn').addEventListener('click', showShortcutsHelp);
+
+document.addEventListener('keydown', (e) => {
+  const mod = e.metaKey || e.ctrlKey;
+
+  // Cmd/Ctrl+K — palette
+  if (mod && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    const overlay = document.getElementById('paletteOverlay');
+    if (overlay.classList.contains('show')) closePalette(); else openPalette();
+    return;
+  }
+
+  // Esc — close topmost layer
+  if (e.key === 'Escape') {
+    if (document.getElementById('paletteOverlay').classList.contains('show')) { closePalette(); return; }
+    if (document.getElementById('modalOverlay').classList.contains('show')) { closeModal(); return; }
+    closeDrawer();
+    return;
+  }
+
+  // Below: skip when typing or modifier held
+  if (mod || e.altKey || isTypingTarget(e.target)) return;
+
+  // ? — help
+  if (e.key === '?') { e.preventDefault(); showShortcutsHelp(); return; }
+
+  // N — focus new-task input on current page
+  if (e.key.toLowerCase() === 'n') {
+    const input = document.querySelector('#mainContent .add-task-input');
+    if (input) { e.preventDefault(); input.focus(); }
+    return;
+  }
+
+  // 1-9 — switch pages
+  if (/^[1-9]$/.test(e.key)) {
+    const idx = parseInt(e.key, 10) - 1;
+    if (idx < PAGE_ORDER.length) renderPage(PAGE_ORDER[idx]);
+    return;
+  }
+});
+
+// ========================================================================
+// ONBOARDING (3-step, first run)
+// ========================================================================
+const ONBOARD_STEPS = [
+  {
+    emoji: '👋', title: '欢迎来到 AI 工作台',
+    desc: '这里是你的个人创作管理中心：任务、打卡、灵感、复盘、学习进度全部集中在一处，所有数据都由你自己掌控。'
+  },
+  {
+    emoji: '☁️', title: '数据存在哪里？',
+    desc: '推荐连接当前目录下的 <code class="inline-code">data/</code> 文件夹——数据会保存为 <code class="inline-code">workspace.json</code> 并随 iCloud 在你的设备间自动同步。<br><br>不连接也可以使用，数据会保存在浏览器本地。<br><br>删除的内容会先进入<strong>回收站</strong>（保留 30 天），5 秒内可一键撤销。'
+  },
+  {
+    emoji: '⌨️', title: '高效操作技巧',
+    desc: '按 <code class="inline-code">Cmd/Ctrl + K</code> 随时唤起全局搜索，输入 <code class="inline-code">&gt;</code> 执行命令。<br>按 <code class="inline-code">N</code> 快速新建任务，按 <code class="inline-code">1-9</code> 切换页面。<br>完成比例会根据任务勾选<strong>自动计算</strong>，无需手动调整。'
+  }
+];
+let onboardStep = 0;
+
+function startOnboarding(force) {
+  if (!force && DATA.settings.onboarded) return;
+  onboardStep = 0;
+  renderOnboardStep();
+  document.getElementById('onboardOverlay').classList.add('show');
+}
+
+function renderOnboardStep() {
+  const s = ONBOARD_STEPS[onboardStep];
+  const isLast = onboardStep === ONBOARD_STEPS.length - 1;
+  document.getElementById('onboardContent').innerHTML =
+    '<div class="ob-emoji">' + s.emoji + '</div>' +
+    '<div class="ob-title">' + s.title + '</div>' +
+    '<div class="ob-desc">' + s.desc + '</div>' +
+    '<div class="ob-dots">' + ONBOARD_STEPS.map((_, i) =>
+      '<div class="ob-dot' + (i === onboardStep ? ' active' : '') + '"></div>').join('') + '</div>' +
+    '<div class="ob-actions">' +
+      (onboardStep > 0 ? '<button class="modal-btn cancel" id="obPrev">上一步</button>' : '') +
+      '<button class="modal-btn outline" id="obSkip">跳过</button>' +
+      '<button class="modal-btn confirm" id="obNext">' + (isLast ? '开始使用' : '下一步') + '</button>' +
+    '</div>';
+
+  document.getElementById('obNext').addEventListener('click', () => {
+    if (isLast) finishOnboarding();
+    else { onboardStep++; renderOnboardStep(); }
+  });
+  document.getElementById('obSkip').addEventListener('click', finishOnboarding);
+  const prev = document.getElementById('obPrev');
+  if (prev) prev.addEventListener('click', () => { onboardStep--; renderOnboardStep(); });
+}
+
+function finishOnboarding() {
+  document.getElementById('onboardOverlay').classList.remove('show');
+  if (!DATA.settings.onboarded) {
+    DATA.settings.onboarded = true;
+    save();
+  }
+  if (storage.mode === 'local' && storage.isFSAASupported) {
+    setTimeout(() => showToast('提示：到「数据管理」连接 data 文件夹可启用 iCloud 同步', 'warning', { duration: 4000 }), 600);
+  }
+}
+
+// ========================================================================
+// GLOBAL CLICK DELEGATION
+// ========================================================================
+document.addEventListener('click', (e) => {
+  const t = e.target;
+
+  // --- Task checkbox toggle ---
+  const checkbox = t.closest('.task-checkbox');
+  if (checkbox && checkbox.dataset.path) {
+    toggleTask(checkbox.dataset.path, checkbox.dataset.id);
+    return;
+  }
+
+  // --- Task delete (soft) ---
+  const taskDel = t.closest('.task-delete');
+  if (taskDel && taskDel.dataset.path) {
+    softDelete(taskDel.dataset.path, taskDel.dataset.id);
+    return;
+  }
+
+  // --- Inspire/news delete (soft) ---
+  const inspDel = t.closest('.inspire-delete');
+  if (inspDel) {
+    if (inspDel.dataset.msDel) {
+      softDelete('learning.research.milestones', inspDel.dataset.msDel);
+      return;
+    }
+    if (inspDel.dataset.path && inspDel.dataset.id) {
+      softDelete(inspDel.dataset.path, inspDel.dataset.id);
+      return;
+    }
+  }
+
+  // --- Add task button ---
+  if (t.classList.contains('add-btn') && t.dataset.path) {
+    const path = t.dataset.path;
+    const input = document.querySelector('.add-task-input[data-path="' + path + '"]');
+    if (input && input.value.trim()) {
+      addTask(path, input.value.trim());
+      setTimeout(() => {
+        const ni = document.querySelector('.add-task-input[data-path="' + path + '"]');
+        if (ni) ni.focus();
+      }, 50);
+    } else if (input) {
+      input.classList.add('input-error');
+      setTimeout(() => input.classList.remove('input-error'), 500);
+    }
+    return;
+  }
+
+  // --- Add inspire button ---
+  if (t.classList.contains('add-btn') && t.dataset.cat) {
+    const cat = t.dataset.cat;
+    const form = t.closest('.inspire-add-form');
+    const titleInput = form ? form.querySelector('[data-field="title"]') : null;
+    const descInput = form ? form.querySelector('[data-field="desc"]') : null;
+    if (titleInput && titleInput.value.trim()) {
+      addInspire(cat, titleInput.value.trim(), descInput ? descInput.value.trim() : '');
+      showToast('已添加', 'success');
+      setTimeout(() => {
+        const ni = document.querySelector('.inspire-add-form [data-cat="' + cat + '"][data-field="title"]');
+        if (ni) ni.focus();
+      }, 50);
+    } else if (titleInput) {
+      titleInput.classList.add('input-error');
+      setTimeout(() => titleInput.classList.remove('input-error'), 500);
+    }
+    return;
+  }
+
+  // --- Checkin toggle ---
+  const checkinRow = t.closest('.checkin-row[data-cat]');
+  if (checkinRow && checkinRow.dataset.cat && checkinRow.dataset.id) {
+    toggleCheckin(checkinRow.dataset.cat, checkinRow.dataset.id);
+    return;
+  }
+
+  // --- Milestone cycle ---
+  const msRow = t.closest('.checkin-row[data-ms]');
+  if (msRow) {
+    const ms = DATA.learning.research.milestones.find(m => m.id === msRow.dataset.ms);
+    if (ms) {
+      ms.status = MS_CYCLE[ms.status] || 'pending';
+      save();
+      rerender();
+    }
+    return;
+  }
+
+  // --- Fitness plan row: open workout log modal (or undo) ---
+  const planRow = t.closest('.fit-plan-row[data-plan-toggle]');
+  if (planRow) {
+    const item = (DATA.fitness.plan || []).find(p => p.id === planRow.dataset.planToggle);
+    if (item) {
+      if (item.done) {
+        item.done = false;
+        save();
+        rerender();
+      } else {
+        openWorkoutModal(item);
+      }
+    }
+    return;
+  }
+
+  // --- Clear done per-list ---
+  const clearBtn = t.closest('.clear-done-btn[data-clear-path]');
+  if (clearBtn) {
+    clearDoneTasks([clearBtn.dataset.clearPath]);
+    return;
+  }
+
+  // --- Bar track click (+10, manual bars only) ---
+  const track = t.closest('.bar-track[data-cat]');
+  if (track && track.dataset.cat === 'review.interaction') {
+    DATA.review.interactionRate = Math.min(100, DATA.review.interactionRate + 10);
+    save();
+    rerender();
+    return;
+  }
+
+  // --- Stat box edit (click) ---
+  const statNum = t.closest('.stat-num[data-stat]');
+  if (statNum && !statNum.querySelector('input')) {
+    const path = statNum.dataset.stat;
+    const oldVal = statNum.textContent;
+    const input = document.createElement('input');
+    input.className = 'stat-num-edit';
+    input.value = oldVal;
+    statNum.textContent = '';
+    statNum.appendChild(input);
+    input.focus();
+    input.select();
+    const commit = () => {
+      const v = input.value.trim();
+      if (v) { setNestedData(path, v); save(); }
+      rerender();
+    };
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') { ev.preventDefault(); input.blur(); }
+      if (ev.key === 'Escape') { input.removeEventListener('blur', commit); rerender(); }
+    });
+    return;
+  }
+
+  // --- Card + buttons ---
+  const cardBtn = t.closest('.card-btn[data-action]');
+  if (cardBtn) {
+    handleAction(cardBtn.dataset.action);
+    return;
+  }
+
+  // --- Settings / other action buttons ---
+  const actionBtn = t.closest('[data-action]');
+  if (actionBtn) {
+    handleAction(actionBtn.dataset.action);
+    return;
+  }
+
+  // --- Theme segmented buttons ---
+  const themeBtn = t.closest('.theme-seg-btn[data-theme]');
+  if (themeBtn) {
+    setTheme(themeBtn.dataset.theme);
+    return;
+  }
+
+  // --- Trash restore / delete-forever ---
+  if (t.dataset.trashRestore) {
+    restoreTrashEntry(t.dataset.trashRestore);
+    return;
+  }
+  if (t.dataset.trashDel) {
+    const ti = DATA.trash.findIndex(x => x.tid === t.dataset.trashDel);
+    if (ti !== -1) {
+      DATA.trash.splice(ti, 1);
+      save();
+      rerender();
+      showToast('已彻底删除', 'success');
+    }
+    return;
+  }
+});
+
+// ========================================================================
+// ACTION DISPATCH
+// ========================================================================
+function handleAction(action) {
+  switch (action) {
+    case 'open-palette': openPalette(); break;
+    case 'connect':
+      storage.connect().then(() => {
+        updateSyncIndicator();
+        renderPage(currentPage);
+        showToast('已连接数据文件夹，iCloud 同步已开启', 'success');
+      }).catch((err) => {
+        if (err && err.name !== 'AbortError') showToast(err.message || '连接失败', 'error');
+      });
+      break;
+    case 'reconnect':
+      storage.requestPermission().then((ok) => {
+        updateSyncIndicator();
+        renderPage(currentPage);
+        showToast(ok ? '授权成功，同步已恢复' : '未获得授权', ok ? 'success' : 'warning');
+      });
+      break;
+    case 'disconnect':
+      showConfirm('断开数据文件夹', '断开后数据将仅保存在浏览器本地，不同步到其他设备。已保存的文件不受影响。', '断开', async () => {
+        await storage.disconnect();
+        updateSyncIndicator();
+        renderPage(currentPage);
+        showToast('已断开，切换到本地存储', 'warning');
+      });
+      break;
+    case 'export': exportData('workspace'); break;
+    case 'import': importData(); break;
+    case 'reset': resetData(); break;
+    case 'empty-trash': emptyTrash(); break;
+    case 'show-onboarding': startOnboarding(true); break;
+    case 'rollover-plan': rolloverPlan(); break;
+    case 'gen-weekly-draft': genWeeklyDraft(); break;
+    case 'add-plan-item': {
+      const dayEl = document.getElementById('planDay');
+      const typeEl = document.getElementById('planType');
+      const targetEl = document.getElementById('planTarget');
+      if (!dayEl || !typeEl) break;
+      DATA.fitness.plan.push({
+        id: uid(),
+        day: dayEl.value,
+        typeId: typeEl.value,
+        target: targetEl ? targetEl.value.trim() : '',
+        done: false
+      });
+      save();
+      rerender();
+      showToast('已添加到本周任务', 'success');
+      break;
+    }
+    case 'add-workout-log':
+      openWorkoutModal(null);
+      break;
+    case 'add-topcontent':
+      showAddModal('添加表现最佳内容', [
+        { label: '排名', placeholder: '🥇' },
+        { label: '标题', placeholder: '内容标题' },
+        { label: '数据描述', placeholder: '阅读 0k · 互动 0 · 收藏 0' }
+      ], (vals) => {
+        DATA.review.topContent.push({ id: uid(), rank: vals[0] || '📄', title: vals[1], desc: vals[2] });
+        save(); rerender(); showToast('已添加', 'success');
+      });
+      break;
+    case 'add-published':
+      showAddModal('添加已发布剧集', [
+        { label: '标题', placeholder: '第 X 集 · 标题' },
+        { label: '数据描述', placeholder: '播放 0 · 点赞 0' }
+      ], (vals) => {
+        DATA.comic.published.push({ id: uid(), title: vals[0], desc: vals[1] });
+        save(); rerender(); showToast('已添加', 'success');
+      });
+      break;
+    case 'add-resource':
+      showAddModal('添加学习资源', [
+        { label: '标题', placeholder: '📚 资源名称' },
+        { label: '描述', placeholder: '资源简介' }
+      ], (vals) => {
+        DATA.learning.ai.resources.push({ id: uid(), title: vals[0], desc: vals[1] });
+        save(); rerender(); showToast('已添加', 'success');
+      });
+      break;
+  }
+}
+
+// ========================================================================
+// ENTER-TO-ADD
+// ========================================================================
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const t = e.target;
+
+  // Task add input
+  if (t.classList.contains('add-task-input') && t.dataset.path) {
+    e.preventDefault();
+    if (t.value.trim()) {
+      addTask(t.dataset.path, t.value.trim());
+      setTimeout(() => {
+        const ni = document.querySelector('.add-task-input[data-path="' + t.dataset.path + '"]');
+        if (ni) ni.focus();
+      }, 50);
+    } else {
+      t.classList.add('input-error');
+      setTimeout(() => t.classList.remove('input-error'), 500);
+    }
+    return;
+  }
+
+  // Inspire add form
+  if (t.classList.contains('add-task-input') && t.dataset.cat && t.dataset.field) {
+    e.preventDefault();
+    const cat = t.dataset.cat;
+    const form = t.closest('.inspire-add-form');
+    const titleInput = form ? form.querySelector('[data-field="title"]') : null;
+    const descInput = form ? form.querySelector('[data-field="desc"]') : null;
+    if (titleInput && titleInput.value.trim()) {
+      addInspire(cat, titleInput.value.trim(), descInput ? descInput.value.trim() : '');
+      showToast('已添加', 'success');
+      setTimeout(() => {
+        const ni = document.querySelector('.inspire-add-form [data-cat="' + cat + '"][data-field="title"]');
+        if (ni) ni.focus();
+      }, 50);
+    } else if (titleInput) {
+      titleInput.classList.add('input-error');
+      setTimeout(() => titleInput.classList.remove('input-error'), 500);
+    }
+  }
+});
+
+// ========================================================================
+// INLINE EDITS (dblclick task text / contenteditable / bar value)
+// ========================================================================
+document.addEventListener('dblclick', (e) => {
+  if (e.target.classList.contains('task-text')) {
+    const path = e.target.dataset.path;
+    const id = e.target.dataset.id;
+    const arr = getNestedData(path);
+    const task = arr ? arr.find(x => x.id === id) : null;
+    if (!task) return;
+    const input = document.createElement('input');
+    input.className = 'task-text-edit';
+    input.value = task.text;
+    e.target.replaceWith(input);
+    input.focus();
+    input.select();
+    const commit = () => {
+      const v = input.value.trim();
+      if (v) { task.text = v; save(); }
+      rerender();
+    };
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') { ev.preventDefault(); input.blur(); }
+      if (ev.key === 'Escape') { input.removeEventListener('blur', commit); rerender(); }
+    });
+  }
+});
+
+document.addEventListener('blur', (e) => {
+  const t = e.target;
+  if (!t || !t.isContentEditable) return;
+  const text = t.textContent.trim();
+
+  if (t.dataset.reviewAction) {
+    DATA.review.actions[t.dataset.reviewAction] = text;
+    save();
+  } else if (t.dataset.research) {
+    DATA.learning.research.current[t.dataset.research] = text;
+    save();
+  } else if (t.dataset.comic) {
+    DATA.comic.current[t.dataset.comic] = text;
+    save();
+  } else if (t.dataset.wr) {
+    DATA.weeklyReview[t.dataset.wr] = text;
+    save();
+  }
+}, true);
+
+document.addEventListener('change', (e) => {
+  if (e.target.classList.contains('bar-value-edit')) {
+    if (e.target.dataset.cat === 'review.interaction') {
+      DATA.review.interactionRate = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
+      save();
+      rerender();
+    }
+  }
+});
+
+// Checkbox keyboard support (Space/Enter on focused checkbox)
+document.addEventListener('keydown', (e) => {
+  if ((e.key === ' ' || e.key === 'Enter') && e.target.classList.contains('task-checkbox')) {
+    e.preventDefault();
+    toggleTask(e.target.dataset.path, e.target.dataset.id);
+  }
+  if ((e.key === ' ' || e.key === 'Enter') && e.target.classList.contains('checkin-row') && e.target.dataset.cat) {
+    e.preventDefault();
+    toggleCheckin(e.target.dataset.cat, e.target.dataset.id);
+  }
+});
+
+// Save before unload (best-effort flush to localStorage safety net)
+window.addEventListener('beforeunload', () => {
+  if (DATA && saveState === 'saving') {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA)); } catch (e) { /* ignore */ }
+  }
+});
+
+// ========================================================================
+// INIT
+// ========================================================================
+async function init() {
+  await storage.init();
+
+  const saved = await storage.read();
+  if (saved && saved.version) {
+    DATA = mergeDefaults(saved, DEFAULT_DATA);
+  } else {
+    DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    DATA.meta.deviceId = DEVICE_ID;
+    await storage.write(DATA, { force: true });
+  }
+
+  // Housekeeping
+  migrateFitnessData();
+  purgeTrash();
+  recordCheckinToday();
+  recordWeeklyTrend();
+  if (!DATA.meta) DATA.meta = { revision: 0, deviceId: DEVICE_ID, savedAt: '' };
+
+  applyTheme();
+  updateSyncIndicator();
+  renderPage('dashboard');
+
+  // First-run onboarding
+  if (!DATA.settings.onboarded) {
+    setTimeout(() => startOnboarding(false), 400);
+  } else if (storage.mode === 'local' && storage.isFSAASupported) {
+    setTimeout(() => showToast('提示：连接 data 文件夹以启用 iCloud 同步', 'warning', { duration: 4000 }), 1000);
+  } else if (storage.mode === 'local' && !storage.isFSAASupported) {
+    setTimeout(() => showToast('当前浏览器不支持文件同步，数据仅保存在本地', 'warning', { duration: 4000 }), 1000);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

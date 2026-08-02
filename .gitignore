@@ -1,0 +1,86 @@
+# Application data is synced separately through iCloud and can contain personal records.
+data/*
+!data/.gitkeep
+
+# Environment files and local secrets. Keep .env.example tracked as a template.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# WorkBuddy, Codex, and other AI coding-tool local state.
+.workbuddy/
+.codex/
+.claude/
+.aider*
+.continue/
+
+# Dependencies and package-manager caches.
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+.yarn-cache/
+.bun/
+
+# JavaScript and frontend build outputs.
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.vite/
+.parcel-cache/
+.turbo/
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# Test reports and coverage artifacts.
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+*.lcov
+
+# Python virtual environments, package artifacts, and caches.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Editor-local settings. Shared workspace settings can remain in source control.
+.idea/
+*.iml
+.vscode/*.code-workspace
+.vscode/settings.json
+.vscode/launch.json
+
+# Operating system and temporary files.
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+*.tmp
+*.bak
+*.log
+
+# Local archives and generated exports.
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.sqlite
+*.sqlite3
