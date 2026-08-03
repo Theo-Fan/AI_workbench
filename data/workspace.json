@@ -1,6 +1,150 @@
 {
-  "version": "2.0",
-  "lastSaved": "2026-08-01T16:08:37.123Z",
+  "version": "3.0",
+  "meta": {
+    "revision": 7,
+    "deviceId": "dev-msbc8kkefh3fez",
+    "savedAt": "2026-08-03T10:02:05.340Z"
+  },
+  "settings": {
+    "theme": "light",
+    "onboarded": true
+  },
+  "trash": [
+    {
+      "tid": "msd28cjeosc3",
+      "path": "tasks.researchPapers",
+      "item": {
+        "id": "rp4",
+        "text": "Paper: Multi-Agent for Research",
+        "done": false
+      },
+      "deletedAt": "2026-08-03T10:02:04.538Z"
+    },
+    {
+      "tid": "msd28bc2kapy",
+      "path": "tasks.researchPapers",
+      "item": {
+        "id": "rp1",
+        "text": "Survey: LLM for Academic Writing",
+        "done": true
+      },
+      "deletedAt": "2026-08-03T10:02:02.978Z"
+    },
+    {
+      "tid": "msd28bc2j40p",
+      "path": "tasks.researchPapers",
+      "item": {
+        "id": "rp2",
+        "text": "Paper: Prompt Engineering in Research",
+        "done": true
+      },
+      "deletedAt": "2026-08-03T10:02:02.978Z"
+    },
+    {
+      "tid": "msd28bc2yfz5",
+      "path": "tasks.researchPapers",
+      "item": {
+        "id": "rp3",
+        "text": "Paper: RAG for Literature Review",
+        "done": true
+      },
+      "deletedAt": "2026-08-03T10:02:02.978Z"
+    },
+    {
+      "tid": "msbc9sdru81c",
+      "path": "fitness.plan",
+      "item": {
+        "id": "fp7",
+        "day": "周日",
+        "typeId": "ft-stairs",
+        "target": "30 层",
+        "done": false
+      },
+      "deletedAt": "2026-08-02T05:07:35.535Z"
+    },
+    {
+      "tid": "msbc9rw3r7z6",
+      "path": "fitness.plan",
+      "item": {
+        "id": "fp6",
+        "day": "周六",
+        "typeId": "ft-swim",
+        "target": "500m",
+        "done": false
+      },
+      "deletedAt": "2026-08-02T05:07:34.899Z"
+    },
+    {
+      "tid": "msbc9rpes8vr",
+      "path": "fitness.plan",
+      "item": {
+        "id": "fp5",
+        "day": "周五",
+        "typeId": "ft-run",
+        "target": "3km",
+        "done": true
+      },
+      "deletedAt": "2026-08-02T05:07:34.658Z"
+    },
+    {
+      "tid": "msbc9riwmdgt",
+      "path": "fitness.plan",
+      "item": {
+        "id": "fp4",
+        "day": "周四",
+        "typeId": "ft-cycle",
+        "target": "10km",
+        "done": true
+      },
+      "deletedAt": "2026-08-02T05:07:34.424Z"
+    },
+    {
+      "tid": "msbc9rd4qmgu",
+      "path": "fitness.plan",
+      "item": {
+        "id": "fp3",
+        "day": "周三",
+        "typeId": "ft-yoga",
+        "target": "30 分钟",
+        "done": true
+      },
+      "deletedAt": "2026-08-02T05:07:34.216Z"
+    },
+    {
+      "tid": "msbc9r7cv4en",
+      "path": "fitness.plan",
+      "item": {
+        "id": "fp2",
+        "day": "周二",
+        "typeId": "ft-strength",
+        "target": "4 组",
+        "done": true
+      },
+      "deletedAt": "2026-08-02T05:07:34.008Z"
+    },
+    {
+      "tid": "msbc9r1b7tc8",
+      "path": "fitness.plan",
+      "item": {
+        "id": "fp1",
+        "day": "周一",
+        "typeId": "ft-run",
+        "target": "3km",
+        "done": true
+      },
+      "deletedAt": "2026-08-02T05:07:33.791Z"
+    }
+  ],
+  "checkinHistory": {
+    "2026-08-02": 3,
+    "2026-08-03": 3
+  },
+  "weeklyTrend": [
+    {
+      "week": 32,
+      "rate": 35
+    }
+  ],
   "tasks": {
     "dashboard": [
       {
@@ -153,25 +297,16 @@
         "done": false
       }
     ],
-    "researchPapers": [
+    "researchPapers": [],
+    "researchTodo": [
       {
-        "id": "rp1",
-        "text": "Survey: LLM for Academic Writing",
-        "done": true
+        "id": "rt1",
+        "text": "整理本周重点阅读文献",
+        "done": false
       },
       {
-        "id": "rp2",
-        "text": "Paper: Prompt Engineering in Research",
-        "done": true
-      },
-      {
-        "id": "rp3",
-        "text": "Paper: RAG for Literature Review",
-        "done": true
-      },
-      {
-        "id": "rp4",
-        "text": "Paper: Multi-Agent for Research",
+        "id": "rt2",
+        "text": "补充实验设计方案",
         "done": false
       }
     ]
@@ -213,12 +348,102 @@
   "stats": {
     "dashboard": {
       "focusHours": "4h",
-      "output": "3",
-      "weekStreak": "12"
+      "output": "3"
     },
     "fitness": {
       "goal": 7
     }
+  },
+  "fitness": {
+    "types": [
+      {
+        "id": "ft-run",
+        "icon": "🏃",
+        "name": "跑步",
+        "unit": "km"
+      },
+      {
+        "id": "ft-stairs",
+        "icon": "🪜",
+        "name": "爬楼梯",
+        "unit": "层"
+      },
+      {
+        "id": "ft-swim",
+        "icon": "🏊",
+        "name": "游泳",
+        "unit": "m"
+      },
+      {
+        "id": "ft-strength",
+        "icon": "🏋️",
+        "name": "力量训练",
+        "unit": "组"
+      },
+      {
+        "id": "ft-cycle",
+        "icon": "🚴",
+        "name": "骑行",
+        "unit": "km"
+      },
+      {
+        "id": "ft-yoga",
+        "icon": "🧘",
+        "name": "瑜伽",
+        "unit": "分钟"
+      }
+    ],
+    "plan": [
+      {
+        "id": "msbssixxf2fs",
+        "day": "周三",
+        "typeId": "ft-run",
+        "target": "",
+        "done": false
+      }
+    ],
+    "logs": [
+      {
+        "id": "fl1",
+        "date": "2026-07-27",
+        "typeId": "ft-run",
+        "duration": 25,
+        "calories": 210,
+        "note": "晨跑 3km"
+      },
+      {
+        "id": "fl2",
+        "date": "2026-07-28",
+        "typeId": "ft-strength",
+        "duration": 40,
+        "calories": 260,
+        "note": "胸背训练"
+      },
+      {
+        "id": "fl3",
+        "date": "2026-07-29",
+        "typeId": "ft-yoga",
+        "duration": 30,
+        "calories": 90,
+        "note": ""
+      },
+      {
+        "id": "fl4",
+        "date": "2026-07-30",
+        "typeId": "ft-cycle",
+        "duration": 45,
+        "calories": 380,
+        "note": "通勤骑行"
+      },
+      {
+        "id": "fl5",
+        "date": "2026-07-31",
+        "typeId": "ft-run",
+        "duration": 24,
+        "calories": 205,
+        "note": "晨跑 3km"
+      }
+    ]
   },
   "inspirations": {
     "ideas": [
@@ -305,7 +530,6 @@
       "reads": "2.3w",
       "interactions": 186
     },
-    "completionRate": 82,
     "interactionRate": 43,
     "topContent": [
       {
@@ -336,7 +560,6 @@
   "comic": {
     "current": {
       "title": "《AI 创作者的日常》第 3 集",
-      "progress": 100,
       "storyboards": "8/12"
     },
     "published": [
@@ -354,28 +577,6 @@
   },
   "learning": {
     "ai": {
-      "progress": [
-        {
-          "id": "lp1",
-          "name": "提示词工程",
-          "value": 80
-        },
-        {
-          "id": "lp2",
-          "name": "AI Agent 开发",
-          "value": 60
-        },
-        {
-          "id": "lp3",
-          "name": "RAG 检索增强",
-          "value": 45
-        },
-        {
-          "id": "lp4",
-          "name": "多模态应用",
-          "value": 30
-        }
-      ],
       "resources": [
         {
           "id": "lr1",
@@ -399,54 +600,34 @@
         "current": 28,
         "total": 100,
         "streak": 12
-      },
-      "weeklyStats": [
-        {
-          "id": "ws1",
-          "name": "阅读",
-          "value": 70
-        },
-        {
-          "id": "ws2",
-          "name": "听力",
-          "value": 55
-        },
-        {
-          "id": "ws3",
-          "name": "口语",
-          "value": 40
-        },
-        {
-          "id": "ws4",
-          "name": "词汇",
-          "value": 85
-        }
-      ]
+      }
     },
     "research": {
       "current": {
         "title": "AI 辅助科研写作效率研究",
-        "desc": "探索 LLM 对论文写作流程的影响与优化",
-        "progress": 42
-      },
-      "paperProgress": {
-        "read": 3,
-        "total": 8
+        "desc": "探索 LLM 对论文写作流程的影响与优化"
       },
       "milestones": [
+        {
+          "id": "ms1",
+          "icon": "✅",
+          "title": "文献调研",
+          "desc": "已完成 · 收集 32 篇相关文献",
+          "status": "done"
+        },
         {
           "id": "ms2",
           "icon": "🔵",
           "title": "实验设计",
           "desc": "进行中 · 预计 2 周内完成",
-          "status": "done"
+          "status": "active"
         },
         {
           "id": "ms3",
           "icon": "⚪",
           "title": "数据收集",
           "desc": "待开始",
-          "status": "done"
+          "status": "pending"
         },
         {
           "id": "ms4",
@@ -456,24 +637,7 @@
           "status": "pending"
         }
       ]
-    },
-    "dashboard": [
-      {
-        "id": "dlp1",
-        "name": "AI 学习",
-        "value": 80
-      },
-      {
-        "id": "dlp2",
-        "name": "英语学习",
-        "value": 55
-      },
-      {
-        "id": "dlp3",
-        "name": "科研文献",
-        "value": 40
-      }
-    ]
+    }
   },
   "weeklyReview": {
     "week": 31,
@@ -544,236 +708,5 @@
       }
     ]
   },
-  "meta": {
-    "revision": 20,
-    "deviceId": "dev-msah7gfmgidw1u",
-    "savedAt": "2026-08-01T16:08:37.123Z"
-  },
-  "settings": {
-    "theme": "system",
-    "onboarded": true
-  },
-  "trash": [
-    {
-      "tid": "msakflzoqfxy",
-      "path": "fitness.logs",
-      "item": {
-        "id": "fl1",
-        "date": "2026-07-27",
-        "typeId": "ft-run",
-        "duration": 25,
-        "calories": 210,
-        "note": "晨跑 3km"
-      },
-      "deletedAt": "2026-08-01T16:08:17.940Z"
-    },
-    {
-      "tid": "msakflt6hcbg",
-      "path": "fitness.logs",
-      "item": {
-        "id": "fl2",
-        "date": "2026-07-28",
-        "typeId": "ft-strength",
-        "duration": 40,
-        "calories": 260,
-        "note": "胸背训练"
-      },
-      "deletedAt": "2026-08-01T16:08:17.706Z"
-    },
-    {
-      "tid": "msakfll2vdg0",
-      "path": "fitness.logs",
-      "item": {
-        "id": "fl3",
-        "date": "2026-07-29",
-        "typeId": "ft-yoga",
-        "duration": 30,
-        "calories": 90,
-        "note": ""
-      },
-      "deletedAt": "2026-08-01T16:08:17.414Z"
-    },
-    {
-      "tid": "msakfinrt24i",
-      "path": "fitness.plan",
-      "item": {
-        "id": "f7",
-        "day": "周日",
-        "typeId": "ft-yoga",
-        "target": "拉伸放松",
-        "done": false
-      },
-      "deletedAt": "2026-08-01T16:08:13.623Z"
-    },
-    {
-      "tid": "msakf4fc629n",
-      "path": "fitness.plan",
-      "item": {
-        "id": "f6",
-        "day": "周六",
-        "typeId": "ft-swim",
-        "target": "游泳",
-        "done": false
-      },
-      "deletedAt": "2026-08-01T16:07:55.176Z"
-    },
-    {
-      "tid": "msakf49cn8os",
-      "path": "fitness.plan",
-      "item": {
-        "id": "f5",
-        "day": "周五",
-        "typeId": "ft-run",
-        "target": "晨跑",
-        "done": false
-      },
-      "deletedAt": "2026-08-01T16:07:54.960Z"
-    },
-    {
-      "tid": "msakf43s2xp4",
-      "path": "fitness.plan",
-      "item": {
-        "id": "f4",
-        "day": "周四",
-        "typeId": "ft-cycle",
-        "target": "骑行",
-        "done": false
-      },
-      "deletedAt": "2026-08-01T16:07:54.760Z"
-    },
-    {
-      "tid": "msakf3y0019q",
-      "path": "fitness.plan",
-      "item": {
-        "id": "f3",
-        "day": "周三",
-        "typeId": "ft-yoga",
-        "target": "瑜伽",
-        "done": false
-      },
-      "deletedAt": "2026-08-01T16:07:54.552Z"
-    },
-    {
-      "tid": "msakf3rz3h2r",
-      "path": "fitness.plan",
-      "item": {
-        "id": "f2",
-        "day": "周二",
-        "typeId": "ft-strength",
-        "target": "力量训练",
-        "done": false
-      },
-      "deletedAt": "2026-08-01T16:07:54.335Z"
-    },
-    {
-      "tid": "msakf3es0hao",
-      "path": "fitness.plan",
-      "item": {
-        "id": "f1",
-        "day": "周一",
-        "typeId": "ft-run",
-        "target": "晨跑",
-        "done": false
-      },
-      "deletedAt": "2026-08-01T16:07:53.860Z"
-    },
-    {
-      "tid": "msailsned7vw",
-      "path": "fitness.logs",
-      "item": {
-        "id": "fl4",
-        "date": "2026-07-30",
-        "typeId": "ft-cycle",
-        "duration": 45,
-        "calories": 380,
-        "note": "通勤骑行"
-      },
-      "deletedAt": "2026-08-01T15:17:07.274Z"
-    },
-    {
-      "tid": "msailsd43bk2",
-      "path": "fitness.logs",
-      "item": {
-        "id": "fl5",
-        "date": "2026-07-31",
-        "typeId": "ft-run",
-        "duration": 24,
-        "calories": 205,
-        "note": "晨跑 3km"
-      },
-      "deletedAt": "2026-08-01T15:17:06.904Z"
-    },
-    {
-      "tid": "msahlxdognh9",
-      "path": "learning.research.milestones",
-      "item": {
-        "id": "ms1",
-        "icon": "✅",
-        "title": "文献调研",
-        "desc": "已完成 · 收集 32 篇相关文献",
-        "status": "done"
-      },
-      "deletedAt": "2026-08-01T14:49:13.788Z"
-    }
-  ],
-  "checkinHistory": {
-    "2026-08-01": 3,
-    "2026-08-02": 3
-  },
-  "weeklyTrend": [
-    {
-      "week": 32,
-      "rate": 35
-    }
-  ],
-  "fitness": {
-    "types": [
-      {
-        "id": "ft-run",
-        "icon": "🏃",
-        "name": "跑步",
-        "unit": "km"
-      },
-      {
-        "id": "ft-stairs",
-        "icon": "🪜",
-        "name": "爬楼梯",
-        "unit": "层"
-      },
-      {
-        "id": "ft-swim",
-        "icon": "🏊",
-        "name": "游泳",
-        "unit": "m"
-      },
-      {
-        "id": "ft-strength",
-        "icon": "🏋️",
-        "name": "力量训练",
-        "unit": "组"
-      },
-      {
-        "id": "ft-cycle",
-        "icon": "🚴",
-        "name": "骑行",
-        "unit": "km"
-      },
-      {
-        "id": "ft-yoga",
-        "icon": "🧘",
-        "name": "瑜伽",
-        "unit": "分钟"
-      }
-    ],
-    "plan": [
-      {
-        "id": "msakfgikryuy",
-        "day": "周一",
-        "typeId": "ft-stairs",
-        "target": "30 min",
-        "done": true
-      }
-    ],
-    "logs": []
-  }
+  "lastSaved": "2026-08-03T10:02:05.340Z"
 }

@@ -286,6 +286,7 @@
     border: 1px solid var(--border);
   }
   .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .zotero-row { grid-template-columns: 1fr 1fr; margin-top: var(--sp-5); }
 
   .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-4); gap: var(--sp-2); }
   .card-title { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-h2); font-weight: 600; color: var(--text-main); }
@@ -814,6 +815,90 @@
   .trend-label { font-size: 9px; fill: var(--text-muted); }
 
   /* ============================================================
+     ZOTERO
+     ============================================================ */
+  .zotero-toolbar { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+  .zotero-toolbar .fit-select { min-width: 150px; flex: 1 1 180px; }
+  .zotero-toolbar .add-task-input { min-width: 180px; flex: 2 1 240px; }
+  .zotero-list { display: flex; flex-direction: column; gap: var(--sp-2); max-height: 340px; overflow-y: auto; }
+  .zotero-detail-body { max-height: 340px; overflow-y: auto; }
+  .zotero-item { width: 100%; text-align: left; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--sp-3); background: transparent; color: var(--text-main); font: inherit; cursor: pointer; }
+  .zotero-item:hover, .zotero-item.selected { background: var(--primary-soft); border-color: var(--primary); }
+  .zotero-item-title, .zotero-item-meta { display: block; }
+  .zotero-item-title { font-size: var(--fs-small); font-weight: 500; line-height: 1.5; }
+  .zotero-item-meta { margin-top: 4px; font-size: var(--fs-caption); color: var(--text-muted); line-height: 1.5; }
+  .zotero-paper-info { padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); }
+  .zotero-paper-title { font-size: var(--fs-body); font-weight: 600; line-height: 1.55; color: var(--text-main); }
+  .zotero-paper-meta { margin-top: 7px; font-size: var(--fs-caption); line-height: 1.7; color: var(--text-sub); }
+  .zotero-paper-abstract { margin-top: var(--sp-3); font-size: var(--fs-caption); line-height: 1.75; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .zotero-note-section-title { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin: var(--sp-4) 0 var(--sp-2); }
+  .zotero-note-section-title .settings-label { margin: 0; }
+  .zotero-note-preview { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--primary-soft); }
+  .zotero-note-preview-main { min-width: 0; }
+  .zotero-note-preview-title { font-size: var(--fs-small); font-weight: 600; line-height: 1.5; color: var(--text-main); }
+  .zotero-note-preview-text { margin-top: 7px; font-size: var(--fs-caption); line-height: 1.75; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .zotero-note-preview-meta { margin-top: 8px; font-size: var(--fs-micro); color: var(--text-muted); }
+  .zotero-read-btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+
+  .note-reader-overlay { position: fixed; inset: 0; z-index: calc(var(--z-modal) + 20); background: var(--bg); display: none; flex-direction: column; }
+  .note-reader-overlay.show { display: flex; animation: readerIn 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+  .note-reader-shell { width: 100%; height: 100%; min-height: 0; display: flex; flex-direction: column; background: var(--bg); }
+  .note-reader-toolbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); padding: 14px clamp(16px, 3vw, 36px); border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--card-bg) 92%, transparent); backdrop-filter: blur(18px); }
+  .note-reader-heading { min-width: 0; }
+  .note-reader-kicker { font-size: var(--fs-micro); letter-spacing: 0.08em; color: var(--primary); font-weight: 700; }
+  .note-reader-title { margin-top: 3px; font-size: var(--fs-body); font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .note-reader-actions { display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0; }
+  .note-reader-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding: clamp(24px, 5vw, 64px) 20px 80px; scroll-behavior: smooth; }
+  .note-reader-paper { width: min(860px, 100%); margin: 0 auto; padding: clamp(24px, 5vw, 58px); border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); box-shadow: var(--shadow); }
+  .note-reader-source { padding-bottom: var(--sp-5); margin-bottom: var(--sp-6); border-bottom: 1px solid var(--border); }
+  .note-reader-source-title { font-size: clamp(18px, 2.4vw, 26px); line-height: 1.45; font-weight: 650; color: var(--text-main); }
+  .note-reader-source-meta { margin-top: var(--sp-2); font-size: var(--fs-caption); line-height: 1.7; color: var(--text-muted); }
+  .note-reader-status { min-height: 20px; margin-bottom: var(--sp-3); font-size: var(--fs-caption); color: var(--text-muted); }
+  .note-reader-content { color: var(--text-main); font-size: 16px; line-height: 1.9; overflow-wrap: anywhere; }
+  .note-reader-content h1, .note-reader-content h2, .note-reader-content h3, .note-reader-content h4 { margin: 1.7em 0 0.7em; line-height: 1.4; color: var(--text-main); }
+  .note-reader-content h1:first-child, .note-reader-content h2:first-child { margin-top: 0; }
+  .note-reader-content p, .note-reader-content ul, .note-reader-content ol, .note-reader-content blockquote, .note-reader-content pre, .note-reader-content table { margin: 1em 0; }
+  .note-reader-content img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+  .note-reader-content a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  .note-reader-content blockquote { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--primary); background: var(--primary-soft); color: var(--text-sub); }
+  .note-reader-content code { padding: 2px 5px; border-radius: 5px; background: var(--neutral-soft); font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .note-reader-content pre { overflow-x: auto; padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--neutral-soft); }
+  .note-reader-content pre code { padding: 0; background: transparent; }
+  .note-reader-content table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+  .note-reader-content th, .note-reader-content td { padding: 9px 10px; border: 1px solid var(--border); text-align: left; }
+  .note-reader-content mjx-container { max-width: 100%; color: var(--text-main); vertical-align: -0.08em; }
+  .note-reader-content mjx-container:not([display="true"]) { display: inline-block; margin: 0 0.1em; font-size: 1.02em; }
+  .note-reader-content mjx-container svg { max-width: 100%; height: auto; overflow: visible; fill: currentColor; stroke: currentColor; }
+  .note-reader-content .zotero-math-display { display: block; width: 100%; max-width: 100%; margin: 0; overflow: visible; text-align: center; }
+  .note-reader-content .zotero-math-inline { display: inline; }
+  .note-reader-content mjx-container[display="true"] {
+    display: flex !important;
+    justify-content: safe center;
+    align-items: center;
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 1.55em 0 !important;
+    padding: 0.35em clamp(0.25em, 1.5vw, 0.65em);
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-size: 1.12em;
+    line-height: 1.4;
+    text-align: center !important;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable both-edges;
+  }
+  .note-reader-content mjx-container[display="true"] > svg {
+    display: block;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+    margin: 0;
+  }
+  [data-theme="dark"] .note-reader-content mjx-container { color: #edf3fb; }
+  @keyframes readerIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ============================================================
      RESPONSIVE
      ============================================================ */
   /* Mid: icon rail */
@@ -849,6 +934,12 @@
     .sidebar.open { transform: translateX(0); }
     .main { padding: 64px var(--sp-4) 120px; }
     .card-grid { grid-template-columns: 1fr; }
+    .zotero-note-preview { grid-template-columns: 1fr; }
+    .zotero-read-btn { justify-self: start; }
+    .note-reader-toolbar { align-items: flex-start; }
+    .note-reader-actions { gap: 6px; }
+    .note-reader-actions .btn { padding: 6px 9px; }
+    .note-reader-paper { border-radius: var(--radius-sm); }
     .menu-item { min-height: 44px; }
     .stat-row { flex-wrap: wrap; }
     .stat-box { min-width: 80px; }
@@ -890,38 +981,46 @@
     <span id="syncText">初始化中…</span>
   </div>
 
-  <div class="menu-scroll">
-    <div class="menu-group">
-      <div class="menu-group-label">日常管理</div>
-      <div class="menu-item active" data-page="dashboard" title="工作台首页"><span class="icon">⌂</span><span class="label">工作台首页</span></div>
-      <div class="menu-item" data-page="daily-plan" title="每日计划"><span class="icon">📋</span><span class="label">每日计划</span></div>
-      <div class="menu-item" data-page="fitness" title="健身打卡"><span class="icon">💪</span><span class="label">健身打卡</span></div>
-    </div>
+    <div class="menu-scroll">
+      <div class="menu-group">
+        <div class="menu-group-label">日常管理</div>
+        <div class="menu-item active" data-page="dashboard" title="仪表盘"><span class="icon">⌂</span><span class="label">仪表盘</span></div>
+        <div class="menu-item" data-page="daily-plan" title="每日计划"><span class="icon">📋</span><span class="label">每日计划</span></div>
+      </div>
 
-    <div class="menu-group">
-      <div class="menu-group-label">内容创作</div>
-      <div class="menu-item" data-page="inspiration" title="选题灵感"><span class="icon">💡</span><span class="label">选题灵感</span></div>
-      <div class="menu-item" data-page="review" title="内容复盘"><span class="icon">📊</span><span class="label">内容复盘</span></div>
-      <div class="menu-item" data-page="comic" title="AI 漫剧"><span class="icon">🎬</span><span class="label">AI 漫剧</span></div>
-    </div>
+      <div class="menu-group">
+        <div class="menu-group-label">科研</div>
+        <div class="menu-item" data-page="research-todo" title="待办"><span class="icon">☑</span><span class="label">待办</span></div>
+        <div class="menu-item" data-page="research" title="文献"><span class="icon">📚</span><span class="label">文献</span></div>
+        <div class="menu-item" data-page="research-inspiration" title="科研灵感"><span class="icon">💡</span><span class="label">灵感</span></div>
+        <div class="menu-item" data-page="research-experiments" title="实验"><span class="icon">🧪</span><span class="label">实验</span></div>
+        <div class="menu-item" data-page="research-papers" title="论文"><span class="icon">📝</span><span class="label">论文</span></div>
+      </div>
 
-    <div class="menu-group">
-      <div class="menu-group-label">学习成长</div>
-      <div class="menu-item" data-page="ai-learn" title="AI 学习"><span class="icon">🤖</span><span class="label">AI 学习</span></div>
-      <div class="menu-item" data-page="english" title="英语学习"><span class="icon">📖</span><span class="label">英语学习</span></div>
-      <div class="menu-item" data-page="research" title="科研"><span class="icon">🔬</span><span class="label">科研</span></div>
-    </div>
+      <div class="menu-group">
+        <div class="menu-group-label">生活</div>
+        <div class="menu-item" data-page="fitness" title="健身打卡"><span class="icon">💪</span><span class="label">健身打卡</span></div>
+        <div class="menu-item" data-page="ai-learn" title="AI 学习"><span class="icon">🤖</span><span class="label">AI 学习</span></div>
+        <div class="menu-item" data-page="english" title="英语学习"><span class="icon">📖</span><span class="label">英语学习</span></div>
+      </div>
 
-    <div class="menu-group">
-      <div class="menu-group-label">资讯</div>
-      <div class="menu-item" data-page="news" title="新闻热点"><span class="icon">📰</span><span class="label">新闻热点</span></div>
-    </div>
+      <div class="menu-group">
+        <div class="menu-group-label">内容创作</div>
+        <div class="menu-item" data-page="inspiration" title="选题灵感"><span class="icon">💡</span><span class="label">选题灵感</span></div>
+        <div class="menu-item" data-page="review" title="内容复盘"><span class="icon">📊</span><span class="label">内容复盘</span></div>
+        <div class="menu-item" data-page="comic" title="AI 漫剧"><span class="icon">🎬</span><span class="label">AI 漫剧</span></div>
+      </div>
 
-    <div class="menu-group">
-      <div class="menu-group-label">系统</div>
-      <div class="menu-item" data-page="settings" title="数据管理"><span class="icon">⚙️</span><span class="label">数据管理</span></div>
+      <div class="menu-group">
+        <div class="menu-group-label">资讯</div>
+        <div class="menu-item" data-page="news" title="新闻热点"><span class="icon">📰</span><span class="label">新闻热点</span></div>
+      </div>
+
+      <div class="menu-group">
+        <div class="menu-group-label">系统</div>
+        <div class="menu-item" data-page="settings" title="数据管理"><span class="icon">⚙️</span><span class="label">数据管理</span></div>
+      </div>
     </div>
-  </div>
 
   <div class="sidebar-footer">
     <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
@@ -947,6 +1046,32 @@
 <!-- ===== Modal ===== -->
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
   <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- ===== Zotero Note Reader ===== -->
+<div class="note-reader-overlay" id="noteReader" role="dialog" aria-modal="true" aria-labelledby="noteReaderTitle" aria-hidden="true">
+  <div class="note-reader-shell" id="noteReaderShell">
+    <div class="note-reader-toolbar">
+      <div class="note-reader-heading">
+        <div class="note-reader-kicker">ZOTERO 阅读笔记</div>
+        <div class="note-reader-title" id="noteReaderTitle">文献笔记</div>
+      </div>
+      <div class="note-reader-actions">
+        <button class="btn btn-outline btn-sm" id="noteReaderFullscreen" type="button" aria-label="进入全屏阅读">全屏</button>
+        <button class="btn btn-primary btn-sm" id="noteReaderClose" type="button" aria-label="关闭笔记阅读器">退出阅读</button>
+      </div>
+    </div>
+    <div class="note-reader-scroll" id="noteReaderScroll">
+      <article class="note-reader-paper">
+        <header class="note-reader-source">
+          <div class="note-reader-source-title" id="noteReaderPaperTitle"></div>
+          <div class="note-reader-source-meta" id="noteReaderPaperMeta"></div>
+        </header>
+        <div class="note-reader-status" id="noteReaderStatus" aria-live="polite"></div>
+        <div class="note-reader-content" id="noteReaderContent"></div>
+      </article>
+    </div>
+  </div>
 </div>
 
 <!-- ===== Command Palette ===== -->
@@ -1029,6 +1154,10 @@ const DEFAULT_DATA = {
       { "id": "rp2", "text": "Paper: Prompt Engineering in Research", "done": true },
       { "id": "rp3", "text": "Paper: RAG for Literature Review", "done": true },
       { "id": "rp4", "text": "Paper: Multi-Agent for Research", "done": false }
+    ],
+    "researchTodo": [
+      { "id": "rt1", "text": "整理本周重点阅读文献", "done": false },
+      { "id": "rt2", "text": "补充实验设计方案", "done": false }
     ]
   },
   "checkins": {
@@ -1414,6 +1543,7 @@ let currentPage = 'dashboard';
 let saveState = 'idle';         // 'idle' | 'saving' | 'saved' | 'error'
 let conflictOpen = false;
 let undoState = null;           // { tid, timer }
+let zoteroState = { status: 'idle', message: '', collections: [], items: [], selectedCollection: '', query: '', selectedItem: null, children: [] };
 
 // ========================================================================
 // UTILITIES
@@ -2165,11 +2295,381 @@ function milestoneHTML() {
 }
 
 // ========================================================================
+// ZOTERO LOCAL BRIDGE (read-only)
+// ========================================================================
+function zoteroBridgeHint() {
+  const bridgeUrl = 'http://127.0.0.1:8788/creator-workspace.html';
+  const command = 'node zotero-bridge.js';
+  if (location.protocol === 'file:' || location.port !== '8788') {
+    return '未检测到 Zotero 本机桥接。请在项目根目录运行“' + command + '”，然后通过 ' + bridgeUrl + ' 打开工作台。';
+  }
+  return '无法连接 Zotero 本机桥接。请确认桥接服务仍在运行，然后刷新页面重试。';
+}
+
+function zoteroFetch(path) {
+  return fetch('/api/zotero' + path, { headers: { 'Accept': 'application/json' } })
+    .catch(() => {
+      throw new Error(zoteroBridgeHint());
+    })
+    .then(async response => {
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || '无法读取 Zotero 数据');
+      return body;
+    });
+}
+
+function zoteroStatusHTML() {
+  if (zoteroState.status === 'connected') {
+    return '<span class="storage-badge fsaa">✓ Zotero 已连接</span>';
+  }
+  if (zoteroState.status === 'loading') {
+    return '<span class="storage-badge local">正在连接 Zotero…</span>';
+  }
+  return '<span class="storage-badge local">Zotero 未连接</span>';
+}
+
+function zoteroItemHTML(item) {
+  const meta = [];
+  if (item.creators && item.creators.length) meta.push(item.creators.slice(0, 2).join('、'));
+  if (item.date) meta.push(item.date);
+  if (item.tags && item.tags.length) meta.push(item.tags.slice(0, 3).map(tag => '#' + tag).join(' '));
+  return '<button class="zotero-item' + (zoteroState.selectedItem && zoteroState.selectedItem.key === item.key ? ' selected' : '') + '" data-zotero-item="' + item.key + '">' +
+    '<span class="zotero-item-title">' + escapeHTML(item.title) + '</span>' +
+    '<span class="zotero-item-meta">' + escapeHTML(meta.join(' · ') || item.itemType || '文献') + '</span>' +
+  '</button>';
+}
+
+function findAIManagerNote(children = zoteroState.children || []) {
+  const notes = children.filter(child => child && child.type === 'note');
+  const managerMarker = /^AI\s*管家\s*[-—–:：]/i;
+  const summaryMarker = /^AI\s*总结\s*[-—–:：]/i;
+  const managerTag = /^AI\s*管家\s*[-—–:：]?$/i;
+  const summaryTag = /^AI\s*总结\s*[-—–:：]?$/i;
+  const findByConvention = (marker, tagMarker) => notes.find(note =>
+    marker.test(String(note.title || '').trim()) ||
+    (note.tags || []).some(tag => tagMarker.test(String(tag || '').trim())) ||
+    marker.test(stripHTML(note.note).trim())
+  );
+
+  // Both Zotero naming conventions are mapped to the unified AI 阅读笔记 surface.
+  // When they coexist, the original AI 管家 convention remains the preferred note.
+  return findByConvention(managerMarker, managerTag) ||
+    findByConvention(summaryMarker, summaryTag) ||
+    null;
+}
+
+function notePreviewText(note, limit = 520) {
+  const text = stripHTML(note && note.note).replace(/\u00a0/g, ' ').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  if (!text) return '';
+  return text.length > limit ? text.slice(0, limit).trimEnd() + '…' : text;
+}
+
+function zoteroNotesHTML() {
+  const item = zoteroState.selectedItem;
+  if (!item) return emptyStateHTML('📚', '选择一篇文献查看详情', '可查看文献基本信息和“AI 管家”阅读笔记。');
+  const details = [];
+  if (item.creators && item.creators.length) details.push('作者：' + item.creators.join('、'));
+  if (item.date) details.push('日期：' + item.date);
+  if (item.itemType) details.push('类型：' + item.itemType);
+  if (item.tags && item.tags.length) details.push('标签：' + item.tags.map(tag => '#' + tag).join(' '));
+
+  const aiNote = findAIManagerNote();
+  let noteHTML;
+  if (!aiNote) {
+    noteHTML = emptyStateHTML('📝', '未找到 AI 阅读笔记', '请确认该文献的子笔记标题、标签或正文以“AI 管家 -”或“AI 总结 -”开头，然后重新选择文献。');
+  } else {
+    const preview = notePreviewText(aiNote);
+    const fullLength = stripHTML(aiNote.note).trim().length;
+    noteHTML = '<div class="zotero-note-preview">' +
+      '<div class="zotero-note-preview-main">' +
+        '<div class="zotero-note-preview-title">AI 阅读笔记 · ' + escapeHTML(aiNote.title || '未命名笔记') + '</div>' +
+        '<div class="zotero-note-preview-text">' + escapeHTML(preview || '该阅读笔记暂时没有可预览的文字内容。') + '</div>' +
+        '<div class="zotero-note-preview-meta">' + (fullLength ? '约 ' + fullLength.toLocaleString('zh-CN') + ' 字符 · 预览已自动收起' : '笔记内容为空') + '</div>' +
+      '</div>' +
+      '<button class="btn btn-primary btn-sm zotero-read-btn" data-action="zotero-read-note" type="button"' + (fullLength ? '' : ' disabled aria-disabled="true"') + '>阅读完整笔记</button>' +
+    '</div>';
+  }
+
+  return '<div class="zotero-paper-info">' +
+      '<div class="zotero-paper-title">' + escapeHTML(item.title) + '</div>' +
+      '<div class="zotero-paper-meta">' + escapeHTML(details.join(' · ') || 'Zotero 文献条目') + '</div>' +
+      (item.abstractNote ? '<div class="zotero-paper-abstract">' + escapeHTML(item.abstractNote) + '</div>' : '') +
+    '</div>' +
+    '<div class="zotero-note-section-title"><div class="settings-label">AI 阅读笔记</div><span class="card-tag">预览</span></div>' + noteHTML;
+}
+
+function stripHTML(value) {
+  const div = document.createElement('div');
+  div.innerHTML = value || '';
+  return div.textContent || div.innerText || '';
+}
+
+function normalizeZoteroMath(root) {
+  const mathNodes = Array.from(root.querySelectorAll('.math'));
+  mathNodes.forEach(node => {
+    let tex = (node.textContent || '').replace(/\u00a0/g, ' ').trim();
+    if (!tex) return;
+    let display = false;
+    if (tex.startsWith('$$') && tex.endsWith('$$') && tex.length >= 4) {
+      tex = tex.slice(2, -2).trim();
+      display = true;
+    } else if (tex.startsWith('$') && tex.endsWith('$') && tex.length >= 2) {
+      tex = tex.slice(1, -1).trim();
+      display = /\\displaystyle\b/.test(tex) || /\n/.test(tex);
+    } else if (tex.startsWith('\\[') && tex.endsWith('\\]')) {
+      tex = tex.slice(2, -2).trim();
+      display = true;
+    } else if (tex.startsWith('\\(') && tex.endsWith('\\)')) {
+      tex = tex.slice(2, -2).trim();
+    }
+    tex = tex.replace(/\r\n?/g, '\n').replace(/[ \t]+\n/g, '\n').replace(/\n[ \t]+/g, '\n');
+    node.textContent = display ? '\\[' + tex + '\\]' : '\\(' + tex + '\\)';
+    node.className = display ? 'math zotero-math-display' : 'math zotero-math-inline';
+  });
+  return mathNodes.length;
+}
+
+function sanitizeZoteroNoteHTML(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  if (!/<[a-z][\s\S]*>/i.test(raw)) {
+    return '<p>' + escapeHTML(raw).replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+  }
+
+  const template = document.createElement('template');
+  template.innerHTML = raw;
+  const allowedTags = new Set(['A', 'ABBR', 'B', 'BLOCKQUOTE', 'BR', 'CODE', 'DEL', 'DIV', 'EM', 'H1', 'H2', 'H3', 'H4', 'HR', 'I', 'IMG', 'LI', 'MARK', 'OL', 'P', 'PRE', 'S', 'SPAN', 'STRONG', 'SUB', 'SUP', 'TABLE', 'TBODY', 'TD', 'TH', 'THEAD', 'TR', 'U', 'UL']);
+  const allowedAttrs = new Set(['alt', 'class', 'colspan', 'href', 'rowspan', 'src', 'title']);
+
+  Array.from(template.content.querySelectorAll('*')).forEach(node => {
+    if (!allowedTags.has(node.tagName)) {
+      node.replaceWith(...node.childNodes);
+      return;
+    }
+    Array.from(node.attributes).forEach(attr => {
+      const name = attr.name.toLowerCase();
+      if (!allowedAttrs.has(name)) node.removeAttribute(attr.name);
+    });
+    if (node.tagName === 'A') {
+      const href = node.getAttribute('href') || '';
+      if (!/^(https?:|zotero:|mailto:|#)/i.test(href)) node.removeAttribute('href');
+      else {
+        node.setAttribute('target', '_blank');
+        node.setAttribute('rel', 'noopener noreferrer');
+      }
+    }
+    if (node.tagName === 'IMG') {
+      const src = node.getAttribute('src') || '';
+      if (!/^(https?:|data:image\/|blob:)/i.test(src)) node.remove();
+    }
+  });
+  normalizeZoteroMath(template.content);
+  return template.innerHTML;
+}
+
+let mathJaxLoading = null;
+function ensureMathJax() {
+  if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') return Promise.resolve(window.MathJax);
+  if (mathJaxLoading) return mathJaxLoading;
+  window.MathJax = {
+    startup: { typeset: false },
+    tex: {
+      inlineMath: [['\\(', '\\)'], ['$', '$']],
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      packages: { '[+]': ['ams'] }
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+      processHtmlClass: 'math|zotero-math-inline|zotero-math-display'
+    },
+    svg: {
+      fontCache: 'local',
+      scale: 1.08,
+      displayAlign: 'center',
+      displayIndent: '0'
+    }
+  };
+  mathJaxLoading = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = '/assets/vendor/mathjax/tex-mml-svg.js';
+    script.async = true;
+    script.onload = () => {
+      const ready = window.MathJax && window.MathJax.startup && window.MathJax.startup.promise;
+      Promise.resolve(ready).then(() => resolve(window.MathJax)).catch(reject);
+    };
+    script.onerror = () => reject(new Error('公式渲染组件加载失败'));
+    document.head.appendChild(script);
+  }).catch(error => {
+    mathJaxLoading = null;
+    throw error;
+  });
+  return mathJaxLoading;
+}
+
+async function renderReaderMath() {
+  const content = document.getElementById('noteReaderContent');
+  const status = document.getElementById('noteReaderStatus');
+  if (!content || !status) return;
+  const source = stripHTML(content.innerHTML);
+  const hasFormula = content.querySelector('.math, .zotero-math-inline, .zotero-math-display') || /\$[\s\S]+?\$|\\\([\s\S]+?\\\)|\\\[[\s\S]+?\\\]/.test(source);
+  if (!hasFormula) {
+    status.textContent = '已加载完整 Zotero 笔记';
+    return;
+  }
+  status.textContent = '正在排版 LaTeX 公式…';
+  try {
+    const mathJax = await ensureMathJax();
+    if (!document.getElementById('noteReader').classList.contains('show')) return;
+    if (typeof mathJax.typesetClear === 'function') mathJax.typesetClear([content]);
+    await mathJax.typesetPromise([content]);
+    status.textContent = 'LaTeX 公式已完成排版';
+  } catch (error) {
+    status.textContent = '公式渲染组件暂不可用，已保留 LaTeX 原文，可稍后重新打开重试。';
+  }
+}
+
+function openZoteroNoteReader() {
+  const item = zoteroState.selectedItem;
+  const note = findAIManagerNote();
+  const body = note && String(note.note || '').trim();
+  if (!item || !note) {
+    showToast('未找到该文献的“AI 管家”阅读笔记', 'warning');
+    return;
+  }
+  if (!body || !stripHTML(body).trim()) {
+    showToast('该阅读笔记内容为空', 'warning');
+    return;
+  }
+
+  const meta = [];
+  if (item.creators && item.creators.length) meta.push(item.creators.join('、'));
+  if (item.date) meta.push(item.date);
+  const reader = document.getElementById('noteReader');
+  document.getElementById('noteReaderTitle').textContent = 'AI 阅读笔记';
+  document.getElementById('noteReaderPaperTitle').textContent = item.title || '未命名文献';
+  document.getElementById('noteReaderPaperMeta').textContent = meta.join(' · ') || '来自 Zotero 的只读文献笔记';
+  document.getElementById('noteReaderStatus').textContent = '正在加载完整笔记…';
+  document.getElementById('noteReaderContent').innerHTML = sanitizeZoteroNoteHTML(body);
+  reader.classList.add('show');
+  reader.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('noteReaderScroll').scrollTop = 0;
+  setTimeout(() => document.getElementById('noteReaderClose').focus(), 0);
+  renderReaderMath();
+}
+
+function finishCloseZoteroNoteReader() {
+  const reader = document.getElementById('noteReader');
+  reader.classList.remove('show');
+  reader.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  document.getElementById('noteReaderContent').innerHTML = '';
+  document.getElementById('noteReaderStatus').textContent = '';
+}
+
+function closeZoteroNoteReader() {
+  const reader = document.getElementById('noteReader');
+  if (document.fullscreenElement && reader.contains(document.fullscreenElement)) {
+    document.exitFullscreen().catch(() => {}).finally(finishCloseZoteroNoteReader);
+    return;
+  }
+  finishCloseZoteroNoteReader();
+}
+
+function toggleZoteroNoteFullscreen() {
+  const reader = document.getElementById('noteReader');
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(() => showToast('无法退出全屏，请按 Esc 重试', 'warning'));
+    return;
+  }
+  if (!reader.requestFullscreen) {
+    showToast('当前浏览器不支持系统全屏，阅读器已保持沉浸式铺满窗口', 'warning');
+    return;
+  }
+  reader.requestFullscreen().catch(() => showToast('无法进入全屏，请检查浏览器权限', 'warning'));
+}
+
+function syncNoteReaderFullscreenButton() {
+  const button = document.getElementById('noteReaderFullscreen');
+  if (!button) return;
+  const active = Boolean(document.fullscreenElement);
+  button.textContent = active ? '退出全屏' : '全屏';
+  button.setAttribute('aria-label', active ? '退出全屏阅读' : '进入全屏阅读');
+}
+
+document.getElementById('noteReaderClose').addEventListener('click', closeZoteroNoteReader);
+document.getElementById('noteReaderFullscreen').addEventListener('click', toggleZoteroNoteFullscreen);
+document.addEventListener('fullscreenchange', syncNoteReaderFullscreenButton);
+
+async function refreshZoteroLibrary() {
+  zoteroState.status = 'loading';
+  zoteroState.message = '';
+  rerender();
+  try {
+    const [health, collections, items] = await Promise.all([
+      zoteroFetch('/health'),
+      zoteroFetch('/collections'),
+      zoteroFetch('/items?limit=50')
+    ]);
+    zoteroState.status = health.ok ? 'connected' : 'error';
+    zoteroState.collections = collections.collections || [];
+    zoteroState.items = items.items || [];
+    zoteroState.selectedCollection = '';
+    zoteroState.query = '';
+    zoteroState.selectedItem = null;
+    zoteroState.children = [];
+  } catch (error) {
+    zoteroState.status = 'error';
+    zoteroState.message = error.message || '无法连接 Zotero';
+  }
+  rerender();
+}
+
+async function loadZoteroItems() {
+  zoteroState.status = 'loading';
+  rerender();
+  try {
+    const params = new URLSearchParams({ limit: '50' });
+    if (zoteroState.selectedCollection) params.set('collection', zoteroState.selectedCollection);
+    if (zoteroState.query) params.set('q', zoteroState.query);
+    const result = await zoteroFetch('/items?' + params.toString());
+    zoteroState.items = result.items || [];
+    zoteroState.selectedItem = null;
+    zoteroState.children = [];
+    zoteroState.status = 'connected';
+  } catch (error) {
+    zoteroState.status = 'error';
+    zoteroState.message = error.message || '无法读取 Zotero 文献';
+  }
+  rerender();
+}
+
+async function loadZoteroItem(key) {
+  zoteroState.status = 'loading';
+  rerender();
+  try {
+    const [itemResult, childResult] = await Promise.all([
+      zoteroFetch('/items/' + encodeURIComponent(key)),
+      zoteroFetch('/items/' + encodeURIComponent(key) + '/children')
+    ]);
+    zoteroState.selectedItem = itemResult.item;
+    zoteroState.children = childResult.children || [];
+    zoteroState.status = 'connected';
+  } catch (error) {
+    zoteroState.status = 'error';
+    zoteroState.message = error.message || '无法读取 Zotero 文献详情';
+  }
+  rerender();
+}
+
+// ========================================================================
 // PAGES
 // ========================================================================
 const PAGES = {
   dashboard: {
-    title: '工作台首页',
+    title: '仪表盘',
     render: () => {
       const tasks = DATA.tasks.dashboard;
       const done = tasks.filter(t => t.done).length;
@@ -2479,12 +2979,41 @@ const PAGES = {
     }
   },
 
+  'research-todo': {
+    title: '科研待办',
+    render: () => {
+      const todos = DATA.tasks.researchTodo;
+      const done = todos.filter(task => task.done).length;
+      return '<div class="card-grid"><div class="card">' +
+        '<div class="card-header"><div class="card-title"><span class="dot"></span>科研待办</div><span class="card-tag">' + done + '/' + todos.length + '</span></div>' +
+        barHTMLAuto('完成进度', calcTaskPercent(todos)) +
+        taskListHTML('tasks.researchTodo', todos) +
+      '</div><div class="card">' +
+        '<div class="card-header"><div class="card-title"><span class="dot"></span>使用建议</div><span class="card-tag">独立清单</span></div>' +
+        '<div class="inspire-item"><div class="inspire-title">将行动放在这里</div><div class="inspire-desc">例如：阅读某篇文献、补充实验设计、整理研究笔记。文献库和笔记仍由 Zotero 管理。</div></div>' +
+      '</div></div>';
+    }
+  },
+
   research: {
-    title: '科研',
+    title: '文献',
     render: () => {
       const rs = DATA.learning.research;
       const papers = DATA.tasks.researchPapers;
       const pDone = papers.filter(t => t.done).length;
+      const collections = zoteroState.collections || [];
+      const items = zoteroState.items || [];
+      const connectionMessage = zoteroState.status === 'error'
+        ? '<div class="settings-desc" style="margin-top:10px;color:var(--danger);">' + escapeHTML(zoteroState.message || '未连接 Zotero。') + '</div>'
+        : '<div class="settings-desc" style="margin-top:10px;">通过本机只读桥接读取 Zotero 文献、标签、摘要和关联笔记；数据不会写回 Zotero。</div>';
+      const collectionOptions = '<option value="">全部收藏夹</option>' + collections.map(collection =>
+        '<option value="' + escapeHTML(collection.key) + '"' + (zoteroState.selectedCollection === collection.key ? ' selected' : '') + '>' + escapeHTML(collection.name) + '</option>'
+      ).join('');
+      const zoteroList = zoteroState.status === 'loading'
+        ? emptyStateHTML('⏳', '正在读取 Zotero 文献', '请稍候…')
+        : items.length
+          ? '<div class="zotero-list">' + items.map(zoteroItemHTML).join('') + '</div>'
+          : emptyStateHTML('📚', '暂无已加载文献', zoteroState.status === 'connected' ? '尝试切换收藏夹或清空搜索条件。' : '启动 Zotero 后，点击“连接 Zotero”。');
       return '<div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>当前课题</div><span class="card-tag">进行中</span></div>' +
@@ -2499,12 +3028,53 @@ const PAGES = {
           milestoneHTML() +
         '</div>' +
         '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>文献阅读</div><span class="card-tag">' + pDone + '/' + papers.length + '</span></div>' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>阅读计划</div><span class="card-tag">' + pDone + '/' + papers.length + '</span></div>' +
           barHTMLAuto('文献阅读', calcTaskPercent(papers)) +
           taskListHTML('tasks.researchPapers', papers) +
         '</div>' +
+      '</div>' +
+      '<div class="card-grid zotero-row">' +
+        '<div class="card zotero-library-card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>Zotero 文献库</div>' + zoteroStatusHTML() + '</div>' +
+          '<div class="zotero-toolbar">' +
+            '<select class="fit-select" id="zoteroCollection" aria-label="选择 Zotero 收藏夹">' + collectionOptions + '</select>' +
+            '<input class="add-task-input" id="zoteroQuery" value="' + escapeHTML(zoteroState.query) + '" placeholder="搜索标题、作者、标签或笔记" aria-label="搜索 Zotero 文献">' +
+            '<button class="btn btn-primary btn-sm" data-action="zotero-connect">连接 Zotero</button>' +
+            '<button class="btn btn-outline btn-sm" data-action="zotero-search">搜索</button>' +
+          '</div>' +
+          connectionMessage +
+          '<div style="margin-top:14px;">' + zoteroList + '</div>' +
+        '</div>' +
+        '<div class="card zotero-detail-card">' +
+          '<div class="card-header"><div class="card-title"><span class="dot"></span>文献详情与笔记</div><span class="card-tag">只读</span></div>' +
+          '<div class="zotero-detail-body">' + zoteroNotesHTML() + '</div>' +
+        '</div>' +
       '</div>';
     }
+  },
+
+  'research-inspiration': {
+    title: '科研灵感',
+    render: () => '<div class="card-grid"><div class="card">' +
+      '<div class="card-header"><div class="card-title"><span class="dot"></span>科研灵感</div><span class="card-tag">规划中</span></div>' +
+      emptyStateHTML('💡', '科研灵感模块正在准备', '后续将在这里沉淀研究问题、假设和可验证方向。') +
+    '</div></div>'
+  },
+
+  'research-experiments': {
+    title: '实验',
+    render: () => '<div class="card-grid"><div class="card">' +
+      '<div class="card-header"><div class="card-title"><span class="dot"></span>实验管理</div><span class="card-tag">规划中</span></div>' +
+      emptyStateHTML('🧪', '实验模块正在准备', '后续将在这里管理实验设计、执行记录和结果复盘。') +
+    '</div></div>'
+  },
+
+  'research-papers': {
+    title: '论文',
+    render: () => '<div class="card-grid"><div class="card">' +
+      '<div class="card-header"><div class="card-title"><span class="dot"></span>论文管理</div><span class="card-tag">规划中</span></div>' +
+      emptyStateHTML('📝', '论文模块正在准备', '后续将在这里管理论文结构、写作进度和投稿节点。') +
+    '</div></div>'
   },
 
   news: {
@@ -2618,7 +3188,7 @@ const PAGES = {
 // ========================================================================
 // PAGE RENDERING + NAVIGATION
 // ========================================================================
-const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'research', 'news', 'settings'];
+const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'research', 'news', 'settings', 'research-todo', 'research-inspiration', 'research-experiments', 'research-papers'];
 
 function renderPage(pageId) {
   const page = PAGES[pageId];
@@ -2948,7 +3518,8 @@ function clearDoneOnPage() {
     'ai-learn': ['tasks.aiLearn'],
     'english': ['tasks.english'],
     'comic': ['tasks.comicStoryboard'],
-    'research': ['tasks.researchPapers']
+    'research': ['tasks.researchPapers'],
+    'research-todo': ['tasks.researchTodo']
   };
   const paths = map[currentPage];
   if (!paths) { showToast('当前页面没有任务列表', 'warning'); return; }
@@ -2974,14 +3545,15 @@ function buildPaletteIndex() {
   }
   // Tasks
   const taskGroups = [
-    ['tasks.dashboard', '工作台'],
+    ['tasks.dashboard', '仪表盘'],
     ['tasks.dailyPlan.morning', '上午计划'],
     ['tasks.dailyPlan.afternoon', '下午计划'],
     ['tasks.dailyPlan.evening', '晚上计划'],
     ['tasks.aiLearn', 'AI学习'],
     ['tasks.english', '英语'],
     ['tasks.comicStoryboard', '漫剧分镜'],
-    ['tasks.researchPapers', '科研文献']
+    ['tasks.researchPapers', '科研文献'],
+    ['tasks.researchTodo', '科研待办']
   ];
   for (const [path, label] of taskGroups) {
     const arr = getNestedData(path) || [];
@@ -3114,6 +3686,11 @@ document.addEventListener('keydown', (e) => {
 
   // Esc — close topmost layer
   if (e.key === 'Escape') {
+    if (document.getElementById('noteReader').classList.contains('show')) {
+      if (document.fullscreenElement) return;
+      closeZoteroNoteReader();
+      return;
+    }
     if (document.getElementById('paletteOverlay').classList.contains('show')) { closePalette(); return; }
     if (document.getElementById('modalOverlay').classList.contains('show')) { closeModal(); return; }
     closeDrawer();
@@ -3348,6 +3925,13 @@ document.addEventListener('click', (e) => {
     return;
   }
 
+  // --- Zotero collection, search, and item selection ---
+  const zoteroItem = t.closest('[data-zotero-item]');
+  if (zoteroItem) {
+    loadZoteroItem(zoteroItem.dataset.zoteroItem);
+    return;
+  }
+
   // --- Card + buttons ---
   const cardBtn = t.closest('.card-btn[data-action]');
   if (cardBtn) {
@@ -3392,6 +3976,20 @@ document.addEventListener('click', (e) => {
 function handleAction(action) {
   switch (action) {
     case 'open-palette': openPalette(); break;
+    case 'zotero-connect':
+      refreshZoteroLibrary();
+      break;
+    case 'zotero-read-note':
+      openZoteroNoteReader();
+      break;
+    case 'zotero-search': {
+      const collection = document.getElementById('zoteroCollection');
+      const query = document.getElementById('zoteroQuery');
+      zoteroState.selectedCollection = collection ? collection.value : '';
+      zoteroState.query = query ? query.value.trim() : '';
+      loadZoteroItems();
+      break;
+    }
     case 'connect':
       storage.connect().then(() => {
         updateSyncIndicator();
@@ -3568,6 +4166,12 @@ document.addEventListener('blur', (e) => {
 }, true);
 
 document.addEventListener('change', (e) => {
+  if (e.target.id === 'zoteroCollection') {
+    zoteroState.selectedCollection = e.target.value;
+    zoteroState.query = (document.getElementById('zoteroQuery') || {}).value || '';
+    loadZoteroItems();
+    return;
+  }
   if (e.target.classList.contains('bar-value-edit')) {
     if (e.target.dataset.cat === 'review.interaction') {
       DATA.review.interactionRate = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));

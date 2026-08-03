@@ -38,6 +38,28 @@ http://localhost:8000/creator-workspace.html
 
 如果你的环境优先使用项目提供的 Python 运行时，也可以替换为对应的 Python 可执行文件。
 
+### 方式三：启用 Zotero 本机集成
+
+Zotero 集成使用项目内的只读本机桥接服务。它只监听 `127.0.0.1`，不会读取 Zotero 的 SQLite 文件，也不会向 Zotero 写入任何内容。
+
+1. 在 Zotero 中打开 **设置 → 高级**，启用“允许同一台电脑上的其他应用与 Zotero 通信”。
+2. 确保 Zotero 正在运行且本机 API 可用。
+3. 在项目根目录启动桥接服务：
+
+```bash
+"/Users/ffex/.workbuddy/binaries/node/versions/22.22.2/bin/node" zotero-bridge.js
+```
+
+4. 在浏览器打开：
+
+```text
+http://127.0.0.1:8788/creator-workspace.html
+```
+
+5. 进入 **科研 → 文献**，点击“连接 Zotero”。可浏览收藏夹、检索文献，并查看条目摘要、标签和关联笔记。
+
+若 Zotero 未运行或未授权，工作台会显示明确提示；其他工作台功能仍可正常使用。
+
 ## 启用 iCloud 数据同步
 
 1. 确保项目目录位于 iCloud Drive 中，并且当前项目下存在 `data/` 文件夹。
@@ -97,6 +119,7 @@ git commit -m "chore: initialize AI workspace"
 ```text
 AI工作台/
 ├── creator-workspace.html   # 应用主体：HTML、CSS 和 JavaScript
+├── zotero-bridge.js         # 仅限本机的 Zotero Local API 只读桥接服务
 ├── data/
 │   ├── .gitkeep             # 保留数据目录
 │   ├── workspace.json       # 运行时数据，默认不提交
@@ -125,7 +148,7 @@ AI工作台/
 
 ## 已知边界
 
-- 当前项目是单文件前端应用，没有 npm 依赖、后端服务或用户登录系统。
+- 默认工作台仍是单文件前端应用；仅在启用 Zotero 时使用项目内的 `zotero-bridge.js` 本机只读服务。
 - iCloud 只负责文件同步，不提供实时协同编辑；请避免多台设备同时写入。
 - 浏览器的目录授权与权限状态由浏览器管理，切换设备或浏览器后通常需要重新授权。
 - 新闻热点等部分内容目前是预置数据，不代表自动联网更新。
