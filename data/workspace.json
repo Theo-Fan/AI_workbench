@@ -1,12 +1,12 @@
 {
   "version": "3.0",
   "meta": {
-    "revision": 7,
-    "deviceId": "dev-msbc8kkefh3fez",
-    "savedAt": "2026-08-03T10:02:05.340Z"
+    "revision": 9,
+    "deviceId": "dev-mseralfaa5wek9",
+    "savedAt": "2026-08-04T22:57:55.207Z"
   },
   "settings": {
-    "theme": "light",
+    "theme": "system",
     "onboarded": true
   },
   "trash": [
@@ -63,18 +63,6 @@
       "deletedAt": "2026-08-02T05:07:35.535Z"
     },
     {
-      "tid": "msbc9rw3r7z6",
-      "path": "fitness.plan",
-      "item": {
-        "id": "fp6",
-        "day": "周六",
-        "typeId": "ft-swim",
-        "target": "500m",
-        "done": false
-      },
-      "deletedAt": "2026-08-02T05:07:34.899Z"
-    },
-    {
       "tid": "msbc9rpes8vr",
       "path": "fitness.plan",
       "item": {
@@ -85,30 +73,6 @@
         "done": true
       },
       "deletedAt": "2026-08-02T05:07:34.658Z"
-    },
-    {
-      "tid": "msbc9riwmdgt",
-      "path": "fitness.plan",
-      "item": {
-        "id": "fp4",
-        "day": "周四",
-        "typeId": "ft-cycle",
-        "target": "10km",
-        "done": true
-      },
-      "deletedAt": "2026-08-02T05:07:34.424Z"
-    },
-    {
-      "tid": "msbc9rd4qmgu",
-      "path": "fitness.plan",
-      "item": {
-        "id": "fp3",
-        "day": "周三",
-        "typeId": "ft-yoga",
-        "target": "30 分钟",
-        "done": true
-      },
-      "deletedAt": "2026-08-02T05:07:34.216Z"
     },
     {
       "tid": "msbc9r7cv4en",
@@ -137,12 +101,13 @@
   ],
   "checkinHistory": {
     "2026-08-02": 3,
-    "2026-08-03": 3
+    "2026-08-03": 3,
+    "2026-08-05": 3
   },
   "weeklyTrend": [
     {
       "week": 32,
-      "rate": 35
+      "rate": 30
     }
   ],
   "tasks": {
@@ -398,6 +363,13 @@
         "id": "msbssixxf2fs",
         "day": "周三",
         "typeId": "ft-run",
+        "target": "",
+        "done": false
+      },
+      {
+        "id": "msf9dxb8alm2",
+        "day": "周一",
+        "typeId": "ft-stairs",
         "target": "",
         "done": false
       }
@@ -708,5 +680,5 @@
       }
     ]
   },
-  "lastSaved": "2026-08-03T10:02:05.340Z"
+  "lastSaved": "2026-08-04T22:57:55.207Z"
 }

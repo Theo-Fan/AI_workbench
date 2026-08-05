@@ -35,6 +35,12 @@ function safeLimit(value, fallback = 50) {
   return Math.max(1, Math.min(parsed, MAX_LIMIT));
 }
 
+function safeStart(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, parsed);
+}
+
 function zoteroErrorMessage(status) {
   if (status === 403) return 'Zotero 本机 API 未授权。请在 Zotero 设置 → 高级中启用“允许同一台电脑上的其他应用与 Zotero 通信”。';
   if (status === 404) return '未找到对应的 Zotero 数据。';
@@ -177,17 +183,28 @@ async function handleApi(requestUrl, response) {
     const collection = requestUrl.searchParams.get('collection');
     const query = requestUrl.searchParams.get('q');
     const limit = safeLimit(requestUrl.searchParams.get('limit'));
+    const start = safeStart(requestUrl.searchParams.get('start'));
     const apiPath = collection
       ? `/users/0/collections/${encodeURIComponent(collection)}/items/top`
       : '/users/0/items/top';
     const result = await zoteroGet(apiPath, {
       limit,
+      start,
       sort: 'dateModified',
       direction: 'desc',
       q: query || undefined,
       qmode: query ? 'everything' : undefined
     });
-    return sendJson(response, 200, { items: (result.data || []).map(compactItem) });
+    const items = (result.data || []).map(compactItem);
+    const totalHeader = Number.parseInt(result.headers.get('total-results'), 10);
+    const total = Number.isFinite(totalHeader) ? totalHeader : start + items.length;
+    return sendJson(response, 200, {
+      items,
+      total,
+      start,
+      limit,
+      hasMore: start + items.length < total
+    });
   }
 
   const itemMatch = requestUrl.pathname.match(/^\/api\/zotero\/items\/([A-Z0-9]{8})(?:\/(children))?$/);
