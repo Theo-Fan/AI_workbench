@@ -8,6 +8,8 @@ const { URL } = require('url');
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.PORT || 8788);
 const ZOTERO_API = 'http://127.0.0.1:23119/api';
+const WEATHER_FORECAST_API = 'https://api.open-meteo.com/v1/forecast';
+const WEATHER_GEOCODE_API = 'https://geocoding-api.open-meteo.com/v1/search';
 const ROOT = __dirname;
 const MAX_LIMIT = 100;
 const MAX_KNOWLEDGE_KEYS = 24;
@@ -91,6 +93,34 @@ async function zoteroRequest(apiPath, params = {}, parseJson = true) {
 
 function zoteroGet(apiPath, params = {}) {
   return zoteroRequest(apiPath, params, true);
+}
+
+async function weatherRequest(endpoint, params = {}) {
+  const target = new URL(endpoint);
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') target.searchParams.set(key, String(value));
+  }
+  let upstream;
+  try {
+    upstream = await fetch(target, { signal: AbortSignal.timeout(8000) });
+  } catch (error) {
+    const failure = new Error(error.name === 'TimeoutError' ? '天气服务请求超时。' : '无法连接天气服务。');
+    failure.statusCode = 503;
+    throw failure;
+  }
+  if (!upstream.ok) {
+    const failure = new Error(`天气服务返回 HTTP ${upstream.status}。`);
+    failure.statusCode = upstream.status;
+    throw failure;
+  }
+  const text = await upstream.text();
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch {
+    const failure = new Error('天气服务返回了无法识别的数据。');
+    failure.statusCode = 502;
+    throw failure;
+  }
 }
 
 function compactItem(item) {
@@ -228,6 +258,37 @@ function serveWorkspace(response, filename) {
 }
 
 async function handleApi(requestUrl, response) {
+  if (requestUrl.pathname === '/api/weather/forecast') {
+    const latitude = Number(requestUrl.searchParams.get('latitude'));
+    const longitude = Number(requestUrl.searchParams.get('longitude'));
+    if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90 || !Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+      return sendJson(response, 400, { error: '请提供有效的天气坐标。' });
+    }
+    const data = await weatherRequest(WEATHER_FORECAST_API, {
+      latitude,
+      longitude,
+      current: requestUrl.searchParams.get('current') || undefined,
+      daily: requestUrl.searchParams.get('daily') || undefined,
+      timezone: requestUrl.searchParams.get('timezone') || 'auto',
+      forecast_days: Math.max(1, Math.min(7, Number.parseInt(requestUrl.searchParams.get('forecast_days'), 10) || 4))
+    });
+    return sendJson(response, 200, data);
+  }
+
+  if (requestUrl.pathname === '/api/weather/geocode') {
+    const name = String(requestUrl.searchParams.get('name') || '').trim();
+    if (!name || name.length > 120) return sendJson(response, 400, { error: '请提供有效的城市名称。' });
+    const data = await weatherRequest(WEATHER_GEOCODE_API, {
+      name,
+      count: Math.max(1, Math.min(10, Number.parseInt(requestUrl.searchParams.get('count'), 10) || 1)),
+      language: requestUrl.searchParams.get('language') || 'zh',
+      format: requestUrl.searchParams.get('format') || 'json',
+      latitude: requestUrl.searchParams.get('latitude') || undefined,
+      longitude: requestUrl.searchParams.get('longitude') || undefined
+    });
+    return sendJson(response, 200, data);
+  }
+
   if (requestUrl.pathname === '/api/zotero/health') {
     const result = await zoteroRequest('/', {}, false);
     return sendJson(response, 200, {
@@ -302,7 +363,7 @@ const server = http.createServer(async (request, response) => {
 
   const requestUrl = new URL(request.url, `http://${HOST}:${PORT}`);
   try {
-    if (requestUrl.pathname.startsWith('/api/zotero/')) return await handleApi(requestUrl, response);
+    if (requestUrl.pathname.startsWith('/api/zotero/') || requestUrl.pathname.startsWith('/api/weather/')) return await handleApi(requestUrl, response);
     if (serveWorkspace(response, requestUrl.pathname)) return;
     return sendText(response, 404, 'Not found');
   } catch (error) {

@@ -1,45 +1,30 @@
 {
   "version": "3.0",
   "meta": {
-    "revision": 43,
-    "deviceId": "dev-mseralfaa5wek9",
-    "savedAt": "2026-08-05T13:46:19.646Z"
+    "revision": 172,
+    "deviceId": "dev-msbc8kkefh3fez",
+    "savedAt": "2026-08-06T13:55:58.318Z"
   },
   "settings": {
-    "theme": "light",
-    "onboarded": true
-  },
-  "trash": [
-    {
-      "tid": "msfvnirvt5gl",
-      "path": "inspirations.ideas",
-      "item": {
-        "id": "i2",
-        "title": "用 AI 漫剧讲好一个故事",
-        "desc": "分镜设计 + 提示词工程实战"
-      },
-      "deletedAt": "2026-08-05T09:21:13.675Z"
-    },
-    {
-      "tid": "msfvnie1bpgd",
-      "path": "inspirations.ideas",
-      "item": {
-        "id": "i1",
-        "title": "AI 辅助科研工作流全攻略",
-        "desc": "从文献检索到论文写作，一套完整流程"
-      },
-      "deletedAt": "2026-08-05T09:21:13.177Z"
+    "theme": "dark",
+    "onboarded": true,
+    "weather": {
+      "city": "杭州 · 浙江",
+      "lat": 30.29365,
+      "lon": 120.16142
     }
-  ],
+  },
+  "trash": [],
   "checkinHistory": {
     "2026-08-02": 3,
     "2026-08-03": 3,
-    "2026-08-05": 1
+    "2026-08-05": 1,
+    "2026-08-06": 0
   },
   "weeklyTrend": [
     {
       "week": 32,
-      "rate": 21
+      "rate": 11
     }
   ],
   "tasks": {
@@ -61,53 +46,21 @@
       }
     ],
     "dailyPlan": {
-      "morning": [
-        {
-          "id": "m1",
-          "text": "AI 工具测评文章",
-          "done": true
-        },
-        {
-          "id": "m2",
-          "text": "整理选题灵感库",
-          "done": true
-        },
-        {
-          "id": "m3",
-          "text": "漫剧分镜脚本",
-          "done": false
-        }
-      ],
-      "afternoon": [
-        {
-          "id": "a1",
-          "text": "复盘上周内容数据",
-          "done": true
-        },
-        {
-          "id": "a2",
-          "text": "英语精读 30 分钟",
-          "done": false
-        },
-        {
-          "id": "a3",
-          "text": "阅读论文 1 篇",
-          "done": false
-        }
-      ],
+      "morning": [],
+      "afternoon": [],
       "evening": [
         {
-          "id": "e1",
+          "id": "mshihouunp54",
           "text": "整理明日选题",
           "done": false
         },
         {
-          "id": "e2",
+          "id": "mshihouux8of",
           "text": "社群互动回复",
           "done": false
         },
         {
-          "id": "e3",
+          "id": "mshihouunbpj",
           "text": "睡前冥想 15 分钟",
           "done": false
         }
@@ -217,7 +170,7 @@
         "id": "c4",
         "icon": "📖",
         "name": "英语精读",
-        "done": true
+        "done": false
       },
       {
         "id": "c5",
@@ -276,13 +229,6 @@
       }
     ],
     "plan": [
-      {
-        "id": "msbssixxf2fs",
-        "day": "周三",
-        "typeId": "ft-run",
-        "target": "",
-        "done": false
-      },
       {
         "id": "msf9dxb8alm2",
         "day": "周一",
@@ -478,7 +424,8 @@
       "challenge": {
         "current": 28,
         "total": 100,
-        "streak": 12
+        "streak": 12,
+        "lastCompletedDate": ""
       }
     },
     "research": {
@@ -501,97 +448,227 @@
           "tags": [
             "Game"
           ]
-        },
-        {
-          "id": "msg54fa1iqxb",
-          "date": "2026-08-05",
-          "title": "aaaa",
-          "tags": [
-            "123"
-          ]
         }
       ],
       "inspirations": {
         "items": [
           {
-            "id": "ri1",
-            "title": "将阅读轨迹作为 RAG 的个性化检索信号",
-            "content": "不同研究者的阅读序列能够反映其问题空间。可尝试将近期阅读论文的主题分布编码为查询侧先验，并比较个性化重排对科研问答质量的影响。",
-            "category": "研究方法",
-            "tags": [
-              "RAG",
-              "个性化",
-              "阅读行为"
-            ],
-            "status": "待验证",
-            "sourceType": "论文阅读",
-            "sourceReference": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks",
-            "project": "AI 辅助科研写作效率研究",
-            "favorite": true,
-            "archived": false,
-            "createdAt": "2026-08-05T10:40:00",
-            "updatedAt": "2026-08-05T10:40:00",
-            "occurredAt": "2026-08-05"
-          },
-          {
-            "id": "ri2",
-            "title": "用失败样本驱动论文写作辅助的自我修正",
-            "content": "把导师批注、审稿意见和历史改稿版本抽取为失败案例，构建面向论证完整性与证据匹配度的修正提示。优先验证其对方法章节改写的收益。",
-            "category": "研究设计",
-            "tags": [
-              "LLM",
-              "论文写作",
-              "自我修正"
-            ],
-            "status": "进行中",
-            "sourceType": "会议讨论",
-            "sourceReference": "组会记录 · 8 月第 1 周",
-            "project": "AI 辅助科研写作效率研究",
-            "favorite": false,
-            "archived": false,
-            "createdAt": "2026-08-04T16:20:00",
-            "updatedAt": "2026-08-05T09:15:00",
-            "occurredAt": "2026-08-04"
-          },
-          {
-            "id": "ri3",
-            "title": "构建面向科研任务的多维引用可信度评分",
-            "content": "引用是否可信不应只看相关性，还可结合出处类型、证据跨度、时效性和与研究问题的直接关联。先在文献综述摘要任务上设计小规模评测集。",
-            "category": "评估与基准",
-            "tags": [
-              "评测",
-              "引用",
-              "可信度"
-            ],
-            "status": "待整理",
-            "sourceType": "实验观察",
-            "sourceReference": "文献综述写作试验",
-            "project": "AI 辅助科研写作效率研究",
-            "favorite": false,
-            "archived": false,
-            "createdAt": "2026-08-02T14:10:00",
-            "updatedAt": "2026-08-02T14:10:00",
-            "occurredAt": "2026-08-02"
-          },
-          {
             "id": "ri4",
             "title": "将研究问题拆解为可追踪的证据链",
             "content": "每个研究问题拆成主张、所需证据、候选数据和反例，使后续文献阅读与实验设计可以直接回链到问题本身。",
-            "category": "知识组织",
+            "category": "",
             "tags": [
               "研究问题",
               "证据链",
               "知识管理"
             ],
-            "status": "已采用",
+            "status": "待验证",
             "sourceType": "个人复盘",
             "sourceReference": "科研工作流复盘",
             "project": "科研工作台",
             "favorite": true,
-            "archived": true,
+            "archived": false,
             "createdAt": "2026-07-28T11:30:00",
-            "updatedAt": "2026-08-01T18:00:00",
-            "occurredAt": "2026-07-28"
+            "updatedAt": "2026-08-06T05:44:34.991Z",
+            "occurredAt": "2026-07-28",
+            "development": {
+              "idea": {
+                "done": false,
+                "problem": "",
+                "observation": "每个研究问题拆成主张、所需证据、候选数据和反例，使后续文献阅读与实验设计可以直接回链到问题本身。",
+                "scope": "将研究问题拆解为可追踪的证据链"
+              },
+              "motivation": {
+                "done": false,
+                "pain": "",
+                "gap": "",
+                "impact": "",
+                "novelty": ""
+              },
+              "solution": {
+                "done": false,
+                "hypothesis": "",
+                "novelty": "",
+                "method": "",
+                "landscape": "",
+                "limitations": "",
+                "positioning": ""
+              },
+              "implementation": {
+                "done": false,
+                "architecture": "",
+                "modules": "",
+                "risks": ""
+              },
+              "experiment": {
+                "done": false,
+                "questions": "",
+                "setup": "",
+                "baselines": "",
+                "metrics": "",
+                "ablations": ""
+              },
+              "paper": {
+                "done": false,
+                "workingTitle": "",
+                "contributions": "",
+                "outline": "",
+                "evidenceGaps": ""
+              },
+              "_legacyImported": true,
+              "_noveltyMoved": true,
+              "_impactMerged": true
+            }
+          },
+          {
+            "id": "msh3er3thkk6",
+            "title": "阿嘎饿啊",
+            "content": "",
+            "category": "",
+            "tags": [],
+            "status": "待验证",
+            "sourceType": "",
+            "sourceReference": "",
+            "project": "",
+            "favorite": false,
+            "archived": false,
+            "createdAt": "2026-08-06T05:46:07.673Z",
+            "updatedAt": "2026-08-06T05:46:07.673Z",
+            "occurredAt": "2026-08-06",
+            "development": {
+              "idea": {
+                "done": false,
+                "problem": "",
+                "observation": "",
+                "scope": "阿嘎饿啊"
+              },
+              "motivation": {
+                "done": false,
+                "pain": "",
+                "gap": "",
+                "novelty": ""
+              },
+              "solution": {
+                "done": false,
+                "landscape": "",
+                "limitations": "",
+                "positioning": ""
+              },
+              "implementation": {
+                "done": false,
+                "architecture": "",
+                "modules": "",
+                "risks": ""
+              },
+              "experiment": {
+                "done": false,
+                "questions": "",
+                "setup": "",
+                "baselines": "",
+                "metrics": "",
+                "ablations": ""
+              },
+              "_legacyImported": true,
+              "_noveltyMoved": true,
+              "_impactMerged": true
+            }
+          }
+        ]
+      },
+      "experiments": {
+        "items": [
+          {
+            "id": "msh3dyaafduj",
+            "ideaId": "ri4",
+            "title": "",
+            "motivation": "",
+            "settings": "",
+            "results": "",
+            "analysis": "",
+            "status": "计划中",
+            "createdAt": "2026-08-06T05:45:30.322Z",
+            "updatedAt": "2026-08-06T07:24:56.792Z"
+          }
+        ]
+      },
+      "papers": {
+        "items": [
+          {
+            "id": "msh43yygh8ff",
+            "ideaId": "ri4",
+            "title": "将研究问题拆解为可追踪的证据链",
+            "venue": "",
+            "deadline": "",
+            "sections": {
+              "abstract": false,
+              "introduction": false,
+              "relatedWork": false,
+              "method": false,
+              "experiment": false,
+              "conclusion": false,
+              "polish": false
+            },
+            "submissionStage": "",
+            "submissionNotes": "",
+            "submittedAt": "2026-08-06",
+            "createdAt": "2026-08-06T06:05:44.248Z",
+            "updatedAt": "2026-08-06T07:24:50.394Z"
+          }
+        ]
+      },
+      "todos": {
+        "items": [
+          {
+            "id": "rt1",
+            "title": "整理本周重点阅读文献",
+            "ideaId": "",
+            "stage": "",
+            "priority": "medium",
+            "dueDate": "",
+            "status": "todo",
+            "notes": "",
+            "createdAt": "2026-08-06T06:12:44.569Z",
+            "updatedAt": "2026-08-06T06:12:44.569Z",
+            "completedAt": ""
+          },
+          {
+            "id": "rt2",
+            "title": "补充实验设计方案",
+            "ideaId": "",
+            "stage": "",
+            "priority": "medium",
+            "dueDate": "",
+            "status": "todo",
+            "notes": "",
+            "createdAt": "2026-08-06T06:12:44.569Z",
+            "updatedAt": "2026-08-06T06:12:44.569Z",
+            "completedAt": ""
+          },
+          {
+            "id": "msh4du8t1kwh",
+            "title": "修改文章",
+            "ideaId": "",
+            "stage": "",
+            "priority": "medium",
+            "dueDate": "",
+            "status": "done",
+            "notes": "",
+            "createdAt": "2026-08-06T06:13:24.701Z",
+            "updatedAt": "2026-08-06T06:15:49.201Z",
+            "completedAt": "2026-08-06T06:15:49.201Z",
+            "previousStatus": "inbox"
+          },
+          {
+            "id": "msh4lq4pxe1p",
+            "title": "修改Intro",
+            "ideaId": "",
+            "priority": "medium",
+            "dueDate": "2026-08-06",
+            "status": "done",
+            "notes": "",
+            "createdAt": "2026-08-06T06:19:32.617Z",
+            "updatedAt": "2026-08-06T13:46:12.439Z",
+            "completedAt": "2026-08-06T13:46:12.439Z"
           }
         ]
       }
@@ -666,5 +743,5 @@
       }
     ]
   },
-  "lastSaved": "2026-08-05T13:46:19.646Z"
+  "lastSaved": "2026-08-06T13:55:58.318Z"
 }
