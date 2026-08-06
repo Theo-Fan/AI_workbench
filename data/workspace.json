@@ -1,132 +1,49 @@
 {
   "version": "3.0",
   "meta": {
-    "revision": 9,
+    "revision": 43,
     "deviceId": "dev-mseralfaa5wek9",
-    "savedAt": "2026-08-04T22:57:55.207Z"
+    "savedAt": "2026-08-05T13:46:19.646Z"
   },
   "settings": {
-    "theme": "system",
+    "theme": "light",
     "onboarded": true
   },
   "trash": [
     {
-      "tid": "msd28cjeosc3",
-      "path": "tasks.researchPapers",
+      "tid": "msfvnirvt5gl",
+      "path": "inspirations.ideas",
       "item": {
-        "id": "rp4",
-        "text": "Paper: Multi-Agent for Research",
-        "done": false
+        "id": "i2",
+        "title": "用 AI 漫剧讲好一个故事",
+        "desc": "分镜设计 + 提示词工程实战"
       },
-      "deletedAt": "2026-08-03T10:02:04.538Z"
+      "deletedAt": "2026-08-05T09:21:13.675Z"
     },
     {
-      "tid": "msd28bc2kapy",
-      "path": "tasks.researchPapers",
+      "tid": "msfvnie1bpgd",
+      "path": "inspirations.ideas",
       "item": {
-        "id": "rp1",
-        "text": "Survey: LLM for Academic Writing",
-        "done": true
+        "id": "i1",
+        "title": "AI 辅助科研工作流全攻略",
+        "desc": "从文献检索到论文写作，一套完整流程"
       },
-      "deletedAt": "2026-08-03T10:02:02.978Z"
-    },
-    {
-      "tid": "msd28bc2j40p",
-      "path": "tasks.researchPapers",
-      "item": {
-        "id": "rp2",
-        "text": "Paper: Prompt Engineering in Research",
-        "done": true
-      },
-      "deletedAt": "2026-08-03T10:02:02.978Z"
-    },
-    {
-      "tid": "msd28bc2yfz5",
-      "path": "tasks.researchPapers",
-      "item": {
-        "id": "rp3",
-        "text": "Paper: RAG for Literature Review",
-        "done": true
-      },
-      "deletedAt": "2026-08-03T10:02:02.978Z"
-    },
-    {
-      "tid": "msbc9sdru81c",
-      "path": "fitness.plan",
-      "item": {
-        "id": "fp7",
-        "day": "周日",
-        "typeId": "ft-stairs",
-        "target": "30 层",
-        "done": false
-      },
-      "deletedAt": "2026-08-02T05:07:35.535Z"
-    },
-    {
-      "tid": "msbc9rpes8vr",
-      "path": "fitness.plan",
-      "item": {
-        "id": "fp5",
-        "day": "周五",
-        "typeId": "ft-run",
-        "target": "3km",
-        "done": true
-      },
-      "deletedAt": "2026-08-02T05:07:34.658Z"
-    },
-    {
-      "tid": "msbc9r7cv4en",
-      "path": "fitness.plan",
-      "item": {
-        "id": "fp2",
-        "day": "周二",
-        "typeId": "ft-strength",
-        "target": "4 组",
-        "done": true
-      },
-      "deletedAt": "2026-08-02T05:07:34.008Z"
-    },
-    {
-      "tid": "msbc9r1b7tc8",
-      "path": "fitness.plan",
-      "item": {
-        "id": "fp1",
-        "day": "周一",
-        "typeId": "ft-run",
-        "target": "3km",
-        "done": true
-      },
-      "deletedAt": "2026-08-02T05:07:33.791Z"
+      "deletedAt": "2026-08-05T09:21:13.177Z"
     }
   ],
   "checkinHistory": {
     "2026-08-02": 3,
     "2026-08-03": 3,
-    "2026-08-05": 3
+    "2026-08-05": 1
   },
   "weeklyTrend": [
     {
       "week": 32,
-      "rate": 30
+      "rate": 21
     }
   ],
   "tasks": {
     "dashboard": [
-      {
-        "id": "d1",
-        "text": "写一篇 AI 工具测评文章",
-        "done": true
-      },
-      {
-        "id": "d2",
-        "text": "整理本周选题灵感库",
-        "done": true
-      },
-      {
-        "id": "d3",
-        "text": "复盘上周内容数据",
-        "done": true
-      },
       {
         "id": "d4",
         "text": "录制漫剧分镜脚本",
@@ -282,25 +199,25 @@
         "id": "c1",
         "icon": "🏃",
         "name": "晨跑 3km",
-        "done": true
+        "done": false
       },
       {
         "id": "c2",
         "icon": "📚",
         "name": "AI 学习",
-        "done": true
+        "done": false
       },
       {
         "id": "c3",
         "icon": "📝",
         "name": "内容创作",
-        "done": true
+        "done": false
       },
       {
         "id": "c4",
         "icon": "📖",
         "name": "英语精读",
-        "done": false
+        "done": true
       },
       {
         "id": "c5",
@@ -419,16 +336,6 @@
   },
   "inspirations": {
     "ideas": [
-      {
-        "id": "i1",
-        "title": "AI 辅助科研工作流全攻略",
-        "desc": "从文献检索到论文写作，一套完整流程"
-      },
-      {
-        "id": "i2",
-        "title": "用 AI 漫剧讲好一个故事",
-        "desc": "分镜设计 + 提示词工程实战"
-      },
       {
         "id": "i3",
         "title": "英语学习 100 天打卡总结",
@@ -579,36 +486,115 @@
         "title": "AI 辅助科研写作效率研究",
         "desc": "探索 LLM 对论文写作流程的影响与优化"
       },
-      "milestones": [
+      "milestones": [],
+      "readingLogs": [
         {
-          "id": "ms1",
-          "icon": "✅",
-          "title": "文献调研",
-          "desc": "已完成 · 收集 32 篇相关文献",
-          "status": "done"
+          "id": "rl1",
+          "date": "2026-07-25",
+          "title": "Attention Is All You Need",
+          "type": "会议论文"
         },
         {
-          "id": "ms2",
-          "icon": "🔵",
-          "title": "实验设计",
-          "desc": "进行中 · 预计 2 周内完成",
-          "status": "active"
+          "id": "msfp29dk6idd",
+          "date": "2026-08-05",
+          "title": "A multi-agent reinforcement learning framework for exploring dominant strategies in iterated and evolutionary games",
+          "tags": [
+            "Game"
+          ]
         },
         {
-          "id": "ms3",
-          "icon": "⚪",
-          "title": "数据收集",
-          "desc": "待开始",
-          "status": "pending"
-        },
-        {
-          "id": "ms4",
-          "icon": "⚪",
-          "title": "论文撰写",
-          "desc": "待开始",
-          "status": "pending"
+          "id": "msg54fa1iqxb",
+          "date": "2026-08-05",
+          "title": "aaaa",
+          "tags": [
+            "123"
+          ]
         }
-      ]
+      ],
+      "inspirations": {
+        "items": [
+          {
+            "id": "ri1",
+            "title": "将阅读轨迹作为 RAG 的个性化检索信号",
+            "content": "不同研究者的阅读序列能够反映其问题空间。可尝试将近期阅读论文的主题分布编码为查询侧先验，并比较个性化重排对科研问答质量的影响。",
+            "category": "研究方法",
+            "tags": [
+              "RAG",
+              "个性化",
+              "阅读行为"
+            ],
+            "status": "待验证",
+            "sourceType": "论文阅读",
+            "sourceReference": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks",
+            "project": "AI 辅助科研写作效率研究",
+            "favorite": true,
+            "archived": false,
+            "createdAt": "2026-08-05T10:40:00",
+            "updatedAt": "2026-08-05T10:40:00",
+            "occurredAt": "2026-08-05"
+          },
+          {
+            "id": "ri2",
+            "title": "用失败样本驱动论文写作辅助的自我修正",
+            "content": "把导师批注、审稿意见和历史改稿版本抽取为失败案例，构建面向论证完整性与证据匹配度的修正提示。优先验证其对方法章节改写的收益。",
+            "category": "研究设计",
+            "tags": [
+              "LLM",
+              "论文写作",
+              "自我修正"
+            ],
+            "status": "进行中",
+            "sourceType": "会议讨论",
+            "sourceReference": "组会记录 · 8 月第 1 周",
+            "project": "AI 辅助科研写作效率研究",
+            "favorite": false,
+            "archived": false,
+            "createdAt": "2026-08-04T16:20:00",
+            "updatedAt": "2026-08-05T09:15:00",
+            "occurredAt": "2026-08-04"
+          },
+          {
+            "id": "ri3",
+            "title": "构建面向科研任务的多维引用可信度评分",
+            "content": "引用是否可信不应只看相关性，还可结合出处类型、证据跨度、时效性和与研究问题的直接关联。先在文献综述摘要任务上设计小规模评测集。",
+            "category": "评估与基准",
+            "tags": [
+              "评测",
+              "引用",
+              "可信度"
+            ],
+            "status": "待整理",
+            "sourceType": "实验观察",
+            "sourceReference": "文献综述写作试验",
+            "project": "AI 辅助科研写作效率研究",
+            "favorite": false,
+            "archived": false,
+            "createdAt": "2026-08-02T14:10:00",
+            "updatedAt": "2026-08-02T14:10:00",
+            "occurredAt": "2026-08-02"
+          },
+          {
+            "id": "ri4",
+            "title": "将研究问题拆解为可追踪的证据链",
+            "content": "每个研究问题拆成主张、所需证据、候选数据和反例，使后续文献阅读与实验设计可以直接回链到问题本身。",
+            "category": "知识组织",
+            "tags": [
+              "研究问题",
+              "证据链",
+              "知识管理"
+            ],
+            "status": "已采用",
+            "sourceType": "个人复盘",
+            "sourceReference": "科研工作流复盘",
+            "project": "科研工作台",
+            "favorite": true,
+            "archived": true,
+            "createdAt": "2026-07-28T11:30:00",
+            "updatedAt": "2026-08-01T18:00:00",
+            "occurredAt": "2026-07-28"
+          }
+        ]
+      }
     }
   },
   "weeklyReview": {
@@ -680,5 +666,5 @@
       }
     ]
   },
-  "lastSaved": "2026-08-04T22:57:55.207Z"
+  "lastSaved": "2026-08-05T13:46:19.646Z"
 }

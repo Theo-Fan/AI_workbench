@@ -288,6 +288,94 @@
   .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
   .zotero-row { grid-template-columns: 1fr 1fr; margin-top: var(--sp-5); }
 
+  /* Research idea modal (new / edit) */
+  .research-idea-modal-title { margin: 0 0 2px; color: var(--text-main); font-size: 17px; font-weight: 700; }
+  .research-idea-modal-sub { margin: 0 0 14px; color: var(--text-muted); font-size: var(--fs-caption); line-height: 1.55; }
+  .research-idea-modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+  .research-idea-modal-btn { padding: 9px 18px; border-radius: 9px; border: 0; font: inherit; font-size: var(--fs-small); font-weight: 620; cursor: pointer; transition: background .18s ease, transform .18s cubic-bezier(.16,1,.3,1); }
+  .research-idea-modal-btn:hover { transform: translateY(-1px); }
+  .research-idea-modal-btn.cancel { background: var(--neutral-soft); color: var(--text-sub); }
+  .research-idea-modal-btn.cancel:hover { background: var(--border); }
+  .research-idea-modal-btn.confirm { background: var(--primary); color: #fff; }
+  .research-idea-modal-btn.confirm:hover { background: var(--primary-hover); }
+  .research-idea-modal-btn.confirm:disabled { opacity: .55; cursor: default; transform: none; }
+  .research-idea-modal-btn.danger { background: var(--danger); color: #fff; }
+  .research-idea-modal-btn.danger:hover { background: #e55; }
+
+  /* Research inspiration workspace */
+  .research-idea-workspace { display: grid; grid-template-columns: 206px minmax(320px, 0.95fr) minmax(340px, 1.15fr); min-height: 620px; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); box-shadow: var(--shadow); }
+  .research-idea-sidebar, .research-idea-detail { background: color-mix(in srgb, var(--card-bg) 92%, var(--primary-soft)); }
+  .research-idea-sidebar { padding: 16px 12px; border-right: 1px solid var(--border); }
+  .research-idea-sidebar-section + .research-idea-sidebar-section { margin-top: 22px; }
+  .research-idea-sidebar-label { padding: 0 8px 7px; color: var(--text-muted); font-size: var(--fs-micro); font-weight: 700; letter-spacing: .04em; }
+  .research-idea-filter { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; padding: 8px; border: 0; border-radius: 7px; background: transparent; color: var(--text-sub); font: inherit; font-size: var(--fs-caption); text-align: left; cursor: pointer; transition: background .16s ease, color .16s ease, transform .16s cubic-bezier(.16,1,.3,1); }
+  .research-idea-filter:hover { background: var(--primary-soft); color: var(--text-main); }
+  .research-idea-filter.is-active { background: color-mix(in srgb, var(--primary-soft) 80%, var(--card-bg)); color: var(--primary); font-weight: 680; }
+  .research-idea-filter-count { color: var(--text-muted); font-size: var(--fs-micro); font-variant-numeric: tabular-nums; }
+  .research-idea-filter.is-active .research-idea-filter-count { color: var(--primary); }
+  .research-idea-filter-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .research-idea-list-pane { min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+  .research-idea-toolbar { padding: 16px; border-bottom: 1px solid var(--border); }
+  .research-idea-search { width: 100%; box-sizing: border-box; padding: 9px 10px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text-main); font: inherit; font-size: var(--fs-caption); outline: none; }
+  .research-idea-search:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent); }
+  .research-idea-toolbar-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 11px; color: var(--text-muted); font-size: var(--fs-micro); }
+  .research-idea-sort { max-width: 124px; padding: 4px 6px; border: 0; background: transparent; color: var(--text-sub); font: inherit; font-size: var(--fs-micro); cursor: pointer; outline: none; }
+  .research-idea-list { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
+  .research-idea-card { width: 100%; display: block; padding: 13px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .16s ease, border-color .16s ease, transform .16s cubic-bezier(.16,1,.3,1); }
+  .research-idea-card:hover { background: var(--primary-soft); transform: translateY(-1px); }
+  .research-idea-card.is-active { border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); background: color-mix(in srgb, var(--primary-soft) 76%, var(--card-bg)); }
+  .research-idea-card + .research-idea-card { margin-top: 5px; }
+  .research-idea-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--text-muted); font-size: var(--fs-micro); }
+  .research-idea-card-title { margin-top: 7px; color: var(--text-main); font-size: var(--fs-small); font-weight: 680; line-height: 1.45; }
+  .research-idea-card-summary { display: -webkit-box; margin-top: 5px; overflow: hidden; color: var(--text-muted); font-size: var(--fs-caption); line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .research-idea-status { display: inline-flex; align-items: center; min-height: 20px; padding: 0 7px; border-radius: 999px; background: var(--neutral-soft); color: var(--text-sub); font-size: var(--fs-micro); white-space: nowrap; }
+  .research-idea-status.status-active { background: color-mix(in srgb, var(--primary-soft) 75%, var(--card-bg)); color: var(--primary); }
+  .research-idea-status.status-done { background: color-mix(in srgb, #5f9d6a 16%, var(--card-bg)); color: #367443; }
+  .research-idea-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+  .research-idea-tag { max-width: 118px; padding: 3px 6px; overflow: hidden; border-radius: 5px; background: var(--neutral-soft); color: var(--text-sub); font-size: var(--fs-micro); text-overflow: ellipsis; white-space: nowrap; }
+  .research-idea-detail { min-width: 0; padding: 24px; overflow: auto; }
+  .research-idea-detail-header { display: flex; justify-content: space-between; gap: 12px; }
+  .research-idea-detail-title { margin: 8px 0 0; color: var(--text-main); font-size: clamp(20px, 2vw, 27px); font-weight: 680; line-height: 1.35; }
+  .research-idea-kicker { color: var(--primary); font-size: var(--fs-micro); font-weight: 700; letter-spacing: .06em; }
+  .research-idea-detail-actions { display: flex; gap: 5px; flex-shrink: 0; }
+  .research-idea-icon-btn { width: 31px; height: 31px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 7px; background: var(--card-bg); color: var(--text-sub); cursor: pointer; transition: background .16s ease, color .16s ease, transform .16s cubic-bezier(.16,1,.3,1); }
+  .research-idea-icon-btn:hover { color: var(--primary); background: var(--primary-soft); transform: translateY(-1px); }
+  .research-idea-icon-btn.is-active { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); color: var(--primary); background: var(--primary-soft); }
+  .research-idea-meta-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .research-idea-meta { min-width: 0; }
+  .research-idea-meta-label { color: var(--text-muted); font-size: var(--fs-micro); }
+  .research-idea-meta-value { margin-top: 3px; overflow: hidden; color: var(--text-sub); font-size: var(--fs-caption); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .research-idea-content { margin: 20px 0; color: var(--text-main); font-size: var(--fs-small); line-height: 1.85; white-space: pre-wrap; }
+  .research-idea-detail-section { padding-top: 17px; border-top: 1px solid var(--border); }
+  .research-idea-detail-section-title { color: var(--text-muted); font-size: var(--fs-micro); font-weight: 700; letter-spacing: .04em; }
+  .research-idea-source { margin-top: 8px; color: var(--text-sub); font-size: var(--fs-caption); line-height: 1.6; }
+  .research-idea-empty { display: grid; min-height: 300px; place-items: center; color: var(--text-muted); font-size: var(--fs-caption); text-align: center; }
+  .research-idea-main-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .research-idea-main-title { margin: 0; color: var(--text-main); font-size: var(--fs-h2); font-weight: 680; letter-spacing: .01em; }
+  .research-idea-main-desc { margin-top: 3px; color: var(--text-muted); font-size: var(--fs-caption); line-height: 1.55; }
+  .research-idea-header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .research-idea-active-filter { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 1px solid color-mix(in srgb, var(--primary) 26%, var(--border)); border-radius: 999px; background: color-mix(in srgb, var(--primary-soft) 55%, var(--card-bg)); color: var(--primary); font-size: var(--fs-micro); font-weight: 680; }
+  .research-idea-active-filter-clear { border: 0; background: transparent; color: inherit; font: inherit; font-size: 12px; cursor: pointer; padding: 0 0 0 4px; line-height: 1; }
+  .research-idea-active-filter-clear:hover { color: var(--danger); }
+  .research-idea-source-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; color: var(--text-sub); font-size: var(--fs-caption); line-height: 1.55; }
+  .research-idea-source-row b { color: var(--text-main); font-weight: 700; }
+  .research-idea-relation { display: block; margin-top: 6px; color: var(--text-sub); font-size: var(--fs-caption); line-height: 1.55; }
+  .research-idea-relation b { color: var(--primary); font-weight: 680; }
+  .research-idea-detail-actions .research-idea-icon-btn.is-active { border-color: color-mix(in srgb, #f5a623 45%, var(--border)); color: #e08e0b; background: color-mix(in srgb, #fdf3dd 55%, var(--card-bg)); }
+  .research-idea-detail-actions .research-idea-icon-btn.is-danger { border-color: color-mix(in srgb, var(--danger) 30%, var(--border)); color: var(--danger); }
+  .research-idea-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .research-idea-form-field { min-width: 0; }
+  .research-idea-form-field.full { grid-column: 1 / -1; }
+  .research-idea-form-field label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: var(--fs-micro); font-weight: 700; letter-spacing: .04em; }
+  .research-idea-form-field input[type="text"], .research-idea-form-field input[type="date"], .research-idea-form-field select, .research-idea-form-field textarea { width: 100%; box-sizing: border-box; padding: 9px 10px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text-main); font: inherit; font-size: var(--fs-caption); outline: none; }
+  .research-idea-form-field input:focus, .research-idea-form-field select:focus, .research-idea-form-field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent); }
+  .research-idea-form-field textarea { resize: vertical; min-height: 92px; line-height: 1.7; }
+  .research-idea-form-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 9px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); }
+  .research-idea-form-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 999px; background: var(--primary-light); color: var(--primary); font-size: var(--fs-micro); font-weight: 680; }
+  .research-idea-form-tag button { border: 0; background: transparent; color: inherit; font: inherit; font-size: 12px; line-height: 1; cursor: pointer; padding: 0; }
+  .research-idea-form-tag button:hover { color: var(--danger); }
+  .research-idea-form-tag-input { min-width: 110px; flex: 1; border: 0; background: transparent; color: var(--text-main); font: inherit; font-size: var(--fs-caption); outline: none; padding: 2px 0; }
+
   .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-4); gap: var(--sp-2); }
   .card-title { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-h2); font-weight: 600; color: var(--text-main); }
   .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
@@ -471,6 +559,30 @@
     font-size: var(--fs-micro); color: var(--text-muted); margin-top: var(--sp-2);
   }
   .heatmap-legend .hm-cell { display: inline-block; }
+
+  .reading-log-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: clamp(420px, 54vh, 720px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .reading-log-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    animation: itemIn 0.25s ease both;
+  }
+  .reading-log-row:last-child { border-bottom: none; }
+  .reading-log-row:hover { background: var(--primary-soft); border-radius: 7px; padding-left: 8px; padding-right: 8px; }
+  .reading-log-main { min-width: 0; }
+  .reading-log-title { color: var(--text-main); font-size: var(--fs-small); font-weight: 620; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .reading-log-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+  .reading-log-pill { max-width: 150px; padding: 2px 7px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-size: var(--fs-micro); font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .reading-log-date { color: var(--text-muted); font-size: var(--fs-micro); font-variant-numeric: tabular-nums; }
 
   /* Fitness plan rows */
   .fit-plan-row {
@@ -845,6 +957,142 @@
   .zotero-note-preview-meta { margin-top: 8px; font-size: var(--fs-micro); color: var(--text-muted); }
   .zotero-read-btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
 
+  .literature-overview-card {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--sp-5);
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+    background: linear-gradient(135deg, color-mix(in srgb, var(--card-bg) 94%, var(--primary)), var(--card-bg) 58%);
+    box-shadow: 0 18px 48px rgba(37, 61, 91, 0.08);
+  }
+  .literature-overview-card::before {
+    content: '';
+    position: absolute;
+    inset: -45% -12% auto auto;
+    width: 460px;
+    height: 460px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--primary) 14%, transparent), transparent 68%);
+    pointer-events: none;
+  }
+  .literature-overview-inner { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--border); }
+  .literature-overview-main { min-width: 0; display: grid; grid-template-rows: auto 1fr; }
+  .literature-middle-col { min-width: 0; display: grid; grid-template-rows: minmax(260px, auto) minmax(190px, auto); gap: 1px; background: var(--border); }
+  .literature-overview-panel { min-width: 0; padding: 24px; background: color-mix(in srgb, var(--card-bg) 96%, transparent); }
+  .literature-checkin-panel { min-width: 0; padding: 24px; background: color-mix(in srgb, var(--card-bg) 96%, transparent); display: flex; flex-direction: column; }
+  .literature-overview-kicker { font-size: 10px; font-weight: 750; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); }
+  .literature-overview-title { margin-top: 7px; font-size: clamp(21px, 2vw, 27px); line-height: 1.18; font-weight: 740; color: var(--text-main); }
+  .literature-metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); margin-top: 18px; }
+  .literature-metric { min-width: 0; padding: 13px 14px; border: 1px solid var(--border); border-radius: 12px; background: color-mix(in srgb, var(--bg) 68%, var(--card-bg)); }
+  .literature-metric-value { font-size: 23px; line-height: 1.05; font-weight: 760; color: var(--text-main); font-variant-numeric: tabular-nums; }
+  .literature-metric-label { margin-top: 5px; color: var(--text-sub); font-size: var(--fs-micro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .literature-overview-rhythm { margin-top: 18px; padding: 16px; border: 1px solid color-mix(in srgb, var(--primary) 12%, var(--border)); border-radius: 14px; background: linear-gradient(145deg, color-mix(in srgb, var(--primary-soft) 28%, var(--card-bg)), color-mix(in srgb, var(--card-bg) 96%, transparent)); }
+  .literature-rhythm-track { height: 9px; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--primary-soft) 72%, var(--card-bg)); }
+  .literature-rhythm-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #4d83ff, #14b8a6); transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+  .literature-rhythm-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  .literature-rhythm-item { min-width: 0; padding: 10px; border-radius: 11px; background: color-mix(in srgb, var(--card-bg) 78%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 10%, var(--border)); }
+  .literature-rhythm-value { color: var(--text-main); font-size: 18px; font-weight: 760; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .literature-rhythm-label { margin-top: 5px; color: var(--text-sub); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .literature-tag-cloud { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .literature-tag-chip { max-width: 140px; padding: 6px 9px; border: 1px solid transparent; border-radius: 999px; background: color-mix(in srgb, var(--primary-soft) 62%, var(--card-bg)); color: var(--primary); font: inherit; font-size: var(--fs-micro); font-weight: 680; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, border-color 0.18s ease, color 0.18s ease; }
+  .literature-tag-chip:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--primary-soft) 84%, var(--card-bg)); }
+  .literature-tag-chip:focus-visible { outline: 2px solid color-mix(in srgb, var(--primary) 60%, transparent); outline-offset: 2px; }
+  .literature-tag-chip.is-active { border-color: color-mix(in srgb, var(--primary) 34%, var(--border)); background: var(--primary); color: #fff; box-shadow: 0 6px 14px color-mix(in srgb, var(--primary) 20%, transparent); }
+  .reading-log-filter { display: flex; align-items: center; gap: 7px; min-width: 0; margin: -2px 0 8px; padding: 7px 8px; border: 1px solid color-mix(in srgb, var(--primary) 16%, var(--border)); border-radius: 9px; background: color-mix(in srgb, var(--primary-soft) 38%, var(--card-bg)); color: var(--text-sub); font-size: var(--fs-micro); }
+  .reading-log-filter-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .reading-log-filter-label strong { color: var(--primary); font-weight: 720; }
+  .reading-log-filter-clear { margin-left: auto; width: 24px; height: 24px; border: 0; border-radius: 6px; background: transparent; color: var(--primary); font: inherit; font-size: 16px; line-height: 1; cursor: pointer; }
+  .reading-log-filter-clear:hover { background: color-mix(in srgb, var(--primary) 11%, transparent); }
+  .reading-log-filter-clear:focus-visible { outline: 2px solid color-mix(in srgb, var(--primary) 60%, transparent); outline-offset: 1px; }
+  .reading-log-empty { display: grid; place-items: center; min-height: 132px; padding: 16px; border: 1px dashed var(--border); border-radius: 10px; color: var(--text-muted); font-size: var(--fs-caption); text-align: center; }
+  .literature-progress-panel { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 22px; }
+  .literature-progress-ring { position: relative; width: 150px; height: 150px; flex: 0 0 auto; }
+  .literature-progress-ring svg { display: block; width: 150px; height: 150px; transform: rotate(-90deg); }
+  .literature-ring-track { stroke: var(--primary-soft); }
+  .literature-ring-fill { stroke: var(--primary); stroke-linecap: round; transition: stroke-dashoffset 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
+  .literature-ring-center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .literature-ring-percent { font-size: 30px; line-height: 1; font-weight: 780; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .literature-ring-caption { margin-top: 5px; font-size: var(--fs-micro); color: var(--text-muted); }
+  .literature-progress-copy { min-width: 0; }
+  .literature-progress-title { color: var(--text-main); font-size: 17px; font-weight: 700; }
+  .literature-progress-note { margin-top: 7px; color: var(--text-muted); font-size: var(--fs-caption); line-height: 1.65; }
+  .literature-status-strip { display: grid; grid-template-columns: var(--read-ratio, 0fr) var(--todo-ratio, 0fr) var(--unknown-ratio, 1fr); height: 12px; margin-top: 17px; overflow: hidden; border-radius: 999px; background: var(--primary-soft); }
+  .literature-status-read { background: linear-gradient(90deg, #18a058, #52c878); }
+  .literature-status-todo { background: linear-gradient(90deg, #f59e0b, #f7c948); }
+  .literature-status-unknown { background: color-mix(in srgb, var(--text-muted) 18%, transparent); }
+  .literature-status-legend { display: flex; flex-wrap: wrap; gap: 9px 13px; margin-top: 12px; color: var(--text-muted); font-size: var(--fs-micro); }
+  .literature-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+  .literature-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .literature-type-list { display: grid; gap: 12px; margin-top: 17px; }
+  .literature-type-row { display: grid; grid-template-columns: minmax(86px, 0.92fr) minmax(100px, 1.4fr) auto; align-items: center; gap: 10px; color: var(--text-sub); font-size: var(--fs-caption); }
+  .literature-type-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); font-weight: 620; }
+  .literature-type-track { height: 7px; overflow: hidden; border-radius: 999px; background: var(--primary-soft); }
+  .literature-type-fill { height: 100%; border-radius: inherit; background: var(--type-color, var(--primary)); }
+  .literature-type-count { font-variant-numeric: tabular-nums; color: var(--text-muted); }
+  .literature-pie-wrap { display: grid; grid-template-columns: minmax(138px, 0.86fr) minmax(0, 1fr); align-items: center; gap: 20px; margin-top: 18px; padding: 16px; border: 1px solid color-mix(in srgb, var(--primary) 12%, var(--border)); border-radius: 14px; background: linear-gradient(145deg, color-mix(in srgb, var(--primary-soft) 34%, var(--card-bg)), color-mix(in srgb, var(--card-bg) 96%, transparent)); }
+  .literature-pie-figure { position: relative; width: 148px; height: 148px; display: grid; place-items: center; }
+  .literature-pie-svg { width: 148px; height: 148px; flex-shrink: 0; overflow: visible; filter: drop-shadow(0 12px 22px rgba(37, 61, 91, 0.10)); }
+  .literature-pie-slice { cursor: pointer; transform-box: view-box; transform-origin: 70px 70px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease, opacity 0.2s ease; outline: none; }
+  .literature-pie-slice:hover, .literature-pie-slice:focus-visible, .literature-pie-slice.is-active { transform: scale(1.045); filter: saturate(1.08) brightness(1.03) drop-shadow(0 4px 6px rgba(37, 61, 91, 0.16)); }
+  .literature-pie-wrap.has-active .literature-pie-slice:not(.is-active) { opacity: 0.82; }
+  .literature-pie-slice:focus-visible { stroke: var(--text-main); stroke-width: 2.5; }
+  .literature-pie-center { position: absolute; inset: 34px; display: grid; place-items: center; text-align: center; border-radius: 50%; background: color-mix(in srgb, var(--card-bg) 96%, transparent); box-shadow: inset 0 0 0 1px var(--border); pointer-events: none; }
+  .literature-pie-center-value { font-size: 22px; line-height: 1; font-weight: 780; color: var(--text-main); font-variant-numeric: tabular-nums; }
+  .literature-pie-center-label { margin-top: 4px; font-size: 10px; color: var(--text-muted); }
+  .literature-pie-legend { display: grid; gap: 8px; min-width: 0; }
+  .literature-pie-legend-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 30px; padding: 6px 8px; border: 1px solid transparent; border-radius: 9px; color: var(--text-sub); font-size: var(--fs-caption); background: color-mix(in srgb, var(--card-bg) 74%, transparent); cursor: pointer; outline: none; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; }
+  .literature-pie-legend-item:hover, .literature-pie-legend-item:focus-visible, .literature-pie-legend-item.is-active { transform: translateX(3px) scale(1.015); border-color: color-mix(in srgb, var(--pie-color) 34%, var(--border)); background: color-mix(in srgb, var(--pie-color) 10%, var(--card-bg)); }
+  .literature-pie-wrap.has-active .literature-pie-legend-item:not(.is-active) { opacity: 0.7; }
+  .literature-pie-legend-item:focus-visible { outline: 2px solid color-mix(in srgb, var(--pie-color) 55%, transparent); outline-offset: 2px; }
+  .literature-pie-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease; }
+  .literature-pie-legend-item.is-active .literature-pie-dot { transform: scale(1.22); box-shadow: 0 0 0 4px color-mix(in srgb, var(--pie-color) 14%, transparent); }
+  .literature-pie-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-main); font-weight: 620; }
+  .literature-pie-pct { font-variant-numeric: tabular-nums; color: var(--text-muted); font-size: var(--fs-micro); margin-left: 4px; }
+  .literature-activity-card { display: grid; gap: 16px; }
+  .literature-activity-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .literature-activity-metric { min-width: 0; padding: 10px 11px; border: 1px solid var(--border); border-radius: 11px; background: color-mix(in srgb, var(--bg) 68%, var(--card-bg)); }
+  .literature-activity-value { font-size: 18px; line-height: 1.1; font-weight: 760; color: var(--text-main); font-variant-numeric: tabular-nums; }
+  .literature-activity-label { margin-top: 4px; font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .literature-heatmap-panel { min-height: 138px; display: grid; align-items: center; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--primary) 12%, var(--border)); border-radius: 14px; background: linear-gradient(145deg, color-mix(in srgb, var(--primary-soft) 24%, var(--card-bg)), color-mix(in srgb, var(--card-bg) 96%, transparent)); }
+  .literature-heatmap-panel .heatmap-wrap { width: 100%; overflow: hidden; padding: 0; }
+  .literature-heatmap-panel .heatmap-timeline { display: flex; gap: 5px; align-items: stretch; width: 100%; min-width: 0; }
+  .literature-heatmap-panel .heatmap-weekdays { flex: 0 0 14px; display: grid; grid-template-rows: repeat(7, 1fr); gap: 3px; padding-top: 13px; color: var(--text-muted); font-size: 9px; line-height: 1; text-align: right; padding-right: 2px; }
+  .literature-heatmap-panel .heatmap-weekdays span { display: grid; place-items: start end; }
+  .literature-heatmap-panel .heatmap-weekdays span:nth-child(even) { visibility: hidden; }
+  .literature-heatmap-panel .heatmap-grids { display: flex; gap: 6px; align-items: stretch; flex: 1; min-width: 0; width: 100%; justify-content: space-between; }
+  .literature-heatmap-panel .heatmap-month { display: flex; flex-direction: column; gap: 2px; flex: 0 0 auto; min-width: 0; align-content: start; }
+  .literature-heatmap-panel .hm-month-label { text-align: center; font-size: 9px; font-weight: 650; color: var(--text-muted); line-height: 1; height: 10px; white-space: nowrap; }
+  .literature-heatmap-panel .heatmap { display: grid; grid-auto-flow: column; grid-auto-columns: var(--hm-cell, 10px); grid-template-rows: repeat(7, var(--hm-cell, 10px)); gap: var(--hm-gap, 2px); flex: 0 0 auto; min-width: 0; width: fit-content; align-content: start; }
+  .literature-heatmap-panel .hm-cell { width: var(--hm-cell, 10px); height: var(--hm-cell, 10px); border-radius: 2px; background: #eef1f3; box-shadow: inset 0 0 0 1px rgba(42, 61, 73, 0.035); transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), filter 0.16s ease; }
+  .literature-heatmap-panel .hm-cell.h1 { background: #a8dca9; }
+  .literature-heatmap-panel .hm-cell.h2 { background: #69bd70; }
+  .literature-heatmap-panel .hm-cell.h3 { background: #368b45; }
+  .literature-heatmap-panel .hm-cell.h4 { background: #1f6931; }
+  .literature-heatmap-panel .hm-cell.future { background: transparent; box-shadow: none; }
+  .literature-heatmap-panel .hm-cell.has-reading-log { cursor: pointer; outline: none; position: relative; z-index: 1; }
+  .literature-heatmap-panel .hm-cell:not(.future):hover, .literature-heatmap-panel .hm-cell.has-reading-log:focus-visible { transform: scale(1.2); filter: saturate(1.08); z-index: 3; }
+  .literature-heatmap-panel .hm-cell.has-reading-log:focus-visible { outline: 2px solid color-mix(in srgb, #1f6931 72%, white); outline-offset: 2px; }
+  .reading-log-tooltip { position: fixed; z-index: 1200; width: min(300px, calc(100vw - 24px)); padding: 11px 12px; border: 1px solid color-mix(in srgb, #368b45 24%, var(--border)); border-radius: 11px; background: color-mix(in srgb, var(--card-bg) 96%, transparent); color: var(--text-main); box-shadow: 0 14px 36px rgba(22, 57, 34, 0.17); backdrop-filter: blur(16px) saturate(145%); pointer-events: none; opacity: 0; transform: translateY(5px) scale(0.98); transition: opacity 0.14s ease, transform 0.14s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reading-log-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
+  .reading-log-tooltip-date { color: var(--text-main); font-size: var(--fs-caption); font-weight: 720; }
+  .reading-log-tooltip-count { margin-left: 6px; color: #368b45; font-size: var(--fs-micro); font-weight: 680; }
+  .reading-log-tooltip-list { display: grid; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .reading-log-tooltip-item { position: relative; padding-left: 10px; color: var(--text-sub); font-size: var(--fs-micro); line-height: 1.5; overflow-wrap: anywhere; }
+  .reading-log-tooltip-item::before { content: ''; position: absolute; left: 0; top: 0.58em; width: 4px; height: 4px; border-radius: 50%; background: #368b45; }
+  @media (max-width: 920px) and (min-width: 641px) {
+    .literature-heatmap-panel .heatmap-grids { flex-wrap: wrap; justify-content: flex-start; }
+    .literature-heatmap-panel .heatmap-month { flex: 0 0 auto; }
+  }
+  @media (max-width: 640px) {
+    .literature-heatmap-panel .heatmap-grids { display: flex; flex-wrap: wrap; gap: 6px; }
+    .literature-heatmap-panel .heatmap-month { flex: 0 0 auto; }
+    .literature-heatmap-panel .heatmap-timeline { flex-direction: column; }
+  }
+  .literature-overview-empty { min-height: 220px; display: grid; place-items: center; text-align: center; color: var(--text-muted); }
+  .literature-overview-empty-title { color: var(--text-main); font-size: var(--fs-body); font-weight: 680; }
+  .literature-overview-empty-desc { max-width: 460px; margin-top: 8px; font-size: var(--fs-caption); line-height: 1.65; }
+
   .knowledge-graph-card { margin-top: var(--sp-5); padding: 0; overflow: hidden; border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border)); box-shadow: 0 18px 50px rgba(37, 61, 91, 0.08); }
   .knowledge-graph-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: var(--sp-5); padding: 22px 24px 20px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, color-mix(in srgb, var(--card-bg) 96%, var(--primary)), var(--card-bg) 62%); }
   .knowledge-graph-eyebrow { margin-bottom: 6px; font-size: 10px; font-weight: 750; letter-spacing: 0.14em; color: var(--primary); text-transform: uppercase; }
@@ -861,12 +1109,6 @@
   .graph-tool-btn { min-height: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--text-sub); font: inherit; font-size: var(--fs-caption); font-weight: 620; padding: 6px 10px; cursor: pointer; transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, color 0.18s ease; }
   .graph-tool-btn:hover, .graph-tool-btn.active { color: var(--primary); background: var(--primary-soft); transform: translateY(-1px); }
   .graph-tool-btn:active { transform: scale(0.98); }
-  .knowledge-graph-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--border); }
-  .graph-stat { position: relative; min-width: 0; padding: 14px 16px 13px; background: color-mix(in srgb, var(--card-bg) 96%, var(--bg)); }
-  .graph-stat:first-child { border-radius: 10px 0 0 10px; }
-  .graph-stat:last-child { border-radius: 0 10px 10px 0; }
-  .graph-stat-value { font-size: 19px; font-weight: 740; color: var(--text-main); line-height: 1.1; font-variant-numeric: tabular-nums; }
-  .graph-stat-label { margin-top: 4px; font-size: var(--fs-micro); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .knowledge-graph-stage { display: grid; grid-template-columns: minmax(0, 1fr) 318px; min-height: 560px; background: var(--bg); }
   .knowledge-graph-shell { position: relative; height: min(68vh, 700px); min-height: 560px; overflow: hidden; isolation: isolate; background: radial-gradient(circle at 42% 42%, rgba(78, 105, 255, 0.11), transparent 34%), radial-gradient(circle at 76% 70%, rgba(20, 184, 166, 0.08), transparent 26%), linear-gradient(160deg, color-mix(in srgb, var(--bg) 90%, #f7f9ff), color-mix(in srgb, var(--bg) 96%, var(--card-bg))); }
   .knowledge-graph-shell::before { content: ''; position: absolute; inset: 0; z-index: 0; opacity: 0.56; background-image: radial-gradient(circle, color-mix(in srgb, var(--text-muted) 34%, transparent) 0.7px, transparent 0.9px); background-size: 22px 22px; mask-image: radial-gradient(ellipse at center, #000 12%, transparent 82%); pointer-events: none; }
@@ -877,6 +1119,7 @@
   .knowledge-graph-canvas.node-hover { cursor: pointer; }
   .knowledge-graph-canvas.dragging { cursor: grabbing; }
   .knowledge-graph-empty { position: absolute; inset: var(--sp-5); z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-2); color: var(--text-muted); text-align: center; padding: var(--sp-6); border: 1px dashed color-mix(in srgb, var(--primary) 28%, var(--border)); border-radius: var(--radius); background: color-mix(in srgb, var(--card-bg) 76%, transparent); backdrop-filter: blur(18px); pointer-events: none; }
+  .knowledge-graph-empty:has([data-action="generate-knowledge-graph"]) { pointer-events: auto; }
   .knowledge-graph-empty .empty-icon { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; margin-bottom: 4px; color: var(--primary); background: var(--primary-soft); }
   .knowledge-graph-empty .empty-title { font-size: var(--fs-body); font-weight: 650; color: var(--text-main); }
   .knowledge-graph-side { border-left: 1px solid var(--border); background: color-mix(in srgb, var(--card-bg) 93%, var(--bg)); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
@@ -909,8 +1152,9 @@
   .graph-node-symbol.author { border-radius: 50%; border: 2px solid #6f8098; background: color-mix(in srgb, var(--card-bg) 78%, #6f8098); box-shadow: none; }
   .graph-node-symbol.author::before { content: ''; position: absolute; width: 3px; height: 3px; left: 2.5px; top: 1.5px; border-radius: 50%; background: #6f8098; }
   .graph-node-symbol.author::after { content: ''; position: absolute; width: 6px; height: 3px; left: 1px; bottom: 1.5px; border-radius: 5px 5px 2px 2px; background: #6f8098; }
-  .graph-node-symbol.keyword { border-radius: 50%; background: linear-gradient(145deg, #a277ff, #7552dc); }
-  .graph-node-symbol.keyword::after { content: ''; position: absolute; inset: 3.5px; border-radius: 50%; background: rgba(255,255,255,0.88); }
+  .graph-node-symbol.concept { border-radius: 50%; background: linear-gradient(145deg, #a277ff, #7552dc); }
+  .graph-node-symbol.concept::after { content: ''; position: absolute; inset: 3.5px; border-radius: 50%; background: rgba(255,255,255,0.88); }
+  .graph-node-symbol.entity { background: linear-gradient(145deg, #f3a65a, #d97735); clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); }
   .graph-legend-line { width: 24px; height: 2px; border-radius: 999px; flex: 0 0 auto; }
   .graph-legend-count { color: var(--text-muted); font-size: var(--fs-micro); }
   .knowledge-graph-tip { position: absolute; left: 14px; bottom: 14px; z-index: 3; max-width: min(600px, calc(100% - 28px)); padding: 8px 11px; border: 1px solid color-mix(in srgb, var(--primary) 16%, var(--border)); border-radius: 9px; background: color-mix(in srgb, var(--card-bg) 88%, transparent); color: var(--text-muted); font-size: 10px; line-height: 1.5; backdrop-filter: blur(14px); pointer-events: none; box-shadow: 0 8px 24px rgba(15, 20, 27, 0.06); }
@@ -919,6 +1163,183 @@
   .knowledge-graph-tooltip .tip-title { font-size: var(--fs-small); font-weight: 700; line-height: 1.45; }
   .knowledge-graph-tooltip .tip-meta { margin-top: 5px; color: var(--text-muted); font-size: var(--fs-caption); line-height: 1.5; }
   @keyframes graphLive { 0%, 100% { opacity: 0.65; transform: scale(0.88); } 50% { opacity: 1; transform: scale(1); } }
+
+  /* Obsidian-inspired graph workspace */
+  .knowledge-graph-card {
+    --graph-bg: #f5f7fb;
+    --graph-panel: #ffffff;
+    --graph-panel-soft: #f0f2f6;
+    --graph-border: rgba(61, 72, 92, 0.12);
+    --graph-text: #303644;
+    --graph-muted: #7d8493;
+    --graph-accent: #7663cf;
+    border-color: var(--graph-border);
+    border-radius: 12px;
+    background: var(--graph-bg);
+    box-shadow: 0 18px 52px rgba(0, 0, 0, 0.20);
+    color: var(--graph-text);
+  }
+  [data-theme="dark"] .knowledge-graph-card {
+    --graph-bg: #1e1e1e;
+    --graph-panel: #242424;
+    --graph-panel-soft: #303030;
+    --graph-border: rgba(255, 255, 255, 0.09);
+    --graph-text: #dcddde;
+    --graph-muted: #99999f;
+    --graph-accent: #a88bfa;
+  }
+  .knowledge-graph-head {
+    position: relative;
+    z-index: 6;
+    padding: 16px 18px;
+    border-color: var(--graph-border);
+    background: var(--graph-panel);
+  }
+  .knowledge-graph-eyebrow { color: var(--graph-accent); opacity: 0.82; letter-spacing: 0.11em; }
+  .knowledge-graph-title { color: var(--graph-text); font-size: clamp(18px, 2vw, 22px); }
+  .knowledge-graph-title .graph-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: #7f6ad7;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 7px 20px rgba(127,106,215,.22);
+  }
+  .knowledge-graph-meta { margin-top: 6px; color: var(--graph-muted); }
+  .graph-scope-control, .knowledge-graph-tools {
+    border-color: var(--graph-border);
+    border-radius: 7px;
+    background: var(--graph-panel-soft);
+    color: var(--graph-muted);
+    box-shadow: none;
+  }
+  .graph-scope-select {
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--graph-panel-soft) 72%, var(--graph-text));
+    color: var(--graph-text);
+  }
+  .graph-live-badge {
+    min-height: 38px;
+    border-color: #80d5c9;
+    border-radius: 7px;
+    background: #e8f8f5;
+    color: #0b8176;
+    font-weight: 720;
+    opacity: 1;
+    box-shadow: inset 0 0 0 1px rgba(11,129,118,.04), 0 1px 3px rgba(11,129,118,.08);
+  }
+  .graph-live-badge::before { background: #0fa995; box-shadow: 0 0 0 4px rgba(15,169,149,.14); }
+  [data-theme="dark"] .graph-live-badge { border-color: rgba(116,225,209,.34); background: rgba(15,169,149,.12); color: #74e1d1; }
+  .knowledge-graph-tools {
+    gap: 3px;
+    padding: 4px;
+    background: var(--graph-panel);
+    border-color: color-mix(in srgb, var(--graph-text) 18%, var(--graph-border));
+  }
+  .graph-tool-btn {
+    border: 1px solid color-mix(in srgb, var(--graph-text) 10%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--graph-panel-soft) 82%, var(--graph-panel));
+    color: var(--graph-text);
+    font-weight: 660;
+    opacity: 1;
+    box-shadow: 0 1px 2px rgba(29, 37, 54, 0.06);
+  }
+  .graph-tool-btn:hover, .graph-tool-btn.active {
+    border-color: color-mix(in srgb, var(--graph-accent) 38%, var(--graph-border));
+    color: var(--graph-accent);
+    background: color-mix(in srgb, var(--graph-accent) 13%, var(--graph-panel));
+    transform: none;
+  }
+  .graph-tool-btn:hover { box-shadow: 0 3px 9px color-mix(in srgb, var(--graph-accent) 13%, transparent); }
+  .graph-tool-btn.active { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--graph-accent) 10%, transparent); }
+  .graph-tool-btn:focus-visible { outline: 2px solid var(--graph-accent); outline-offset: 2px; }
+  .graph-tool-btn:disabled { color: var(--graph-muted); background: var(--graph-panel-soft); opacity: .46; cursor: not-allowed; box-shadow: none; }
+  .graph-tool-btn.graph-fullscreen-btn { display: inline-flex; align-items: center; gap: 6px; }
+  .graph-tool-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+  .knowledge-graph-stage { min-height: 560px; background: var(--graph-bg); }
+  .knowledge-graph-shell {
+    background:
+      radial-gradient(circle at 46% 44%, rgba(118,99,207,.09), transparent 38%),
+      var(--graph-bg);
+  }
+  [data-theme="dark"] .knowledge-graph-shell {
+    background:
+      radial-gradient(circle at 46% 44%, rgba(127,106,215,.10), transparent 38%),
+      var(--graph-bg);
+  }
+  .knowledge-graph-shell::before {
+    opacity: .33;
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--graph-muted) 45%, transparent) .55px, transparent .75px);
+    background-size: 24px 24px;
+    mask-image: none;
+  }
+  .knowledge-graph-shell::after { background: radial-gradient(ellipse at center, transparent 58%, rgba(54,64,86,.08) 100%); }
+  [data-theme="dark"] .knowledge-graph-shell::after {
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.20) 100%);
+  }
+  .knowledge-graph-empty {
+    border-color: rgba(168,139,250,.20);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--graph-panel) 82%, transparent);
+    color: var(--graph-muted);
+    backdrop-filter: blur(12px);
+  }
+  .knowledge-graph-empty .empty-icon { color: #b9a5f8; background: rgba(168,139,250,.12); }
+  .knowledge-graph-empty .empty-title { color: var(--graph-text); }
+  .knowledge-graph-side {
+    border-color: var(--graph-border);
+    background: var(--graph-panel);
+    scrollbar-color: #555 transparent;
+  }
+  .graph-insight-panel {
+    border-color: var(--graph-border);
+    border-radius: 8px;
+    background: var(--graph-panel-soft);
+    box-shadow: none;
+  }
+  .graph-insight-title, .graph-node-name { color: var(--graph-text); }
+  .graph-insight-desc, .graph-node-summary, .graph-node-relation, .graph-legend-item { color: var(--graph-muted); }
+  .graph-node-detail {
+    border-color: rgba(168,139,250,.28);
+    background: linear-gradient(145deg, rgba(168,139,250,.10), var(--graph-panel-soft) 55%);
+  }
+  .graph-node-kicker { color: #b9a5f8; }
+  .graph-node-metric { border-color: var(--graph-border); background: var(--graph-panel); color: var(--graph-muted); }
+  .graph-node-placeholder-icon { color: #b9a5f8; background: rgba(168,139,250,.12); }
+  .knowledge-graph-tip {
+    border-color: var(--graph-border);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--graph-panel) 88%, transparent);
+    color: var(--graph-muted);
+    box-shadow: 0 5px 18px rgba(0,0,0,.18);
+  }
+  .knowledge-graph-tooltip {
+    border-color: rgba(168,139,250,.28);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--graph-panel) 96%, transparent);
+    color: var(--graph-text);
+  }
+  .knowledge-graph-tooltip .tip-meta { color: var(--graph-muted); }
+  .knowledge-graph-card.is-web-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-toast) - 10);
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--graph-bg);
+  }
+  .knowledge-graph-card.is-web-fullscreen .knowledge-graph-head { padding: 12px 18px; }
+  .knowledge-graph-card.is-web-fullscreen .knowledge-graph-head { flex: 0 0 auto; }
+  .knowledge-graph-card.is-web-fullscreen .knowledge-graph-stage { flex: 1 1 auto; min-height: 0; }
+  .knowledge-graph-card.is-web-fullscreen .knowledge-graph-shell { height: 100%; min-height: 0; }
+  .knowledge-graph-card.is-web-fullscreen .knowledge-graph-side { min-height: 0; }
+  body.graph-fullscreen-open { overflow: hidden; }
 
   .note-reader-overlay { position: fixed; inset: 0; z-index: calc(var(--z-modal) + 20); background: var(--bg); display: none; flex-direction: column; }
   .note-reader-overlay.show { display: flex; animation: readerIn 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -997,6 +1418,7 @@
     .theme-toggle { justify-content: center; padding: var(--sp-2); }
     .theme-toggle .tt-label { display: none; }
     .main { padding: var(--sp-6) var(--sp-5) 120px; }
+    .research-idea-workspace { grid-template-columns: 174px minmax(270px, .9fr) minmax(300px, 1.1fr); }
   }
 
   /* Mobile: drawer */
@@ -1014,6 +1436,21 @@
     .sidebar.open { transform: translateX(0); }
     .main { padding: 64px var(--sp-4) 120px; }
     .card-grid { grid-template-columns: 1fr; }
+    .literature-overview-inner, .literature-middle-col { grid-template-columns: 1fr; }
+    .research-idea-workspace { grid-template-columns: 1fr; min-height: 0; }
+    .research-idea-sidebar { border-right: 0; border-bottom: 1px solid var(--border); }
+    .research-idea-sidebar-section { display: flex; flex-wrap: wrap; gap: 5px; }
+    .research-idea-sidebar-section + .research-idea-sidebar-section { margin-top: 14px; }
+    .research-idea-sidebar-label { width: 100%; }
+    .research-idea-filter { width: auto; flex: 0 1 auto; }
+    .research-idea-list-pane { max-height: 380px; border-right: 0; border-bottom: 1px solid var(--border); }
+    .research-idea-detail { min-height: 360px; padding: 18px; }
+    .literature-pie-wrap { grid-template-columns: 1fr; justify-items: center; }
+    .literature-overview-panel, .literature-checkin-panel { padding: 18px; }
+    .literature-progress-panel { grid-template-columns: 1fr; justify-items: start; }
+    .literature-progress-ring { width: 132px; height: 132px; }
+    .literature-progress-ring svg { width: 132px; height: 132px; }
+    .literature-type-row { grid-template-columns: minmax(72px, 0.9fr) minmax(72px, 1fr) auto; }
     .zotero-note-preview { grid-template-columns: 1fr; }
     .zotero-read-btn { justify-self: start; }
     .knowledge-graph-head { grid-template-columns: 1fr; }
@@ -1022,10 +1459,14 @@
     .graph-scope-select { flex: 1; max-width: none; }
     .knowledge-graph-tools { width: 100%; justify-content: space-between; }
     .graph-tool-btn { flex: 1; padding-left: 8px; padding-right: 8px; }
-    .knowledge-graph-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: var(--sp-3); }
     .knowledge-graph-stage { grid-template-columns: 1fr; min-height: 0; }
     .knowledge-graph-shell { height: 430px; min-height: 360px; }
     .knowledge-graph-side { border-left: 0; border-top: 1px solid var(--border); }
+    .knowledge-graph-card.is-web-fullscreen .knowledge-graph-head { max-height: none; overflow: visible; }
+    .knowledge-graph-card.is-web-fullscreen .graph-live-badge { display: none; }
+    .knowledge-graph-card.is-web-fullscreen .knowledge-graph-stage { grid-template-rows: minmax(52vh, 1fr) auto; overflow-y: auto; }
+    .knowledge-graph-card.is-web-fullscreen .knowledge-graph-shell { height: 62vh; min-height: 360px; }
+    .knowledge-graph-card.is-web-fullscreen .knowledge-graph-side { max-height: none; }
     .zotero-pagination { align-items: stretch; flex-direction: column; }
     .zotero-load-more { width: 100%; }
     .note-reader-toolbar { align-items: flex-start; }
@@ -1353,9 +1794,86 @@ const DEFAULT_DATA = {
         { "id": "ms2", "icon": "🔵", "title": "实验设计", "desc": "进行中 · 预计 2 周内完成", "status": "active" },
         { "id": "ms3", "icon": "⚪", "title": "数据收集", "desc": "待开始", "status": "pending" },
         { "id": "ms4", "icon": "⚪", "title": "论文撰写", "desc": "待开始", "status": "pending" }
+      ],
+      "readingLogs": [
+        { "id": "rl1", "date": "2026-07-25", "title": "Attention Is All You Need", "type": "会议论文" },
+        { "id": "rl2", "date": "2026-07-27", "title": "BERT: Pre-training of Deep Bidirectional Transformers", "type": "会议论文" },
+        { "id": "rl3", "date": "2026-07-28", "title": "GPT-3: Language Models are Few-Shot Learners", "type": "会议论文" },
+        { "id": "rl4", "date": "2026-07-30", "title": "LLaMA: Open and Efficient Foundation Language Models", "type": "预印本" },
+        { "id": "rl5", "date": "2026-08-01", "title": "A Survey of Large Language Models", "type": "期刊论文" },
+        { "id": "rl6", "date": "2026-08-02", "title": "Chain-of-Thought Prompting", "type": "会议论文" },
+      { "id": "rl7", "date": "2026-08-03", "title": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks", "type": "会议论文" }
+    ],
+    "inspirations": {
+      "items": [
+        {
+          "id": "ri1",
+          "title": "将阅读轨迹作为 RAG 的个性化检索信号",
+          "content": "不同研究者的阅读序列能够反映其问题空间。可尝试将近期阅读论文的主题分布编码为查询侧先验，并比较个性化重排对科研问答质量的影响。",
+          "category": "研究方法",
+          "tags": ["RAG", "个性化", "阅读行为"],
+          "status": "待验证",
+          "sourceType": "论文阅读",
+          "sourceReference": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks",
+          "project": "AI 辅助科研写作效率研究",
+          "favorite": true,
+          "archived": false,
+          "createdAt": "2026-08-05T10:40:00",
+          "updatedAt": "2026-08-05T10:40:00",
+          "occurredAt": "2026-08-05"
+        },
+        {
+          "id": "ri2",
+          "title": "用失败样本驱动论文写作辅助的自我修正",
+          "content": "把导师批注、审稿意见和历史改稿版本抽取为失败案例，构建面向论证完整性与证据匹配度的修正提示。优先验证其对方法章节改写的收益。",
+          "category": "研究设计",
+          "tags": ["LLM", "论文写作", "自我修正"],
+          "status": "进行中",
+          "sourceType": "会议讨论",
+          "sourceReference": "组会记录 · 8 月第 1 周",
+          "project": "AI 辅助科研写作效率研究",
+          "favorite": false,
+          "archived": false,
+          "createdAt": "2026-08-04T16:20:00",
+          "updatedAt": "2026-08-05T09:15:00",
+          "occurredAt": "2026-08-04"
+        },
+        {
+          "id": "ri3",
+          "title": "构建面向科研任务的多维引用可信度评分",
+          "content": "引用是否可信不应只看相关性，还可结合出处类型、证据跨度、时效性和与研究问题的直接关联。先在文献综述摘要任务上设计小规模评测集。",
+          "category": "评估与基准",
+          "tags": ["评测", "引用", "可信度"],
+          "status": "待整理",
+          "sourceType": "实验观察",
+          "sourceReference": "文献综述写作试验",
+          "project": "AI 辅助科研写作效率研究",
+          "favorite": false,
+          "archived": false,
+          "createdAt": "2026-08-02T14:10:00",
+          "updatedAt": "2026-08-02T14:10:00",
+          "occurredAt": "2026-08-02"
+        },
+        {
+          "id": "ri4",
+          "title": "将研究问题拆解为可追踪的证据链",
+          "content": "每个研究问题拆成主张、所需证据、候选数据和反例，使后续文献阅读与实验设计可以直接回链到问题本身。",
+          "category": "知识组织",
+          "tags": ["研究问题", "证据链", "知识管理"],
+          "status": "已采用",
+          "sourceType": "个人复盘",
+          "sourceReference": "科研工作流复盘",
+          "project": "科研工作台",
+          "favorite": true,
+          "archived": true,
+          "createdAt": "2026-07-28T11:30:00",
+          "updatedAt": "2026-08-01T18:00:00",
+          "occurredAt": "2026-07-28"
+        }
       ]
     }
-  },
+  }
+},
   "weeklyReview": {
     "week": 31,
     "good": "连续 5 天更新内容，选题质量提升明显",
@@ -1456,26 +1974,35 @@ class StorageManager {
   }
 
   async init() {
+    // Never let a stale File System Access handle block the whole workspace.
+    // Some embedded Chromium builds can leave IndexedDB handle reads or
+    // permission queries pending indefinitely after a browser restart.
+    const withStartupTimeout = (promise, fallback, ms = 350) => Promise.race([
+      promise.catch(() => fallback),
+      new Promise((resolve) => setTimeout(() => resolve(fallback), ms))
+    ]);
+
+    this.mode = 'local';
     if (this.isFSAASupported) {
-      this.dirHandle = await this._idbGet('dirHandle');
+      this.dirHandle = await withStartupTimeout(this._idbGet('dirHandle'), null);
       if (this.dirHandle) {
-        const perm = await this.dirHandle.queryPermission({ mode: 'read' });
+        const perm = await withStartupTimeout(
+          this.dirHandle.queryPermission({ mode: 'read' }),
+          'prompt'
+        );
         if (perm === 'granted') {
           this.mode = 'fsaa';
-          this.fileHandle = await this._getFileHandle({ create: false });
+          this.fileHandle = await withStartupTimeout(
+            this._getFileHandle({ create: false }),
+            null
+          );
           return true;
         }
-        try {
-          const req = await this.dirHandle.requestPermission({ mode: 'read' });
-          if (req === 'granted') {
-            this.mode = 'fsaa';
-            this.fileHandle = await this._getFileHandle({ create: false });
-            return true;
-          }
-        } catch (e) { /* ignore */ }
+        // Browsers require requestPermission() to run from a user gesture.
+        // Calling it during startup can leave initialization pending forever.
+        // Fall back to local storage; the user can reconnect from 数据管理.
       }
     }
-    this.mode = 'local';
     return false;
   }
 
@@ -1656,6 +2183,21 @@ class StorageManager {
 const storage = new StorageManager();
 let DATA = null;
 let currentPage = 'dashboard';
+let activeReadingLogTag = '';
+let researchInspirationState = {
+  query: '',
+  scope: 'active',
+  category: '',
+  tag: '',
+  sort: 'updated',
+  selectedId: ''
+};
+let researchIdeaModalState = {
+  mode: 'create',      // 'create' | 'edit'
+  id: '',
+  saving: false,
+  tags: []
+};
 let saveState = 'idle';         // 'idle' | 'saving' | 'saved' | 'error'
 let conflictOpen = false;
 let undoState = null;           // { tid, timer }
@@ -1678,7 +2220,12 @@ let zoteroState = {
   graphSelectedNodeId: null,
   graphAllItems: [],
   graphAllCacheKey: '',
-  graphAllLoading: false
+  graphAllLoading: false,
+  connectRequestVersion: 0,
+  itemsRequestVersion: 0,
+  readStatusByKey: {},
+  readStatusLoading: false,
+  readStatusRequestVersion: 0
 };
 
 // ========================================================================
@@ -1700,6 +2247,10 @@ function escapeHTML(str) {
   const div = document.createElement('div');
   div.textContent = str == null ? '' : String(str);
   return div.innerHTML;
+}
+
+function escapeAttribute(str) {
+  return escapeHTML(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function todayKey(d = new Date()) {
@@ -2413,8 +2964,446 @@ function statBox(path, value, label, readonly) {
   return '<div class="stat-box"><div class="stat-num" data-stat="' + path + '" title="点击编辑">' + escapeHTML(String(value)) + '</div><div class="stat-label">' + escapeHTML(label) + '</div></div>';
 }
 
+function zoteroItemTypeLabel(type) {
+  const labels = {
+    journalArticle: '期刊论文',
+    conferencePaper: '会议论文',
+    book: '图书',
+    bookSection: '图书章节',
+    thesis: '学位论文',
+    report: '报告',
+    preprint: '预印本',
+    webpage: '网页',
+    patent: '专利',
+    dataset: '数据集',
+    manuscript: '手稿',
+    computerProgram: '软件',
+    presentation: '演示文稿',
+    map: '地图',
+    document: '文档'
+  };
+  return labels[type] || type || '其他文献';
+}
+
+function readingLogTags(log) {
+  const source = Array.isArray(log.tags) ? log.tags.join(',') : (log.tags || log.type || '未分类');
+  return String(source)
+    .split(/[,，;；、\s]+/)
+    .map(tag => tag.trim())
+    .filter(Boolean);
+}
+
+function readingLogTagLabel(log) {
+  const tags = readingLogTags(log);
+  return tags.length ? tags.join(' / ') : '未分类';
+}
+
+async function zoteroReadStatusForTitle(title) {
+  if (zoteroState.status !== 'connected') return null;
+  const titleKey = readingLogTitleKey(title);
+  const item = (zoteroState.items || []).find(candidate => readingLogTitleKey(candidate.title) === titleKey);
+  if (!item || !item.key) return null;
+  const cached = (zoteroState.readStatusByKey || {})[item.key];
+  if (cached && cached.checked) return { ...cached, item };
+  try {
+    const result = await zoteroFetch('/items/' + encodeURIComponent(item.key) + '/children');
+    const note = findAIReadingNoteByConvention(result.children || []);
+    const status = { checked: true, read: Boolean(note), noteTitle: note ? note.title || '' : '' };
+    zoteroState.readStatusByKey = { ...(zoteroState.readStatusByKey || {}), [item.key]: status };
+    return { ...status, item };
+  } catch (error) {
+    return { checked: true, read: false, error: error.message || '读取失败', item };
+  }
+}
+
+const READING_LOG_RETENTION_MONTHS = 6;
+
+function readingLogTitleKey(title) {
+  return String(title || '')
+    .normalize('NFKC')
+    .toLocaleLowerCase('zh-CN')
+    .replace(/[\s\p{P}\p{S}_]+/gu, '');
+}
+
+function readingLogRangeStart(date = new Date()) {
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+  start.setDate(1);
+  start.setMonth(start.getMonth() - (READING_LOG_RETENTION_MONTHS - 1));
+  return start;
+}
+
+function pruneReadingLogs() {
+  const research = DATA && DATA.learning && DATA.learning.research;
+  if (!research || !Array.isArray(research.readingLogs)) return false;
+  const cutoffKey = todayKey(readingLogRangeStart());
+  const originalLength = research.readingLogs.length;
+  research.readingLogs = research.readingLogs.filter(log => String(log.date || '') >= cutoffKey);
+  return research.readingLogs.length !== originalLength;
+}
+
+function readingLogHeatmapHTML() {
+  const logs = DATA.learning.research.readingLogs || [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const rangeStart = readingLogRangeStart(today);
+  const counts = {};
+  const titlesByDate = {};
+  for (const log of logs) {
+    if (log.date >= todayKey(rangeStart) && log.date <= todayKey(today)) {
+      counts[log.date] = (counts[log.date] || 0) + 1;
+      if (!titlesByDate[log.date]) titlesByDate[log.date] = [];
+      titlesByDate[log.date].push(log.title);
+    }
+  }
+  const titleHint = dateKey => {
+    const titles = (titlesByDate[dateKey] || []).filter(Boolean);
+    if (!titles.length) return '';
+    return '\n\n打卡文献（' + titles.length + ' 篇）：\n' + titles.map(t => '· ' + String(t).replace(/'/g, '&#39;')).join('\n');
+  };
+
+  const panel = document.querySelector('.literature-heatmap-panel');
+  const containerWidth = (panel ? panel.clientWidth : 420) - 28;
+  const containerHeight = (panel ? panel.clientHeight : 150) - 26;
+
+  const months = [];
+  let monthCursor = new Date(rangeStart);
+  while (monthCursor <= today) {
+    months.push({
+      year: monthCursor.getFullYear(),
+      month: monthCursor.getMonth(),
+      label: (monthCursor.getMonth() + 1) + '月'
+    });
+    monthCursor.setMonth(monthCursor.getMonth() + 1);
+  }
+
+  let monthHTML = '';
+  let maxColumns = 0;
+  for (const month of months) {
+    const first = new Date(month.year, month.month, 1);
+    const daysInMonth = new Date(month.year, month.month + 1, 0).getDate();
+    maxColumns = Math.max(maxColumns, first.getDay() + daysInMonth);
+  }
+  const cell = Math.max(6, Math.min(12, Math.floor((containerWidth - (months.length - 1) * 6 - 24) / maxColumns)));
+  const cellSize = Math.max(5, Math.min(cell, Math.floor((containerHeight - 30) / 7)));
+  const monthWidth = maxColumns * cellSize + (maxColumns - 1) * 2;
+  const gridWidth = monthWidth * months.length + (months.length - 1) * 6;
+  for (const month of months) {
+    const first = new Date(month.year, month.month, 1);
+    const daysInMonth = new Date(month.year, month.month + 1, 0).getDate();
+    const lead = first.getDay();
+    // 当前月：预留今天之后的空白格（透明占位），保持月份形状完整
+    const isCurrentMonth = month.year === today.getFullYear() && month.month === today.getMonth();
+    let cells = '';
+    for (let blank = 0; blank < lead; blank++) {
+      cells += '<div class="hm-cell future" aria-hidden="true"></div>';
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+      const cursor = new Date(month.year, month.month, day);
+      if (cursor < rangeStart) {
+        cells += '<div class="hm-cell future" aria-hidden="true"></div>';
+        continue;
+      }
+      if (cursor > today) {
+        if (isCurrentMonth) {
+          cells += '<div class="hm-cell future" aria-hidden="true"></div>';
+        }
+        continue;
+      }
+      const key = todayKey(cursor);
+      const count = counts[key] || 0;
+      const titles = (titlesByDate[key] || []).filter(Boolean);
+      const level = count === 0 ? '' : count === 1 ? 'h1' : count === 2 ? 'h2' : count === 3 ? 'h3' : 'h4';
+      const detailAttrs = titles.length
+        ? ' has-reading-log" tabindex="0" role="button" aria-label="' + escapeAttribute(key + '，打卡 ' + titles.length + ' 篇文献') + '" data-reading-date="' + escapeAttribute(key) + '" data-reading-titles="' + escapeAttribute(JSON.stringify(titles)) + '"'
+        : '" aria-label="' + escapeAttribute(key + '，无文献打卡') + '"';
+      cells += '<div class="hm-cell ' + level + detailAttrs + '></div>';
+    }
+    monthHTML += '<div class="heatmap-month">' +
+      '<div class="hm-month-label">' + month.label + '</div>' +
+      '<div class="heatmap">' + cells + '</div>' +
+    '</div>';
+  }
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'].map(day => '<span>' + day + '</span>').join('');
+  return '<div class="heatmap-wrap" data-hm-grid-width="' + gridWidth + '" data-hm-cell="' + cellSize + '">' +
+    '<div class="heatmap-timeline"><div class="heatmap-weekdays">' + weekdays + '</div><div class="heatmap-grids">' + monthHTML + '</div></div>' +
+  '</div>';
+}
+
+function fitReadingLogHeatmap() {
+  const wrap = document.querySelector('.literature-heatmap-panel .heatmap-wrap[data-hm-grid-width]');
+  if (!wrap) return;
+  const grids = wrap.querySelector('.heatmap-grids');
+  const months = grids ? Array.from(grids.children) : [];
+  if (!months.length) return;
+  const weekdays = wrap.querySelector('.heatmap-weekdays');
+  const weekdaysWidth = weekdays ? weekdays.getBoundingClientRect().width : 0;
+  // 以面板总宽为可靠基准：wrap.clientWidth 在首帧可能被 flex 压缩
+  const panel = wrap.closest('.literature-heatmap-panel');
+  const panelWidth = panel ? panel.clientWidth : wrap.clientWidth;
+  const available = Math.max(120, panelWidth - 28 - weekdaysWidth - 6 - 4);
+  const monthCount = months.length;
+  const columnsByMonth = months.map(month => {
+    const grid = month.querySelector('.heatmap');
+    return grid ? Math.max(1, Math.ceil(grid.children.length / 7)) : 1;
+  });
+  const totalColumns = columnsByMonth.reduce((sum, n) => sum + n, 0);
+  if (!totalColumns) return;
+  const monthGaps = (monthCount - 1) * 6;
+  const cellGap = 2;
+  const cellGaps = (totalColumns - monthCount) * cellGap;
+  const applyCell = size => {
+    columnsByMonth.forEach((columns, index) => {
+      const grid = months[index].querySelector('.heatmap');
+      if (grid) {
+        grid.style.setProperty('--hm-cell', size + 'px');
+        grid.style.setProperty('--hm-gap', cellGap + 'px');
+      }
+    });
+  };
+  // 优先按总列数均分格子尺寸；本月完整 37 列月份会占用更多宽度，但各月按自身列数自适应
+  let cell = Math.max(3, Math.floor((available - monthGaps - cellGaps) / totalColumns));
+  applyCell(cell);
+  // 精确核算总宽 = Σ(列数*格子 + (列数-1)*gap) + 月份间距；超出可用宽度则降一格
+  const totalWidth = columnsByMonth.reduce((sum, columns) => sum + (columns * cell + (columns - 1) * cellGap), 0) + monthGaps;
+  if (totalWidth > available && cell > 3) {
+    cell = Math.max(3, cell - 1);
+    applyCell(cell);
+  }
+  grids.style.width = '100%';
+}
+
+function literatureOverviewStats() {
+  const connected = zoteroState.status === 'connected' || zoteroState.status === 'loading';
+  const logs = DATA.learning.research.readingLogs || [];
+  const logTypes = new Map();
+  let tagTotal = 0;
+  logs.forEach(log => {
+    const tags = readingLogTags(log);
+    tagTotal += tags.length || 1;
+    (tags.length ? tags : ['未分类']).forEach(label => {
+      logTypes.set(label, (logTypes.get(label) || 0) + 1);
+    });
+  });
+  const types = Array.from(logTypes.entries())
+    .map(([label, count]) => ({ label, count, percent: tagTotal ? Math.round(count / tagTotal * 100) : 0 }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+  const dates = logs.map(l => l.date).filter(Boolean).sort();
+  const recentYears = dates.length ? dates[dates.length - 1] + ' / ' + dates[0] : '暂无记录';
+  const daysWithLogs = new Set(logs.map(l => l.date).filter(Boolean)).size;
+  const today = todayKey(new Date());
+  const todayCount = logs.filter(log => log.date === today).length;
+  const latestDate = dates.length ? dates[dates.length - 1] : '';
+  return { total: logs.length, loaded: logs.length, types, recentYears, tagged: tagTotal, localLogs: logs.length, connected, daysWithLogs, todayCount, latestDate };
+}
+
+function literatureTypePieChartHTML(stats) {
+  if (!stats.types || !stats.types.length) return '<div class="literature-pie-wrap"><div class="literature-pie-figure"><div class="literature-pie-center"><div><div class="literature-pie-center-value">0</div><div class="literature-pie-center-label">文献数量</div></div></div></div><div class="literature-pie-legend"><div class="literature-pie-legend-item"><span class="literature-pie-dot" style="background:#b0c4d8"></span><span class="literature-pie-label">未分类</span><span class="literature-pie-pct">0</span></div></div></div>';
+  const colors = ['#4d83ff', '#14b8a6', '#e38a42', '#8b5cf6', '#64748b', '#f84d7d', '#22c55e', '#a855f7'];
+  const total = stats.types.reduce((sum, t) => sum + t.count, 0);
+  const cx = 70, cy = 70, r = 58;
+  let cumulative = 0;
+  let slices = '';
+  let legend = '';
+  stats.types.forEach((type, i) => {
+    const angle = (type.count / total) * 2 * Math.PI;
+    const startAngle = cumulative;
+    cumulative += angle;
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(startAngle + angle);
+    const y2 = cy + r * Math.sin(startAngle + angle);
+    const largeArc = angle > Math.PI ? 1 : 0;
+    const color = colors[i % colors.length];
+    const accessibleLabel = type.label + '，' + type.count + ' 篇，占 ' + type.percent + '%';
+    slices += '<path class="literature-pie-slice" data-pie-index="' + i + '" data-pie-label="' + escapeHTML(type.label) + '" data-pie-count="' + type.count + '" tabindex="0" role="button" aria-label="' + escapeHTML(accessibleLabel) + '" d="M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2) +
+      ' A' + r + ',' + r + ' 0 ' + largeArc + ',1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z" ' +
+      'fill="' + color + '" stroke="var(--card-bg)" stroke-width="2">' +
+      '<title>' + escapeHTML(type.label) + ': ' + type.count + ' (' + type.percent + '%)</title></path>';
+    legend += '<div class="literature-pie-legend-item" data-pie-index="' + i + '" data-pie-label="' + escapeHTML(type.label) + '" data-pie-count="' + type.count + '" tabindex="0" role="button" aria-label="突出显示' + escapeHTML(accessibleLabel) + '" style="--pie-color:' + color + '">' +
+      '<span class="literature-pie-dot" style="background:' + color + '"></span>' +
+      '<span class="literature-pie-label">' + escapeHTML(type.label) + '</span>' +
+      '<span class="literature-pie-pct">' + type.count + '</span>' +
+    '</div>';
+  });
+  return '<div class="literature-pie-wrap">' +
+    '<div class="literature-pie-figure">' +
+      '<svg class="literature-pie-svg" viewBox="0 0 140 140" width="148" height="148" aria-label="文献类型分布饼图">' + slices + '</svg>' +
+      '<div class="literature-pie-center"><div><div class="literature-pie-center-value">' + (stats.total || 0) + '</div><div class="literature-pie-center-label">文献数量</div></div></div>' +
+    '</div>' +
+    '<div class="literature-pie-legend">' + legend + '</div>' +
+  '</div>';
+}
+
+function literatureOverviewHTML() {
+  const stats = literatureOverviewStats();
+
+  // --- Left column: overview metrics ---
+  const monthDays = new Set((DATA.learning.research.readingLogs || []).filter(log => String(log.date || '').slice(0, 7) === todayKey(new Date()).slice(0, 7)).map(log => log.date)).size;
+  const rhythmPercent = Math.min(100, Math.round((stats.daysWithLogs || 0) / 20 * 100));
+  const tagChips = stats.types.length
+    ? stats.types.map(type => {
+      const isActive = activeReadingLogTag === type.label;
+      const label = escapeHTML(type.label);
+      return '<button class="literature-tag-chip' + (isActive ? ' is-active' : '') + '" type="button" data-reading-tag="' + escapeAttribute(type.label) + '" aria-pressed="' + isActive + '" title="筛选标签：' + label + '">' + label + '</button>';
+    }).join('')
+    : '<span class="literature-tag-chip">未分类</span>';
+
+  const leftHTML = '<section class="literature-overview-panel literature-overview-main">' +
+    '<div>' +
+      '<div class="literature-overview-kicker">Reading Overview</div>' +
+      '<div class="literature-overview-title">本地阅读总览</div>' +
+      '<div class="literature-metric-grid">' +
+        '<div class="literature-metric"><div class="literature-metric-value">' + stats.total.toLocaleString('zh-CN') + '</div><div class="literature-metric-label">本地已读</div></div>' +
+        '<div class="literature-metric"><div class="literature-metric-value">' + (stats.todayCount || 0).toLocaleString('zh-CN') + '</div><div class="literature-metric-label">今日打卡</div></div>' +
+        '<div class="literature-metric"><div class="literature-metric-value">' + (stats.daysWithLogs || 0).toLocaleString('zh-CN') + '</div><div class="literature-metric-label">累计天数</div></div>' +
+        '<div class="literature-metric"><div class="literature-metric-value">' + stats.types.length.toLocaleString('zh-CN') + '</div><div class="literature-metric-label">涵盖标签</div></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="literature-overview-rhythm">' +
+      '<div class="literature-rhythm-track"><div class="literature-rhythm-fill" style="width:' + Math.max(4, rhythmPercent) + '%"></div></div>' +
+      '<div class="literature-rhythm-grid">' +
+        '<div class="literature-rhythm-item"><div class="literature-rhythm-value">' + monthDays.toLocaleString('zh-CN') + '</div><div class="literature-rhythm-label">本月活跃</div></div>' +
+        '<div class="literature-rhythm-item"><div class="literature-rhythm-value">' + (stats.total || 0).toLocaleString('zh-CN') + '</div><div class="literature-rhythm-label">文献数量</div></div>' +
+        '<div class="literature-rhythm-item"><div class="literature-rhythm-value">' + (stats.latestDate ? stats.latestDate.slice(5).replace('-', '/') : '--') + '</div><div class="literature-rhythm-label">最近一次</div></div>' +
+      '</div>' +
+      '<div class="literature-tag-cloud">' + tagChips + '</div>' +
+    '</div>' +
+  '</section>';
+
+  // --- Middle column: pie chart (top) + heatmap (bottom) ---
+  const pieHTML = '<section class="literature-overview-panel">' +
+    '<div class="literature-overview-kicker">Type Distribution</div>' +
+    '<div class="literature-progress-title" style="margin-top:8px;">文献类型分布</div>' +
+    literatureTypePieChartHTML(stats) +
+  '</section>';
+
+  const heatmapHTML = '<section class="literature-overview-panel literature-activity-card">' +
+    '<div>' +
+      '<div class="literature-overview-kicker">Reading Activity</div>' +
+      '<div class="literature-progress-title" style="margin-top:8px;">打卡记录</div>' +
+    '</div>' +
+    '<div class="literature-activity-summary">' +
+      '<div class="literature-activity-metric"><div class="literature-activity-value">' + (stats.todayCount || 0).toLocaleString('zh-CN') + '</div><div class="literature-activity-label">今天</div></div>' +
+      '<div class="literature-activity-metric"><div class="literature-activity-value">' + (stats.daysWithLogs || 0).toLocaleString('zh-CN') + '</div><div class="literature-activity-label">打卡天数</div></div>' +
+      '<div class="literature-activity-metric"><div class="literature-activity-value">' + (stats.localLogs || 0).toLocaleString('zh-CN') + '</div><div class="literature-activity-label">文献</div></div>' +
+    '</div>' +
+    '<div class="literature-heatmap-panel">' + readingLogHeatmapHTML() + '</div>' +
+  '</section>';
+
+  const middleHTML = '<div class="literature-middle-col">' + pieHTML + heatmapHTML + '</div>';
+
+  // --- Right column: reading check-in list ---
+  const checkinHTML = '<section class="literature-checkin-panel">' +
+    '<div class="card-header" style="padding:0;margin-bottom:10px;">' +
+      '<div class="card-title"><span class="dot"></span>文献阅读打卡</div>' +
+      '<div class="card-actions"><button class="card-btn" data-action="add-reading-log" title="添加阅读记录">+</button></div>' +
+    '</div>' +
+    readingLogListHTML() +
+  '</section>';
+
+  return '<div class="card literature-overview-card">' +
+    '<div class="literature-overview-inner">' +
+      leftHTML +
+      middleHTML +
+      checkinHTML +
+    '</div>' +
+  '</div>';
+}
+
 const MS_CYCLE = { pending: 'active', active: 'done', done: 'pending' };
 const MS_ICON = { pending: '⚪', active: '🔵', done: '✅' };
+
+function readingLogListHTML() {
+  const logs = DATA.learning.research.readingLogs || [];
+  if (!logs.length) return emptyStateHTML('📖', '暂无阅读打卡记录', '点击右上角 + 添加你今天读了什么文献');
+  const activeTag = activeReadingLogTag;
+  const filtered = activeTag ? logs.filter(log => readingLogTags(log).includes(activeTag)) : logs;
+  const ordered = [...filtered].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.id || '').localeCompare(String(a.id || '')));
+  const filterHTML = activeTag
+    ? '<div class="reading-log-filter" role="status" aria-live="polite">' +
+        '<span class="reading-log-filter-label">标签 <strong>' + escapeHTML(activeTag) + '</strong> · ' + ordered.length + ' 篇</span>' +
+        '<button class="reading-log-filter-clear" type="button" data-action="clear-reading-log-tag" title="清除标签筛选" aria-label="清除标签筛选">×</button>' +
+      '</div>'
+    : '';
+  if (!ordered.length) {
+    return filterHTML + '<div class="reading-log-empty">没有带“' + escapeHTML(activeTag) + '”标签的阅读记录。</div>';
+  }
+  return filterHTML + '<div class="reading-log-scroll">' + ordered.map(log =>
+    '<div class="reading-log-row">' +
+      '<div class="reading-log-main">' +
+        '<div class="reading-log-title" title="' + escapeAttribute(log.title || '未命名文献') + '">' + escapeHTML(log.title || '未命名文献') + '</div>' +
+        '<div class="reading-log-meta">' +
+          '<span class="reading-log-pill" title="' + escapeAttribute(readingLogTagLabel(log)) + '">' + escapeHTML(readingLogTagLabel(log)) + '</span>' +
+          '<span class="reading-log-date">' + escapeHTML(log.date || '未记录日期') + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<button class="inspire-delete" style="position:static;opacity:1;flex-shrink:0;" data-reading-log-del="' + log.id + '" title="删除" aria-label="删除阅读记录">✕</button>' +
+    '</div>'
+  ).join('') + '</div>';
+}
+
+function openReadingLogModal() {
+  let html = '<div class="modal-content" style="max-width:480px;">' +
+    '<h3 style="margin-bottom:16px;">添加文献打卡</h3>' +
+    '<div style="display:grid;gap:12px;">' +
+        '<div><label style="font-size:12px;color:var(--text-muted);">文献名称</label><input class="add-task-input" id="readingLogTitle" style="width:100%;margin-top:4px;" placeholder="输入文献名称"></div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">标签</label><input class="add-task-input" id="readingLogTags" style="width:100%;margin-top:4px;" placeholder="例如：MARL, RL, Game, SSDs"></div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">打卡时间</label><input class="add-task-input" id="readingLogDate" type="date" style="width:100%;margin-top:4px;" value="' + new Date().toISOString().slice(0, 10) + '"></div>' +
+    '</div>' +
+    '<div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">' +
+      '<button class="btn btn-outline btn-sm" onclick="closeModal()">取消</button>' +
+      '<button class="btn btn-primary btn-sm" id="confirmReadingLog">确认添加</button>' +
+    '</div>' +
+  '</div>';
+  showModal(html);
+  document.getElementById('confirmReadingLog').addEventListener('click', async () => {
+    const confirmButton = document.getElementById('confirmReadingLog');
+    if (!confirmButton || confirmButton.disabled) return;
+    const title = document.getElementById('readingLogTitle').value.trim();
+    const tags = readingLogTags({ tags: document.getElementById('readingLogTags').value });
+    const date = document.getElementById('readingLogDate').value;
+    if (!title || !date || !tags.length) { showToast('请填写文献名称、标签和打卡时间', 'warning'); return; }
+    const cutoff = readingLogRangeStart();
+    if (date < todayKey(cutoff) || date > todayKey(new Date())) {
+      showToast('仅保留近六个月的记录，请选择有效日期', 'warning');
+      return;
+    }
+    const logs = DATA.learning.research.readingLogs || [];
+    DATA.learning.research.readingLogs = logs;
+    const titleKey = readingLogTitleKey(title);
+    const existing = logs.find(log => readingLogTitleKey(log.title) === titleKey);
+    if (existing) {
+      showToast('该文献已于 ' + (existing.date || '此前') + ' 打卡，已阻止重复记录', 'warning');
+      return;
+    }
+    confirmButton.disabled = true;
+    confirmButton.setAttribute('aria-busy', 'true');
+    confirmButton.textContent = '检查中…';
+    const zoteroStatus = await zoteroReadStatusForTitle(title);
+    if (zoteroStatus && zoteroStatus.read) {
+      confirmButton.disabled = false;
+      confirmButton.removeAttribute('aria-busy');
+      confirmButton.textContent = '确认添加';
+      showToast('该文献在 Zotero 中已有阅读笔记，已阻止重复打卡', 'warning');
+      return;
+    }
+    if (zoteroStatus && zoteroStatus.error) {
+      confirmButton.disabled = false;
+      confirmButton.removeAttribute('aria-busy');
+      confirmButton.textContent = '确认添加';
+      showToast('无法确认 Zotero 阅读状态，请稍后重试', 'warning');
+      return;
+    }
+    logs.push({ id: uid(), date, title, tags });
+    const pruned = pruneReadingLogs();
+    save();
+    closeModal();
+    rerender();
+    showToast(pruned ? '已添加阅读记录，并清理三个月前历史' : '已添加阅读记录', 'success');
+  });
+}
 
 function milestoneHTML() {
   const ms = DATA.learning.research.milestones;
@@ -2434,12 +3423,20 @@ function milestoneHTML() {
 // ZOTERO KNOWLEDGE GRAPH
 // ========================================================================
 let knowledgeGraphRuntime = null;
+let knowledgeGraphFullscreen = false;
+let knowledgeGraphMounted = false;
+let knowledgeGraphGenerating = false;
 
 function afterPageRender() {
-  if (currentPage === 'research') {
+  if (currentPage === 'research' && knowledgeGraphMounted) {
     requestAnimationFrame(() => mountKnowledgeGraph());
   } else {
+    knowledgeGraphFullscreen = false;
+    document.body.classList.remove('graph-fullscreen-open');
     stopKnowledgeGraph();
+  }
+  if (currentPage === 'research') {
+    requestAnimationFrame(() => fitReadingLogHeatmap());
   }
 }
 
@@ -2447,9 +3444,8 @@ function knowledgeGraphHTML() {
   const graph = buildZoteroKnowledgeGraph();
   const connected = zoteroState.status === 'connected' || zoteroState.status === 'loading';
   const papers = graph.nodes.filter(node => node.type === 'paper').length;
-  const concepts = graph.nodes.length - papers;
+  const semanticNodes = graph.nodes.filter(node => node.type === 'concept' || node.type === 'entity').length;
   const strongLinks = graph.links.filter(link => link.weight >= 2).length;
-  const density = graph.nodes.length ? Math.round(graph.links.length / Math.max(1, graph.nodes.length) * 10) / 10 : 0;
   const graphScopeOptions = [
     ['50', '最近 50 篇'],
     ['100', '最近 100 篇'],
@@ -2461,73 +3457,66 @@ function knowledgeGraphHTML() {
     (option[0] === 'related' && !zoteroState.selectedItem ? ' disabled' : '') +
     '>' + option[1] + '</option>').join('');
   const topConcepts = graph.nodes
-    .filter(node => node.type !== 'paper')
+    .filter(node => node.type === 'concept' || node.type === 'entity')
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 5);
-  const insight = graph.nodes.length
-    ? '当前按“' + graph.scopeLabel + '”构建，使用 ' + graph.sourceCount + ' 篇文献的标签、作者、标题、摘要与当前阅读笔记抽取关系。' + (zoteroState.graphAllLoading ? ' 正在后台读取其余文献…' : '') + (graph.truncated ? ' 为保持交互流畅，概念节点已应用性能保护。' : '')
-    : connected ? 'Zotero 已进入读取流程。加载到文献后，图谱会自动生成并启动布局动画。' : '连接 Zotero 后，这里会自动生成文献库的主题关系、作者关系与关键词共现网络。';
   const topHTML = topConcepts.length
     ? topConcepts.map(node => '<div class="graph-legend-item"><span class="graph-legend-left">' + graphNodeSymbolHTML(node.type) + '<span>' + escapeHTML(node.label) + '</span></span><span class="graph-legend-count">' + Math.round(node.weight) + '</span></div>').join('')
     : '<div class="graph-insight-desc">暂无可排序的主题节点。</div>';
-  return '<div class="card knowledge-graph-card">' +
+  return '<div class="card knowledge-graph-card' + (knowledgeGraphFullscreen ? ' is-web-fullscreen' : '') + '" id="knowledgeGraphCard">' +
     '<div class="knowledge-graph-head">' +
       '<div>' +
         '<div class="knowledge-graph-eyebrow">Literature Relationship Map</div>' +
         '<div class="knowledge-graph-title"><span class="graph-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 6.5a2.5 2.5 0 1 1 3.98 2.02l2.68 3.13a2.5 2.5 0 0 1 2.87.32l2.22-1.48a2.5 2.5 0 1 1 .83 1.25l-2.22 1.48a2.5 2.5 0 1 1-4.83-.6L9.85 9.49A2.5 2.5 0 0 1 8.5 9v5.12a2.5 2.5 0 1 1-1.5 0V9A2.5 2.5 0 0 1 7 6.5Z"/></svg></span>文献知识图谱</div>' +
-        '<div class="knowledge-graph-meta">' + escapeHTML(insight) + '</div>' +
       '</div>' +
       '<div class="knowledge-graph-toolbar">' +
         '<label class="graph-scope-control"><span>图谱范围</span><select class="graph-scope-select" id="zoteroGraphScope" aria-label="选择知识图谱文献范围">' + graphScopeOptions + '</select></label>' +
         '<span class="graph-live-badge">实时力导向</span>' +
         '<div class="knowledge-graph-tools" aria-label="知识图谱操作">' +
-          '<button class="graph-tool-btn" data-graph-action="fit" type="button">◎ 居中</button>' +
-          '<button class="graph-tool-btn" data-graph-action="reset" type="button">↻ 重排</button>' +
-          '<button class="graph-tool-btn active" data-graph-action="labels" type="button">Aa 标签</button>' +
+          '<button class="graph-tool-btn" data-graph-action="fit" type="button" title="恢复图谱的默认缩放与位置">◎ 重置</button>' +
+          '<button class="graph-tool-btn graph-fullscreen-btn' + (knowledgeGraphFullscreen ? ' active' : '') + '" data-graph-action="fullscreen" type="button" aria-pressed="' + (knowledgeGraphFullscreen ? 'true' : 'false') + '" title="' + (knowledgeGraphFullscreen ? '退出网页全屏（Esc）' : '网页全屏') + '">' +
+            '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3H3v4M13 3h4v4M17 13v4h-4M7 17H3v-4"/></svg><span>' + (knowledgeGraphFullscreen ? '退出' : '全屏') + '</span>' +
+          '</button>' +
         '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="knowledge-graph-stats">' +
-      graphStatHTML(graph.nodes.length, '图谱节点') +
-      graphStatHTML(graph.links.length, '关系连线') +
-      graphStatHTML(graph.sourceCount, '范围文献') +
-      graphStatHTML(density, '关系密度') +
-    '</div>' +
     '<div class="knowledge-graph-stage">' +
       '<div class="knowledge-graph-shell" id="knowledgeGraphShell">' +
-        '<canvas class="knowledge-graph-canvas" id="knowledgeGraphCanvas" aria-label="Zotero 文献知识图谱"></canvas>' +
-        '<div class="knowledge-graph-empty" id="knowledgeGraphEmpty"' + (graph.nodes.length ? ' style="display:none;"' : '') + '>' +
-          '<div class="empty-icon"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 3a4 4 0 0 1 3.87 5.02l2.29 1.33a3.2 3.2 0 1 1-.8 1.38l-2.3-1.33a4 4 0 0 1-2.31 1.48v2.32a3.2 3.2 0 1 1-1.5 0v-2.32a4 4 0 0 1-2.31-1.48l-2.3 1.33a3.2 3.2 0 1 1-.8-1.38l2.29-1.33A4 4 0 0 1 12 3Z"/></svg></div>' +
-          '<div class="empty-title">' + (connected ? '暂无可生成图谱的文献数据' : '连接 Zotero 后生成文献知识图谱') + '</div>' +
-          '<div class="empty-hint">系统会根据标签、作者、标题、摘要和阅读笔记关键词构建关系。</div>' +
-        '</div>' +
+        (connected && !knowledgeGraphMounted
+          ? '<div class="knowledge-graph-empty" id="knowledgeGraphEmpty">' +
+              '<div class="empty-icon"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 3a4 4 0 0 1 3.87 5.02l2.29 1.33a3.2 3.2 0 1 1-.8 1.38l-2.3-1.33a4 4 0 0 1-2.31 1.48v2.32a3.2 3.2 0 1 1-1.5 0v-2.32a4 4 0 0 1-2.31-1.48l-2.3 1.33a3.2 3.2 0 1 1-.8-1.38l2.29-1.33A4 4 0 0 1 12 3Z"/></svg></div>' +
+              '<div class="empty-title">连接已就绪</div>' +
+              '<button class="btn btn-primary btn-sm" data-action="generate-knowledge-graph" type="button" style="margin-top:16px;"' + (knowledgeGraphGenerating ? ' disabled aria-busy="true"' : '') + '>' + (knowledgeGraphGenerating ? '正在生成…' : '生成知识图谱') + '</button>' +
+            '</div>'
+          : '<canvas class="knowledge-graph-canvas" id="knowledgeGraphCanvas" aria-label="Zotero 文献知识图谱"></canvas>' +
+            '<div class="knowledge-graph-empty" id="knowledgeGraphEmpty"' + (graph.nodes.length || !connected ? '' : ' style="display:none;"') + '>' +
+              '<div class="empty-icon"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 3a4 4 0 0 1 3.87 5.02l2.29 1.33a3.2 3.2 0 1 1-.8 1.38l-2.3-1.33a4 4 0 0 1-2.31 1.48v2.32a3.2 3.2 0 1 1-1.5 0v-2.32a4 4 0 0 1-2.31-1.48l-2.3 1.33a3.2 3.2 0 1 1-.8-1.38l2.29-1.33A4 4 0 0 1 12 3Z"/></svg></div>' +
+              '<div class="empty-title">' + (connected ? '暂无可生成图谱的文献数据' : '连接 Zotero 后生成文献知识图谱') + '</div>' +
+            '</div>') +
         '<div class="knowledge-graph-tip">滚轮缩放 · 拖动画布平移 · 拖动节点实时重组关系 · 点击节点查看介绍 · 点击空白恢复全局</div>' +
       '</div>' +
       '<aside class="knowledge-graph-side" aria-label="图谱洞察">' +
         '<div class="graph-insight-panel graph-node-detail" id="graphNodeDetail">' +
-          '<div class="graph-node-placeholder"><div><div class="graph-node-placeholder-icon">⌁</div><div class="graph-insight-title">选择一个节点</div><div class="graph-insight-desc">点击文献、标签、作者或关键词，查看它在当前文献网络中的介绍与关联脉络。</div></div></div>' +
+          '<div class="graph-node-placeholder"><div><div class="graph-node-placeholder-icon">⌁</div><div class="graph-insight-title">选择一个节点</div><div class="graph-insight-desc">点击概念、文献、作者、标签或实体，查看它在当前文献网络中的介绍与关联脉络。</div></div></div>' +
         '</div>' +
-        '<div class="graph-insight-panel"><div class="graph-insight-title">图谱概览</div><div class="graph-insight-desc">当前范围包含 ' + graph.sourceCount + ' 篇文献，实际绘制 ' + papers + ' 个文献节点与 ' + concepts + ' 个概念节点，识别到 ' + strongLinks + ' 条强关系。' + (graph.truncated ? '所有文献节点均会保留，仅压缩低权重概念与关系以保护交互性能。' : '拖动任意节点时，其直接邻居会依照关系强度实时响应。') + '</div></div>' +
+        '<div class="graph-insight-panel"><div class="graph-insight-title">图谱概览</div><div class="graph-insight-desc">当前范围包含 ' + graph.sourceCount + ' 篇文献，实际绘制 ' + papers + ' 个文献节点与 ' + semanticNodes + ' 个概念/实体节点，识别到 ' + strongLinks + ' 条强关系。' + (graph.truncated ? '所有文献节点均会保留，仅压缩低权重语义节点与关系以保护交互性能。' : '拖动任意节点时，其直接邻居会依照关系强度实时响应。') + '</div></div>' +
         '<div class="graph-insight-panel"><div class="graph-insight-title">关系图例</div><div class="graph-legend">' +
           '<div class="graph-legend-item"><span class="graph-legend-left">' + graphNodeSymbolHTML('paper') + '文献</span><span class="graph-legend-count">Paper</span></div>' +
           '<div class="graph-legend-item"><span class="graph-legend-left">' + graphNodeSymbolHTML('tag') + '标签</span><span class="graph-legend-count">Tag</span></div>' +
           '<div class="graph-legend-item"><span class="graph-legend-left">' + graphNodeSymbolHTML('author') + '作者</span><span class="graph-legend-count">Author</span></div>' +
-          '<div class="graph-legend-item"><span class="graph-legend-left">' + graphNodeSymbolHTML('keyword') + '关键词</span><span class="graph-legend-count">Term</span></div>' +
+          '<div class="graph-legend-item"><span class="graph-legend-left">' + graphNodeSymbolHTML('concept') + '概念</span><span class="graph-legend-count">Concept</span></div>' +
+          '<div class="graph-legend-item"><span class="graph-legend-left">' + graphNodeSymbolHTML('entity') + '实体</span><span class="graph-legend-count">Entity</span></div>' +
           '<div class="graph-legend-item"><span class="graph-legend-left"><span class="graph-legend-line" style="background:rgba(84,105,255,.5)"></span>强关系</span><span class="graph-legend-count">weight ≥ 2</span></div>' +
         '</div></div>' +
-        '<div class="graph-insight-panel"><div class="graph-insight-title">高频知识点</div><div class="graph-legend">' + topHTML + '</div></div>' +
+        '<div class="graph-insight-panel"><div class="graph-insight-title">核心概念与实体</div><div class="graph-legend">' + topHTML + '</div></div>' +
       '</aside>' +
     '</div>' +
     '<div class="knowledge-graph-tooltip" id="knowledgeGraphTooltip"></div>' +
   '</div>';
 }
 
-function graphStatHTML(value, label) {
-  return '<div class="graph-stat"><div class="graph-stat-value">' + escapeHTML(String(value)) + '</div><div class="graph-stat-label">' + escapeHTML(label) + '</div></div>';
-}
-
 function graphNodeSymbolHTML(type) {
-  const safeType = ['paper', 'tag', 'author', 'keyword'].includes(type) ? type : 'keyword';
+  const safeType = ['paper', 'tag', 'author', 'concept', 'entity'].includes(type) ? type : 'concept';
   return '<span class="graph-node-symbol ' + safeType + '" aria-hidden="true"></span>';
 }
 
@@ -2535,78 +3524,239 @@ function normalizeGraphTerm(value) {
   return String(value || '')
     .replace(/^#+/, '')
     .replace(/[\u00a0\s]+/g, ' ')
-    .replace(/[.,;:!?，。；：！？()[\]{}<>《》“”"']/g, '')
+    .replace(/[.,;:!?，。；：！？[\]{}<>《》“”"]/g, '')
     .trim();
 }
 
 function graphTermKey(type, value) {
-  return type + ':' + normalizeGraphTerm(value).toLowerCase();
+  const normalized = normalizeGraphTerm(value);
+  const trailingAcronym = normalized.match(/\(([A-Z][A-Z0-9-]{1,})\)\s*$/);
+  if (type === 'entity' && trailingAcronym) return type + ':' + trailingAcronym[1].toLowerCase();
+  const singular = new Map([
+    ['agents', 'agent'], ['algorithms', 'algorithm'], ['approaches', 'approach'], ['behaviors', 'behavior'],
+    ['concepts', 'concept'], ['dilemmas', 'dilemma'], ['environments', 'environment'], ['games', 'game'],
+    ['interactions', 'interaction'], ['languages', 'language'], ['methods', 'method'], ['models', 'model'],
+    ['networks', 'network'], ['policies', 'policy'], ['processes', 'process'], ['strategies', 'strategy'],
+    ['systems', 'system'], ['tasks', 'task']
+  ]);
+  const canonical = normalized
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/\([^)]*\)\s*$/, '')
+    .replace(/[’']/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[-–—_/]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\bmultiagent\b/g, 'multi agent')
+    .replace(/\bbehaviours?\b/g, match => match.endsWith('s') ? 'behaviors' : 'behavior')
+    .split(' ')
+    .map(word => singular.get(word) || word)
+    .join(' ');
+  if (type === 'author' && /^[a-z .-]+$/.test(canonical)) {
+    return type + ':' + canonical.split(' ').filter(Boolean).sort().join(' ');
+  }
+  const aliases = new Map([
+    ['marl', 'multi agent reinforcement learning'],
+    ['llm', 'large language model'], ['llms', 'large language model'],
+    ['mas', 'multi agent system'], ['mdp', 'markov decision process'], ['pomdp', 'partially observable markov decision process'],
+    ['ssd', 'sequential social dilemma'], ['ssds', 'sequential social dilemma'],
+    ['rl', 'reinforcement learning'], ['nlp', 'natural language processing'],
+    ['prisoners dilemma', 'prisoner dilemma'], ['prisoner s dilemma', 'prisoner dilemma']
+  ]);
+  return type + ':' + (aliases.get(canonical) || canonical);
 }
 
 function extractKnowledgeTerms(item) {
-  const terms = [];
-  const push = (type, label, weight) => {
+  const metadataTerms = [];
+  const semanticTerms = new Map();
+  const pushMetadata = (type, label, weight) => {
     const normalized = normalizeGraphTerm(label);
     if (!normalized || normalized.length < 2 || normalized.length > 42) return;
-    terms.push({ type, label: normalized, weight });
+    metadataTerms.push({ type, label: normalized, weight });
   };
 
-  (item.tags || []).forEach(tag => push('tag', tag, 3.2));
-  (item.creators || []).slice(0, 4).forEach(author => push('author', author, 1.45));
+  const pushSemantic = (type, label, weight, source, description = '') => {
+    const normalized = normalizeGraphTerm(label).replace(/\s+\(([A-Z0-9-]+)\)\s+\1$/i, ' ($1)');
+    if (!normalized || normalized.length < 3 || normalized.length > 72) return;
+    const key = graphTermKey(type, normalized);
+    const existing = semanticTerms.get(key);
+    if (existing) {
+      existing.weight += weight;
+      existing.sources.add(source);
+      if (description && !existing.descriptions.includes(description)) existing.descriptions.push(description);
+      return;
+    }
+    semanticTerms.set(key, { type, label: normalized, weight, sources: new Set([source]), descriptions: description ? [description] : [] });
+  };
+
+  (item.tags || []).slice(0, 5).forEach(tag => pushMetadata('tag', tag, 3.2));
+  (item.creators || []).slice(0, 4).forEach(author => pushMetadata('author', author, 1.45));
 
   const selectedNote = item.key === (zoteroState.selectedItem && zoteroState.selectedItem.key)
     ? notePreviewText(findAIManagerNote(zoteroState.children), 1200)
     : '';
-  const source = [item.title, item.abstractNote, selectedNote].filter(Boolean).join(' ');
-  const technicalPhrases = [
-    [/\b(?:sequential|markov|intertemporal) social dilemmas?\b/gi, 'Sequential Social Dilemmas (SSDs)'],
+  const segments = [
+    { name: 'title', text: String(item.title || ''), weight: 3.1 },
+    { name: 'abstract', text: String(item.abstractNote || item.indexedAbstractText || ''), weight: 1.25 },
+    { name: 'introduction', text: String(item.introductionText || ''), weight: 0.42 },
+    { name: 'note', text: selectedNote, weight: 0.48 }
+  ].filter(segment => segment.text.trim());
+  const source = segments.map(segment => segment.text).join('\n');
+  const cleanContext = value => String(value || '')
+    .replace(/\s+/g, ' ')
+    .replace(/^\s*(?:abstract|introduction|引言|摘要)\s*[:：-]?\s*/i, '')
+    .trim()
+    .slice(0, 360);
+  const sentenceAt = (text, index) => {
+    const sourceText = String(text || '');
+    const start = Math.max(sourceText.lastIndexOf('.', Math.max(0, index - 1)), sourceText.lastIndexOf('\n', Math.max(0, index - 1)), sourceText.lastIndexOf('。', Math.max(0, index - 1))) + 1;
+    const tail = sourceText.slice(index, index + 520);
+    const boundary = tail.match(/[!?。]|\.(?=\s+(?:[A-Z][a-z]|[A-Z]{2,}))/);
+    const newline = tail.indexOf('\n');
+    const candidates = [boundary ? index + boundary.index + 1 : -1, newline >= 0 ? index + newline : -1].filter(value => value > index + 40);
+    const end = candidates.length ? Math.min(...candidates) : Math.min(sourceText.length, index + 360);
+    return cleanContext(sourceText.slice(start, end));
+  };
+  const contextFor = (text, needle) => {
+    const index = String(text || '').toLowerCase().indexOf(String(needle || '').toLowerCase());
+    return index >= 0 ? sentenceAt(text, index) : '';
+  };
+  const conceptDescriptions = new Map([
+    ['Cooperation', '多个主体通过协调行动获得共同或互惠收益，是多智能体系统与社会困境研究中的核心行为机制。'],
+    ['Social Dilemmas', '个体理性选择与群体整体利益发生冲突的一类博弈情境，常用于研究合作如何产生和维持。'],
+    ['Reinforcement Learning', '智能体通过与环境交互并利用奖励反馈学习决策策略的方法。'],
+    ['Multi-Agent Reinforcement Learning (MARL)', '多个相互作用的智能体同时通过奖励反馈学习策略，重点处理协作、竞争与环境非平稳性。'],
+    ["Prisoner's Dilemma", '经典社会困境博弈：个体选择背叛在局部上更有利，但双方合作能产生更高的整体收益。'],
+    ['Large Language Models (LLMs)', '在大规模文本上训练、能够理解和生成自然语言的参数化模型。'],
+    ['Markov Decision Process (MDP)', '用状态、动作、转移概率和奖励形式化序贯决策问题的数学框架。'],
+    ['Partially Observable Markov Decision Process (POMDP)', '智能体无法直接观察完整状态时使用的序贯决策模型。'],
+    ['Opponent Shaping', '智能体在学习自身策略的同时，主动影响其他智能体后续学习过程的方法。'],
+    ['Autonomous Driving', '利用感知、预测、规划与控制系统，使车辆能够在较少或无需人工干预的情况下完成驾驶任务。'],
+    ['Evolutionary Game Theory', '结合博弈论与群体演化，研究策略在选择和复制过程中如何扩散与稳定。'],
+    ['Mechanism Design', '通过设计规则、激励与信息结构，引导自利参与者实现期望系统目标。'],
+    ['Inequity Aversion', '主体对不平等结果产生负效用的行为偏好，可用于解释公平性与合作行为。'],
+    ['Reciprocity', '主体根据对方过去的合作或背叛行为给予相应回应的互动机制。']
+  ]);
+  const conceptPatterns = [
     [/\bmulti[- ]agent reinforcement learning\b/gi, 'Multi-Agent Reinforcement Learning (MARL)'],
+    [/\b(?:sequential|markov|intertemporal) social dilemmas?\b/gi, 'Sequential Social Dilemmas (SSDs)'],
     [/\blarge language models?\b/gi, 'Large Language Models (LLMs)'],
+    [/\bnatural language processing\b/gi, 'Natural Language Processing (NLP)'],
     [/\bmulti[- ]agent systems?\b/gi, 'Multi-Agent Systems (MAS)'],
+    [/\bpartially observable markov decision processes?\b/gi, 'Partially Observable Markov Decision Process (POMDP)'],
+    [/\bmarkov decision processes?\b/gi, 'Markov Decision Process (MDP)'],
     [/\breinforcement learning\b/gi, 'Reinforcement Learning'],
+    [/\b(?:autonomous driving|self[- ]driving|autonomous vehicles?)\b/gi, 'Autonomous Driving'],
     [/\bopponent shaping\b/gi, 'Opponent Shaping'],
     [/\bsocial dilemmas?\b/gi, 'Social Dilemmas'],
+    [/\bevolutionary games?\b/gi, 'Evolutionary Game Theory'],
+    [/\bevolutionary dynamics\b/gi, 'Evolutionary Dynamics'],
+    [/\bdominant strateg(?:y|ies)\b/gi, 'Dominant Strategies'],
+    [/\bzero[- ]determinant strateg(?:y|ies)\b/gi, 'Zero-Determinant Strategies'],
+    [/\bprisoner['’]?s dilemmas?\b/gi, "Prisoner's Dilemma"],
+    [/\bpublic goods games?\b/gi, 'Public Goods Game'],
+    [/\bpolicy gradients?\b/gi, 'Policy Gradient'],
+    [/\bcollective action\b/gi, 'Collective Action'],
+    [/\bstrategic interactions?\b/gi, 'Strategic Interaction'],
+    [/\bcooperation\b/gi, 'Cooperation'],
+    [/\breciprocity\b/gi, 'Reciprocity'],
+    [/\bmechanism design\b/gi, 'Mechanism Design'],
+    [/\bgame theory\b/gi, 'Game Theory'],
+    [/\binequity aversion\b/gi, 'Inequity Aversion'],
+    [/\bpartner choice\b/gi, 'Partner Choice'],
+    [/\bknowledge graphs?\b/gi, 'Knowledge Graph'],
+    [/\bhuman[- ]ai collaboration\b/gi, 'Human-AI Collaboration'],
     [/\bmachine learning\b/gi, 'Machine Learning'],
     [/\bartificial intelligence\b/gi, 'Artificial Intelligence']
   ];
-  technicalPhrases.forEach(([pattern, label]) => {
-    const titleHits = (String(item.title || '').match(pattern) || []).length;
-    const sourceHits = (source.match(pattern) || []).length;
-    if (sourceHits) push('keyword', label, 2.6 + titleHits * 1.2 + Math.min(2, sourceHits - titleHits) * 0.35);
+  const knownConceptAcronyms = new Set(['AI', 'ML', 'RL', 'MARL', 'LLM', 'LLMS', 'NLP', 'MAS', 'MDP', 'POMDP', 'SSD', 'SSDS']);
+  conceptPatterns.forEach(([pattern, label]) => {
+    segments.forEach(segment => {
+      const hits = segment.text.match(pattern) || [];
+      if (hits.length) pushSemantic('concept', label, segment.weight + Math.min(2, hits.length - 1) * 0.55, segment.name, conceptDescriptions.get(label) || contextFor(segment.text, hits[0]));
+    });
   });
-  const pairedAcronyms = source.matchAll(/\b([A-Z][A-Za-z-]+(?:\s+[A-Za-z][A-Za-z-]+){1,5})\s*\(([A-Z]{2,}[A-Za-z0-9-]*)\)/g);
-  for (const match of pairedAcronyms) {
-    push('keyword', match[1] + ' (' + match[2] + ')', 3.4);
+
+  const namedSuffix = /\b(?:algorithm|framework|architecture|dataset|benchmark|environment|simulator|platform|toolkit|protocol|model)\b/i;
+  const definedAcronyms = new Set();
+  for (const match of source.matchAll(/\b([A-Z][A-Za-z-]+(?:\s+[A-Za-z][A-Za-z-]+){1,7})\s*\(([A-Z]{2,}[A-Za-z0-9-]*)\)/g)) {
+    const acronym = match[2].toUpperCase();
+    definedAcronyms.add(acronym);
+    const type = knownConceptAcronyms.has(acronym) || !namedSuffix.test(match[1]) ? 'concept' : 'entity';
+    pushSemantic(type, match[1] + ' (' + match[2] + ')', 3.6, 'definition', sentenceAt(source, match.index));
   }
-  const acronyms = source.match(/\b[A-Z]{2,}[A-Za-z0-9-]*\b/g) || [];
-  acronyms.forEach(acronym => push('keyword', acronym, 2.9));
+  const acronymCounts = new Map();
+  (source.match(/\b(?:[A-Z]{2,}[A-Z0-9-]*|[A-Z]+-\d+)\b/g) || []).forEach(value => acronymCounts.set(value, (acronymCounts.get(value) || 0) + 1));
+  acronymCounts.forEach((count, acronym) => {
+    if (definedAcronyms.has(acronym) || knownConceptAcronyms.has(acronym) || ['PDF', 'DOI', 'IEEE', 'ACM', 'AAAI', 'FIG', 'TABLE', 'USA', 'US', 'UK', 'EU', 'CC', 'BY', 'HTTP', 'HTTPS'].includes(acronym)) return;
+    if (count >= 2 || String(item.title || '').includes(acronym)) pushSemantic('entity', acronym, 2.1 + Math.min(2, count) * 0.45, 'named-entity', contextFor(source, acronym));
+  });
+  for (const match of source.matchAll(/\b([A-Z][A-Za-z0-9-]*(?:\s+[A-Z][A-Za-z0-9-]*){0,3}\s+(?:Dataset|Benchmark|Environment|Simulator|Platform|Toolkit|Game))\b/g)) {
+    pushSemantic('entity', match[1], 3.1, 'named-entity', sentenceAt(source, match.index));
+  }
 
   const stop = new Set([
-    'the', 'and', 'with', 'from', 'that', 'this', 'into', 'using', 'based', 'study', 'paper', 'research', 'analysis',
-    'model', 'models', 'method', 'methods', 'result', 'results', 'through', 'large', 'language', 'games', 'game',
-    'agents', 'agent', 'dilemmas', 'dilemma', 'learning', 'approach', 'framework', 'towards', 'novel', 'complex',
-    'effective', 'different', 'social', 'reinforcement', 'multi-agent', 'multiagent', 'environment', 'environments',
-    '数据', '研究', '方法', '模型', '基于', '本文', '分析', '系统', '影响', '结果', '问题', '应用'
+    'a','an','the','and','or','but','if','while','with','without','from','to','of','in','on','for','by','at','as','that','this','these','those','into','via','using','use','used','based','toward','towards','through','across','between','among','under','over','than','such','our','their','its','we','they','it','is','are','was','were','be','been','being','can','could','may','might','will','would','do','does','did','have','has','had','how','much','many','few','what','why','when','where','which','whether','who','whom','whose','more','most','less','least','very','also','only','paper','study','research','analysis','result','results','method','methods','approach','approaches','framework','frameworks','model','models','system','systems','propose','proposes','proposed','show','shows','demonstrate','demonstrates','present','presents','achieve','achieves','increase','increases','improve','improves','allow','allows','provide','provides','investigate','investigates','examine','examines','consider','considers','find','finds','found','reveal','reveals','suggest','suggests','focus','focuses','et','al','fig','figure','figures','table','tables','supplementary','appendix','copyright','rights','reserved','publisher','press','journal','volume','issue','page','pages','article','available','online','preprint','arxiv','http','https','www','com','org','license','creative','commons','corresponding','author','authors','university','department','email'
   ]);
-  const english = source.match(/\b[A-Za-z][A-Za-z0-9-]{3,}\b/g) || [];
-  english.forEach(word => {
-    const lower = word.toLowerCase();
-    if (!stop.has(lower) && !/^[A-Z]{2,}[A-Za-z0-9-]*$/.test(word)) push('keyword', word, 1.15);
+  const weakBoundary = new Set(['existing','novel','new','current','different','effective','general','several','various','recent','simple','complex','better','improved','exploring','learned','large','small','possible','potential','important','significant','main','key','high','low']);
+  const scholarlyHeads = new Set(['agent','agents','algorithm','algorithms','behavior','behaviors','behaviour','behaviours','cooperation','coordination','decision','decisions','dilemma','dilemmas','dynamics','environment','environments','game','games','governance','incentive','incentives','intelligence','interaction','interactions','learning','mechanism','mechanisms','network','networks','policy','policies','reciprocity','strategy','strategies','system','systems']);
+  const phraseScores = new Map();
+  segments.forEach(segment => {
+    const sentences = segment.text.split(/[.!?;:\n]+/);
+    sentences.forEach(sentence => {
+      const tokens = sentence.match(/[A-Za-z][A-Za-z0-9-]*/g) || [];
+      let run = [];
+      const flush = () => {
+        for (let size = 2; size <= Math.min(5, run.length); size++) {
+          for (let start = 0; start + size <= run.length; start++) {
+            const words = run.slice(start, start + size);
+            if (weakBoundary.has(words[0]) || weakBoundary.has(words[words.length - 1])) continue;
+            const phrase = words.join(' ');
+            const current = phraseScores.get(phrase) || { score: 0, title: false, count: 0, context: '' };
+            current.score += segment.weight;
+            current.title = current.title || segment.name === 'title';
+            current.count++;
+            if (!current.context) current.context = cleanContext(sentence);
+            phraseScores.set(phrase, current);
+          }
+        }
+        run = [];
+      };
+      tokens.forEach(token => {
+        const lower = token.toLowerCase();
+        if (stop.has(lower) || /^[A-Z]{2,}[A-Z0-9-]*$/.test(token)) flush();
+        else run.push(lower);
+      });
+      flush();
+    });
   });
-  const chinese = source.match(/[\u4e00-\u9fa5]{2,8}/g) || [];
-  chinese.forEach(word => {
-    if (!stop.has(word)) push('keyword', word, 1.5);
-  });
+  const titleCase = phrase => phrase.split(' ').map((word, index) => {
+    if (index > 0 && ['and','or','of','in','for','with'].includes(word)) return word;
+    return word.startsWith('multi-') ? 'Multi-' + word.slice(6).replace(/^./, char => char.toUpperCase()) : word.replace(/^./, char => char.toUpperCase());
+  }).join(' ');
+  const chosenPhrases = [];
+  Array.from(phraseScores.entries())
+    .filter(([, meta]) => meta.title || meta.score >= 2.35 || meta.count >= 3)
+    .sort((a, b) => (b[1].score + Math.min(4, b[0].split(' ').length) * 0.16) - (a[1].score + Math.min(4, a[0].split(' ').length) * 0.16))
+    .forEach(([phrase, meta]) => {
+      if (chosenPhrases.length >= 8) return;
+      const words = phrase.split(' ');
+      const head = words[words.length - 1];
+      if (!scholarlyHeads.has(head) && !/(?:tion|sion|ment|ity|ism|ics|ance|ence|ship|ness|ysis)$/.test(head)) return;
+      if (chosenPhrases.some(existing => existing.includes(phrase) || phrase.includes(existing))) return;
+      const overlapsKnown = Array.from(semanticTerms.values()).some(term => term.type === 'concept' && (term.label.toLowerCase().includes(phrase) || phrase.includes(term.label.toLowerCase().replace(/\s*\([^)]*\)$/, ''))));
+      if (overlapsKnown) return;
+      chosenPhrases.push(phrase);
+      pushSemantic('concept', titleCase(phrase), Math.min(4.2, meta.score), meta.title ? 'title' : 'abstract-introduction', meta.context);
+    });
 
-  const seen = new Set();
-  return terms
-    .filter(term => {
-      const key = graphTermKey(term.type, term.label);
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .slice(0, 12);
+  const semantic = Array.from(semanticTerms.values())
+    .map(term => ({ ...term, sources: Array.from(term.sources), description: term.descriptions[0] || '' }))
+    .sort((a, b) => b.weight - a.weight)
+    .filter((term, index, all) => !all.slice(0, index).some(other => other.type === term.type && (other.label.toLowerCase().includes(term.label.toLowerCase()) || term.label.toLowerCase().includes(other.label.toLowerCase()))))
+    .slice(0, 13);
+  return metadataTerms.concat(semantic);
 }
 
 function graphScopeLabel(scope = zoteroState.graphScope) {
@@ -2689,11 +3839,14 @@ function buildZoteroKnowledgeGraph() {
   const selectedKey = zoteroState.selectedItem && zoteroState.selectedItem.key;
   const nodeMap = new Map();
   const linkMap = new Map();
+  const paperSignatures = [];
   const addNode = (node) => {
     const existing = nodeMap.get(node.id);
     if (existing) {
       existing.weight += node.weight || 1;
       existing.refs = Array.from(new Set([...(existing.refs || []), ...(node.refs || [])]));
+      if (!existing.description && node.description) existing.description = node.description;
+      if (node.label.length > existing.label.length && /\([A-Z0-9-]+\)$/.test(node.label)) existing.label = node.label;
       return existing;
     }
     node.weight = node.weight || 1;
@@ -2717,11 +3870,14 @@ function buildZoteroKnowledgeGraph() {
     const title = normalizeGraphTerm(item.title) || '未命名文献';
     addNode({ id: paperId, label: title, type: 'paper', refKey: item.key, weight: item.key === selectedKey ? 5 : 2.2, refs: [item.key], index });
     const terms = extractKnowledgeTerms(item);
+    const signature = new Map();
     terms.forEach(term => {
       const id = graphTermKey(term.type, term.label);
-      addNode({ id, label: term.label, type: term.type, weight: term.weight, refs: [item.key] });
+      addNode({ id, label: term.label, type: term.type, weight: term.weight, refs: [item.key], description: term.description || '' });
       addLink(paperId, id, term.weight, term.type);
+      if (term.type === 'concept' || term.type === 'entity' || term.type === 'tag') signature.set(id, term.weight);
     });
+    paperSignatures.push({ paperId, signature });
     const strongTerms = terms.filter(term => term.type !== 'author').slice(0, 7);
     for (let i = 0; i < strongTerms.length; i++) {
       for (let j = i + 1; j < strongTerms.length; j++) {
@@ -2729,6 +3885,27 @@ function buildZoteroKnowledgeGraph() {
       }
     }
   });
+
+  for (let i = 0; i < paperSignatures.length; i++) {
+    const a = paperSignatures[i];
+    for (let j = i + 1; j < paperSignatures.length; j++) {
+      const b = paperSignatures[j];
+      let shared = 0;
+      let dot = 0;
+      let normA = 0;
+      let normB = 0;
+      a.signature.forEach(weight => { normA += weight * weight; });
+      b.signature.forEach(weight => { normB += weight * weight; });
+      a.signature.forEach((weight, key) => {
+        if (!b.signature.has(key)) return;
+        shared++;
+        dot += weight * b.signature.get(key);
+      });
+      if (!shared || !normA || !normB) continue;
+      const similarity = dot / Math.sqrt(normA * normB);
+      if (similarity >= 0.16 || shared >= 2) addLink(a.paperId, b.paperId, 0.65 + similarity * 3 + Math.min(3, shared) * 0.25, 'related');
+    }
+  }
 
   const allNodes = Array.from(nodeMap.values());
   const paperNodes = allNodes.filter(node => node.type === 'paper');
@@ -2838,11 +4015,26 @@ function graphThemeName(broad, detail = 'General') {
   return broadCode + '-' + detailCode;
 }
 
+function graphReadableTopicLabel(value) {
+  const words = graphContentCategoryLabel(value)
+    .replace(/\s*\([A-Z][A-Z0-9-]{1,}\)\s*$/, '')
+    .replace(/[-_]+/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const lowercaseWords = new Set(['and', 'or', 'of', 'in', 'for', 'with', 'to']);
+  return words.map((word, index) => {
+    if (index > 0 && lowercaseWords.has(word.toLowerCase())) return word.toLowerCase();
+    if (/^[A-Z0-9]{2,}$/.test(word)) return word;
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }).join(' ');
+}
+
 function assignKnowledgeGraphContentCategories(nodes) {
   const papers = nodes.filter(node => node.type === 'paper');
   const maxCoverage = Math.max(3, Math.ceil(papers.length * 0.72));
   const concepts = nodes
-    .filter(node => (node.type === 'tag' || node.type === 'keyword') && (node.refs || []).length >= 2)
+    .filter(node => (node.type === 'tag' || node.type === 'concept') && (node.refs || []).length >= 2)
     .sort((a, b) => {
       const aCoverage = (a.refs || []).length;
       const bCoverage = (b.refs || []).length;
@@ -2884,7 +4076,7 @@ function assignKnowledgeGraphContentCategories(nodes) {
   selectedCategories.forEach(category => {
     const baseLabel = graphContentCategoryLabel(category.label);
     const subtopic = nodes
-      .filter(node => node.type === 'keyword' && !genericSubtopics.has(node.label.toLowerCase()))
+      .filter(node => node.type === 'concept' && !genericSubtopics.has(node.label.toLowerCase()))
       .map(node => {
         const overlap = (node.refs || []).filter(refKey => category.refs.has(refKey)).length;
         return { node, overlap, score: overlap * 4 + node.weight };
@@ -2900,7 +4092,7 @@ function assignKnowledgeGraphContentCategories(nodes) {
   const otherRefs = new Set(papers.filter(paper => paper.categoryKey === 'other').map(paper => paper.refKey));
   if (otherRefs.size) {
     const otherSubtopic = nodes
-      .filter(node => node.type === 'keyword' && !genericSubtopics.has(node.label.toLowerCase()))
+      .filter(node => node.type === 'concept' && !genericSubtopics.has(node.label.toLowerCase()))
       .map(node => {
         const overlap = (node.refs || []).filter(refKey => otherRefs.has(refKey)).length;
         return { node, overlap, score: overlap * 4 + node.weight };
@@ -2913,7 +4105,7 @@ function assignKnowledgeGraphContentCategories(nodes) {
   }
   const refsForKeyword = (matcher) => {
     const refs = new Set();
-    nodes.filter(node => node.type === 'keyword' && matcher(node.label)).forEach(node => {
+    nodes.filter(node => node.type === 'concept' && matcher(node.label)).forEach(node => {
       (node.refs || []).forEach(refKey => refs.add(refKey));
     });
     return refs;
@@ -2928,6 +4120,69 @@ function assignKnowledgeGraphContentCategories(nodes) {
       paper.categoryLabel = 'SDs-RL';
     }
     paper.categoryKey = 'theme:' + paper.categoryLabel;
+    paperCategory.set(paper.refKey, { key: paper.categoryKey, label: paper.categoryLabel });
+  });
+  const genericThemeConcepts = /^(?:artificial intelligence|machine learning|reinforcement learning|multi-agent reinforcement learning(?: \(marl\))?|multi-agent systems?(?: \(mas\))?|cooperation|social dilemmas?|sequential social dilemmas?(?: \(ssds\))?|game theory|computer science|learning|agents?)$/i;
+  const applicationDomainConcepts = /\b(?:autonomous driving|self-driving|autonomous vehicles?|robotics?|healthcare|medicine|medical|cybersecurity|climate|energy|transportation|traffic|education|finance|agriculture|manufacturing)\b/i;
+  const applicationDomainLabels = [
+    [/\b(?:autonomous driving|self[- ]driving|autonomous vehicles?)\b/i, 'Autonomous Driving'],
+    [/\b(?:healthcare|medicine|medical)\b/i, 'Healthcare'],
+    [/\b(?:cybersecurity|cyber security)\b/i, 'Cybersecurity'],
+    [/\b(?:climate change|climate policy)\b/i, 'Climate Change'],
+    [/\b(?:traffic management|urban traffic|transportation systems?)\b/i, 'Transportation'],
+    [/\b(?:industrial robotics?|robotic manipulation)\b/i, 'Robotics'],
+    [/\b(?:artificial superintelligence|from AGI to ASI)\b/i, 'Artificial Superintelligence']
+  ];
+  papers.forEach(paper => {
+    const recognizedDomain = applicationDomainLabels.find(([pattern]) => pattern.test(paper.label));
+    if (!recognizedDomain) return;
+    paper.categoryLabel = recognizedDomain[1];
+    paper.categoryKey = 'theme:' + paper.categoryLabel;
+  });
+  const smallThemeGroups = new Map();
+  papers.forEach(paper => {
+    const group = smallThemeGroups.get(paper.categoryLabel) || [];
+    group.push(paper);
+    smallThemeGroups.set(paper.categoryLabel, group);
+  });
+  smallThemeGroups.forEach(group => {
+    if (!group.length || group.length > 2) return;
+    const groupRefs = new Set(group.map(paper => paper.refKey));
+    const evidenceText = group.map(paper => paper.label).concat(
+      nodes
+        .filter(node => node.type !== 'paper' && (node.refs || []).some(refKey => groupRefs.has(refKey)))
+        .flatMap(node => [node.label, node.description || ''])
+    ).join(' ');
+    const recognizedDomain = applicationDomainLabels.find(([pattern]) => pattern.test(evidenceText));
+    const candidate = nodes
+      .filter(node => node.type === 'concept' && !genericThemeConcepts.test(node.label))
+      .map(node => {
+        const refs = node.refs || [];
+        const overlap = refs.filter(refKey => groupRefs.has(refKey)).length;
+        const exactCoverage = overlap === groupRefs.size;
+        const globalCoverage = refs.length;
+        const wordCount = graphReadableTopicLabel(node.label).split(/\s+/).filter(Boolean).length;
+        const score = (exactCoverage ? 45 : 0)
+          + overlap * 15
+          + (applicationDomainConcepts.test(node.label) ? 80 : 0)
+          + (wordCount >= 2 && wordCount <= 5 ? 8 : 0)
+          + (node.description ? 3 : 0)
+          + node.weight
+          + 12 / Math.max(1, globalCoverage);
+        return { node, overlap, globalCoverage, score };
+      })
+      .filter(entry => entry.overlap === groupRefs.size && entry.globalCoverage <= Math.max(6, groupRefs.size * 3))
+      .sort((a, b) => b.score - a.score)[0];
+    if (!recognizedDomain && !candidate) return;
+    const preciseLabel = recognizedDomain ? recognizedDomain[1] : graphReadableTopicLabel(candidate.node.label);
+    if (!preciseLabel || preciseLabel.length > 42) return;
+    group.forEach(paper => {
+      paper.categoryLabel = preciseLabel;
+      paper.categoryKey = 'theme:' + preciseLabel;
+    });
+  });
+  paperCategory.clear();
+  papers.forEach(paper => {
     paperCategory.set(paper.refKey, { key: paper.categoryKey, label: paper.categoryLabel });
   });
   nodes.filter(node => node.type !== 'paper').forEach(node => {
@@ -2950,6 +4205,31 @@ function stopKnowledgeGraph() {
   cancelAnimationFrame(knowledgeGraphRuntime.raf);
   if (knowledgeGraphRuntime.resizeObserver) knowledgeGraphRuntime.resizeObserver.disconnect();
   knowledgeGraphRuntime = null;
+}
+
+function setKnowledgeGraphFullscreen(active) {
+  const card = document.getElementById('knowledgeGraphCard');
+  if (!card) return;
+  knowledgeGraphFullscreen = Boolean(active);
+  card.classList.toggle('is-web-fullscreen', knowledgeGraphFullscreen);
+  document.body.classList.toggle('graph-fullscreen-open', knowledgeGraphFullscreen);
+  const button = card.querySelector('[data-graph-action="fullscreen"]');
+  if (button) {
+    button.classList.toggle('active', knowledgeGraphFullscreen);
+    button.setAttribute('aria-pressed', String(knowledgeGraphFullscreen));
+    button.title = knowledgeGraphFullscreen ? '退出网页全屏（Esc）' : '网页全屏';
+    const label = button.querySelector('span');
+    if (label) label.textContent = knowledgeGraphFullscreen ? '退出' : '全屏';
+  }
+  requestAnimationFrame(() => {
+    if (!knowledgeGraphRuntime) return;
+    resizeKnowledgeGraph(knowledgeGraphRuntime);
+    fitKnowledgeGraph(knowledgeGraphRuntime);
+  });
+}
+
+function toggleKnowledgeGraphFullscreen() {
+  setKnowledgeGraphFullscreen(!knowledgeGraphFullscreen);
 }
 
 function mountKnowledgeGraph() {
@@ -2980,7 +4260,7 @@ function layoutKnowledgeGraphNodes(nodes) {
     const centerDistance = categories.length === 1 ? 0 : radius * 0.46;
     const centerX = Math.cos(angle) * centerDistance;
     const centerY = Math.sin(angle) * centerDistance;
-    const buckets = ['paper', 'author', 'tag', 'keyword'].map(type => category.nodes.filter(node => node.type === type));
+    const buckets = ['paper', 'concept', 'entity', 'author', 'tag'].map(type => category.nodes.filter(node => node.type === type));
     const mixed = [];
     let cursor = 0;
     while (mixed.length < category.nodes.length) {
@@ -3026,7 +4306,6 @@ function createKnowledgeGraphRuntime(canvas, shell, tooltip, graph) {
     draggingNode: null,
     panning: false,
     moved: false,
-    labels: true,
     labelIds: new Set(),
     heat: 0.42,
     transform: { x: 0, y: 0, k: 1 },
@@ -3079,11 +4358,12 @@ function graphNodeColor(type) {
   if (type === 'paper') return '#5677ee';
   if (type === 'tag') return '#14ad9d';
   if (type === 'author') return '#718197';
+  if (type === 'entity') return '#e38a42';
   return '#8660e2';
 }
 
 function graphNodeRadius(node) {
-  const base = node.type === 'paper' ? 6.6 : node.type === 'tag' ? 5.4 : node.type === 'author' ? 4.2 : 3.8;
+  const base = node.type === 'paper' ? 6.6 : node.type === 'tag' ? 5.4 : node.type === 'entity' ? 5 : node.type === 'author' ? 4.2 : 4.4;
   return Math.min(18, base + Math.sqrt(Math.max(1, node.weight)) * 1.35);
 }
 
@@ -3191,15 +4471,10 @@ function initKnowledgeGraphEvents(state) {
     updateKnowledgeGraphTooltip(state, 0, 0);
   });
   document.querySelectorAll('[data-graph-action]').forEach(btn => {
-    if (btn.dataset.graphAction === 'labels') btn.classList.toggle('active', state.labels);
     btn.addEventListener('click', () => {
       const action = btn.dataset.graphAction;
       if (action === 'fit') fitKnowledgeGraph(state);
-      if (action === 'reset') resetKnowledgeGraphLayout(state);
-      if (action === 'labels') {
-        state.labels = !state.labels;
-        btn.classList.toggle('active', state.labels);
-      }
+      if (action === 'fullscreen') toggleKnowledgeGraphFullscreen();
     });
   });
 }
@@ -3223,7 +4498,7 @@ function updateKnowledgeGraphTooltip(state, clientX, clientY) {
     tip.classList.remove('show');
     return;
   }
-  const typeLabel = node.type === 'paper' ? '文献' : node.type === 'tag' ? '标签' : node.type === 'author' ? '作者' : '关键词';
+  const typeLabel = graphNodeTypeLabel(node.type);
   tip.innerHTML = '<div class="tip-title">' + escapeHTML(node.label) + '</div><div class="tip-meta">' + typeLabel + ' · 关联 ' + (node.refs || []).length + ' 篇文献</div>';
   tip.style.left = Math.min(window.innerWidth - 320, clientX + 14) + 'px';
   tip.style.top = Math.min(window.innerHeight - 120, clientY + 14) + 'px';
@@ -3258,7 +4533,8 @@ function graphNodeTypeLabel(type) {
   if (type === 'paper') return '文献';
   if (type === 'tag') return '主题标签';
   if (type === 'author') return '作者';
-  return '知识关键词';
+  if (type === 'entity') return '实体';
+  return '学术概念';
 }
 
 function graphTextSnippet(value, max = 180) {
@@ -3293,13 +4569,17 @@ function renderKnowledgeGraphNodeDetail(state, node) {
     const authorText = paper && paper.creators && paper.creators.length ? paper.creators.slice(0, 3).join('、') : '作者信息暂缺';
     const dateText = paper && paper.date ? '，发表于 ' + paper.date : '';
     const abstractText = graphTextSnippet(paper && paper.abstractNote, 155);
-    summary = '这篇文献由 ' + authorText + ' 创作' + dateText + '。在当前图谱中，它连接了 ' + directLinks.length + ' 个主题、作者或关键词节点。' + (abstractText ? ' 摘要要点：' + abstractText : '');
+    summary = '这篇文献由 ' + authorText + ' 创作' + dateText + '。在当前图谱中，它连接了 ' + directLinks.length + ' 个概念、实体、作者或标签节点。' + (abstractText ? ' 摘要要点：' + abstractText : '');
   } else if (node.type === 'author') {
     summary = node.label + ' 是当前文献集合中的作者节点，共关联 ' + relatedPapers.length + ' 篇已加载文献。其连接结构可以帮助识别稳定研究方向与共同出现的主题。';
   } else if (node.type === 'tag') {
     summary = '“' + node.label + '”是 Zotero 中的主题标签，覆盖 ' + relatedPapers.length + ' 篇文献。标签连接越密集，说明它越可能是当前资料库中的核心研究方向。';
+  } else if (node.type === 'entity') {
+    const entityContext = graphTextSnippet(node.description, 280);
+    summary = entityContext || ('“' + node.label + '”是从标题、摘要或引言中识别出的命名实体，可能对应算法、模型、数据集、实验环境或研究工具，共关联 ' + relatedPapers.length + ' 篇文献。');
   } else {
-    summary = '“' + node.label + '”是从文献标题、摘要或当前 AI 阅读笔记中识别出的知识关键词，关联 ' + relatedPapers.length + ' 篇文献，可用于追踪概念在资料库中的分布。';
+    const conceptContext = graphTextSnippet(node.description, 280);
+    summary = conceptContext || ('“' + node.label + '”是从论文标题、摘要或引言中抽象出的学术概念，关联 ' + relatedPapers.length + ' 篇文献；其权重综合了出现位置、跨文献覆盖与共现强度。');
   }
   const relationsHTML = relatedNames.length
     ? '<div class="graph-node-relations">' + relatedNames.map(name => '<div class="graph-node-relation">' + escapeHTML(name) + '</div>').join('') + '</div>'
@@ -3310,6 +4590,7 @@ function renderKnowledgeGraphNodeDetail(state, node) {
   panel.innerHTML =
     '<div class="graph-node-kicker">' + graphNodeSymbolHTML(node.type) + escapeHTML(graphNodeTypeLabel(node.type)) + '</div>' +
     '<div class="graph-node-name">' + escapeHTML(node.label) + '</div>' +
+    '<div class="graph-insight-title" style="margin-top:13px;">基本介绍</div>' +
     '<div class="graph-node-summary">' + escapeHTML(summary) + '</div>' +
     '<div class="graph-node-metrics">' +
       '<span class="graph-node-metric">' + directLinks.length + ' 个直接连接</span>' +
@@ -3339,28 +4620,6 @@ function fitKnowledgeGraph(state) {
   state.transform.k = Math.max(0.42, Math.min(1.32, Math.min(scaleX, scaleY)));
   state.transform.x = -((minX + maxX) / 2) * state.transform.k;
   state.transform.y = -((minY + maxY) / 2) * state.transform.k;
-}
-
-function resetKnowledgeGraphLayout(state) {
-  const circular = layoutKnowledgeGraphNodes(state.nodes);
-  const positions = new Map(circular.nodes.map(node => [node.id, node]));
-  state.nodes.forEach(node => {
-    const positioned = positions.get(node.id);
-    node.x = positioned.x;
-    node.y = positioned.y;
-    node.homeX = positioned.homeX;
-    node.homeY = positioned.homeY;
-    node.vx = 0;
-    node.vy = 0;
-    node.releaseEase = 0;
-    node.fx = null;
-    node.fy = null;
-  });
-  state.layoutRadius = circular.radius;
-  state.contentClusters = circular.clusters;
-  state.heat = 1;
-  clearKnowledgeGraphSelection(state);
-  fitKnowledgeGraph(state);
 }
 
 function tickKnowledgeGraph(state) {
@@ -3509,7 +4768,9 @@ function drawKnowledgeGraph(state) {
       ? '20, 184, 166'
       : link.type === 'author'
         ? (isDark ? '148, 163, 184' : '100, 116, 139')
-        : link.type === 'keyword'
+        : link.type === 'entity'
+          ? '227, 138, 66'
+          : link.type === 'concept'
           ? '139, 92, 246'
           : '84, 105, 255';
     ctx.beginPath();
@@ -3540,7 +4801,9 @@ function drawKnowledgeGraph(state) {
     const fill = graphNodeColor(node.type);
     const glowColor = node.type === 'tag'
       ? '20, 173, 157'
-      : node.type === 'keyword'
+      : node.type === 'entity'
+        ? '227, 138, 66'
+      : node.type === 'concept'
         ? '134, 96, 226'
         : node.type === 'author'
           ? '113, 129, 151'
@@ -3569,7 +4832,7 @@ function drawKnowledgeGraph(state) {
     });
   });
 
-  if (state.labels) {
+  {
     const occupied = [];
     const candidates = state.nodes
       .filter(node => node === state.selected || node === hover || (draggingFocus && related.has(node.id)) || (state.labelIds.has(node.id) && state.transform.k > 0.62))
@@ -3704,6 +4967,16 @@ function traceKnowledgeGraphNode(ctx, node, p, r) {
     ctx.closePath();
     return;
   }
+  if (node.type === 'entity') {
+    for (let side = 0; side < 6; side++) {
+      const angle = -Math.PI / 2 + side * Math.PI / 3;
+      const x = p.x + Math.cos(angle) * r;
+      const y = p.y + Math.sin(angle) * r;
+      if (side === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    return;
+  }
   ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
 }
 
@@ -3753,6 +5026,14 @@ function drawKnowledgeGraphNodeGlyph(ctx, node, p, r, options) {
     ctx.beginPath();
     ctx.arc(p.x, p.y + r * 0.54, r * 0.44, Math.PI * 1.08, Math.PI * 1.92);
     ctx.stroke();
+  } else if (node.type === 'entity') {
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y - r * 0.38);
+    ctx.lineTo(p.x + r * 0.34, p.y);
+    ctx.lineTo(p.x, p.y + r * 0.38);
+    ctx.lineTo(p.x - r * 0.34, p.y);
+    ctx.closePath();
+    ctx.fill();
   } else {
     ctx.beginPath();
     ctx.arc(p.x, p.y, Math.max(1.4, r * 0.2), 0, Math.PI * 2);
@@ -3821,6 +5102,29 @@ function zoteroFetch(path) {
     });
 }
 
+async function enrichZoteroKnowledgeText(items) {
+  const documentsByKey = new Map();
+  for (let start = 0; start < items.length; start += 24) {
+    const keys = items.slice(start, start + 24).map(item => item.key).filter(Boolean);
+    if (!keys.length) continue;
+    try {
+      const result = await zoteroFetch('/knowledge-text?keys=' + encodeURIComponent(keys.join(',')));
+      (result.documents || []).forEach(document => documentsByKey.set(document.key, document));
+    } catch (error) {
+      console.warn('Zotero 全文知识抽取暂不可用，已回退到标题与摘要：', error.message);
+      break;
+    }
+  }
+  items.forEach(item => {
+    const document = documentsByKey.get(item.key);
+    if (!document) return;
+    item.indexedAbstractText = document.abstractText || '';
+    item.introductionText = document.introductionText || '';
+    item.knowledgeSource = document.source || 'metadata';
+  });
+  return items;
+}
+
 async function fetchAllZoteroItems({ collection = '', query = '' } = {}) {
   const items = [];
   const seen = new Set();
@@ -3842,7 +5146,48 @@ async function fetchAllZoteroItems({ collection = '', query = '' } = {}) {
     start = (result.start || start) + page.length;
     hasMore = Boolean(result.hasMore) && page.length > 0;
   }
+  await enrichZoteroKnowledgeText(items);
   return { items, total: Math.max(total, items.length), nextStart: start, hasMore: false };
+}
+
+function resetZoteroReadStatus() {
+  zoteroState.readStatusByKey = {};
+  zoteroState.readStatusLoading = false;
+  zoteroState.readStatusRequestVersion++;
+}
+
+async function refreshZoteroReadStatuses(items = zoteroState.items || []) {
+  const candidates = items.filter(item => item && item.key);
+  if (!candidates.length || zoteroState.status !== 'connected') return;
+  const requestVersion = ++zoteroState.readStatusRequestVersion;
+  zoteroState.readStatusLoading = true;
+  rerender();
+  const nextStatus = { ...(zoteroState.readStatusByKey || {}) };
+  let changed = false;
+  for (let start = 0; start < candidates.length; start += 6) {
+    if (requestVersion !== zoteroState.readStatusRequestVersion) return;
+    const batch = candidates.slice(start, start + 6);
+    await Promise.all(batch.map(async item => {
+      try {
+        const result = await zoteroFetch('/items/' + encodeURIComponent(item.key) + '/children');
+        const children = result.children || [];
+        const note = findAIReadingNoteByConvention(children);
+        nextStatus[item.key] = { checked: true, read: Boolean(note), noteTitle: note ? note.title || '' : '' };
+      } catch (error) {
+        nextStatus[item.key] = { checked: true, read: false, error: error.message || '读取失败' };
+      }
+      changed = true;
+    }));
+    if (changed && requestVersion === zoteroState.readStatusRequestVersion) {
+      zoteroState.readStatusByKey = { ...nextStatus };
+      rerender();
+    }
+  }
+  if (requestVersion === zoteroState.readStatusRequestVersion) {
+    zoteroState.readStatusLoading = false;
+    zoteroState.readStatusByKey = nextStatus;
+    rerender();
+  }
 }
 
 function zoteroStatusHTML() {
@@ -3866,7 +5211,7 @@ function zoteroItemHTML(item) {
   '</button>';
 }
 
-function findAIManagerNote(children = zoteroState.children || []) {
+function findAIReadingNoteByConvention(children = []) {
   const notes = children.filter(child => child && child.type === 'note');
   const managerMarker = /^AI\s*管家\s*[-—–:：]/i;
   const summaryMarker = /^AI\s*总结\s*[-—–:：]/i;
@@ -3877,13 +5222,14 @@ function findAIManagerNote(children = zoteroState.children || []) {
     (note.tags || []).some(tag => tagMarker.test(String(tag || '').trim())) ||
     marker.test(stripHTML(note.note).trim())
   );
-
-  // Prefer AI 管家 / AI 总结 conventions, then fall back to the first ordinary
-  // Zotero child note so every paper node can surface its available literature note.
   return findByConvention(managerMarker, managerTag) ||
     findByConvention(summaryMarker, summaryTag) ||
-    notes[0] ||
     null;
+}
+
+function findAIManagerNote(children = zoteroState.children || []) {
+  const notes = children.filter(child => child && child.type === 'note');
+  return findAIReadingNoteByConvention(children) || notes[0] || null;
 }
 
 function notePreviewText(note, limit = 520) {
@@ -4135,9 +5481,12 @@ document.getElementById('noteReaderFullscreen').addEventListener('click', toggle
 document.addEventListener('fullscreenchange', syncNoteReaderFullscreenButton);
 
 async function refreshZoteroLibrary() {
+  if (zoteroState.status === 'loading') return;
+  const requestVersion = ++zoteroState.connectRequestVersion;
   zoteroState.status = 'loading';
-  zoteroState.message = '';
+  zoteroState.message = '正在连接 Zotero…';
   zoteroState.loadingMore = false;
+  resetZoteroReadStatus();
   rerender();
   try {
     const [health, collections, items] = await Promise.all([
@@ -4145,6 +5494,7 @@ async function refreshZoteroLibrary() {
       zoteroFetch('/collections'),
       fetchAllZoteroItems()
     ]);
+    if (requestVersion !== zoteroState.connectRequestVersion) return;
     zoteroState.status = health.ok ? 'connected' : 'error';
     zoteroState.collections = collections.collections || [];
     zoteroState.items = items.items || [];
@@ -4162,6 +5512,7 @@ async function refreshZoteroLibrary() {
     zoteroState.graphAllCacheKey = zoteroGraphCacheKey();
     zoteroState.graphAllLoading = false;
   } catch (error) {
+    if (requestVersion !== zoteroState.connectRequestVersion) return;
     zoteroState.status = 'error';
     zoteroState.message = error.message || '无法连接 Zotero';
   }
@@ -4169,15 +5520,20 @@ async function refreshZoteroLibrary() {
 }
 
 async function loadZoteroItems({ append = false } = {}) {
+  if (zoteroState.status === 'loading') return;
+  const requestVersion = ++zoteroState.itemsRequestVersion;
   zoteroState.status = 'loading';
+  zoteroState.message = '正在读取 Zotero 文献…';
   zoteroState.loadingMore = false;
   zoteroState.graphAllLoading = true;
+  resetZoteroReadStatus();
   rerender();
   try {
     const result = await fetchAllZoteroItems({
       collection: zoteroState.selectedCollection,
       query: zoteroState.query
     });
+    if (requestVersion !== zoteroState.itemsRequestVersion) return;
     zoteroState.items = result.items || [];
     zoteroState.selectedItem = null;
     zoteroState.children = [];
@@ -4193,6 +5549,7 @@ async function loadZoteroItems({ append = false } = {}) {
     zoteroState.graphAllItems = zoteroState.items.slice();
     zoteroState.graphAllCacheKey = zoteroGraphCacheKey();
   } catch (error) {
+    if (requestVersion !== zoteroState.itemsRequestVersion) return;
     zoteroState.loadingMore = false;
     zoteroState.graphAllLoading = false;
     zoteroState.status = 'error';
@@ -4223,6 +5580,14 @@ async function loadZoteroItem(key) {
     if (requestVersion !== zoteroState.detailRequestVersion) return;
     zoteroState.selectedItem = itemResult.item;
     zoteroState.children = childResult.children || [];
+    zoteroState.readStatusByKey = {
+      ...(zoteroState.readStatusByKey || {}),
+      [key]: {
+        checked: true,
+        read: Boolean(findAIReadingNoteByConvention(zoteroState.children)),
+        noteTitle: (findAIReadingNoteByConvention(zoteroState.children) || {}).title || ''
+      }
+    };
     zoteroState.status = 'connected';
   } catch (error) {
     if (requestVersion !== zoteroState.detailRequestVersion) return;
@@ -4234,6 +5599,349 @@ async function loadZoteroItem(key) {
       rerender();
     }
   }
+}
+
+// ========================================================================
+// RESEARCH INSPIRATION
+// ========================================================================
+const RESEARCH_IDEA_STATUS = ['待整理', '待验证', '进行中', '已采用'];
+
+function researchIdeaStore() {
+  const research = DATA.learning.research;
+  if (!research.inspirations) research.inspirations = { items: [] };
+  if (!Array.isArray(research.inspirations.items)) research.inspirations.items = [];
+  return research.inspirations.items;
+}
+
+function researchIdeaStatusClass(status) {
+  if (status === '进行中') return 'status-active';
+  if (status === '已采用') return 'status-done';
+  return '';
+}
+
+function researchIdeaDate(value) {
+  if (!value) return '未记录';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value).slice(0, 10);
+  return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+}
+
+function researchIdeaFilters(items) {
+  const categories = [...new Set(items.map(item => item.category).filter(Boolean))].sort();
+  const tags = [...new Set(items.flatMap(item => Array.isArray(item.tags) ? item.tags : []))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+  return { categories, tags };
+}
+
+function researchIdeaVisibleItems() {
+  const state = researchInspirationState;
+  const query = state.query.trim().toLowerCase();
+  const matches = researchIdeaStore().filter(item => {
+    if (state.scope === 'active' && item.archived) return false;
+    if (state.scope === 'favorite' && (!item.favorite || item.archived)) return false;
+    if (state.scope === 'archive' && !item.archived) return false;
+    if (state.category && item.category !== state.category) return false;
+    if (state.tag && !(item.tags || []).includes(state.tag)) return false;
+    if (query) {
+      const text = [item.title, item.content, item.category, item.sourceType, item.sourceReference, item.project, ...(item.tags || [])].join(' ').toLowerCase();
+      if (!text.includes(query)) return false;
+    }
+    return true;
+  });
+  return matches.sort((a, b) => {
+    if (state.sort === 'created') return String(b.createdAt || '').localeCompare(String(a.createdAt || ''));
+    if (state.sort === 'title') return String(a.title || '').localeCompare(String(b.title || ''), 'zh-CN');
+    if (state.sort === 'favorite') return Number(b.favorite) - Number(a.favorite) || String(b.updatedAt || '').localeCompare(String(a.updatedAt || ''));
+    return String(b.updatedAt || '').localeCompare(String(a.updatedAt || ''));
+  });
+}
+
+function researchIdeaActiveFilterText() {
+  const state = researchInspirationState;
+  const parts = [];
+  if (state.scope === 'favorite') parts.push('收藏');
+  else if (state.scope === 'archive') parts.push('已归档');
+  if (state.category) parts.push(state.category);
+  if (state.tag) parts.push('# ' + state.tag);
+  if (state.query.trim()) parts.push('“' + state.query.trim() + '”');
+  return parts.join(' · ');
+}
+
+function researchIdeaHasActiveFilter() {
+  const s = researchInspirationState;
+  return !!(s.query.trim() || s.scope !== 'active' || s.category || s.tag);
+}
+
+function researchIdeaSidebarButton(label, count, active, attrs) {
+  return '<button class="research-idea-filter' + (active ? ' is-active' : '') + '" type="button" ' + attrs + '>' +
+    '<span class="research-idea-filter-text">' + escapeHTML(label) + '</span><span class="research-idea-filter-count">' + count + '</span></button>';
+}
+
+function researchIdeaHTML() {
+  const items = researchIdeaStore();
+  const filters = researchIdeaFilters(items);
+  const visible = researchIdeaVisibleItems();
+  if (!researchInspirationState.selectedId || !visible.some(item => item.id === researchInspirationState.selectedId)) {
+    researchInspirationState.selectedId = visible[0] ? visible[0].id : '';
+  }
+  const selected = visible.find(item => item.id === researchInspirationState.selectedId) || null;
+  const countScope = key => items.filter(item => key === 'active' ? !item.archived : key === 'favorite' ? item.favorite && !item.archived : item.archived).length;
+  const sidebar =
+    '<aside class="research-idea-sidebar" aria-label="科研灵感筛选">' +
+      '<div class="research-idea-sidebar-section"><div class="research-idea-sidebar-label">视图</div>' +
+        researchIdeaSidebarButton('全部灵感', countScope('active'), researchInspirationState.scope === 'active', 'data-research-idea-scope="active"') +
+        researchIdeaSidebarButton('我的收藏', countScope('favorite'), researchInspirationState.scope === 'favorite', 'data-research-idea-scope="favorite"') +
+        researchIdeaSidebarButton('已归档', countScope('archive'), researchInspirationState.scope === 'archive', 'data-research-idea-scope="archive"') +
+      '</div>' +
+      '<div class="research-idea-sidebar-section"><div class="research-idea-sidebar-label">分类</div>' +
+        researchIdeaSidebarButton('全部分类', items.filter(item => !item.archived).length, !researchInspirationState.category, 'data-research-idea-category=""') +
+        filters.categories.map(category => researchIdeaSidebarButton(category, items.filter(item => item.category === category && !item.archived).length, researchInspirationState.category === category, 'data-research-idea-category="' + escapeAttribute(category) + '" data-research-idea-scope="' + researchInspirationState.scope + '"')).join('') +
+      '</div>' +
+      '<div class="research-idea-sidebar-section"><div class="research-idea-sidebar-label">标签</div>' +
+        filters.tags.map(tag => researchIdeaSidebarButton('# ' + tag, items.filter(item => (item.tags || []).includes(tag) && !item.archived).length, researchInspirationState.tag === tag, 'data-research-idea-tag="' + escapeAttribute(tag) + '" data-research-idea-scope="' + researchInspirationState.scope + '"')).join('') +
+      '</div>' +
+    '</aside>';
+  const list = visible.length ? visible.map(item =>
+    '<button type="button" class="research-idea-card' + (item.id === researchInspirationState.selectedId ? ' is-active' : '') + '" data-research-idea-select="' + item.id + '" aria-pressed="' + (item.id === researchInspirationState.selectedId) + '">' +
+      '<div class="research-idea-card-top"><span>' + escapeHTML(item.category || '未分类') + '</span><span class="research-idea-status ' + researchIdeaStatusClass(item.status) + '">' + escapeHTML(item.status || '待整理') + '</span></div>' +
+      '<div class="research-idea-card-title">' + escapeHTML(item.title || '未命名灵感') + (item.favorite ? ' <span aria-label="已收藏">★</span>' : '') + '</div>' +
+      '<div class="research-idea-card-summary">' + escapeHTML(item.content || '') + '</div>' +
+      '<div class="research-idea-tags">' + (item.tags || []).slice(0, 3).map(tag => '<span class="research-idea-tag">' + escapeHTML(tag) + '</span>').join('') + '</div>' +
+    '</button>').join('') : '<div class="research-idea-empty">没有符合当前条件的灵感。<br>调整筛选条件，或新建一条记录。</div>';
+  const detail = selected ? researchIdeaDetailHTML(selected) : '<section class="research-idea-detail"><div class="research-idea-empty">选择一条灵感查看详情，<br>或新建一条研究思路。</div></section>';
+  const activeFilter = researchIdeaHasActiveFilter()
+    ? '<span class="research-idea-active-filter">筛选：' + escapeHTML(researchIdeaActiveFilterText()) +
+      '<button type="button" class="research-idea-active-filter-clear" data-action="research-idea-clear-filter" aria-label="清除筛选">✕</button></span>'
+    : '';
+  return '<div class="research-idea-main-header">' +
+      '<div><div class="research-idea-main-title">💡 科研灵感</div>' +
+      '<div class="research-idea-main-desc">捕捉研究思路，用分类与标签沉淀你的科研问题空间。</div></div>' +
+      '<div class="research-idea-header-actions">' + activeFilter +
+        '<button type="button" class="btn btn-primary btn-sm" data-action="research-idea-new" aria-label="新建灵感">＋ 新建灵感</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="research-idea-workspace">' + sidebar +
+    '<section class="research-idea-list-pane" aria-label="科研灵感列表">' +
+      '<div class="research-idea-toolbar"><input class="research-idea-search" id="researchIdeaSearch" value="' + escapeAttribute(researchInspirationState.query) + '" placeholder="搜索标题、内容、标签或来源" aria-label="搜索科研灵感">' +
+      '<div class="research-idea-toolbar-meta"><span>共 ' + visible.length + ' 条</span><select id="researchIdeaSort" class="research-idea-sort" aria-label="排序"><option value="updated"' + (researchInspirationState.sort === 'updated' ? ' selected' : '') + '>最近更新</option><option value="created"' + (researchInspirationState.sort === 'created' ? ' selected' : '') + '>最近创建</option><option value="favorite"' + (researchInspirationState.sort === 'favorite' ? ' selected' : '') + '>收藏优先</option><option value="title"' + (researchInspirationState.sort === 'title' ? ' selected' : '') + '>标题排序</option></select></div></div>' +
+      '<div class="research-idea-list">' + list + '</div>' +
+    '</section>' + detail + '</div>';
+}
+
+function researchIdeaDetailHTML(item) {
+  const archiveLabel = item.archived ? '取消归档' : '归档';
+  return '<section class="research-idea-detail" aria-label="科研灵感详情">' +
+    '<div class="research-idea-detail-header"><div><div class="research-idea-kicker">' + escapeHTML(item.category || '未分类') + (item.archived ? ' · 已归档' : '') + '</div><h2 class="research-idea-detail-title">' + escapeHTML(item.title || '未命名灵感') + '</h2></div>' +
+    '<div class="research-idea-detail-actions">' +
+      '<button type="button" class="research-idea-icon-btn' + (item.favorite ? ' is-active' : '') + '" data-action="research-idea-favorite" title="' + (item.favorite ? '取消收藏' : '收藏') + '" aria-label="' + (item.favorite ? '取消收藏' : '收藏') + '">★</button>' +
+      '<button type="button" class="research-idea-icon-btn" data-action="research-idea-edit" title="编辑灵感" aria-label="编辑灵感">✎</button>' +
+      '<button type="button" class="research-idea-icon-btn' + (item.archived ? ' is-active' : '') + '" data-action="research-idea-archive" title="' + archiveLabel + '" aria-label="' + archiveLabel + '">📦</button>' +
+      '<button type="button" class="research-idea-icon-btn is-danger" data-action="research-idea-delete" title="删除灵感" aria-label="删除灵感">🗑</button>' +
+    '</div></div>' +
+    '<div class="research-idea-meta-grid">' +
+      '<div class="research-idea-meta"><div class="research-idea-meta-label">状态</div><div class="research-idea-meta-value">' + escapeHTML(item.status || '待整理') + '</div></div>' +
+      '<div class="research-idea-meta"><div class="research-idea-meta-label">更新时间</div><div class="research-idea-meta-value">' + escapeHTML(researchIdeaDate(item.updatedAt || item.createdAt)) + '</div></div>' +
+      '<div class="research-idea-meta"><div class="research-idea-meta-label">创建时间</div><div class="research-idea-meta-value">' + escapeHTML(researchIdeaDate(item.createdAt)) + '</div></div>' +
+      '<div class="research-idea-meta"><div class="research-idea-meta-label">关联项目</div><div class="research-idea-meta-value">' + escapeHTML(item.project || '未关联') + '</div></div>' +
+    '</div>' +
+    '<div class="research-idea-content">' + escapeHTML(item.content || '暂无详细内容') + '</div>' +
+    ((item.tags || []).length ? '<div class="research-idea-tags">' + item.tags.map(tag => '<span class="research-idea-tag">' + escapeHTML(tag) + '</span>').join('') + '</div>' : '') +
+    (item.sourceType || item.sourceReference ? '<div class="research-idea-detail-section"><div class="research-idea-detail-section-title">来源</div>' +
+      '<div class="research-idea-source-row">' +
+        (item.sourceType ? '<span><b>类型</b>：' + escapeHTML(item.sourceType) + '</span>' : '') +
+        (item.sourceReference ? '<span><b>参考</b>：' + escapeHTML(item.sourceReference) + '</span>' : '') +
+      '</div></div>' : '') +
+    (item.project ? '<div class="research-idea-detail-section"><div class="research-idea-detail-section-title">关联项目</div>' +
+      '<div class="research-idea-relation"><b>📌</b> ' + escapeHTML(item.project) + '</div></div>' : '') +
+    '</section>';
+}
+
+// ========================================================================
+// RESEARCH IDEA MODAL (new / edit)
+// ========================================================================
+function researchIdeaModalField(label, html, full) {
+  return '<div class="research-idea-form-field' + (full ? ' full' : '') + '"><label>' + escapeHTML(label) + '</label>' + html + '</div>';
+}
+
+function researchIdeaCategoryOptions(selected) {
+  const categories = researchIdeaFilters(researchIdeaStore()).categories;
+  const opts = ['<option value="">未分类</option>'];
+  categories.forEach(c => {
+    opts.push('<option value="' + escapeAttribute(c) + '"' + (c === selected ? ' selected' : '') + '>' + escapeHTML(c) + '</option>');
+  });
+  opts.push('<option value="__new__">＋ 新建分类…</option>');
+  return opts.join('');
+}
+
+function openResearchIdeaModal(mode, item) {
+  const state = researchIdeaModalState;
+  state.mode = mode;
+  state.saving = false;
+
+  const title = mode === 'edit' ? '编辑灵感' : '新建灵感';
+  const sub = mode === 'edit' ? '修改内容后自动保存到灵感库。' : '先记下研究思路，分类与标签可以稍后补充。';
+  const isEdit = mode === 'edit';
+  const i = item || { title: '', content: '', category: '', tags: [], status: '待整理', sourceType: '', sourceReference: '', project: '', occurredAt: '' };
+
+  const tagsHTML = (i.tags || []).map(tag =>
+    '<span class="research-idea-form-tag">' + escapeHTML(tag) +
+    '<button type="button" data-idea-tag-remove="' + escapeAttribute(tag) + '" aria-label="移除标签 ' + escapeHTML(tag) + '">✕</button></span>'
+  ).join('');
+
+  const html =
+    '<div class="research-idea-modal-title">' + escapeHTML(title) + '</div>' +
+    '<div class="research-idea-modal-sub">' + escapeHTML(sub) + '</div>' +
+    '<div class="research-idea-form-grid">' +
+      researchIdeaModalField('标题', '<input type="text" id="ideaTitle" placeholder="一句话描述这条研究思路" value="' + escapeAttribute(i.title || '') + '">', true) +
+      researchIdeaModalField('内容', '<textarea id="ideaContent" placeholder="详细记录：为什么重要、可能的做法、预期影响……">' + escapeHTML(i.content || '') + '</textarea>', true) +
+      researchIdeaModalField('分类', '<select id="ideaCategory">' + researchIdeaCategoryOptions(i.category || '') + '</select>') +
+      researchIdeaModalField('新建分类', '<input type="text" id="ideaNewCategory" placeholder="仅在选择“新建分类”时填写" style="display:none;">') +
+      researchIdeaModalField('状态', '<select id="ideaStatus">' + RESEARCH_IDEA_STATUS.map(s => '<option value="' + escapeAttribute(s) + '"' + (s === (i.status || '待整理') ? ' selected' : '') + '>' + escapeHTML(s) + '</option>').join('') + '</select>') +
+      researchIdeaModalField('来源类型', '<select id="ideaSourceType">' + ['', '论文阅读', '会议讨论', '实验观察', '个人复盘', '文献综述', '其他'].map(s => '<option value="' + escapeAttribute(s) + '"' + (s === (i.sourceType || '') ? ' selected' : '') + '>' + (s ? escapeHTML(s) : '未选择') + '</option>').join('') + '</select>') +
+      researchIdeaModalField('来源参考', '<input type="text" id="ideaSourceReference" placeholder="论文标题、会议记录或出处链接" value="' + escapeAttribute(i.sourceReference || '') + '">') +
+      researchIdeaModalField('关联项目', '<input type="text" id="ideaProject" placeholder="所属科研项目" value="' + escapeAttribute(i.project || '') + '">') +
+      researchIdeaModalField('灵感日期', '<input type="date" id="ideaOccurredAt" value="' + escapeAttribute(i.occurredAt || '') + '">') +
+      researchIdeaModalField('标签', '<div class="research-idea-form-tags" id="ideaTagBox">' + tagsHTML +
+        '<input type="text" id="ideaTagInput" class="research-idea-form-tag-input" placeholder="输入后回车添加" aria-label="添加标签"></div>', true) +
+    '</div>' +
+    '<div class="research-idea-modal-actions">' +
+      '<button type="button" class="research-idea-modal-btn cancel" id="ideaModalCancel">取消</button>' +
+      '<button type="button" class="research-idea-modal-btn confirm" id="ideaModalOk">' + (isEdit ? '保存修改' : '创建灵感') + '</button>' +
+    '</div>';
+
+  showModal(html);
+
+  document.getElementById('ideaModalCancel').addEventListener('click', closeModal);
+  document.getElementById('ideaModalOk').addEventListener('click', submitResearchIdeaModal);
+
+  // 新建分类选项联动
+  const catSel = document.getElementById('ideaCategory');
+  const newCatInput = document.getElementById('ideaNewCategory');
+  if (catSel) {
+    const sync = () => {
+      const show = catSel.value === '__new__';
+      newCatInput.style.display = show ? '' : 'none';
+      if (show) newCatInput.focus();
+    };
+    catSel.addEventListener('change', sync);
+    sync();
+  }
+
+  // 标签输入：Enter 添加
+  const tagInput = document.getElementById('ideaTagInput');
+  if (tagInput) {
+    const tags = (i.tags || []).slice();
+    researchIdeaModalState.tags = tags;
+    tagInput.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const v = tagInput.value.trim();
+      if (v && !tags.includes(v)) {
+        tags.push(v);
+        researchIdeaModalRefreshTags();
+      }
+      tagInput.value = '';
+    });
+    document.getElementById('ideaTagBox').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-idea-tag-remove]');
+      if (!btn) return;
+      const idx = tags.indexOf(btn.dataset.ideaTagRemove);
+      if (idx !== -1) {
+        tags.splice(idx, 1);
+        researchIdeaModalRefreshTags();
+      }
+    });
+  }
+
+  document.getElementById('ideaTitle').focus();
+}
+
+function researchIdeaModalRefreshTags() {
+  const list = researchIdeaModalState.tags || [];
+  const box = document.getElementById('ideaTagBox');
+  if (!box) return;
+  box.innerHTML = list.map(t =>
+    '<span class="research-idea-form-tag">' + escapeHTML(t) +
+    '<button type="button" data-idea-tag-remove="' + escapeAttribute(t) + '" aria-label="移除标签 ' + escapeHTML(t) + '">✕</button></span>'
+  ).join('') + '<input type="text" id="ideaTagInput" class="research-idea-form-tag-input" placeholder="输入后回车添加" aria-label="添加标签">';
+  const ni = document.getElementById('ideaTagInput');
+  ni.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const v = ni.value.trim();
+    if (v && !list.includes(v)) {
+      list.push(v);
+      researchIdeaModalRefreshTags();
+    }
+    ni.value = '';
+  });
+  ni.focus();
+}
+
+function submitResearchIdeaModal() {
+  if (researchIdeaModalState.saving) return;
+  const title = (document.getElementById('ideaTitle') || {}).value;
+  const content = (document.getElementById('ideaContent') || {}).value;
+  if (!title || !title.trim()) {
+    const t = document.getElementById('ideaTitle');
+    if (t) { t.style.borderColor = 'var(--danger)'; t.focus(); }
+    return;
+  }
+
+  const catSel = document.getElementById('ideaCategory');
+  let category = catSel ? catSel.value : '';
+  const newCat = (document.getElementById('ideaNewCategory') || {}).value;
+  if (catSel && catSel.value === '__new__' && newCat.trim()) category = newCat.trim();
+
+  const status = (document.getElementById('ideaStatus') || {}).value || '待整理';
+  const sourceType = (document.getElementById('ideaSourceType') || {}).value || '';
+  const sourceReference = (document.getElementById('ideaSourceReference') || {}).value || '';
+  const project = (document.getElementById('ideaProject') || {}).value || '';
+  const occurredAt = (document.getElementById('ideaOccurredAt') || {}).value || '';
+  const tags = (researchIdeaModalState.tags || []).filter(Boolean);
+
+  const now = new Date().toISOString();
+  const items = researchIdeaStore();
+
+  if (researchIdeaModalState.mode === 'edit') {
+    const item = items.find(x => x.id === researchIdeaModalState.id);
+    if (item) {
+      item.title = title.trim();
+      item.content = content || '';
+      item.category = category;
+      item.status = status;
+      item.sourceType = sourceType;
+      item.sourceReference = sourceReference;
+      item.project = project;
+      item.occurredAt = occurredAt;
+      item.tags = tags;
+      item.updatedAt = now;
+    }
+  } else {
+    const id = uid();
+    const item = {
+      id,
+      title: title.trim(),
+      content: content || '',
+      category,
+      tags,
+      status,
+      sourceType,
+      sourceReference,
+      project,
+      favorite: false,
+      archived: false,
+      createdAt: now,
+      updatedAt: now,
+      occurredAt: occurredAt || now.slice(0, 10)
+    };
+    items.push(item);
+    researchInspirationState.selectedId = id;
+  }
+
+  closeModal();
+  save();
+  rerender();
+  showToast(researchIdeaModalState.mode === 'edit' ? '灵感已更新' : '灵感已记录', 'success');
 }
 
 // ========================================================================
@@ -4586,10 +6294,10 @@ const PAGES = {
       const countLabel = zoteroState.status === 'connected' || loadedCount
         ? '已加载 ' + loadedCount + ' / ' + totalCount
         : '尚未加载';
-      const zoteroList = zoteroState.status === 'loading'
-        ? emptyStateHTML('⏳', '正在读取 Zotero 文献', '请稍候…')
-        : items.length
-          ? '<div class="zotero-list">' + items.map(zoteroItemHTML).join('') + '</div>'
+      const zoteroList = items.length
+        ? '<div class="zotero-list">' + items.map(zoteroItemHTML).join('') + '</div>'
+        : zoteroState.status === 'loading'
+          ? emptyStateHTML('⏳', '正在读取 Zotero 文献', '请稍候…')
           : emptyStateHTML('📚', '暂无已加载文献', zoteroState.status === 'connected' ? '尝试切换收藏夹或清空搜索条件。' : '启动 Zotero 后，点击“连接 Zotero”。');
       const remaining = Math.max(0, totalCount - loadedCount);
       const paginationHTML = zoteroState.status === 'connected' && items.length
@@ -4602,33 +6310,15 @@ const PAGES = {
               : '') +
           '</div>'
         : '';
-      return '<div class="card-grid">' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>当前课题</div><span class="card-tag">进行中</span></div>' +
-          '<div class="inspire-item">' +
-            '<div class="inspire-title" contenteditable="true" data-research="title">' + escapeHTML(rs.current.title) + '</div>' +
-            '<div class="inspire-desc" contenteditable="true" data-research="desc">' + escapeHTML(rs.current.desc) + '</div>' +
-          '</div>' +
-          barHTMLAuto('总体进度（里程碑）', Math.round(rs.milestones.filter(m => m.status === 'done').length / Math.max(1, rs.milestones.length) * 100)) +
-        '</div>' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>研究里程碑</div><span class="card-tag">点击切换状态</span></div>' +
-          milestoneHTML() +
-        '</div>' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>阅读计划</div><span class="card-tag">' + pDone + '/' + papers.length + '</span></div>' +
-          barHTMLAuto('文献阅读', calcTaskPercent(papers)) +
-          taskListHTML('tasks.researchPapers', papers) +
-        '</div>' +
-      '</div>' +
+      return literatureOverviewHTML() +
       '<div class="card-grid zotero-row">' +
         '<div class="card zotero-library-card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>Zotero 文献库</div><div class="zotero-library-meta"><span class="zotero-count-badge">' + countLabel + '</span>' + zoteroStatusHTML() + '</div></div>' +
           '<div class="zotero-toolbar">' +
             '<select class="fit-select" id="zoteroCollection" aria-label="选择 Zotero 收藏夹">' + collectionOptions + '</select>' +
             '<input class="add-task-input" id="zoteroQuery" value="' + escapeHTML(zoteroState.query) + '" placeholder="搜索标题、作者、标签或笔记" aria-label="搜索 Zotero 文献">' +
-            '<button class="btn btn-primary btn-sm" data-action="zotero-connect">连接 Zotero</button>' +
-            '<button class="btn btn-outline btn-sm" data-action="zotero-search">搜索</button>' +
+            '<button class="btn btn-primary btn-sm" data-action="zotero-connect"' + (zoteroState.status === 'loading' ? ' disabled' : '') + '>' + (zoteroState.status === 'loading' ? '连接中…' : '连接 Zotero') + '</button>' +
+            '<button class="btn btn-outline btn-sm" data-action="zotero-search"' + (zoteroState.status === 'loading' ? ' disabled' : '') + '>搜索</button>' +
           '</div>' +
           connectionMessage +
           '<div style="margin-top:14px;">' + zoteroList + paginationHTML + '</div>' +
@@ -4644,10 +6334,7 @@ const PAGES = {
 
   'research-inspiration': {
     title: '科研灵感',
-    render: () => '<div class="card-grid"><div class="card">' +
-      '<div class="card-header"><div class="card-title"><span class="dot"></span>科研灵感</div><span class="card-tag">规划中</span></div>' +
-      emptyStateHTML('💡', '科研灵感模块正在准备', '后续将在这里沉淀研究问题、假设和可验证方向。') +
-    '</div></div>'
+    render: () => researchIdeaHTML()
   },
 
   'research-experiments': {
@@ -5277,6 +6964,10 @@ document.addEventListener('keydown', (e) => {
 
   // Esc — close topmost layer
   if (e.key === 'Escape') {
+    if (knowledgeGraphFullscreen) {
+      setKnowledgeGraphFullscreen(false);
+      return;
+    }
     if (document.getElementById('noteReader').classList.contains('show')) {
       if (document.fullscreenElement) return;
       closeZoteroNoteReader();
@@ -5371,6 +7062,111 @@ function finishOnboarding() {
 }
 
 // ========================================================================
+// LITERATURE VISUAL INTERACTIONS
+// ========================================================================
+let readingLogTooltip = null;
+
+function getReadingLogTooltip() {
+  if (readingLogTooltip && readingLogTooltip.isConnected) return readingLogTooltip;
+  readingLogTooltip = document.createElement('div');
+  readingLogTooltip.className = 'reading-log-tooltip';
+  readingLogTooltip.setAttribute('role', 'tooltip');
+  readingLogTooltip.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(readingLogTooltip);
+  return readingLogTooltip;
+}
+
+function positionReadingLogTooltip(anchor, clientX, clientY) {
+  const tooltip = getReadingLogTooltip();
+  const gap = 10;
+  const rect = anchor.getBoundingClientRect();
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const cursorPositioned = Number.isFinite(clientX) && Number.isFinite(clientY);
+  let left = cursorPositioned ? clientX + 12 : rect.left + rect.width / 2 - tooltipRect.width / 2;
+  let top = cursorPositioned ? clientY + 14 : rect.top - tooltipRect.height - gap;
+  left = Math.max(12, Math.min(left, window.innerWidth - tooltipRect.width - 12));
+  if (top + tooltipRect.height > window.innerHeight - 12) top = rect.top - tooltipRect.height - gap;
+  if (top < 12) top = rect.bottom + gap;
+  tooltip.style.left = Math.round(left) + 'px';
+  tooltip.style.top = Math.round(top) + 'px';
+}
+
+function showReadingLogTooltip(cell, clientX, clientY) {
+  if (!cell || !cell.classList.contains('has-reading-log')) return;
+  let titles = [];
+  try { titles = JSON.parse(cell.dataset.readingTitles || '[]'); } catch (error) { titles = []; }
+  if (!titles.length) return;
+  const tooltip = getReadingLogTooltip();
+  tooltip.innerHTML = '<div><span class="reading-log-tooltip-date">' + escapeHTML(cell.dataset.readingDate || '') + '</span>' +
+    '<span class="reading-log-tooltip-count">' + titles.length + ' 篇</span></div>' +
+    '<div class="reading-log-tooltip-list">' + titles.map(title => '<div class="reading-log-tooltip-item">' + escapeHTML(title) + '</div>').join('') + '</div>';
+  tooltip.setAttribute('aria-hidden', 'false');
+  tooltip.classList.add('show');
+  positionReadingLogTooltip(cell, clientX, clientY);
+}
+
+function hideReadingLogTooltip() {
+  const tooltip = getReadingLogTooltip();
+  tooltip.classList.remove('show');
+  tooltip.setAttribute('aria-hidden', 'true');
+}
+
+function setLiteraturePieActive(interactive) {
+  const wrap = interactive ? interactive.closest('.literature-pie-wrap') : null;
+  if (!wrap) return;
+  const index = interactive.dataset.pieIndex;
+  wrap.classList.toggle('has-active', index !== undefined);
+  wrap.querySelectorAll('[data-pie-index]').forEach(item => {
+    item.classList.toggle('is-active', item.dataset.pieIndex === index);
+  });
+}
+
+function clearLiteraturePieActive(wrap) {
+  if (!wrap) return;
+  wrap.classList.remove('has-active');
+  wrap.querySelectorAll('[data-pie-index].is-active').forEach(item => item.classList.remove('is-active'));
+}
+
+document.addEventListener('pointerover', (e) => {
+  const heatmapCell = e.target.closest && e.target.closest('.literature-heatmap-panel .hm-cell.has-reading-log');
+  if (heatmapCell) showReadingLogTooltip(heatmapCell, e.clientX, e.clientY);
+  const pieItem = e.target.closest && e.target.closest('.literature-pie-wrap [data-pie-index]');
+  if (pieItem) setLiteraturePieActive(pieItem);
+});
+
+document.addEventListener('pointermove', (e) => {
+  const heatmapCell = e.target.closest && e.target.closest('.literature-heatmap-panel .hm-cell.has-reading-log');
+  if (heatmapCell && readingLogTooltip && readingLogTooltip.classList.contains('show')) {
+    positionReadingLogTooltip(heatmapCell, e.clientX, e.clientY);
+  }
+});
+
+document.addEventListener('pointerout', (e) => {
+  const heatmapCell = e.target.closest && e.target.closest('.literature-heatmap-panel .hm-cell.has-reading-log');
+  if (heatmapCell && (!e.relatedTarget || !heatmapCell.contains(e.relatedTarget))) hideReadingLogTooltip();
+  const pieWrap = e.target.closest && e.target.closest('.literature-pie-wrap');
+  if (pieWrap) {
+    const nextItem = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('.literature-pie-wrap [data-pie-index]') : null;
+    if (nextItem && nextItem.closest('.literature-pie-wrap') === pieWrap) setLiteraturePieActive(nextItem);
+    else clearLiteraturePieActive(pieWrap);
+  }
+});
+
+document.addEventListener('focusin', (e) => {
+  const heatmapCell = e.target.closest && e.target.closest('.literature-heatmap-panel .hm-cell.has-reading-log');
+  if (heatmapCell) showReadingLogTooltip(heatmapCell);
+  const pieItem = e.target.closest && e.target.closest('.literature-pie-wrap [data-pie-index]');
+  if (pieItem) setLiteraturePieActive(pieItem);
+});
+
+document.addEventListener('focusout', (e) => {
+  const heatmapCell = e.target.closest && e.target.closest('.literature-heatmap-panel .hm-cell.has-reading-log');
+  if (heatmapCell) hideReadingLogTooltip();
+  const pieWrap = e.target.closest && e.target.closest('.literature-pie-wrap');
+  if (pieWrap && (!e.relatedTarget || !pieWrap.contains(e.relatedTarget))) clearLiteraturePieActive(pieWrap);
+});
+
+// ========================================================================
 // GLOBAL CLICK DELEGATION
 // ========================================================================
 document.addEventListener('click', (e) => {
@@ -5393,6 +7189,13 @@ document.addEventListener('click', (e) => {
   // --- Inspire/news delete (soft) ---
   const inspDel = t.closest('.inspire-delete');
   if (inspDel) {
+    if (inspDel.dataset.readingLogDel) {
+      const logs = DATA.learning.research.readingLogs || [];
+      DATA.learning.research.readingLogs = logs.filter(l => l.id !== inspDel.dataset.readingLogDel);
+      save();
+      rerender();
+      return;
+    }
     if (inspDel.dataset.msDel) {
       softDelete('learning.research.milestones', inspDel.dataset.msDel);
       return;
@@ -5401,6 +7204,59 @@ document.addEventListener('click', (e) => {
       softDelete(inspDel.dataset.path, inspDel.dataset.id);
       return;
     }
+  }
+
+  // --- Reading-log tag filter ---
+  const readingTag = t.closest('[data-reading-tag]');
+  if (readingTag) {
+    const tag = readingTag.dataset.readingTag || '';
+    activeReadingLogTag = activeReadingLogTag === tag ? '' : tag;
+    rerender();
+    return;
+  }
+
+  // --- Research idea: sidebar scope filter ---
+  const ideaScope = t.closest('[data-research-idea-scope]');
+  if (ideaScope && !ideaScope.dataset.researchIdeaCategory && !ideaScope.dataset.researchIdeaTag) {
+    const scope = ideaScope.dataset.researchIdeaScope;
+    if (scope === 'archive') {
+      researchInspirationState.scope = 'archive';
+      researchInspirationState.category = '';
+      researchInspirationState.tag = '';
+      researchInspirationState.selectedId = '';
+    } else {
+      researchInspirationState.scope = scope;
+    }
+    rerender();
+    return;
+  }
+
+  // --- Research idea: sidebar category filter ---
+  const ideaCategory = t.closest('[data-research-idea-category]');
+  if (ideaCategory) {
+    const category = ideaCategory.dataset.researchIdeaCategory || '';
+    researchInspirationState.category = researchInspirationState.category === category ? '' : category;
+    researchInspirationState.selectedId = '';
+    rerender();
+    return;
+  }
+
+  // --- Research idea: sidebar tag filter ---
+  const ideaTagBtn = t.closest('[data-research-idea-tag]');
+  if (ideaTagBtn) {
+    const tag = ideaTagBtn.dataset.researchIdeaTag || '';
+    researchInspirationState.tag = researchInspirationState.tag === tag ? '' : tag;
+    researchInspirationState.selectedId = '';
+    rerender();
+    return;
+  }
+
+  // --- Research idea: select card ---
+  const ideaSelect = t.closest('[data-research-idea-select]');
+  if (ideaSelect) {
+    researchInspirationState.selectedId = ideaSelect.dataset.researchIdeaSelect;
+    rerender();
+    return;
   }
 
   // --- Add task button ---
@@ -5641,6 +7497,98 @@ function handleAction(action) {
       showToast('已添加到本周任务', 'success');
       break;
     }
+    case 'add-reading-log':
+      openReadingLogModal();
+      break;
+    case 'research-idea-new': {
+      researchIdeaModalState.tags = [];
+      openResearchIdeaModal('create', null);
+      break;
+    }
+    case 'research-idea-edit': {
+      const idea = researchIdeaStore().find(x => x.id === researchInspirationState.selectedId);
+      if (idea) {
+        researchIdeaModalState.id = idea.id;
+        researchIdeaModalState.tags = (idea.tags || []).slice();
+        openResearchIdeaModal('edit', idea);
+      }
+      break;
+    }
+    case 'research-idea-favorite': {
+      const item = researchIdeaStore().find(x => x.id === researchInspirationState.selectedId);
+      if (item) {
+        item.favorite = !item.favorite;
+        save();
+        rerender();
+        showToast(item.favorite ? '已收藏' : '已取消收藏', 'success');
+      }
+      break;
+    }
+    case 'research-idea-archive': {
+      const item = researchIdeaStore().find(x => x.id === researchInspirationState.selectedId);
+      if (item) {
+        item.archived = !item.archived;
+        if (item.archived) {
+          item.favorite = false;
+          researchInspirationState.selectedId = '';
+        }
+        save();
+        rerender();
+        showToast(item.archived ? '已归档' : '已恢复', 'success');
+      }
+      break;
+    }
+    case 'research-idea-delete': {
+      const item = researchIdeaStore().find(x => x.id === researchInspirationState.selectedId);
+      if (!item) break;
+      showConfirm('删除这条灵感？', '将删除「' + escapeHTML(item.title || '未命名灵感') + '」，此操作不可撤销。', '删除', () => {
+        const idx = researchIdeaStore().findIndex(x => x.id === researchInspirationState.selectedId);
+        if (idx !== -1) {
+          researchIdeaStore().splice(idx, 1);
+          researchInspirationState.selectedId = '';
+          save();
+          rerender();
+          showToast('灵感已删除', 'success');
+        }
+      });
+      break;
+    }
+    case 'research-idea-clear-filter':
+      researchInspirationState.query = '';
+      researchInspirationState.scope = 'active';
+      researchInspirationState.category = '';
+      researchInspirationState.tag = '';
+      rerender();
+      break;
+    case 'clear-reading-log-tag':
+      activeReadingLogTag = '';
+      rerender();
+      break;
+    case 'generate-knowledge-graph':
+      if (knowledgeGraphGenerating || zoteroState.status !== 'connected') {
+        if (zoteroState.status !== 'connected') showToast('请先连接 Zotero，再生成知识图谱', 'warning');
+        break;
+      }
+      knowledgeGraphGenerating = true;
+      rerender();
+      requestAnimationFrame(() => {
+        knowledgeGraphMounted = true;
+        rerender();
+        requestAnimationFrame(() => {
+          try {
+            const canvas = document.getElementById('knowledgeGraphCanvas');
+            if (!canvas || !knowledgeGraphRuntime) throw new Error('图谱画布未能初始化');
+            showToast('知识图谱已生成', 'success');
+          } catch (error) {
+            knowledgeGraphMounted = false;
+            showToast(error.message || '知识图谱生成失败，请重试', 'error');
+            rerender();
+          } finally {
+            knowledgeGraphGenerating = false;
+          }
+        });
+      });
+      break;
     case 'add-workout-log':
       openWorkoutModal(null);
       break;
@@ -5780,12 +7728,25 @@ document.addEventListener('change', (e) => {
     loadZoteroItems();
     return;
   }
+  if (e.target.id === 'researchIdeaSort') {
+    researchInspirationState.sort = e.target.value;
+    rerender();
+    return;
+  }
   if (e.target.classList.contains('bar-value-edit')) {
     if (e.target.dataset.cat === 'review.interaction') {
       DATA.review.interactionRate = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
       save();
       rerender();
     }
+  }
+});
+
+// Research idea search: live filtering (input event, delegated)
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'researchIdeaSearch') {
+    researchInspirationState.query = e.target.value;
+    rerender();
   }
 });
 
@@ -5808,6 +7769,10 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
+window.addEventListener('resize', debounce(() => {
+  if (currentPage === 'research') fitReadingLogHeatmap();
+}, 120));
+
 // ========================================================================
 // INIT
 // ========================================================================
@@ -5825,11 +7790,13 @@ async function init() {
 
   // Housekeeping
   migrateFitnessData();
+  const prunedReadingLogs = pruneReadingLogs();
   purgeTrash();
   recordCheckinToday();
   recordWeeklyTrend();
   if (!DATA.meta) DATA.meta = { revision: 0, deviceId: DEVICE_ID, savedAt: '' };
 
+  if (prunedReadingLogs) save();
   applyTheme();
   updateSyncIndicator();
   renderPage('dashboard');

@@ -10,6 +10,8 @@ const PORT = Number(process.env.PORT || 8788);
 const ZOTERO_API = 'http://127.0.0.1:23119/api';
 const ROOT = __dirname;
 const MAX_LIMIT = 100;
+const MAX_KNOWLEDGE_KEYS = 24;
+const knowledgeTextCache = new Map();
 
 function sendJson(response, status, body) {
   response.writeHead(status, {
@@ -127,6 +129,72 @@ function compactChild(item) {
   };
 }
 
+function normalizePaperText(value) {
+  return String(value || '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function paperSection(content, headingPattern, nextHeadingPattern, maxLength) {
+  const text = normalizePaperText(content);
+  const match = headingPattern.exec(text);
+  if (!match) return '';
+  const start = match.index + match[0].length;
+  const tail = text.slice(start, start + maxLength * 2);
+  const next = nextHeadingPattern.exec(tail);
+  return normalizePaperText(tail.slice(0, next ? next.index : maxLength)).slice(0, maxLength);
+}
+
+function extractKnowledgeSections(content) {
+  const abstractText = paperSection(
+    content,
+    /(?:^|\n)\s*(?:abstract|摘要)\s*[:：]?\s*/im,
+    /(?:^|\n)\s*(?:keywords?|index terms?|1\.?\s+introduction|introduction|关键词|引言)\s*[:：]?\s*/im,
+    3600
+  );
+  const introductionText = paperSection(
+    content,
+    /(?:^|\n)\s*(?:(?:1|i)\.?\s+)?(?:introduction|引言)\s*[:：]?\s*/im,
+    /(?:^|\n)\s*(?:(?:2|ii)\.?\s+)?(?:related work|background|preliminar(?:y|ies)|method(?:s|ology)?|problem formulation|literature review|研究背景|相关工作|方法)\s*[:：]?\s*/im,
+    9000
+  );
+  return { abstractText, introductionText };
+}
+
+async function knowledgeTextForItem(key) {
+  const cached = knowledgeTextCache.get(key);
+  if (cached && Date.now() - cached.cachedAt < 10 * 60 * 1000) return cached.value;
+  const result = { key, abstractText: '', introductionText: '', source: 'metadata' };
+  try {
+    const children = await zoteroGet(`/users/0/items/${key}/children`);
+    const attachments = (children.data || [])
+      .filter(item => item && item.data && item.data.itemType === 'attachment')
+      .sort((a, b) => {
+        const score = item => /pdf/i.test(item.data.contentType || '') ? 2 : /html/i.test(item.data.contentType || '') ? 1 : 0;
+        return score(b) - score(a);
+      });
+    for (const attachment of attachments.slice(0, 3)) {
+      try {
+        const fulltext = await zoteroGet(`/users/0/items/${attachment.key}/fulltext`);
+        const fullContent = normalizePaperText(fulltext.data && fulltext.data.content);
+        const sections = extractKnowledgeSections(fullContent);
+        if (!sections.introductionText && fullContent) sections.introductionText = fullContent.slice(0, 9000);
+        if (!sections.abstractText && !sections.introductionText) continue;
+        Object.assign(result, sections, { source: 'indexed-fulltext', attachmentKey: attachment.key });
+        break;
+      } catch (error) {
+        if (error.statusCode !== 404) throw error;
+      }
+    }
+  } catch (error) {
+    if (error.statusCode !== 404) console.warn(`knowledge text unavailable for ${key}:`, error.message);
+  }
+  knowledgeTextCache.set(key, { value: result, cachedAt: Date.now() });
+  return result;
+}
+
 function serveWorkspace(response, filename) {
   const allowed = new Map([
     ['/', 'creator-workspace.html'],
@@ -205,6 +273,17 @@ async function handleApi(requestUrl, response) {
       limit,
       hasMore: start + items.length < total
     });
+  }
+
+  if (requestUrl.pathname === '/api/zotero/knowledge-text') {
+    const keys = Array.from(new Set(String(requestUrl.searchParams.get('keys') || '')
+      .split(',')
+      .map(key => key.trim().toUpperCase())
+      .filter(key => /^[A-Z0-9]{8}$/.test(key))))
+      .slice(0, MAX_KNOWLEDGE_KEYS);
+    if (!keys.length) return sendJson(response, 400, { error: '请提供有效的 Zotero 文献 key。' });
+    const documents = await Promise.all(keys.map(knowledgeTextForItem));
+    return sendJson(response, 200, { documents });
   }
 
   const itemMatch = requestUrl.pathname.match(/^\/api\/zotero\/items\/([A-Z0-9]{8})(?:\/(children))?$/);
