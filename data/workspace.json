@@ -1,17 +1,17 @@
 {
   "version": "3.0",
   "meta": {
-    "revision": 172,
-    "deviceId": "dev-msbc8kkefh3fez",
-    "savedAt": "2026-08-06T13:55:58.318Z"
+    "revision": 176,
+    "deviceId": "dev-mseralfaa5wek9",
+    "savedAt": "2026-08-07T04:34:21.352Z"
   },
   "settings": {
-    "theme": "dark",
+    "theme": "system",
     "onboarded": true,
     "weather": {
-      "city": "杭州 · 浙江",
-      "lat": 30.29365,
-      "lon": 120.16142
+      "city": "当前位置",
+      "lat": 30.31788575325085,
+      "lon": 120.32984651445486
     }
   },
   "trash": [],
@@ -19,7 +19,8 @@
     "2026-08-02": 3,
     "2026-08-03": 3,
     "2026-08-05": 1,
-    "2026-08-06": 0
+    "2026-08-06": 0,
+    "2026-08-07": 0
   },
   "weeklyTrend": [
     {
@@ -612,7 +613,7 @@
             "submissionNotes": "",
             "submittedAt": "2026-08-06",
             "createdAt": "2026-08-06T06:05:44.248Z",
-            "updatedAt": "2026-08-06T07:24:50.394Z"
+            "updatedAt": "2026-08-07T04:34:20.549Z"
           }
         ]
       },
@@ -743,5 +744,5 @@
       }
     ]
   },
-  "lastSaved": "2026-08-06T13:55:58.318Z"
+  "lastSaved": "2026-08-07T04:34:21.352Z"
 }
