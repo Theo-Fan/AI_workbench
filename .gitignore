@@ -1,6 +1,17 @@
-# Application data is synced separately through iCloud and can contain personal records.
+# Application data is local-only and can contain personal records.
+# Keep the directory marker, but never commit workspace snapshots, databases,
+# WAL files, exports, or backup archives.
 data/*
 !data/.gitkeep
+workspace.json
+workspace.db
+workspace.db-*
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+backups/
 
 # Environment files and local secrets. Keep .env.example tracked as a template.
 .env
@@ -82,5 +93,3 @@ Desktop.ini
 *.tar
 *.tar.gz
 *.tgz
-*.sqlite
-*.sqlite3

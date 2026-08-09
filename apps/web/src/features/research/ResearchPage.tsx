@@ -1,0 +1,16 @@
+import { FormEvent, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+type Idea = { id: string; title: string; content: string; tags: string[]; status: string; favorite: boolean };
+type Todo = { id: string; title: string; priority: string; dueDate: string | null; status: string; version: number };
+type ResearchData = { ideas: Idea[]; todos: Todo[]; readingLogs: Array<{ id: string; date: string; title: string; tags: string[] }> };
+async function api<T>(path: string, init?: RequestInit): Promise<T> { const response = await fetch(path, { ...init, headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) } }); const body = await response.json(); if (!response.ok) throw new Error(body.error?.message || '请求失败'); return body.data; }
+
+export function ResearchPage() {
+  const client = useQueryClient(); const [title, setTitle] = useState('');
+  const data = useQuery({ queryKey: ['research'], queryFn: () => api<ResearchData>('/api/v1/workspaces/default/research') });
+  const addIdea = useMutation({ mutationFn: () => api('/api/v1/workspaces/default/research/ideas', { method: 'POST', body: JSON.stringify({ title }) }), onSuccess: () => { setTitle(''); client.invalidateQueries({ queryKey: ['research'] }); } });
+  const updateTodo = useMutation({ mutationFn: (todo: Todo) => api(`/api/v1/workspaces/default/research/todos/${todo.id}`, { method: 'PATCH', body: JSON.stringify({ status: todo.status === 'done' ? 'todo' : 'done', version: todo.version }) }), onSuccess: () => client.invalidateQueries({ queryKey: ['research'] }) });
+  const submit = (event: FormEvent) => { event.preventDefault(); if (title.trim()) addIdea.mutate(); };
+  return <main className="shell task-shell"><div className="eyebrow">RESEARCH · SQLITE API</div><h1>科研工作台</h1><p>科研灵感、待办与阅读日志已迁移到后端数据层。</p><form className="task-form" onSubmit={submit}><input value={title} onChange={e => setTitle(e.target.value)} placeholder="快速记录一个研究灵感" aria-label="研究灵感" /><button type="submit" disabled={addIdea.isPending}>{addIdea.isPending ? '保存中…' : '添加灵感'}</button></form>{(data.error || addIdea.error || updateTodo.error) && <div className="error-card" role="alert">{(data.error || addIdea.error || updateTodo.error)?.message}</div>}{data.isLoading ? <p>正在加载科研数据…</p> : data.data && <><section className="checkin-card"><h2>科研待办</h2>{data.data.todos.map(todo => <button key={todo.id} type="button" className={todo.status === 'done' ? 'checkin done' : 'checkin'} onClick={() => updateTodo.mutate(todo)} aria-pressed={todo.status === 'done'}><span>{todo.status === 'done' ? '✓' : '○'}</span>{todo.title}<b>{todo.priority}{todo.dueDate ? ` · ${todo.dueDate}` : ''}</b></button>)}</section><section className="idea-grid"><h2>科研灵感 <small>{data.data.ideas.length}</small></h2>{data.data.ideas.map(idea => <article key={idea.id}><h3>{idea.favorite ? '★ ' : ''}{idea.title}</h3><p>{idea.content || '尚未补充说明'}</p><small>{idea.status}{idea.tags.length ? ` · ${idea.tags.join(' / ')}` : ''}</small></article>)}</section><section className="checkin-card"><h2>最近阅读</h2>{data.data.readingLogs.slice(0, 6).map(log => <div className="fitness-row" key={log.id}><span>{log.date}</span><strong>{log.title}</strong><small>{log.tags.join(' / ') || '未分类'}</small></div>)}</section></>}</main>;
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@ai-workspace/zotero-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node ../../zotero-bridge.js",
+    "start": "node ../../zotero-bridge.js"
+  }
+}

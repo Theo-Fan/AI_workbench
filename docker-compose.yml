@@ -1,0 +1,31 @@
+services:
+  db-init:
+    build: { context: ., dockerfile: Dockerfile.api }
+    environment:
+      API_HOST: 127.0.0.1
+      API_PORT: 3001
+      WORKSPACE_DB_PATH: /data/workspace.db
+      WORKSPACE_BACKUP_DIR: /data/backups
+      LEGACY_JSON_PATH: /data/workspace.json
+    volumes: ["./data:/data"]
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["node apps/api/dist/db/migrate.js && if [ ! -f /data/.workspace-initialized ]; then if [ -f /data/workspace.json ]; then node apps/api/dist/db/import-legacy.js; fi; touch /data/.workspace-initialized; fi"]
+  api:
+    build: { context: ., dockerfile: Dockerfile.api }
+    depends_on:
+      db-init: { condition: service_completed_successfully }
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: 3001
+      WORKSPACE_DB_PATH: /data/workspace.db
+      WORKSPACE_BACKUP_DIR: /data/backups
+    volumes: ["./data:/data"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  web:
+    build: { context: ., dockerfile: Dockerfile.web }
+    depends_on: { api: { condition: service_healthy } }
+    ports: ["8080:80"]

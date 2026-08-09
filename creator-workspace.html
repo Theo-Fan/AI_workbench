@@ -319,6 +319,11 @@
     user-select: none;
     min-height: 38px;
     position: relative;
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
   }
 
   .menu-item .icon {
@@ -856,6 +861,9 @@
   .research-idea-tag-add { min-height: 25px; padding: 0 9px; border: 1px dashed color-mix(in srgb, var(--idea-accent) 36%, var(--border)); border-radius: 999px; background: transparent; color: var(--idea-accent); font: inherit; font-size: 10px; font-weight: var(--fw-semibold); cursor: pointer; }
   .research-idea-tag-add:hover { border-style: solid; background: var(--idea-accent-soft); }
   .research-idea-detail { min-width: 0; padding: 26px 28px; overflow: auto; scrollbar-width: thin; }
+  .research-idea-detail.is-focus-mode { position: fixed; inset: 3.5vh 3.5vw; z-index: 1000; width: auto; height: auto; max-height: 93vh; padding: 30px clamp(24px, 5vw, 76px); border: 1px solid color-mix(in srgb, var(--idea-accent) 24%, var(--border)); border-radius: 18px; box-shadow: 0 24px 80px rgba(20, 34, 60, .22); }
+  body.research-focus-active { overflow: hidden; }
+  .research-focus-backdrop { position: fixed; inset: 0; z-index: 999; background: rgba(15, 28, 48, .32); backdrop-filter: blur(2px); }
   .research-idea-detail-header { display: flex; justify-content: space-between; gap: 12px; }
   .research-idea-detail-title { margin: 9px 0 0; color: var(--text-main); font-size: clamp(22px, 2.2vw, 29px); font-weight: var(--fw-bold); line-height: 1.32; letter-spacing: -.018em; }
   .research-idea-kicker { color: var(--idea-accent); font-size: 10px; font-weight: var(--fw-bold); letter-spacing: .09em; text-transform: uppercase; }
@@ -867,6 +875,13 @@
   .research-idea-meta { min-width: 0; }
   .research-idea-meta-label { color: var(--text-muted); font-size: var(--fs-micro); }
   .research-idea-meta-value { margin-top: 3px; overflow: hidden; color: var(--text-sub); font-size: var(--fs-caption); font-weight: var(--fw-semibold); text-overflow: ellipsis; white-space: nowrap; }
+  .research-ddl-card { display: grid; grid-template-columns: minmax(180px, 1.1fr) repeat(2, minmax(150px, 1fr)); gap: 12px; margin-top: 14px; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--idea-accent) 22%, var(--border)); border-radius: 12px; background: color-mix(in srgb, var(--idea-accent-soft) 55%, var(--card-bg)); }
+  .research-ddl-field label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: var(--fs-micro); }
+  .research-ddl-field input { width: 100%; box-sizing: border-box; min-height: 32px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 7px; background: var(--card-bg); color: var(--text-main); font: inherit; font-size: var(--fs-caption); }
+  .research-ddl-countdown { display: block; margin-top: 5px; color: var(--idea-accent); font-size: 15px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+  .research-ddl-countdown strong { color: #dc2626; font-weight: 800; }
+  .research-ddl-link { display: inline-block; margin-top: 5px; margin-left: 8px; color: var(--idea-accent); font-size: 10px; }
+  @media (max-width: 700px) { .research-ddl-card { grid-template-columns: 1fr; } }
   .research-idea-content { margin: 23px 0; color: var(--text-main); font-size: var(--fs-small); line-height: 1.9; white-space: pre-wrap; }
   .research-idea-detail-section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
   .research-idea-detail-section-title { color: var(--text-muted); font-size: var(--fs-micro); font-weight: var(--fw-bold); letter-spacing: .04em; }
@@ -894,9 +909,13 @@
   .research-stage-tab:hover { border-color: color-mix(in srgb, var(--idea-accent) 30%, var(--border)); color: var(--text-main); }
   .research-stage-tab.is-active { border-color: color-mix(in srgb, var(--idea-accent) 42%, var(--border)); background: var(--idea-accent-soft); color: var(--idea-accent); box-shadow: 0 4px 12px color-mix(in srgb, var(--idea-accent) 8%, transparent); }
   .research-stage-tab.is-done { color: var(--success-hover); }
+  .research-stage-tab.is-in-progress { color: var(--idea-accent); }
   .research-stage-tab-number { width: 20px; height: 20px; display: grid; place-items: center; margin: 0 auto 5px; border-radius: 50%; background: var(--neutral-soft); color: var(--text-sub); font-size: 9px; font-weight: var(--fw-bold); }
+  .research-stage-tab.is-partial .research-stage-tab-number { width: 20px; height: 20px; padding: 0; border-radius: 50%; background: var(--idea-accent-soft); color: var(--idea-accent); font-size: 9px; }
+  .research-stage-tab-status { display: block; margin-top: 2px; font-size: 8px; font-weight: var(--fw-semibold); }
   .research-stage-tab.is-active .research-stage-tab-number { background: var(--idea-accent); color: #fff; }
   .research-stage-tab.is-done .research-stage-tab-number { background: var(--success-soft); color: var(--success-hover); }
+  .research-stage-tab.is-in-progress .research-stage-tab-number { background: var(--idea-accent-soft); color: var(--idea-accent); }
   .research-stage-tab-label { display: block; overflow: hidden; font-size: 9px; font-weight: var(--fw-semibold); text-overflow: ellipsis; white-space: nowrap; }
   .research-stage-panel { overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--card-bg); }
   .research-stage-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 19px 20px; border-bottom: 1px solid var(--border); background: linear-gradient(120deg, var(--idea-accent-soft), color-mix(in srgb, var(--card-bg) 96%, var(--bg))); }
@@ -912,7 +931,7 @@
   .research-stage-field label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; color: var(--text-main); font-size: var(--fs-caption); font-weight: var(--fw-bold); }
   .research-stage-field-top label { margin-bottom: 0; }
   .research-stage-field label span { color: var(--text-muted); font-size: 10px; font-weight: var(--fw-medium); }
-  .research-stage-field textarea { width: 100%; height: auto; min-height: 46px; padding: 8px 0; overflow: hidden; resize: none; border: 0; outline: 0; background: transparent; color: var(--text-main); font: inherit; font-size: var(--fs-caption); line-height: 1.75; }
+  .research-stage-field textarea { width: 100%; height: auto; max-height: 360px; min-height: 46px; padding: 8px 0; overflow-x: hidden; overflow-y: auto; resize: vertical; border: 0; outline: 0; background: transparent; color: var(--text-main); font: inherit; font-size: var(--fs-caption); line-height: 1.75; }
   .research-stage-field textarea[hidden] { display: none; }
   .research-stage-field textarea::placeholder { color: color-mix(in srgb, var(--text-muted) 72%, transparent); }
   .research-stage-field textarea:focus { box-shadow: inset 3px 0 0 var(--idea-accent); padding-left: 12px; }
@@ -1119,7 +1138,7 @@
   .research-submission.is-locked .research-submission-step { cursor: not-allowed; }
   .research-paper-notes { margin-top: 15px; }
   .research-paper-notes label { display: block; margin-bottom: 6px; color: var(--text-primary); font-size: var(--fs-caption); font-weight: var(--fw-bold); }
-  .research-paper-notes textarea { width: 100%; min-height: 64px; box-sizing: border-box; padding: 11px; overflow: hidden; resize: none; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-primary); font: inherit; font-size: var(--fs-caption); line-height: 1.7; outline: none; transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+  .research-paper-notes textarea { width: 100%; max-height: 360px; min-height: 64px; box-sizing: border-box; padding: 11px; overflow-x: hidden; overflow-y: auto; resize: vertical; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-primary); font: inherit; font-size: var(--fs-caption); line-height: 1.7; outline: none; transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
   .research-paper-notes textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
 
   /* Research action workspace */
@@ -2339,11 +2358,11 @@
   .english-rhythm-day { color: var(--primary); font-size: var(--fs-caption); font-weight: var(--fw-bold); }
   .english-rhythm-copy { color: var(--text-secondary); font-size: var(--fs-caption); line-height: 1.55; }
   .fitness-page .fitness-hero-side { display: block; min-width: 0; }
-  .fitness-hero-heatmap { padding-left: 8px; }
-  .fitness-hero-heatmap-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+  .fitness-page .fitness-hero-heatmap { display: flex; min-width: 0; padding-left: 8px; overflow: hidden; flex-direction: column; align-items: flex-end; }
+  .fitness-hero-heatmap-head { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
   .fitness-hero-heatmap-title { color: var(--text-primary); font-size: 15px; font-weight: var(--fw-bold); }
-  .fitness-hero-heatmap .fitness-month-heatmap { margin-top: 0; }
-  .fitness-hero-heatmap .fitness-heatmap-legend { justify-content: flex-start; margin-top: 10px; }
+  .fitness-hero-heatmap .fitness-month-heatmap { width: max-content; max-width: 100%; margin-top: 0; }
+  .fitness-hero-heatmap .fitness-heatmap-legend { width: max-content; justify-content: flex-start; margin-top: 6px; }
   .fitness-hero-heatmap .fitness-month-grid { grid-auto-columns: 13px; grid-template-rows: repeat(7, 13px); gap: 3px; }
   .fitness-hero-heatmap .fitness-day { width: 13px; height: 13px; }
   .workspace-page .fitness-progress-summary { display: grid; grid-template-columns: minmax(72px, auto) minmax(0, 1fr); align-items: center; gap: 18px; width: 100%; min-width: 0; }
@@ -2362,11 +2381,14 @@
   .workspace-sync-title { color: var(--text-primary); font-size: var(--fs-caption); font-weight: var(--fw-semibold); line-height: 1.45; }
   .workspace-sync-meta { margin-top: 3px; color: var(--text-tertiary); font-size: var(--fs-micro); }
   .workspace-sync-tag { color: var(--primary); font-size: var(--fs-micro); }
-  .fitness-month-heatmap { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 13px; margin-top: 6px; }
-  .fitness-month { min-width: 0; }
-  .fitness-month-title { margin-bottom: 7px; color: var(--text-secondary); font-size: var(--fs-caption); font-weight: var(--fw-bold); text-align: center; }
-  .fitness-month-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 16px); grid-auto-columns: 16px; gap: 4px; justify-content: center; }
-  .fitness-day { position: relative; display: grid; place-items: center; width: 16px; height: 16px; border: 1px solid var(--border); border-radius: var(--radius-xs); background: var(--neutral-soft); color: transparent; font-size: 10px; font-weight: var(--fw-bold); }
+  /* Each month keeps its own calendar width. Using fractional tracks here
+     lets the fixed-size day cells overflow into adjacent months, making the
+     heatmap look like one continuous strip. */
+  .fitness-month-heatmap { display: grid; grid-template-columns: repeat(4, max-content); align-items: start; justify-content: start; gap: 8px; width: 100%; min-width: 0; margin-top: 4px; padding: 0 1px 2px; }
+  .fitness-month { min-width: max-content; }
+  .fitness-month-title { margin-bottom: 4px; color: var(--text-secondary); font-size: var(--fs-caption); font-weight: var(--fw-bold); text-align: center; }
+  .fitness-month-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 16px); grid-auto-columns: 16px; gap: 3px; justify-content: center; }
+  .fitness-day { position: relative; display: grid; place-items: center; width: 16px; height: 16px; border: 1px solid color-mix(in srgb, var(--text-tertiary) 18%, var(--border)); border-radius: var(--radius-xs); background: color-mix(in srgb, var(--text-tertiary) 10%, var(--card-bg)); color: transparent; font-size: 10px; font-weight: var(--fw-bold); }
   .fitness-day.is-planned { border-color: color-mix(in srgb, var(--success) 55%, var(--border)); background: var(--success-soft); }
   .fitness-day.is-done { border-color: var(--success); background: color-mix(in srgb, var(--success) 65%, var(--success-soft)); color: var(--success-hover); box-shadow: inset 0 0 0 1px rgba(255,255,255,.28); }
   .fitness-day.is-done::after { content: '✓'; }
@@ -2382,8 +2404,20 @@
   .fitness-legend-mark { border: 1px solid var(--success); background: color-mix(in srgb, var(--success) 65%, var(--success-soft)); color: var(--success-hover); font-size: 10px; font-weight: var(--fw-bold); }
   [data-theme="dark"] .fitness-legend-plan { border-color: color-mix(in srgb, var(--success) 60%, var(--border)); background: var(--success-soft); }
   [data-theme="dark"] .fitness-legend-mark { border-color: var(--success); background: color-mix(in srgb, var(--success) 55%, var(--success-soft)); color: var(--success-hover); }
-  @media (max-width: 1100px) { .fitness-month-heatmap { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 16px; } }
-  @media (max-width: 600px) { .workspace-page .fitness-progress-summary { grid-template-columns: 1fr; gap: 12px; } .fitness-month-heatmap { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fitness-month-grid { grid-auto-columns: 14px; grid-template-rows: repeat(7, 14px); gap: 3px; } .fitness-day { width: 14px; height: 14px; } }
+  /* Keep the four-month heatmap compact and aligned to the hero's right side. */
+  .fitness-page .workspace-hero { grid-template-columns: minmax(0, 1fr) minmax(420px, .95fr); }
+  .fitness-page .fitness-hero-side { max-width: none; }
+  @media (max-width: 1000px) {
+    .fitness-page .workspace-hero { grid-template-columns: 1fr; }
+    .fitness-page .fitness-hero-side { max-width: none; }
+    .fitness-page .fitness-month-heatmap { grid-template-columns: repeat(2, max-content); justify-content: start; gap: 8px; row-gap: 10px; }
+  }
+  @media (max-width: 600px) {
+    .workspace-page .fitness-progress-summary { grid-template-columns: 1fr; gap: 12px; }
+    .fitness-page .fitness-month-heatmap { grid-template-columns: repeat(2, max-content); gap: 8px; justify-content: start; }
+    .fitness-month-grid { grid-auto-columns: 14px; grid-template-rows: repeat(7, 14px); gap: 3px; }
+    .fitness-day { width: 14px; height: 14px; }
+  }
   @media (max-width: 1000px) {
     .workspace-hero, .fitness-layout, .study-main-grid { grid-template-columns: 1fr; }
     .fitness-page .workspace-hero { grid-template-columns: 1fr; }
@@ -2764,7 +2798,12 @@
   .ai-learning-page { --primary: #2563eb; --primary-hover: #1d4ed8; --primary-light: #dbeafe; --primary-soft: #eff6ff; --accent: #6366f1; }
   .english-learning-page { --primary: #d97706; --primary-hover: #b45309; --primary-light: #fef3c7; --primary-soft: #fffbeb; --accent: #f59e0b; }
   .fitness-page, .ai-learning-page, .english-learning-page { display: grid; gap: 16px; --life-accent: var(--primary); --life-soft: var(--primary-soft); }
-  .fitness-page .workspace-hero, .ai-learning-page .workspace-hero, .english-learning-page .workspace-hero { position: relative; grid-template-columns: minmax(0, 1fr) minmax(285px, 390px); gap: 24px; margin: 0; padding: 26px; overflow: hidden; isolation: isolate; border-color: color-mix(in srgb, var(--life-accent) 17%, var(--border)); border-radius: 18px; background: linear-gradient(132deg, color-mix(in srgb, var(--life-accent) 12%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--life-soft) 78%, var(--card-bg))); }
+  .fitness-page .workspace-hero { position: relative; grid-template-columns: minmax(0, 1fr) minmax(420px, .95fr); gap: 24px; margin: 0; padding: 26px; overflow: hidden; isolation: isolate; border-color: color-mix(in srgb, var(--life-accent) 17%, var(--border)); border-radius: 18px; background: linear-gradient(132deg, color-mix(in srgb, var(--life-accent) 12%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--life-soft) 78%, var(--card-bg))); }
+  .ai-learning-page .workspace-hero, .english-learning-page .workspace-hero { position: relative; grid-template-columns: minmax(0, 1fr) minmax(285px, 390px); gap: 24px; margin: 0; padding: 26px; overflow: hidden; isolation: isolate; border-color: color-mix(in srgb, var(--life-accent) 17%, var(--border)); border-radius: 18px; background: linear-gradient(132deg, color-mix(in srgb, var(--life-accent) 12%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--life-soft) 78%, var(--card-bg))); }
+  @media (max-width: 1000px) {
+    .fitness-page .workspace-hero { grid-template-columns: 1fr; }
+    .fitness-page .fitness-hero-side { max-width: none; }
+  }
   .fitness-page .workspace-hero::after, .ai-learning-page .workspace-hero::after, .english-learning-page .workspace-hero::after { position: absolute; z-index: -1; right: 4%; bottom: -94px; width: 230px; height: 230px; border: 40px solid color-mix(in srgb, var(--life-accent) 6%, transparent); border-radius: 50%; content: ''; pointer-events: none; }
   .fitness-page .workspace-kicker, .ai-learning-page .workspace-kicker, .english-learning-page .workspace-kicker { gap: 8px; color: var(--life-accent); letter-spacing: .12em; }
   .fitness-page .workspace-kicker::before, .ai-learning-page .workspace-kicker::before, .english-learning-page .workspace-kicker::before { width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
@@ -2850,6 +2889,13 @@
     .header-actions .btn::first-letter { font-size: 14px; }
     .ov-hero, .workspace-hero, .research-idea-hero, .research-lab-head, .research-paper-hero, .research-todo-hero { padding: 19px 18px; border-radius: 15px; }
     .ov-hero { gap: 18px; }
+    .ov-focus-head { flex-direction: column; align-items: stretch; }
+    .ov-focus-ring, .ov-focus-head .stat-row { width: 100%; min-width: 0; }
+    .ov-focus-head .stat-row { margin-top: 0 !important; }
+    .ov-focus-head .stat-box { min-width: 0; }
+    .ov-focus-ring .progress-ring, .ov-focus-ring .progress-info { min-width: 0; }
+    .fitness-hero-heatmap .card-tag { font-size: 0; }
+    .fitness-hero-heatmap .card-tag::before { content: '近4个月'; font-size: var(--fs-micro); }
     .ov-weather { display: none; }
     .literature-view-tabs { width: 100%; position: static; }
     .literature-view-tab { flex: 1; padding: 0 8px; }
@@ -2982,7 +3028,7 @@
 </main>
 
 <!-- ===== Modal ===== -->
-<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle">
   <div class="modal" id="modalContent"></div>
 </div>
 
@@ -3034,17 +3080,20 @@
 
 <script>
 // ========================================================================
-// DEFAULT DATA (v3.0)
+// DEFAULT DATA (v4.0)
 // ========================================================================
 const DEFAULT_DATA = {
-  "version": "3.0",
+  "version": "4.0",
   "meta": { "revision": 0, "deviceId": "", "savedAt": "" },
   "settings": {
     "theme": "system",
     "onboarded": false,
-    "weather": { "city": "上海", "lat": 31.2222, "lon": 121.4581 }
+    "weather": { "city": "上海", "lat": 31.2222, "lon": 121.4581 },
+    "lastActiveDate": "",
+    "lastPlanWeek": ""
   },
   "trash": [],
+  "history": { "daily": {} },
   "checkinHistory": {},
   "weeklyTrend": [],
   "tasks": {
@@ -3317,7 +3366,8 @@ const STORAGE_KEY = 'creator-workspace-data';
 const IDB_DB = 'workspace-fs';
 const IDB_STORE = 'handles';
 const DEVICE_KEY = 'workspace-device-id';
-const TRASH_KEEP_DAYS = 7;
+const DATA_SCHEMA_VERSION = 4;
+const TRASH_KEEP_DAYS = 30;
 const BACKUP_INTERVAL = 5 * 60 * 1000;
 const BACKUP_KEEP = 5;
 const ZOTERO_PAGE_SIZE = 50;
@@ -3326,6 +3376,8 @@ const GRAPH_MAX_NODES = 420;
 const GRAPH_MAX_LINKS = 900;
 const GRAPH_RELATED_MAX_PAPERS = 240;
 const GRAPH_MAX_CONCEPT_NODES = 300;
+const WORKSPACE_API_SNAPSHOT_URL = '/api/v1/workspaces/default/legacy-snapshot';
+const WORKSPACE_API_BACKUP_URL = '/api/v1/workspaces/default/backups';
 
 const DEVICE_ID = (() => {
   let id = null;
@@ -3342,12 +3394,17 @@ const DEVICE_ID = (() => {
 // ========================================================================
 class StorageManager {
   constructor() {
-    this.mode = 'local';       // 'fsaa' | 'local'
+    this.mode = 'local';       // 'api' | 'fsaa' | 'local'
     this.dirHandle = null;
     this.fileHandle = null;
     this.lastSaved = null;
     this._lastRevision = -1;   // revision we last read/wrote
     this._lastBackup = 0;
+    this._apiVersion = 0;
+    // Both the clean public entry and the historical /legacy alias use the
+    // SQLite-backed compatibility API. Directly opening creator-workspace.html
+    // remains a local-only fallback for backwards compatibility.
+    this._useWorkspaceApi = location.pathname === '/workspace.html' || location.pathname.startsWith('/legacy/');
   }
 
   get isFSAASupported() {
@@ -3392,6 +3449,16 @@ class StorageManager {
     ]);
 
     this.mode = 'local';
+    if (this._useWorkspaceApi) {
+      try {
+        const response = await fetch(WORKSPACE_API_SNAPSHOT_URL, { headers: { 'Accept': 'application/json' } });
+        if (!response.ok) throw new Error('工作区 API 暂不可用');
+        this.mode = 'api';
+        return true;
+      } catch (error) {
+        console.warn('工作区 API 不可用，已回退到本地存储：', error);
+      }
+    }
     if (this.isFSAASupported) {
       this.dirHandle = await withStartupTimeout(this._idbGet('dirHandle'), null);
       if (this.dirHandle) {
@@ -3413,6 +3480,34 @@ class StorageManager {
       }
     }
     return false;
+  }
+
+  async connectApi() {
+    const previous = { enabled: this._useWorkspaceApi, mode: this.mode, version: this._apiVersion };
+    this._useWorkspaceApi = true;
+    try {
+      const response = await fetch(WORKSPACE_API_SNAPSHOT_URL, { headers: { 'Accept': 'application/json' } });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body && body.error ? body.error.message : 'SQLite API 暂不可用');
+      const snapshot = body && body.data ? body.data : { data: null, version: 0 };
+      this._apiVersion = Number.isInteger(snapshot.version) ? snapshot.version : 0;
+      this.mode = 'api';
+      if (snapshot.data) return { connected: true, data: snapshot.data, loadedExisting: true };
+
+      // A fresh database is initialized from the current browser snapshot so
+      // connecting SQLite never clears the user's existing local data.
+      if (typeof DATA !== 'undefined' && DATA) {
+        const result = await this.write(DATA, { force: true });
+        if (!result || !result.ok) throw new Error('SQLite 初始化写入失败');
+        return { connected: true, data: DATA, initialized: true };
+      }
+      return { connected: true, data: null, initialized: false };
+    } catch (error) {
+      this._useWorkspaceApi = previous.enabled;
+      this.mode = previous.mode;
+      this._apiVersion = previous.version;
+      throw error;
+    }
   }
 
   async _getFileHandle({ create = false } = {}) {
@@ -3448,18 +3543,77 @@ class StorageManager {
       return { connected: true, data: existing, loadedExisting: true };
     }
 
-    return { connected: true, data: null, loadedExisting: false };
+    // A newly selected folder must start with the current workspace snapshot;
+    // otherwise switching from SQLite would make the UI appear empty.
+    if (typeof DATA !== 'undefined' && DATA) {
+      const result = await this.write(DATA, { force: true });
+      if (!result || !result.ok) throw new Error('无法将当前工作区写入所选文件夹，请检查写入权限');
+      return { connected: true, data: DATA, loadedExisting: false, initialized: true };
+    }
+
+    return { connected: true, data: null, loadedExisting: false, initialized: false };
+  }
+
+  async switchToApi() {
+    if (!this._useWorkspaceApi) throw new Error('当前入口未启用 SQLite API');
+    if (this.mode === 'api') return { ok: true, data: DATA };
+    if (this.mode !== 'fsaa') throw new Error('请先连接数据文件夹');
+
+    const folderData = await this.read();
+    if (!folderData) throw new Error('所选文件夹中没有有效的 workspace.json');
+
+    // Pin the API version immediately before the write so optimistic
+    // concurrency control can detect another browser/device update.
+    const response = await fetch(WORKSPACE_API_SNAPSHOT_URL, { headers: { 'Accept': 'application/json' } });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body && body.error ? body.error.message : '读取 SQLite 工作区失败');
+    const snapshot = body && body.data;
+    this._apiVersion = snapshot && Number.isInteger(snapshot.version) ? snapshot.version : 0;
+
+    const previousMode = this.mode;
+    this.mode = 'api';
+    const result = await this.write(folderData);
+    if (!result || !result.ok) {
+      this.mode = previousMode;
+      if (result && result.conflict) {
+        const error = new Error('SQLite 工作区已被其他位置更新，请刷新后重试');
+        error.conflict = result;
+        throw error;
+      }
+      throw new Error('写入 SQLite 失败');
+    }
+    return { ok: true, data: folderData };
+  }
+
+  restoreApiMode() {
+    if (this._useWorkspaceApi) this.mode = 'api';
   }
 
   async disconnect() {
     this.dirHandle = null;
     this.fileHandle = null;
-    this.mode = 'local';
+    this.mode = this._useWorkspaceApi ? 'api' : 'local';
     this._lastRevision = -1;
     await this._idbPut('dirHandle', null);
   }
 
   async read() {
+    if (this.mode === 'api') {
+      try {
+        const response = await fetch(WORKSPACE_API_SNAPSHOT_URL, { headers: { 'Accept': 'application/json' } });
+        const body = await response.json();
+        if (!response.ok) throw new Error(body && body.error ? body.error.message : '读取工作区失败');
+        const snapshot = body && body.data;
+        if (!snapshot || !snapshot.data) return null;
+        this._apiVersion = Number.isInteger(snapshot.version) ? snapshot.version : 0;
+        const data = snapshot.data;
+        this._lastRevision = (data.meta && typeof data.meta.revision === 'number') ? data.meta.revision : 0;
+        return data;
+      } catch (error) {
+        console.error('API read error:', error);
+        return null;
+      }
+    }
     if (this.mode === 'fsaa') {
       if (!this.fileHandle) this.fileHandle = await this._getFileHandle({ create: false });
       if (!this.fileHandle) return null;
@@ -3517,7 +3671,25 @@ class StorageManager {
     this.lastSaved = data.lastSaved;
 
     let ok = false;
-    if (this.mode === 'fsaa') {
+    if (this.mode === 'api') {
+      try {
+        const response = await fetch(WORKSPACE_API_SNAPSHOT_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ data, expectedVersion: this._apiVersion })
+        });
+        const body = await response.json().catch(() => ({}));
+        if (response.status === 409 && body && body.data && body.data.data) {
+          return { conflict: true, remote: body.data.data };
+        }
+        if (!response.ok) throw new Error(body && body.error ? body.error.message : '保存工作区失败');
+        this._apiVersion = body && body.data && Number.isInteger(body.data.version) ? body.data.version : this._apiVersion + 1;
+        ok = true;
+      } catch (error) {
+        console.error('API write error:', error);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (fallbackError) { /* ignore */ }
+      }
+    } else if (this.mode === 'fsaa') {
       try {
         const fileHandle = await this._ensureWritableFileHandle();
         if (!fileHandle) throw new Error('未获得 data 文件夹写入权限');
@@ -3605,7 +3777,8 @@ let researchInspirationState = {
   group: 'none',
   view: 'overview',
   stage: 'idea',
-  selectedId: ''
+  selectedId: '',
+  focusMode: false
 };
 let researchIdeaModalState = {
   mode: 'create',      // 'create' | 'edit'
@@ -3629,6 +3802,9 @@ let researchTodoState = {
 let researchTodoModalId = '';
 let saveState = 'idle';         // 'idle' | 'saving' | 'saved' | 'error'
 let conflictOpen = false;
+let saveRequested = false;
+let saveInFlight = null;
+let modalPreviouslyFocused = null;
 let undoState = null;           // { tid, timer }
 let zoteroState = {
   status: 'idle',
@@ -3689,9 +3865,22 @@ function todayKey(d = new Date()) {
   return y + '-' + m + '-' + day;
 }
 
+function isoWeekInfo(input = new Date()) {
+  const d = new Date(Date.UTC(input.getFullYear(), input.getMonth(), input.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return { year: d.getUTCFullYear(), week };
+}
+
 function weekNum(d = new Date()) {
-  const onejan = new Date(d.getFullYear(), 0, 1);
-  return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+  return isoWeekInfo(d).week;
+}
+
+function weekKey(d = new Date()) {
+  const info = isoWeekInfo(d);
+  return info.year + '-W' + String(info.week).padStart(2, '0');
 }
 
 function isTypingTarget(el) {
@@ -3742,12 +3931,24 @@ function showToast(msg, type = '', opts = {}) {
 function showModal(html) {
   const overlay = document.getElementById('modalOverlay');
   const content = document.getElementById('modalContent');
+  modalPreviouslyFocused = document.activeElement;
   content.innerHTML = html;
+  const title = content.querySelector('.modal-title, .research-idea-modal-title, .research-todo-modal-title');
+  if (title) { title.id = 'modalTitle'; title.setAttribute('tabindex', '-1'); }
   overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden', 'false');
+  requestAnimationFrame(() => {
+    const first = content.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+    (first || title || content).focus();
+  });
 }
 
 function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('show');
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden', 'true');
+  if (modalPreviouslyFocused && document.contains(modalPreviouslyFocused)) modalPreviouslyFocused.focus();
+  modalPreviouslyFocused = null;
 }
 
 document.getElementById('modalOverlay').addEventListener('click', (e) => {
@@ -3760,19 +3961,40 @@ document.getElementById('modalOverlay').addEventListener('click', (e) => {
 const scheduleSave = debounce(() => { flushSave(); }, 800);
 
 function save() {
+  saveRequested = true;
   setSaveState('saving');
   scheduleSave();
 }
 
 async function flushSave() {
   if (!DATA) return;
-  setSaveState('saving');
-  const result = await storage.write(DATA);
-  if (result && result.conflict) {
-    handleConflict(result.remote);
-    return;
-  }
-  setSaveState(result && result.ok ? 'saved' : 'error');
+  saveRequested = true;
+  if (saveInFlight) return saveInFlight;
+  saveInFlight = (async () => {
+    while (saveRequested && DATA) {
+      saveRequested = false;
+      setSaveState('saving');
+      let result;
+      try {
+        result = await storage.write(DATA);
+      } catch (error) {
+        console.error('保存失败:', error);
+        setSaveState('error');
+        break;
+      }
+      if (result && result.conflict) {
+        handleConflict(result.remote);
+        setSaveState('error');
+        break;
+      }
+      if (!result || !result.ok) {
+        setSaveState('error');
+        break;
+      }
+      setSaveState('saved');
+    }
+  })().finally(() => { saveInFlight = null; });
+  return saveInFlight;
 }
 
 function setSaveState(state) {
@@ -3795,7 +4017,11 @@ function updateSyncIndicator() {
     text.textContent = '保存中…';
     return;
   }
-  if (storage.mode === 'fsaa') {
+  if (storage.mode === 'api') {
+    el.className = 'sync-indicator connected';
+    const time = storage.lastSaved ? new Date(storage.lastSaved).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '';
+    text.textContent = 'SQLite 已同步' + (time ? ' · ' + time : '');
+  } else if (storage.mode === 'fsaa') {
     el.className = 'sync-indicator connected';
     const time = storage.lastSaved ? new Date(storage.lastSaved).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '';
     text.textContent = '已同步' + (time ? ' · ' + time : '');
@@ -3828,22 +4054,27 @@ function handleConflict(remote) {
     '<button class="modal-btn danger" id="conflictKeepLocal">保留本地，覆盖远端</button>' +
     '</div>'
   );
+  const loadRemote = () => {
+    try {
+      DATA = migrateWorkspaceData(remote);
+      storage._lastRevision = (remote.meta && remote.meta.revision) || 0;
+      renderPage(currentPage);
+      setSaveState('saved');
+      return true;
+    } catch (error) {
+      showToast('远端数据校验失败，已保留本地数据', 'error');
+      setSaveState('error');
+      return false;
+    }
+  };
   document.getElementById('conflictLoadRemote').addEventListener('click', () => {
     closeModal(); conflictOpen = false;
-    DATA = mergeDefaults(remote, DEFAULT_DATA);
-    storage._lastRevision = (remote.meta && remote.meta.revision) || 0;
-    renderPage(currentPage);
-    setSaveState('saved');
-    showToast('已加载远端最新数据', 'success');
+    if (loadRemote()) showToast('已加载远端最新数据', 'success');
   });
   document.getElementById('conflictExportLocal').addEventListener('click', () => {
     closeModal(); conflictOpen = false;
     exportData('workspace-local-backup');
-    DATA = mergeDefaults(remote, DEFAULT_DATA);
-    storage._lastRevision = (remote.meta && remote.meta.revision) || 0;
-    renderPage(currentPage);
-    setSaveState('saved');
-    showToast('本地副本已导出，远端数据已加载', 'success');
+    if (loadRemote()) showToast('本地副本已导出，远端数据已加载', 'success');
   });
   document.getElementById('conflictKeepLocal').addEventListener('click', async () => {
     closeModal(); conflictOpen = false;
@@ -3917,14 +4148,166 @@ function setNestedData(path, value) {
 }
 
 function mergeDefaults(data, defaults) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) data = {};
   for (const key in defaults) {
-    if (!(key in data)) {
+    const defaultValue = defaults[key];
+    if (!(key in data) || data[key] === null || data[key] === undefined) {
       data[key] = JSON.parse(JSON.stringify(defaults[key]));
-    } else if (typeof defaults[key] === 'object' && !Array.isArray(defaults[key]) && defaults[key] !== null) {
-      mergeDefaults(data[key], defaults[key]);
+    } else if (typeof defaultValue === 'object' && !Array.isArray(defaultValue) && defaultValue !== null) {
+      data[key] = mergeDefaults(data[key], defaultValue);
     }
   }
   return data;
+}
+
+function isPlainObject(value) {
+  return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function assertSafeDataGraph(value, depth = 0) {
+  if (depth > 60) throw new Error('数据嵌套层级过深');
+  if (!value || typeof value !== 'object') return;
+  if (Array.isArray(value)) {
+    value.forEach(item => assertSafeDataGraph(item, depth + 1));
+    return;
+  }
+  for (const key of Object.keys(value)) {
+    if (key === '__proto__' || key === 'prototype' || key === 'constructor') {
+      throw new Error('数据包含不安全字段');
+    }
+    assertSafeDataGraph(value[key], depth + 1);
+  }
+}
+
+function validateWorkspaceData(candidate) {
+  if (!isPlainObject(candidate)) throw new Error('根数据必须是对象');
+  assertSafeDataGraph(candidate);
+  if (candidate.version !== undefined && typeof candidate.version !== 'string') throw new Error('版本号格式不正确');
+  if (candidate.tasks !== undefined && !isPlainObject(candidate.tasks)) throw new Error('任务数据格式不正确');
+  if (candidate.tasks && candidate.tasks.dailyPlan !== undefined && !isPlainObject(candidate.tasks.dailyPlan)) throw new Error('每日计划格式不正确');
+  const arrayPaths = [
+    ['tasks', 'dashboard'], ['tasks', 'aiLearn'], ['tasks', 'english'], ['tasks', 'comicStoryboard'], ['tasks', 'researchPapers'],
+    ['tasks', 'dailyPlan', 'morning'], ['tasks', 'dailyPlan', 'afternoon'], ['tasks', 'dailyPlan', 'evening'],
+    ['checkins', 'daily'], ['fitness', 'plan'], ['fitness', 'logs'], ['trash']
+  ];
+  for (const parts of arrayPaths) {
+    let value = candidate;
+    for (const part of parts) value = value && value[part];
+    if (value !== undefined && !Array.isArray(value)) throw new Error(parts.join('.') + ' 必须是数组');
+  }
+  return true;
+}
+
+function normalizeTask(task, date = todayKey()) {
+  if (!isPlainObject(task)) return null;
+  const text = String(task.text || '').trim();
+  if (!text) return null;
+  return {
+    ...task,
+    id: String(task.id || uid()),
+    text,
+    done: Boolean(task.done),
+    createdAt: task.createdAt || new Date().toISOString(),
+    dueDate: task.dueDate || date
+  };
+}
+
+function normalizeTaskList(list, date = todayKey()) {
+  return (Array.isArray(list) ? list : []).map(task => normalizeTask(task, date)).filter(Boolean);
+}
+
+function migrateWorkspaceData(raw) {
+  validateWorkspaceData(raw);
+  const data = mergeDefaults(cloneData(raw), DEFAULT_DATA);
+  const today = todayKey();
+  data.tasks.dashboard = normalizeTaskList(data.tasks.dashboard, today);
+  data.tasks.aiLearn = normalizeTaskList(data.tasks.aiLearn, today);
+  data.tasks.english = normalizeTaskList(data.tasks.english, today);
+  data.tasks.comicStoryboard = normalizeTaskList(data.tasks.comicStoryboard, today);
+  data.tasks.researchPapers = normalizeTaskList(data.tasks.researchPapers, today);
+  ['morning', 'afternoon', 'evening'].forEach(slot => {
+    data.tasks.dailyPlan[slot] = normalizeTaskList(data.tasks.dailyPlan[slot], today);
+  });
+  if (!isPlainObject(data.history)) data.history = { daily: {} };
+  if (!isPlainObject(data.history.daily)) data.history.daily = {};
+  if (!isPlainObject(data.meta)) data.meta = {};
+  const currentYear = isoWeekInfo().year;
+  data.weeklyTrend = (Array.isArray(data.weeklyTrend) ? data.weeklyTrend : []).map(entry => {
+    if (!isPlainObject(entry)) return null;
+    const numericWeek = Number(entry.week);
+    const key = typeof entry.key === 'string' && /^\d{4}-W\d{2}$/.test(entry.key)
+      ? entry.key
+      : Number.isFinite(numericWeek) ? currentYear + '-W' + String(numericWeek).padStart(2, '0') : '';
+    if (!key) return null;
+    return { key, week: Number(key.slice(-2)), rate: Math.max(0, Math.min(100, Number(entry.rate) || 0)) };
+  }).filter(Boolean).slice(-8);
+  data.meta.schemaVersion = DATA_SCHEMA_VERSION;
+  data.version = '4.0';
+  return data;
+}
+
+function resetDoneFlags(list) {
+  (Array.isArray(list) ? list : []).forEach(task => {
+    task.done = false;
+    task.completedAt = '';
+    task.updatedAt = new Date().toISOString();
+  });
+}
+
+function snapshotDailyState(date, reason = 'date-change') {
+  if (!date || !DATA || !DATA.history) return;
+  if (!isPlainObject(DATA.history.daily)) DATA.history.daily = {};
+  const record = DATA.history.daily[date] || { date, snapshots: [] };
+  record.snapshots.push({
+    reason,
+    savedAt: new Date().toISOString(),
+    tasks: {
+      dashboard: cloneData(DATA.tasks.dashboard),
+      dailyPlan: cloneData(DATA.tasks.dailyPlan),
+      english: cloneData(DATA.tasks.english)
+    },
+    checkins: cloneData(DATA.checkins.daily)
+  });
+  record.snapshots = record.snapshots.slice(-5);
+  DATA.history.daily[date] = record;
+  const dates = Object.keys(DATA.history.daily).sort();
+  dates.slice(0, Math.max(0, dates.length - 90)).forEach(key => delete DATA.history.daily[key]);
+}
+
+function ensureTemporalState() {
+  const today = todayKey();
+  const currentWeek = weekKey();
+  let changed = false;
+  if (!DATA.settings.lastActiveDate) {
+    DATA.settings.lastActiveDate = today;
+    changed = true;
+  } else if (DATA.settings.lastActiveDate !== today) {
+    snapshotDailyState(DATA.settings.lastActiveDate, 'date-change');
+    resetDoneFlags(DATA.tasks.dashboard);
+    ['morning', 'afternoon', 'evening'].forEach(slot => resetDoneFlags(DATA.tasks.dailyPlan[slot]));
+    resetDoneFlags(DATA.tasks.english);
+    (DATA.checkins.daily || []).forEach(item => { item.done = false; });
+    DATA.settings.lastActiveDate = today;
+    changed = true;
+  }
+  if (!DATA.settings.lastPlanWeek) {
+    DATA.settings.lastPlanWeek = currentWeek;
+    changed = true;
+  } else if (DATA.settings.lastPlanWeek !== currentWeek) {
+    if (!isPlainObject(DATA.history.fitness)) DATA.history.fitness = {};
+    DATA.history.fitness[DATA.settings.lastPlanWeek] = {
+      savedAt: new Date().toISOString(),
+      plan: cloneData(DATA.fitness.plan || [])
+    };
+    resetDoneFlags(DATA.fitness.plan || []);
+    DATA.settings.lastPlanWeek = currentWeek;
+    changed = true;
+  }
+  return changed;
 }
 
 // ========================================================================
@@ -3935,23 +4318,39 @@ function calcTaskPercent(tasks) {
   return Math.round(tasks.filter(t => t.done).length / tasks.length * 100);
 }
 
-function calcAllTasksPercent() {
+function metricTaskKey(task) {
+  return String(task && (task.canonicalId || task.text) || '')
+    .trim().toLocaleLowerCase().replace(/\s+/g, ' ');
+}
+
+function metricTasks() {
   const dp = DATA.tasks.dailyPlan;
-  const all = [
-    ...DATA.tasks.dashboard, ...dp.morning, ...dp.afternoon, ...dp.evening,
+  // dashboard is an overview mirror of today's plan; exclude exact text
+  // duplicates from the aggregate while keeping unique dashboard actions.
+  const today = [
+    ...dp.morning, ...dp.afternoon, ...dp.evening,
+    ...DATA.tasks.dashboard
+  ];
+  const other = [
     ...DATA.tasks.aiLearn, ...DATA.tasks.english,
     ...DATA.tasks.comicStoryboard, ...DATA.tasks.researchPapers
   ];
-  return calcTaskPercent(all);
+  const merged = new Map();
+  [...today, ...other].forEach(task => {
+    const key = metricTaskKey(task) || task.id;
+    const existing = merged.get(key);
+    if (!existing) merged.set(key, { ...task });
+    else existing.done = Boolean(existing.done || task.done);
+  });
+  return [...merged.values()];
+}
+
+function calcAllTasksPercent() {
+  return calcTaskPercent(metricTasks());
 }
 
 function countAllTasks() {
-  const dp = DATA.tasks.dailyPlan;
-  const all = [
-    ...DATA.tasks.dashboard, ...dp.morning, ...dp.afternoon, ...dp.evening,
-    ...DATA.tasks.aiLearn, ...DATA.tasks.english,
-    ...DATA.tasks.comicStoryboard, ...DATA.tasks.researchPapers
-  ];
+  const all = metricTasks();
   return { done: all.filter(t => t.done).length, total: all.length };
 }
 
@@ -4041,7 +4440,7 @@ function fitnessHeatmapHTML() {
   const today = new Date();
   const monthKeys = [];
   const anchor = new Date(today.getFullYear(), today.getMonth(), 1);
-  for (let i = 5; i >= 0; i--) {
+  for (let i = 3; i >= 0; i--) {
     const month = new Date(anchor.getFullYear(), anchor.getMonth() - i, 1);
     monthKeys.push(month);
   }
@@ -4064,7 +4463,7 @@ function fitnessHeatmapHTML() {
     }
     return '<section class="fitness-month"><div class="fitness-month-title">' + (month.getMonth() + 1) + '月</div><div class="fitness-month-grid">' + cells + '</div></section>';
   }).join('');
-  return '<div class="fitness-month-heatmap" aria-label="近六个月训练热力图">' + monthHTML + '</div><div class="fitness-heatmap-legend"><span class="fitness-legend-plan"></span><span>计划日</span><span class="fitness-legend-mark">✓</span><span>已完成训练</span></div>';
+  return '<div class="fitness-month-heatmap" aria-label="近四个月训练热力图">' + monthHTML + '</div><div class="fitness-heatmap-legend"><span class="fitness-legend-plan"></span><span>计划日</span><span class="fitness-legend-mark">✓</span><span>已完成训练</span></div>';
 }
 
 // Migrate legacy checkins.fitness -> fitness.plan (one-time)
@@ -4130,10 +4529,11 @@ function heatmapHTML() {
 function recordWeeklyTrend() {
   if (!Array.isArray(DATA.weeklyTrend)) DATA.weeklyTrend = [];
   const wk = weekNum();
+  const key = weekKey();
   const rate = calcAllTasksPercent();
-  const existing = DATA.weeklyTrend.find(w => w.week === wk);
+  const existing = DATA.weeklyTrend.find(w => w.key === key);
   if (existing) existing.rate = rate;
-  else DATA.weeklyTrend.push({ week: wk, rate });
+  else DATA.weeklyTrend.push({ key, week: wk, rate });
   DATA.weeklyTrend = DATA.weeklyTrend.slice(-8);
 }
 
@@ -4153,7 +4553,7 @@ function trendChartHTML() {
   let dots = '', labels = '';
   pts.forEach((p, i) => {
     dots += '<circle class="trend-dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3"/>';
-    labels += '<text class="trend-label" x="' + p[0] + '" y="' + (H - 2) + '" text-anchor="middle">W' + data[i].week + '</text>';
+    labels += '<text class="trend-label" x="' + p[0] + '" y="' + (H - 2) + '" text-anchor="middle">W' + String(data[i].week).padStart(2, '0') + '</text>';
   });
   return '<svg class="trend-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="近8周完成率趋势">' +
     '<polygon class="trend-area" points="' + area + '"/>' +
@@ -4161,7 +4561,7 @@ function trendChartHTML() {
 }
 
 // ========================================================================
-// TRASH (soft delete + undo + 7-day purge)
+// TRASH (soft delete + undo + retention purge)
 // ========================================================================
 function purgeTrash() {
   const cutoff = Date.now() - TRASH_KEEP_DAYS * 86400000;
@@ -4341,9 +4741,9 @@ function taskListHTML(path, tasks) {
   } else {
     for (const t of tasks) {
       html += '<li class="task-item ' + (t.done ? 'done' : '') + '">' +
-        '<div class="task-checkbox ' + (t.done ? 'done' : '') + '" data-path="' + path + '" data-id="' + t.id + '" role="checkbox" aria-checked="' + t.done + '" tabindex="0">' + (t.done ? '✓' : '') + '</div>' +
+        '<div class="task-checkbox ' + (t.done ? 'done' : '') + '" data-path="' + path + '" data-id="' + t.id + '" role="checkbox" aria-checked="' + t.done + '" aria-label="' + escapeHTML((t.done ? '取消完成：' : '完成：') + t.text) + '" tabindex="0">' + (t.done ? '✓' : '') + '</div>' +
         '<span class="task-text" data-path="' + path + '" data-id="' + t.id + '" title="双击编辑">' + escapeHTML(t.text) + '</span>' +
-        '<button class="task-delete" data-path="' + path + '" data-id="' + t.id + '" title="删除" aria-label="删除任务">✕</button>' +
+        '<button class="task-delete" data-path="' + path + '" data-id="' + t.id + '" title="删除" aria-label="删除任务：' + escapeHTML(t.text) + '">✕</button>' +
       '</li>';
     }
   }
@@ -7079,10 +7479,9 @@ const RESEARCH_IDEA_STAGES = [
     ['limitations', '关键工作与局限', '最相关方法做了什么，还缺少什么？', '记录代表性论文、核心方法、主要结论与局限…'],
     ['positioning', '本研究定位', '你的 Idea 与已有工作的关系是延伸、组合还是修正？', '说明直接对比对象、差异点与预期新贡献…']
   ]},
-  { key: 'implementation', label: 'Method', short: 'Method', desc: '把核心假设转化为可复现的方法、系统架构、模块与完整数据流。', fields: [
-    ['architecture', '系统架构', '完整 pipeline 如何运行？', '描述数据流、模型组件、训练/推理路径与接口…'],
-    ['modules', '实现清单', '哪些模块需要从零实现，哪些可复用？', '按模块列出代码、数据、模型、训练与评测任务…'],
-    ['risks', '技术风险与备选', '最可能失败在哪里？ Plan B 是什么？', '记录资源约束、技术难点、依赖项和替代方案…']
+  { key: 'implementation', label: 'Method', short: 'Method', desc: '先梳理整体框架，再展开具体实现，让方法设计更清晰、易复现。', fields: [
+    ['framework', '整体框架', '你的方法整体如何工作？各模块之间如何连接？', '描述总体架构、完整 pipeline、数据流，以及模型组件之间的关系…'],
+    ['implementation', '具体实现', '如何把整体框架落地为可运行、可复现的系统？', '说明各模块的实现细节、训练/推理流程、代码与数据安排、技术风险及备选方案…']
   ]},
   { key: 'experiment', label: 'Experiment', short: 'Experiment', desc: '让每个实验都对应一个研究问题，并能支撑或否定核心主张。', fields: [
     ['questions', '研究问题（RQ）', '每组实验要回答什么？', '列出 RQ1 / RQ2 / RQ3，并标注对应的论文主张…'],
@@ -7110,6 +7509,7 @@ function researchIdeaDevelopment(item) {
     if (!item.development[stage.key] || typeof item.development[stage.key] !== 'object') item.development[stage.key] = {};
     const record = item.development[stage.key];
     if (typeof record.done !== 'boolean') record.done = false;
+    if (typeof record.status !== 'string') record.status = record.done ? 'done' : 'pending';
     stage.fields.forEach(field => {
       const key = field[0];
       if (typeof record[key] !== 'string') record[key] = '';
@@ -7132,7 +7532,104 @@ function researchIdeaDevelopment(item) {
     if (oldImpact) motivation.novelty = motivation.novelty.trim() ? motivation.novelty.trim() + '\n\n价值补充：' + oldImpact : oldImpact;
     item.development._impactMerged = true;
   }
+  // Method 阶段由“系统架构 / 实现清单 / 技术风险与备选”整理为
+  // “整体框架 / 具体实现”两部分；保留旧数据，避免升级后内容丢失。
+  if (!item.development._methodReorganized) {
+    const method = item.development.implementation;
+    if (!method.framework && method.architecture) method.framework = method.architecture;
+    const legacyImplementation = [method.modules, method.risks].filter(value => String(value || '').trim()).join('\n\n');
+    if (!method.implementation && legacyImplementation) method.implementation = legacyImplementation;
+    item.development._methodReorganized = true;
+  }
   return item.development;
+}
+
+function researchIdeaStageStatus(record) {
+  if (!record) return 'pending';
+  if (record.done) return 'done';
+  const hasContent = Object.keys(record).some(key => key !== 'done' && key !== 'status' && String(record[key] || '').trim());
+  return hasContent ? 'active' : 'pending';
+}
+
+function researchIdeaStageStatusLabel(status) {
+  return status === 'done' ? '已完成' : status === 'active' ? '进行中' : '未开始';
+}
+
+function researchIdeaStageProgress(record, stage) {
+  const total = stage && Array.isArray(stage.fields) ? stage.fields.length : 0;
+  const completed = stage && record ? stage.fields.filter(field => String(record[field[0]] || '').trim()).length : 0;
+  return { completed, total };
+}
+
+function researchDdlCountdown(value) {
+  if (!value) return '未设置';
+  const target = new Date(value.length === 10 ? value + 'T23:59:59+08:00' : /[zZ]|[+-]\d{2}:?\d{2}$/.test(value) ? value : value + ':00+08:00');
+  const diff = target.getTime() - Date.now();
+  if (!Number.isFinite(diff)) return '日期无效';
+  if (diff < 0) return '已截止';
+  const totalMinutes = Math.ceil(diff / 60000);
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const minutes = totalMinutes % 60;
+  return '剩余 <strong>' + days + '天 ' + hours + '小时 ' + minutes + '分钟</strong>';
+}
+
+function researchDdlInputValue(value) {
+  if (!value) return '';
+  const match = String(value).match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})/);
+  return match ? match[1] : String(value).slice(0, 10) + 'T23:59';
+}
+
+async function refreshResearchConferenceDDL(item, venue) {
+  const query = String(venue || '').trim();
+  if (!query) return;
+  try {
+    const response = await fetch('/api/ccfddl?query=' + encodeURIComponent(query), { headers: { 'Accept': 'application/json' } });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok || !body.data) throw new Error('未找到对应会议的 CCFDDL');
+    item.targetVenue = query;
+    item.abstractDeadline = body.data.abstractDeadline || '';
+    item.paperDeadline = body.data.paperDeadline || '';
+    item.ddlSource = body.data.source;
+    item.ddlTimezone = body.data.timezone;
+    item.updatedAt = new Date().toISOString();
+    save();
+    rerender();
+    showToast('已从 CCFDDL 更新摘要与正文 DDL（北京时间）', 'success');
+  } catch (error) {
+    // Journals generally have no single deadline; leave both fields empty.
+    item.abstractDeadline = '';
+    item.paperDeadline = '';
+    item.ddlSource = 'journal-or-not-found';
+    item.updatedAt = new Date().toISOString();
+    save();
+    rerender();
+    showToast(error.message || '未找到会议 DDL，已按无固定 DDL 处理', 'warning');
+  }
+}
+
+function updateResearchStageStatusUI(textarea) {
+  const key = textarea && textarea.dataset.researchIdeaStageKey;
+  if (!key) return;
+  const item = researchIdeaStore().find(x => x.id === (textarea.dataset.researchIdeaId || researchInspirationState.selectedId));
+  if (!item) return;
+  const record = researchIdeaDevelopment(item)[key];
+  const status = researchIdeaStageStatus(record);
+  const stage = RESEARCH_IDEA_STAGES.find(item => item.key === key);
+  const progress = researchIdeaStageProgress(record, stage);
+  const partial = status === 'active' && progress.completed < progress.total;
+  const tab = document.querySelector('[data-research-idea-stage="' + key + '"]');
+  if (tab) {
+    tab.classList.toggle('is-done', status === 'done');
+    tab.classList.toggle('is-in-progress', status === 'active');
+    tab.classList.toggle('is-partial', partial);
+    const number = tab.querySelector('.research-stage-tab-number');
+    if (number) number.textContent = status === 'done' ? '✓' : (RESEARCH_IDEA_STAGES.findIndex(stage => stage.key === key) + 1);
+    const statusLabel = tab.querySelector('.research-stage-tab-status');
+    if (statusLabel) statusLabel.textContent = researchIdeaStageStatusLabel(status);
+  }
+  const state = document.querySelector('.research-stage-panel-head .research-stage-save-state');
+  if (state && key === researchInspirationState.stage) state.textContent = researchIdeaStageStatusLabel(status) + ' · 自动保存 · Markdown + LaTeX';
 }
 
 function researchIdeaProgress(item) {
@@ -7419,7 +7916,7 @@ function researchIdeaStagePanelHTML(item, stage, stageIndex) {
       '<div class="research-stage-preview math" data-research-stage-preview hidden></div></div>';
   }).join('');
   return '<div class="research-stage-panel">' +
-    '<div class="research-stage-panel-head"><div><div class="research-stage-overline">Step ' + (stageIndex + 1) + ' of ' + RESEARCH_IDEA_STAGES.length + '</div><div class="research-stage-title">' + escapeHTML(stage.label) + '</div><div class="research-stage-desc">' + escapeHTML(stage.desc) + '</div></div><div class="research-stage-save-state">自动保存 · Markdown + LaTeX</div></div>' +
+    '<div class="research-stage-panel-head"><div><div class="research-stage-overline">Step ' + (stageIndex + 1) + ' of ' + RESEARCH_IDEA_STAGES.length + '</div><div class="research-stage-title">' + escapeHTML(stage.label) + '</div><div class="research-stage-desc">' + escapeHTML(stage.desc) + '</div></div><div class="research-stage-save-state">' + researchIdeaStageStatusLabel(researchIdeaStageStatus(record)) + ' · 自动保存 · Markdown + LaTeX</div></div>' +
     '<div class="research-stage-fields">' + fields + '</div>' +
     '<div class="research-stage-actions"><button type="button" class="research-stage-btn" data-research-idea-stage-nav="prev"' + (stageIndex === 0 ? ' disabled' : '') + '>← 上一步</button>' +
       '<div class="research-stage-action-group"><button type="button" class="research-stage-btn complete' + (record.done ? ' is-done' : '') + '" data-action="research-idea-stage-complete">' + (record.done ? '✓ 已完成' : '标记本阶段完成') + '</button>' +
@@ -7435,11 +7932,18 @@ function researchIdeaDetailHTML(item) {
   if (stageIndex < 0) stageIndex = 0;
   const activeStage = RESEARCH_IDEA_STAGES[stageIndex];
   const stageNav = RESEARCH_IDEA_STAGES.map((stage, index) =>
-    '<button type="button" class="research-stage-tab' + (stage.key === activeStage.key ? ' is-active' : '') + (development[stage.key].done ? ' is-done' : '') + '" data-research-idea-stage="' + stage.key + '" aria-pressed="' + (stage.key === activeStage.key) + '"><span class="research-stage-tab-number">' + (development[stage.key].done ? '✓' : index + 1) + '</span><span class="research-stage-tab-label">' + escapeHTML(stage.short) + '</span></button>'
+    (() => {
+      const status = researchIdeaStageStatus(development[stage.key]);
+      const progress = researchIdeaStageProgress(development[stage.key], stage);
+      const partial = status === 'active' && progress.completed < progress.total;
+      const marker = status === 'done' ? '✓' : index + 1;
+      return '<button type="button" class="research-stage-tab' + (stage.key === activeStage.key ? ' is-active' : '') + (status === 'done' ? ' is-done' : status === 'active' ? ' is-in-progress' : '') + (partial ? ' is-partial' : '') + '" data-research-idea-stage="' + stage.key + '" aria-pressed="' + (stage.key === activeStage.key) + '" aria-label="' + escapeAttribute(stage.short + '：' + researchIdeaStageStatusLabel(status)) + '"><span class="research-stage-tab-number">' + marker + '</span><span class="research-stage-tab-label">' + escapeHTML(stage.short) + '</span><span class="research-stage-tab-status">' + researchIdeaStageStatusLabel(status) + '</span></button>';
+    })()
   ).join('');
-  return '<section class="research-idea-detail" aria-label="科研灵感详情">' +
+  return (researchInspirationState.focusMode ? '<div class="research-focus-backdrop" data-action="research-idea-focus-close"></div>' : '') + '<section class="research-idea-detail' + (researchInspirationState.focusMode ? ' is-focus-mode' : '') + '" aria-label="科研灵感详情">' +
     '<div class="research-idea-detail-header"><div><div class="research-idea-kicker">' + escapeHTML(item.category || '未分类') + (item.archived ? ' · 已归档' : '') + '</div><h2 class="research-idea-detail-title">' + escapeHTML(item.title || '未命名灵感') + '</h2></div>' +
     '<div class="research-idea-detail-actions">' +
+      (researchInspirationState.focusMode ? '<button type="button" class="research-idea-icon-btn" data-action="research-idea-focus-close" title="退出放大（Esc）" aria-label="退出放大">↙</button>' : '<button type="button" class="research-idea-icon-btn" data-action="research-idea-focus-open" title="放大编辑" aria-label="放大编辑">⛶</button>') +
       '<button type="button" class="research-idea-icon-btn' + (item.favorite ? ' is-active' : '') + '" data-action="research-idea-favorite" title="' + (item.favorite ? '取消收藏' : '收藏') + '" aria-label="' + (item.favorite ? '取消收藏' : '收藏') + '">★</button>' +
       '<button type="button" class="research-idea-icon-btn" data-action="research-idea-edit" title="编辑灵感" aria-label="编辑灵感">✎</button>' +
       '<button type="button" class="research-idea-icon-btn' + (item.archived ? ' is-active' : '') + '" data-action="research-idea-archive" title="' + archiveLabel + '" aria-label="' + archiveLabel + '">📦</button>' +
@@ -7450,6 +7954,11 @@ function researchIdeaDetailHTML(item) {
       '<div class="research-idea-meta"><div class="research-idea-meta-label">灵感时间</div><div class="research-idea-meta-value">' + escapeHTML(researchIdeaDate(item.occurredAt || item.createdAt)) + '</div></div>' +
       '<div class="research-idea-meta"><div class="research-idea-meta-label">证据来源</div><div class="research-idea-meta-value">' + escapeHTML(item.sourceType || '未记录') + '</div></div>' +
       '<div class="research-idea-meta"><div class="research-idea-meta-label">关联项目</div><div class="research-idea-meta-value">' + escapeHTML(item.project || '未关联') + '</div></div>' +
+    '</div>' +
+    '<div class="research-ddl-card" aria-label="目标会议与投稿截止日期">' +
+      '<div class="research-ddl-field"><label>目标会议 / 期刊</label><input data-research-ddl-field="venue" data-research-ddl-id="' + escapeAttribute(item.id) + '" value="' + escapeAttribute(item.targetVenue || '') + '" placeholder="如 NeurIPS / IEEE S&P"><span class="research-ddl-link">填写后自动查询（北京时间）</span></div>' +
+      '<div class="research-ddl-field"><label>摘要 DDL（北京时间）</label><input type="datetime-local" data-research-ddl-field="abstractDeadline" data-research-ddl-id="' + escapeAttribute(item.id) + '" value="' + escapeAttribute(researchDdlInputValue(item.abstractDeadline)) + '"><strong class="research-ddl-countdown">' + (item.ddlSource === 'journal-or-not-found' ? '无' : researchDdlCountdown(item.abstractDeadline)) + '</strong></div>' +
+      '<div class="research-ddl-field"><label>正文 DDL（北京时间）</label><input type="datetime-local" data-research-ddl-field="paperDeadline" data-research-ddl-id="' + escapeAttribute(item.id) + '" value="' + escapeAttribute(researchDdlInputValue(item.paperDeadline)) + '"><strong class="research-ddl-countdown">' + (item.ddlSource === 'journal-or-not-found' ? '无' : researchDdlCountdown(item.paperDeadline)) + '</strong></div>' +
     '</div>' +
     '<div class="research-idea-tags" aria-label="Idea 标签">' + (item.tags || []).map(tag => '<span class="research-idea-tag-editable"><span># ' + escapeHTML(tag) + '</span><button type="button" class="research-idea-tag-remove" data-research-idea-tag-remove-inline="' + escapeAttribute(tag) + '" aria-label="删除标签 ' + escapeAttribute(tag) + '">×</button></span>').join('') + '<button type="button" class="research-idea-tag-add" data-action="research-idea-tag-add">＋ 添加标签</button></div>' +
     '<div class="research-journey"><div class="research-journey-summary"><div class="research-journey-label">从 Idea 到 Paper <span>已完成 ' + progress.done + ' / ' + RESEARCH_IDEA_STAGES.length + ' 个阶段</span></div><div class="research-journey-percent">' + progress.percent + '%</div></div><div class="research-journey-track"><span style="width:' + progress.percent + '%"></span></div>' +
@@ -8023,7 +8532,7 @@ function saveResearchTodoModal() {
 function deleteResearchTodo(id) {
   const task = researchTodoStore().find(item => item.id === id);
   if (!task) return;
-  showConfirm('将任务移入回收站？', '「' + escapeHTML(task.title || '未命名任务') + '」将在回收站保留 7 天，期间可以恢复。', '移入回收站', () => softDelete('learning.research.todos.items', id));
+  showConfirm('将任务移入回收站？', '「' + escapeHTML(task.title || '未命名任务') + '」将在回收站保留 ' + TRASH_KEEP_DAYS + ' 天，期间可以恢复。', '移入回收站', () => softDelete('learning.research.todos.items', id));
 }
 
 // ========================================================================
@@ -8451,7 +8960,7 @@ function fitnessPageHTML() {
   }).join('') : emptyStateHTML('📋', '暂无训练记录', '完成一次训练后会显示在这里');
   return '<div class="workspace-page fitness-page">' +
     '<section class="workspace-hero"><div><div class="workspace-kicker">Training logbook</div><div class="workspace-hero-title">本周训练，按计划留下真实记录</div><div class="workspace-hero-copy">计划负责方向，训练日志记录真实投入。完成计划时可以补充时长、消耗与备注，周数据会自动汇总。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="add-workout-log">记录一次训练</button></div></div>' +
-    '<div class="fitness-hero-side fitness-hero-heatmap"><div class="fitness-hero-heatmap-head"><div class="fitness-hero-heatmap-title">打卡记录</div><span class="card-tag">近 6 个月</span></div>' + fitnessHeatmapHTML() + '</div></section>' +
+    '<div class="fitness-hero-side fitness-hero-heatmap"><div class="fitness-hero-heatmap-head"><div class="fitness-hero-heatmap-title">打卡记录</div><span class="card-tag">近 4 个月</span></div>' + fitnessHeatmapHTML() + '</div></section>' +
     '<div class="workspace-stat-strip">' + workspaceStatHTML(stats.sessions + ' 次', '本周训练', true) + workspaceStatHTML(stats.duration + ' min', '累计时长', false) + workspaceStatHTML(stats.calories + ' kcal', '活动消耗', false) + workspaceStatHTML(streak + ' 天', '连续训练', false) + '</div>' +
     '<div class="fitness-layout"><section class="workspace-task-card fitness-list"><div class="card-header"><div class="card-title"><span class="dot"></span>本周训练计划</div><span class="card-tag">' + completed + '/' + plan.length + '</span></div>' + planRows + '<div class="fit-add-form"><div class="fit-add-row"><select class="fit-select" id="planDay">' + dayOptions + '</select><select class="fit-select" id="planType" style="flex:1;">' + typeOptions + '</select></div><div class="fit-add-row"><input class="add-task-input" id="planTarget" placeholder="目标，如 3km / 30 分钟 / 4 组" aria-label="训练目标"><button class="add-btn" data-action="add-plan-item">添加计划</button></div></div></section>' +
     '<div class="fitness-side-stack"><section class="workspace-task-card fitness-log-card"><div class="card-header"><div class="card-title"><span class="dot"></span>最近训练记录</div><button class="card-btn" data-action="add-workout-log" title="记录训练" aria-label="记录训练">+</button></div>' + logRows + '</section></div></div></div>';
@@ -8973,11 +9482,12 @@ const PAGES = {
   settings: {
     title: '数据管理',
     render: () => {
+      const isAPI = storage.mode === 'api';
       const isFSAA = storage.mode === 'fsaa';
       const all = countAllTasks();
       const inspCount = DATA.inspirations.ideas.length + DATA.inspirations.trends.length + DATA.inspirations.sources.length;
       const theme = currentThemePref();
-      const icloudPath = '~/Library/Mobile Documents/com~apple~CloudDocs/WorkBuddy/AI工作台/data/';
+      const icloudPath = '项目目录/data/（可选择任意本地或 iCloud 文件夹）';
 
       const wcfg = weatherConfig();
 
@@ -9009,16 +9519,18 @@ const PAGES = {
         '<h3>☁️ 数据同步</h3>' +
         '<div class="settings-row">' +
           '<div><div class="settings-label">存储方式</div>' +
-          '<div class="settings-desc">' + (isFSAA ? '已连接到 data/ 文件夹，数据将通过 iCloud 自动同步' : '未连接。连接后数据保存到 data/workspace.json，通过 iCloud 在设备间同步') + '</div></div>' +
-          '<span class="storage-badge ' + (isFSAA ? 'fsaa' : 'local') + '">' + (isFSAA ? '✓ 文件同步' : '本地存储') + '</span>' +
+          '<div class="settings-desc">' + (isAPI ? '当前由 Fastify API 保存到 SQLite（推荐）。需要跨设备手动同步时，可切换到指定文件夹模式。' : isFSAA ? '当前读写所选文件夹中的 workspace.json；适合 iCloud/网盘同步，但同一时间只能由一个设备写入。' : '当前为浏览器本地回退存储。点击“连接 SQLite”可交互式连接数据库，也可以选择文件夹保存。') + '</div></div>' +
+          '<span class="storage-badge ' + (isAPI || isFSAA ? 'fsaa' : 'local') + '">' + (isAPI ? '✓ SQLite' : isFSAA ? '✓ 指定文件夹' : '本地回退') + '</span>' +
         '</div>' +
         '<div class="settings-row">' +
           '<div><div class="settings-label">数据文件夹</div>' +
           '<div class="settings-desc"><code class="inline-code">' + icloudPath + '</code></div></div>' +
           '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
             (isFSAA
-              ? '<button class="btn btn-outline btn-sm" data-action="reconnect">重新授权</button><button class="btn btn-danger btn-sm" data-action="disconnect">断开</button>'
-              : '<button class="btn btn-primary btn-sm" data-action="connect">连接数据文件夹</button>') +
+              ? '<button class="btn btn-outline btn-sm" data-action="reconnect">重新授权</button><button class="btn btn-primary btn-sm" data-action="use-api">切换到 SQLite</button>'
+              : isAPI
+                ? '<button class="btn btn-outline btn-sm" data-action="connect">选择文件夹并切换</button>'
+                : '<button class="btn btn-primary btn-sm" data-action="connect-api">连接 SQLite</button><button class="btn btn-outline btn-sm" data-action="connect">选择数据文件夹</button>') +
           '</div>' +
         '</div>' +
         '<div class="settings-row">' +
@@ -9030,12 +9542,12 @@ const PAGES = {
           '<span class="settings-value">v' + (DATA.version || '3.0') + '</span>' +
         '</div>' +
         '<div class="settings-row">' +
-          '<div><div class="settings-label">自动备份</div><div class="settings-desc">写入时每 5 分钟在 <code class="inline-code">data/backups/</code> 保留最近 ' + BACKUP_KEEP + ' 份快照</div></div>' +
+          '<div><div class="settings-label">自动备份</div><div class="settings-desc">' + (isAPI ? '可创建一致性 SQLite 快照；服务端会保留最近 10 份备份' : '写入时每 5 分钟在 <code class="inline-code">backups/</code> 保留最近 ' + BACKUP_KEEP + ' 份快照') + '</div></div>' +
         '</div>' +
       '</div>' +
 
       '<div class="settings-card">' +
-        '<h3>🗑️ 回收站</h3><div class="settings-desc" style="margin:-4px 0 12px;">删除的数据将在这里保留 7 天，之后自动永久清理。</div>' +
+        '<h3>🗑️ 回收站</h3><div class="settings-desc" style="margin:-4px 0 12px;">删除的数据将在这里保留 ' + TRASH_KEEP_DAYS + ' 天，之后自动永久清理。</div>' +
         trashListHTML() +
       '</div>' +
 
@@ -9043,7 +9555,7 @@ const PAGES = {
         '<h3>📦 数据操作</h3>' +
         '<div class="settings-row">' +
           '<div><div class="settings-label">备份与恢复</div><div class="settings-desc">导出为 JSON 文件，或从备份文件恢复</div></div>' +
-          '<div style="display:flex;gap:8px;"><button class="btn btn-outline btn-sm" data-action="export">导出</button><button class="btn btn-outline btn-sm" data-action="import">导入</button></div>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" data-action="export">导出 JSON</button><button class="btn btn-outline btn-sm" data-action="import">导入 JSON</button>' + (isAPI ? '<button class="btn btn-outline btn-sm" data-action="backup-db">备份 SQLite</button>' : '') + '</div>' +
         '</div>' +
         '<div class="settings-row">' +
           '<div><div class="settings-label">数据概览</div><div class="settings-desc">任务 ' + all.done + '/' + all.total + ' · 灵感 ' + inspCount + ' 条 · 回收站 ' + DATA.trash.length + ' 条</div></div>' +
@@ -9057,10 +9569,10 @@ const PAGES = {
       '<div class="settings-card">' +
         '<h3>📖 使用说明</h3>' +
         '<div class="settings-desc" style="line-height:1.8;">' +
-          '<p><strong>1. 文件系统同步（推荐）：</strong>连接当前目录下的 <code class="inline-code">data/</code> 文件夹（完整路径 <code class="inline-code">' + icloudPath + '</code>），数据保存为 <code class="inline-code">workspace.json</code>。由于该目录在 iCloud 中，数据会自动在所有设备间同步。</p>' +
-          '<p><strong>2. 本地存储：</strong>未连接数据文件夹时，数据保存在浏览器 localStorage 中，仅在当前浏览器可用。可通过「导出 / 导入」手动迁移。</p>' +
+          '<p><strong>1. SQLite API（当前默认）：</strong>重构版通过 Fastify API 将完整旧版工作区快照保存到 SQLite，避免改变原有页面交互；可通过「导出 / 导入」或服务端备份迁移。</p>' +
+          '<p><strong>2. 文件系统同步（回退）：</strong>仍可连接当前目录下的 <code class="inline-code">data/</code> 文件夹（完整路径 <code class="inline-code">' + icloudPath + '</code>），数据保存为 <code class="inline-code">workspace.json</code>，通过 iCloud 在设备间同步。</p>' +
           '<p><strong>3. 快捷键：</strong><code class="inline-code">Cmd/Ctrl + K</code> 全局搜索 · <code class="inline-code">N</code> 新建任务 · <code class="inline-code">1-9</code> 切换页面 · <code class="inline-code">?</code> 快捷键帮助</p>' +
-          '<p><strong>4. 提示：</strong>在另一台设备上打开本页面时，导航到 <code class="inline-code">~/Library/Mobile Documents/com~apple~CloudDocs/WorkBuddy/AI工作台/</code> 选择 <code class="inline-code">data/</code> 文件夹即可恢复同步（<code class="inline-code">~</code> 代表用户主目录，自动适配不同用户名）。</p>' +
+          '<p><strong>4. 提示：</strong>旧版直连入口仍支持 localStorage 回退；多设备使用 SQLite 时请通过 API 访问，不要直接同步正在运行的 <code class="inline-code">workspace.db</code>。</p>' +
         '</div>' +
         '<div class="settings-row" style="margin-top:8px;">' +
           '<div><div class="settings-label">新手引导</div></div>' +
@@ -9097,13 +9609,27 @@ function mainHeaderHTML(page, pageId) {
   '</div>';
 }
 
-function renderPage(pageId) {
+function pageIdFromHash() {
+  try {
+    const candidate = decodeURIComponent(location.hash.replace(/^#/, ''));
+    return PAGES[candidate] ? candidate : 'dashboard';
+  } catch (error) {
+    return 'dashboard';
+  }
+}
+
+function renderPage(pageId, options = {}) {
   const page = PAGES[pageId];
   if (!page) return;
   currentPage = pageId;
+  if (options.syncUrl !== false && location.hash !== '#' + pageId) {
+    history.pushState(null, '', '#' + pageId);
+  }
 
   document.querySelectorAll('.menu-item').forEach(m => {
     m.classList.toggle('active', m.dataset.page === pageId);
+    if (m.dataset.page === pageId) m.setAttribute('aria-current', 'page');
+    else m.removeAttribute('aria-current');
   });
 
   const main = document.getElementById('mainContent');
@@ -9141,8 +9667,15 @@ function rerender() {
 }
 
 document.querySelectorAll('.menu-item').forEach(m => {
+  m.setAttribute('role', 'button');
+  m.setAttribute('tabindex', '0');
   m.addEventListener('click', () => renderPage(m.dataset.page));
+  m.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); renderPage(m.dataset.page); }
+  });
 });
+
+window.addEventListener('hashchange', () => renderPage(pageIdFromHash(), { syncUrl: false }));
 
 // --- Mobile drawer ---
 function openDrawer() {
@@ -9162,7 +9695,9 @@ document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer)
 function addTask(path, text) {
   const arr = getNestedData(path);
   if (!Array.isArray(arr)) return;
-  arr.push({ id: uid(), text: text, done: false });
+  const task = normalizeTask({ id: uid(), text, done: false }, todayKey());
+  if (!task) return;
+  arr.push(task);
   save();
   rerender();
   showToast('已添加', 'success');
@@ -9174,6 +9709,22 @@ function toggleTask(path, id) {
   const t = arr.find(x => x.id === id);
   if (!t) return;
   t.done = !t.done;
+  t.updatedAt = new Date().toISOString();
+  t.completedAt = t.done ? t.updatedAt : '';
+  const key = metricTaskKey(t);
+  if (key) {
+    const mirrorPaths = ['tasks.dashboard', 'tasks.dailyPlan.morning', 'tasks.dailyPlan.afternoon', 'tasks.dailyPlan.evening'];
+    mirrorPaths.forEach(mirrorPath => {
+      const mirror = getNestedData(mirrorPath);
+      if (Array.isArray(mirror)) mirror.forEach(candidate => {
+        if (candidate !== t && metricTaskKey(candidate) === key) {
+          candidate.done = t.done;
+          candidate.updatedAt = t.updatedAt;
+          candidate.completedAt = t.completedAt;
+        }
+      });
+    });
+  }
   recordWeeklyTrend();
   save();
   rerender();
@@ -9201,19 +9752,19 @@ function toggleCheckin(cat, id) {
 // Rollover unfinished daily-plan tasks ("结转未完成到明天")
 function rolloverPlan() {
   const dp = DATA.tasks.dailyPlan;
+  const today = todayKey();
+  const tomorrowDate = new Date(); tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+  const tomorrow = todayKey(tomorrowDate);
+  snapshotDailyState(today, 'manual-rollover');
   let moved = 0;
   for (const key of ['morning', 'afternoon', 'evening']) {
     const remaining = dp[key].filter(t => !t.done);
-    const doneItems = dp[key].filter(t => t.done);
-    for (const item of doneItems) {
-      DATA.trash.unshift({ tid: uid(), path: 'tasks.dailyPlan.' + key, item: item, deletedAt: new Date().toISOString() });
-      moved++;
-    }
-    dp[key] = remaining.map(t => ({ id: uid(), text: t.text, done: false }));
+    moved += remaining.length;
+    dp[key] = remaining.map(t => normalizeTask({ ...t, id: uid(), done: false, carriedFrom: today, dueDate: tomorrow }, tomorrow));
   }
   save();
   rerender();
-  showToast(moved > 0 ? '已归档 ' + moved + ' 项已完成任务，未完成任务已结转' : '未完成任务已结转到明天', 'success');
+  showToast(moved > 0 ? '已将 ' + moved + ' 项未完成任务结转到明天' : '没有未完成任务需要结转', 'success');
 }
 
 // Auto-generate weekly review draft from live data (P3)
@@ -9266,7 +9817,7 @@ function showAddModal(title, fields, onSubmit) {
   if (first) first.focus();
 }
 
-function showConfirm(title, message, confirmLabel, onConfirm) {
+function showConfirm(title, message, confirmLabel, onConfirm, onCancel) {
   showModal(
     '<div class="modal-title">' + escapeHTML(title) + '</div>' +
     '<p style="font-size:14px;color:var(--text-sub);line-height:1.7;">' + message + '</p>' +
@@ -9275,7 +9826,10 @@ function showConfirm(title, message, confirmLabel, onConfirm) {
       '<button class="modal-btn danger" id="modalOk">' + escapeHTML(confirmLabel) + '</button>' +
     '</div>'
   );
-  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('modalCancel').addEventListener('click', () => {
+    closeModal();
+    if (typeof onCancel === 'function') onCancel();
+  });
   document.getElementById('modalOk').addEventListener('click', () => { closeModal(); onConfirm(); });
 }
 
@@ -9410,10 +9964,10 @@ function importData() {
     const file = input.files && input.files[0];
     if (!file) return;
     try {
+      if (file.size > 20 * 1024 * 1024) throw new Error('文件超过 20 MB 限制');
       const text = await file.text();
       const data = JSON.parse(text);
-      if (!data.version) throw new Error('bad format');
-      DATA = mergeDefaults(data, DEFAULT_DATA);
+      DATA = migrateWorkspaceData(data);
       purgeTrash();
       recordCheckinToday();
       applyTheme();
@@ -9421,7 +9975,7 @@ function importData() {
       renderPage(currentPage);
       showToast('数据导入成功', 'success');
     } catch (err) {
-      showToast('导入失败：文件格式错误', 'error');
+      showToast('导入失败：' + (err && err.message ? err.message : '文件格式错误'), 'error');
     }
   });
   input.click();
@@ -9430,7 +9984,7 @@ function importData() {
 function resetData() {
   showConfirm('重置数据', '将恢复为初始示例数据。当前数据会先自动导出一份备份到下载目录。', '重置', () => {
     exportData('workspace-before-reset');
-    DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    DATA = migrateWorkspaceData(cloneData(DEFAULT_DATA));
     DATA.settings.onboarded = true;
     applyTheme();
     save();
@@ -9620,6 +10174,16 @@ function showShortcutsHelp() {
 document.getElementById('kbdHelpBtn').addEventListener('click', showShortcutsHelp);
 
 document.addEventListener('keydown', (e) => {
+  const modalOverlay = document.getElementById('modalOverlay');
+  if (modalOverlay.classList.contains('show') && e.key === 'Tab') {
+    const focusable = [...modalOverlay.querySelectorAll('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])')]
+      .filter(el => !el.disabled && el.offsetParent !== null);
+    if (focusable.length) {
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
   const mod = e.metaKey || e.ctrlKey;
 
   // Cmd/Ctrl+K — palette
@@ -9839,6 +10403,19 @@ document.addEventListener('focusout', (e) => {
 // ========================================================================
 document.addEventListener('click', (e) => {
   const t = e.target;
+
+  if (t.closest('[data-action="research-idea-focus-open"]')) {
+    researchInspirationState.focusMode = true;
+    document.body.classList.add('research-focus-active');
+    rerender();
+    return;
+  }
+  if (t.closest('[data-action="research-idea-focus-close"]')) {
+    researchInspirationState.focusMode = false;
+    document.body.classList.remove('research-focus-active');
+    rerender();
+    return;
+  }
 
   // --- Research todo workflow ---
   const todoScope = t.closest('[data-research-todo-scope]');
@@ -10132,7 +10709,7 @@ document.addEventListener('click', (e) => {
   if (ideaOverviewDelete) {
     const item = researchIdeaStore().find(x => x.id === ideaOverviewDelete.dataset.researchIdeaOverviewDelete);
     if (item) {
-      showConfirm('将灵感移入回收站？', '「' + escapeHTML(item.title || '未命名灵感') + '」将在回收站保留 7 天，期间可以恢复。', '移入回收站', () => {
+      showConfirm('将灵感移入回收站？', '「' + escapeHTML(item.title || '未命名灵感') + '」将在回收站保留 ' + TRASH_KEEP_DAYS + ' 天，期间可以恢复。', '移入回收站', () => {
         if (researchInspirationState.selectedId === item.id) researchInspirationState.selectedId = '';
         softDelete('learning.research.inspirations.items', item.id);
       });
@@ -10356,19 +10933,79 @@ function handleAction(action) {
       loadZoteroItems();
       break;
     }
-    case 'connect':
-      storage.connect().then((result) => {
-        let purged = 0;
-        if (result && result.data) {
-          DATA = mergeDefaults(result.data, DEFAULT_DATA);
-          purged = purgeTrash();
-          applyTheme();
+    case 'connect-api':
+      showConfirm('连接 SQLite 数据库', '连接后将读取 SQLite 中的工作区快照。若数据库已有数据，它会替换当前浏览器本地回退数据；若数据库为空，则会初始化为当前数据。', '连接并加载', async () => {
+        try {
+          const result = await storage.connectApi();
+          if (result && result.data) {
+            DATA = mergeDefaults(result.data, DEFAULT_DATA);
+            const purged = purgeTrash();
+            applyTheme();
+            if (purged) save(); else setSaveState('saved');
+          }
+          updateSyncIndicator();
+          renderPage(currentPage);
+          showToast(result && result.loadedExisting ? '已连接 SQLite，并加载数据库数据' : '已连接 SQLite，当前数据已写入数据库', 'success');
+        } catch (err) {
+          updateSyncIndicator();
+          renderPage(currentPage);
+          showToast(err && err.message ? err.message : '连接 SQLite 失败', 'error');
         }
-        if (purged) save(); else setSaveState('saved');
-        renderPage(currentPage);
-        showToast(result && result.loadedExisting ? '已连接数据文件夹，并加载已有数据' : '已连接数据文件夹，尚未写入新数据', 'success');
-      }).catch((err) => {
-        if (err && err.name !== 'AbortError') showToast(err.message || '连接失败', 'error');
+      });
+      break;
+    case 'connect':
+      {
+        const previousMode = storage.mode;
+        storage.connect().then((result) => {
+          const applyFolderData = () => {
+            let purged = 0;
+            if (result && result.data) {
+              DATA = mergeDefaults(result.data, DEFAULT_DATA);
+              purged = purgeTrash();
+              applyTheme();
+            }
+            if (purged) save(); else setSaveState('saved');
+            renderPage(currentPage);
+            showToast(result && result.loadedExisting ? '已切换到指定文件夹，并加载已有数据' : '已切换到指定文件夹，当前数据已写入 workspace.json', 'success');
+          };
+
+          // Never silently replace an active SQLite workspace with an
+          // existing folder snapshot. The user can cancel and remain on API.
+          if (previousMode === 'api' && result && result.loadedExisting) {
+            showConfirm('文件夹已有数据', '所选文件夹中的 workspace.json 将替换当前页面中的 SQLite 工作区数据。继续前请确认该文件夹是你要使用的版本。', '加载文件夹数据', () => {
+              applyFolderData();
+            }, () => {
+              storage.restoreApiMode();
+              updateSyncIndicator();
+              renderPage(currentPage);
+              showToast('已取消切换，继续使用 SQLite', '');
+            });
+            return;
+          }
+          applyFolderData();
+        }).catch((err) => {
+          if (err && err.name !== 'AbortError') showToast(err.message || '连接失败', 'error');
+        });
+      }
+      break;
+    case 'use-api':
+      showConfirm('切换到 SQLite', '当前文件夹中的 workspace.json 将覆盖 SQLite 中的工作区数据。建议先确认文件夹数据完整，再继续。', '覆盖并切换', async () => {
+        try {
+          const result = await storage.switchToApi();
+          if (result && result.data) {
+            DATA = mergeDefaults(result.data, DEFAULT_DATA);
+            purgeTrash();
+            applyTheme();
+          }
+          setSaveState('saved');
+          renderPage(currentPage);
+          showToast('已切换到 SQLite，文件夹数据已写入数据库', 'success');
+        } catch (err) {
+          storage.mode = 'fsaa';
+          updateSyncIndicator();
+          renderPage(currentPage);
+          showToast(err && err.message ? err.message : '切换到 SQLite 失败', 'error');
+        }
       });
       break;
     case 'reconnect':
@@ -10379,20 +11016,28 @@ function handleAction(action) {
       });
       break;
     case 'disconnect':
-      showConfirm('断开数据文件夹', '断开后将恢复默认状态，并切换为浏览器本地存储。data 文件夹中已保存的文件不受影响。', '断开并恢复默认', async () => {
+      handleAction(storage._useWorkspaceApi ? 'use-api' : 'disconnect-local');
+      break;
+    case 'disconnect-local':
+      showConfirm('断开数据文件夹', '断开后将保留当前页面数据，并切换为浏览器本地存储；文件夹中的 workspace.json 不会被删除。', '断开并保留数据', async () => {
         await storage.disconnect();
-        DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
-        DATA.meta.deviceId = DEVICE_ID;
-        DATA.settings.onboarded = true;
-        applyTheme();
         const result = await storage.write(DATA, { force: true });
         setSaveState(result && result.ok ? 'saved' : 'error');
         renderPage(currentPage);
-        showToast(result && result.ok ? '已断开，并恢复默认状态' : '已断开，但默认数据保存失败', result && result.ok ? 'warning' : 'error');
+        showToast(result && result.ok ? '已断开并保留当前数据' : '已断开，但本地保存失败', result && result.ok ? 'warning' : 'error');
       });
       break;
     case 'export': exportData('workspace'); break;
     case 'import': importData(); break;
+    case 'backup-db':
+      fetch(WORKSPACE_API_BACKUP_URL, { method: 'POST', headers: { 'Accept': 'application/json' } })
+        .then(async (response) => {
+          const body = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(body && body.error ? body.error.message : '创建 SQLite 备份失败');
+          showToast('SQLite 备份已创建：' + ((body.data && body.data.filename) || 'workspace.db'), 'success');
+        })
+        .catch((err) => showToast(err && err.message ? err.message : '创建 SQLite 备份失败', 'error'));
+      break;
     case 'reset': resetData(); break;
     case 'empty-trash': emptyTrash(); break;
     case 'show-onboarding': startOnboarding(true); break;
@@ -10457,7 +11102,7 @@ function handleAction(action) {
     case 'research-experiment-delete': {
       const record = researchExperimentStore().find(item => item.id === researchExperimentState.experimentId);
       if (!record) break;
-      showConfirm('将实验移入回收站？', '「' + escapeHTML(record.title || '未命名实验') + '」及其记录将在回收站保留 7 天，期间可以恢复。', '移入回收站', () => {
+      showConfirm('将实验移入回收站？', '「' + escapeHTML(record.title || '未命名实验') + '」及其记录将在回收站保留 ' + TRASH_KEEP_DAYS + ' 天，期间可以恢复。', '移入回收站', () => {
         researchExperimentState.experimentId = '';
         softDelete('learning.research.experiments.items', record.id);
       });
@@ -10502,7 +11147,7 @@ function handleAction(action) {
     case 'research-paper-delete': {
       const paper = researchPaperStore().find(item => item.id === researchPaperState.paperId);
       if (!paper) break;
-      showConfirm('将论文移入回收站？', '「' + escapeHTML(paper.title || '未命名论文') + '」的写作与投稿记录将在回收站保留 7 天，期间可以恢复。', '移入回收站', () => {
+      showConfirm('将论文移入回收站？', '「' + escapeHTML(paper.title || '未命名论文') + '」的写作与投稿记录将在回收站保留 ' + TRASH_KEEP_DAYS + ' 天，期间可以恢复。', '移入回收站', () => {
         researchPaperState.paperId = '';
         softDelete('learning.research.papers.items', paper.id);
       });
@@ -10583,7 +11228,7 @@ function handleAction(action) {
     case 'research-idea-delete': {
       const item = researchIdeaStore().find(x => x.id === researchInspirationState.selectedId);
       if (!item) break;
-      showConfirm('将灵感移入回收站？', '「' + escapeHTML(item.title || '未命名灵感') + '」将在回收站保留 7 天，期间可以恢复。', '移入回收站', () => {
+      showConfirm('将灵感移入回收站？', '「' + escapeHTML(item.title || '未命名灵感') + '」将在回收站保留 ' + TRASH_KEEP_DAYS + ' 天，期间可以恢复。', '移入回收站', () => {
         researchInspirationState.selectedId = '';
         softDelete('learning.research.inspirations.items', item.id);
       });
@@ -10763,6 +11408,20 @@ document.addEventListener('dblclick', (e) => {
 
 document.addEventListener('blur', (e) => {
   const t = e.target;
+  if (t && t.dataset && t.dataset.researchDdlField && t.dataset.researchDdlId) {
+    const item = researchIdeaStore().find(x => x.id === t.dataset.researchDdlId);
+    if (item) {
+      if (t.dataset.researchDdlField === 'venue') {
+        refreshResearchConferenceDDL(item, t.value);
+        return;
+      }
+      item[t.dataset.researchDdlField] = t.value;
+      item.updatedAt = new Date().toISOString();
+      save();
+      rerender();
+    }
+    return;
+  }
   if (t && t.dataset && t.dataset.researchPaperField && t.dataset.researchPaperId) {
     const paper = researchPaperStore().find(item => item.id === t.dataset.researchPaperId);
     if (paper) {
@@ -10923,6 +11582,17 @@ document.addEventListener('change', (e) => {
 document.addEventListener('input', (e) => {
   if (e.target.matches && e.target.matches('textarea[data-research-idea-stage-field], textarea[data-research-experiment-field], textarea[data-research-paper-field]')) {
     autoResizeResearchTextarea(e.target);
+    if (e.target.matches('textarea[data-research-idea-stage-field]')) {
+      const item = researchIdeaStore().find(x => x.id === (e.target.dataset.researchIdeaId || researchInspirationState.selectedId));
+      const record = item && researchIdeaDevelopment(item)[e.target.dataset.researchIdeaStageKey];
+      if (item && record) {
+        record[e.target.dataset.researchIdeaStageField] = e.target.value;
+        item.updatedAt = new Date().toISOString();
+        if (e.target.dataset.researchIdeaStageKey === 'idea' && e.target.dataset.researchIdeaStageField === 'observation') item.content = e.target.value;
+        updateResearchStageStatusUI(e.target);
+        save();
+      }
+    }
   }
   if (e.target.id === 'researchIdeaSearch') {
     researchInspirationState.query = e.target.value;
@@ -10976,10 +11646,46 @@ document.addEventListener('drop', (e) => {
 
 function handleResearchStageEditorKeydown(e) {
   const textarea = e.target;
-  if (!textarea.matches('textarea[data-research-idea-stage-field], textarea[data-research-experiment-field]') || e.isComposing) return false;
+  const isStageEditor = textarea.matches('textarea[data-research-idea-stage-field], textarea[data-research-experiment-field]');
+  const isPaperNotes = textarea.matches('textarea[data-research-paper-field]');
+  if ((!isStageEditor && !isPaperNotes) || e.isComposing) return false;
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
 
+  // Keep focus in the editor and provide familiar code-editor indentation.
+  if (e.key === 'Tab' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+    e.preventDefault();
+    const value = textarea.value;
+    const indent = '  ';
+    if (e.shiftKey) {
+      const lineStart = value.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
+      const selectionEnd = end === start ? value.indexOf('\n', start) === -1 ? value.length : value.indexOf('\n', start) : end;
+      const selected = value.slice(lineStart, selectionEnd);
+      let removedBeforeStart = 0;
+      let removedTotal = 0;
+      const unindented = selected.split('\n').map((line, index) => {
+        const remove = line.startsWith(indent) ? indent.length : line.startsWith(' ') ? 1 : 0;
+        if (index === 0) removedBeforeStart = Math.min(remove, Math.max(0, start - lineStart));
+        removedTotal += remove;
+        return line.slice(remove);
+      }).join('\n');
+      if (removedTotal) {
+        textarea.setRangeText(unindented, lineStart, selectionEnd, 'end');
+        textarea.setSelectionRange(Math.max(lineStart, start - removedBeforeStart), Math.max(lineStart, end - removedTotal));
+      }
+    } else if (start !== end) {
+      const selectionStart = value.lastIndexOf('\n', start - 1) + 1;
+      const selected = value.slice(selectionStart, end);
+      const indented = selected.replace(/^|\n/g, match => match + indent);
+      textarea.setRangeText(indented, selectionStart, end, 'end');
+      textarea.setSelectionRange(selectionStart, selectionStart + indented.length);
+    } else {
+      textarea.setRangeText(indent, start, end, 'end');
+    }
+    return true;
+  }
+
+  if (!isStageEditor) return false;
   if (e.key === '$' && !e.metaKey && !e.ctrlKey && !e.altKey) {
     e.preventDefault();
     const value = textarea.value;
@@ -11039,6 +11745,12 @@ function handleResearchStageEditorKeydown(e) {
 
 // Checkbox keyboard support (Space/Enter on focused checkbox)
 document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && researchInspirationState.focusMode) {
+    researchInspirationState.focusMode = false;
+    document.body.classList.remove('research-focus-active');
+    rerender();
+    return;
+  }
   if (handleResearchStageEditorKeydown(e)) {
     requestAnimationFrame(() => autoResizeResearchTextarea(e.target));
     return;
@@ -11098,26 +11810,44 @@ async function init() {
   await storage.init();
 
   const saved = await storage.read();
-  if (saved && saved.version) {
-    DATA = mergeDefaults(saved, DEFAULT_DATA);
+  let recoveredInvalidData = false;
+  if (saved) {
+    try {
+      DATA = migrateWorkspaceData(saved);
+    } catch (error) {
+      console.warn('Saved workspace data invalid; starting from defaults:', error);
+      DATA = migrateWorkspaceData(cloneData(DEFAULT_DATA));
+      recoveredInvalidData = true;
+    }
   } else {
-    DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    DATA = migrateWorkspaceData(cloneData(DEFAULT_DATA));
     DATA.meta.deviceId = DEVICE_ID;
-    if (storage.mode === 'local') await storage.write(DATA, { force: true });
+    // Persist the built-in starter workspace on the first API-backed launch
+    // as well as in the legacy localStorage fallback. Without this write, a
+    // fresh SQLite database would render defaults only in memory and repeat
+    // initialization on every reload. If another tab initialized first, use
+    // its snapshot instead of overwriting it.
+    if (storage.mode === 'api' || storage.mode === 'local') {
+      const initialWrite = await storage.write(DATA, { force: true });
+      if (initialWrite && initialWrite.conflict && initialWrite.remote) {
+        DATA = migrateWorkspaceData(initialWrite.remote);
+      }
+    }
   }
 
   // Housekeeping
   migrateFitnessData();
+  const temporalChanged = ensureTemporalState();
   const prunedReadingLogs = pruneReadingLogs();
   const purgedTrash = purgeTrash();
   recordCheckinToday();
   recordWeeklyTrend();
   if (!DATA.meta) DATA.meta = { revision: 0, deviceId: DEVICE_ID, savedAt: '' };
 
-  if (prunedReadingLogs || purgedTrash) save();
+  if (prunedReadingLogs || purgedTrash || temporalChanged || recoveredInvalidData) save();
   applyTheme();
   updateSyncIndicator();
-  renderPage('dashboard');
+  renderPage(pageIdFromHash());
 
   // First-run onboarding
   if (!DATA.settings.onboarded) {

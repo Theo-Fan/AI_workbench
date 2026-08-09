@@ -1,0 +1,30 @@
+{
+  "name": "@ai-workspace/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "prebuild": "npm run build -w @ai-workspace/contracts",
+    "pretypecheck": "npm run build -w @ai-workspace/contracts",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:import": "tsx src/db/import-legacy.ts",
+    "db:backup": "tsx src/db/backup.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@ai-workspace/contracts": "*",
+    "better-sqlite3": "^11.7.0",
+    "fastify": "^5.2.1",
+    "@fastify/cors": "^10.0.2",
+    "drizzle-orm": "^0.38.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.3"
+  }
+}

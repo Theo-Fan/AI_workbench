@@ -1,0 +1,32 @@
+{
+  "name": "ai-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "npm --workspace apps/api run dev",
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev:zotero-agent": "npm --workspace apps/zotero-agent run dev",
+    "build:api": "npm --workspace apps/api run build",
+    "build:web": "npm --workspace apps/web run build",
+    "start:api": "npm --workspace apps/api run start",
+    "db:migrate": "npm --workspace apps/api run db:migrate",
+    "db:import": "npm --workspace apps/api run db:import",
+    "db:backup": "npm --workspace apps/api run db:backup",
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true,
+    "esbuild@0.28.1": true,
+    "esbuild@0.25.12": true
+  }
+}
