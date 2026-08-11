@@ -10,8 +10,8 @@ const run = (args) => {
 };
 
 const major = Number.parseInt(process.versions.node.split('.')[0], 10);
-if (major < 20) {
-  console.error(`需要 Node.js 20 或更高版本，当前为 ${process.versions.node}。`);
+if (major !== 22) {
+  console.error(`项目固定使用 Node.js 22.x，当前为 ${process.versions.node}。请先执行 nvm use。`);
   process.exit(1);
 }
 
@@ -21,6 +21,7 @@ if (existsSync('data/workspace.json')) {
   console.log('检测到 data/workspace.json，正在幂等导入旧版数据…');
   run(['run', 'db:import']);
 } else {
-  console.log('未检测到旧版 JSON；首次打开工作台时会自动创建示例数据。');
+  console.log('未检测到旧版 JSON；将在空工作区中安装脱敏默认模板。');
 }
+run(['run', 'db:seed']);
 console.log('初始化完成。运行 npm run dev 启动工作台。');

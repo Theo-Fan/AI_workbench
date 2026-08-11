@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
 const http = require('http');
-const path = require('path');
 const { URL } = require('url');
 
 const HOST = '127.0.0.1';
@@ -10,7 +8,6 @@ const PORT = Number(process.env.PORT || 8788);
 const ZOTERO_API = 'http://127.0.0.1:23119/api';
 const WEATHER_FORECAST_API = 'https://api.open-meteo.com/v1/forecast';
 const WEATHER_GEOCODE_API = 'https://geocoding-api.open-meteo.com/v1/search';
-const ROOT = __dirname;
 const MAX_LIMIT = 100;
 const MAX_KNOWLEDGE_KEYS = 24;
 const knowledgeTextCache = new Map();
@@ -225,38 +222,6 @@ async function knowledgeTextForItem(key) {
   return result;
 }
 
-function serveWorkspace(response, filename) {
-  const allowed = new Map([
-    ['/', 'creator-workspace.html'],
-    ['/creator-workspace.html', 'creator-workspace.html'],
-    ['/README.md', 'README.md'],
-    ['/assets/vendor/mathjax/tex-mml-chtml.js', 'assets/vendor/mathjax/tex-mml-chtml.js'],
-    ['/assets/vendor/mathjax/tex-mml-svg.js', 'assets/vendor/mathjax/tex-mml-svg.js']
-  ]);
-  const target = allowed.get(filename);
-  if (!target) return false;
-  const fullPath = path.join(ROOT, target);
-  try {
-    const body = fs.readFileSync(fullPath);
-    const contentType = target.endsWith('.html')
-      ? 'text/html; charset=utf-8'
-      : target.endsWith('.js')
-        ? 'application/javascript; charset=utf-8'
-        : 'text/markdown; charset=utf-8';
-    response.writeHead(200, {
-      'Content-Type': contentType,
-      'Cache-Control': 'no-store',
-      'X-Content-Type-Options': 'nosniff',
-      'Content-Security-Policy': "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"
-    });
-    response.end(body);
-    return true;
-  } catch (error) {
-    sendJson(response, 500, { error: '无法读取工作台页面。', detail: error.message });
-    return true;
-  }
-}
-
 async function handleApi(requestUrl, response) {
   if (requestUrl.pathname === '/api/weather/forecast') {
     const latitude = Number(requestUrl.searchParams.get('latitude'));
@@ -364,7 +329,7 @@ const server = http.createServer(async (request, response) => {
   const requestUrl = new URL(request.url, `http://${HOST}:${PORT}`);
   try {
     if (requestUrl.pathname.startsWith('/api/zotero/') || requestUrl.pathname.startsWith('/api/weather/')) return await handleApi(requestUrl, response);
-    if (serveWorkspace(response, requestUrl.pathname)) return;
+    if (requestUrl.pathname === '/' || requestUrl.pathname === '/health') return sendJson(response, 200, { status: 'ok', service: 'zotero-agent' });
     return sendText(response, 404, 'Not found');
   } catch (error) {
     return sendJson(response, error.statusCode || 502, { error: error.message || 'Zotero 桥接服务发生错误。' });
@@ -372,6 +337,6 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`AI工作台 Zotero bridge 已启动：http://${HOST}:${PORT}/creator-workspace.html`);
+  console.log(`AI工作台 Zotero Agent 已启动：http://${HOST}:${PORT}/health`);
   console.log(`仅代理只读请求到 ${ZOTERO_API}，且只监听 ${HOST}。`);
 });

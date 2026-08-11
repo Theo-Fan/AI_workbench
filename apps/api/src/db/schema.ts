@@ -1,7 +1,8 @@
-import { db } from './client.js';
+import type Database from 'better-sqlite3';
 
-export function ensureSchema() {
-  db.exec(`
+export function ensureSchema(database: Database.Database) {
+  database.transaction(() => {
+    database.exec(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
       version INTEGER PRIMARY KEY,
       applied_at TEXT NOT NULL
@@ -98,6 +99,13 @@ export function ensureSchema() {
       workspace_id TEXT NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE, document_key TEXT NOT NULL,
       data_json TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(workspace_id, document_key)
     );
-  `);
-  db.prepare(`INSERT OR IGNORE INTO schema_migrations(version, applied_at) VALUES (?, ?)`).run(1, new Date().toISOString());
+    `);
+    database.prepare(`INSERT OR IGNORE INTO schema_migrations(version, applied_at) VALUES (?, ?)`).run(1, new Date().toISOString());
+  })();
+}
+
+export function ensureDefaultWorkspace(database: Database.Database) {
+  const now = new Date().toISOString();
+  database.prepare(`INSERT OR IGNORE INTO workspaces(id, name, schema_version, created_at, updated_at) VALUES ('default', 'AI工作台', 4, ?, ?)`)
+    .run(now, now);
 }

@@ -1,0 +1,780 @@
+{
+  "version": "4.0",
+  "meta": {
+    "revision": 0,
+    "deviceId": "",
+    "savedAt": ""
+  },
+  "settings": {
+    "theme": "system",
+    "onboarded": false,
+    "weather": {
+      "city": "上海",
+      "lat": 31.2222,
+      "lon": 121.4581
+    },
+    "lastActiveDate": "",
+    "lastPlanWeek": ""
+  },
+  "trash": [],
+  "history": {
+    "daily": {}
+  },
+  "checkinHistory": {},
+  "weeklyTrend": [],
+  "tasks": {
+    "dashboard": [
+      {
+        "id": "d1",
+        "text": "写一篇 AI 工具测评文章",
+        "done": true
+      },
+      {
+        "id": "d2",
+        "text": "整理本周选题灵感库",
+        "done": true
+      },
+      {
+        "id": "d3",
+        "text": "复盘上周内容数据",
+        "done": true
+      },
+      {
+        "id": "d4",
+        "text": "录制漫剧分镜脚本",
+        "done": false
+      },
+      {
+        "id": "d5",
+        "text": "英语精读 30 分钟",
+        "done": false
+      },
+      {
+        "id": "d6",
+        "text": "阅读论文 1 篇",
+        "done": false
+      }
+    ],
+    "dailyPlan": {
+      "morning": [
+        {
+          "id": "m1",
+          "text": "AI 工具测评文章",
+          "done": true
+        },
+        {
+          "id": "m2",
+          "text": "整理选题灵感库",
+          "done": true
+        },
+        {
+          "id": "m3",
+          "text": "漫剧分镜脚本",
+          "done": false
+        }
+      ],
+      "afternoon": [
+        {
+          "id": "a1",
+          "text": "复盘上周内容数据",
+          "done": true
+        },
+        {
+          "id": "a2",
+          "text": "英语精读 30 分钟",
+          "done": false
+        },
+        {
+          "id": "a3",
+          "text": "阅读论文 1 篇",
+          "done": false
+        }
+      ],
+      "evening": [
+        {
+          "id": "e1",
+          "text": "整理明日选题",
+          "done": false
+        },
+        {
+          "id": "e2",
+          "text": "社群互动回复",
+          "done": false
+        },
+        {
+          "id": "e3",
+          "text": "睡前冥想 15 分钟",
+          "done": false
+        }
+      ]
+    },
+    "aiLearn": [
+      {
+        "id": "al1",
+        "text": "完成提示词进阶课程第 5 节",
+        "done": true
+      },
+      {
+        "id": "al2",
+        "text": "实践：用 GPT 搭建工作流",
+        "done": true
+      },
+      {
+        "id": "al3",
+        "text": "阅读 Agent 框架文档",
+        "done": false
+      },
+      {
+        "id": "al4",
+        "text": "整理学习笔记输出文章",
+        "done": false
+      }
+    ],
+    "english": [
+      {
+        "id": "en1",
+        "text": "精读外刊 1 篇（30min）",
+        "done": false
+      },
+      {
+        "id": "en2",
+        "text": "背单词 50 个",
+        "done": false
+      },
+      {
+        "id": "en3",
+        "text": "听力练习 20 分钟",
+        "done": false
+      },
+      {
+        "id": "en4",
+        "text": "口语模仿 3 段",
+        "done": false
+      }
+    ],
+    "comicStoryboard": [
+      {
+        "id": "cs1",
+        "text": "场景 9：深夜书房",
+        "done": false
+      },
+      {
+        "id": "cs2",
+        "text": "场景 10：灵感迸发",
+        "done": false
+      },
+      {
+        "id": "cs3",
+        "text": "场景 11：奋笔疾书",
+        "done": false
+      },
+      {
+        "id": "cs4",
+        "text": "场景 12：发布时刻",
+        "done": false
+      }
+    ],
+    "researchPapers": [
+      {
+        "id": "rp1",
+        "text": "Survey: LLM for Academic Writing",
+        "done": true
+      },
+      {
+        "id": "rp2",
+        "text": "Paper: Prompt Engineering in Research",
+        "done": true
+      },
+      {
+        "id": "rp3",
+        "text": "Paper: RAG for Literature Review",
+        "done": true
+      },
+      {
+        "id": "rp4",
+        "text": "Paper: Multi-Agent for Research",
+        "done": false
+      }
+    ],
+    "researchTodo": [
+      {
+        "id": "rt1",
+        "text": "整理本周重点阅读文献",
+        "done": false
+      },
+      {
+        "id": "rt2",
+        "text": "补充实验设计方案",
+        "done": false
+      }
+    ]
+  },
+  "checkins": {
+    "daily": [
+      {
+        "id": "c1",
+        "icon": "🏃",
+        "name": "晨跑 3km",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "icon": "📚",
+        "name": "AI 学习",
+        "done": true
+      },
+      {
+        "id": "c3",
+        "icon": "📝",
+        "name": "内容创作",
+        "done": true
+      },
+      {
+        "id": "c4",
+        "icon": "📖",
+        "name": "英语精读",
+        "done": false
+      },
+      {
+        "id": "c5",
+        "icon": "🧘",
+        "name": "睡前冥想",
+        "done": false
+      }
+    ]
+  },
+  "stats": {
+    "dashboard": {
+      "focusHours": "4h",
+      "output": "3"
+    },
+    "fitness": {
+      "goal": 7
+    }
+  },
+  "fitness": {
+    "types": [
+      {
+        "id": "ft-run",
+        "icon": "🏃",
+        "name": "跑步",
+        "unit": "km"
+      },
+      {
+        "id": "ft-stairs",
+        "icon": "🪜",
+        "name": "爬楼梯",
+        "unit": "层"
+      },
+      {
+        "id": "ft-swim",
+        "icon": "🏊",
+        "name": "游泳",
+        "unit": "m"
+      },
+      {
+        "id": "ft-strength",
+        "icon": "🏋️",
+        "name": "力量训练",
+        "unit": "组"
+      },
+      {
+        "id": "ft-cycle",
+        "icon": "🚴",
+        "name": "骑行",
+        "unit": "km"
+      },
+      {
+        "id": "ft-yoga",
+        "icon": "🧘",
+        "name": "瑜伽",
+        "unit": "分钟"
+      }
+    ],
+    "plan": [
+      {
+        "id": "fp1",
+        "day": "周一",
+        "typeId": "ft-run",
+        "target": "3km",
+        "done": true
+      },
+      {
+        "id": "fp2",
+        "day": "周二",
+        "typeId": "ft-strength",
+        "target": "4 组",
+        "done": true
+      },
+      {
+        "id": "fp3",
+        "day": "周三",
+        "typeId": "ft-yoga",
+        "target": "30 分钟",
+        "done": true
+      },
+      {
+        "id": "fp4",
+        "day": "周四",
+        "typeId": "ft-cycle",
+        "target": "10km",
+        "done": true
+      },
+      {
+        "id": "fp5",
+        "day": "周五",
+        "typeId": "ft-run",
+        "target": "3km",
+        "done": true
+      },
+      {
+        "id": "fp6",
+        "day": "周六",
+        "typeId": "ft-swim",
+        "target": "500m",
+        "done": false
+      },
+      {
+        "id": "fp7",
+        "day": "周日",
+        "typeId": "ft-stairs",
+        "target": "30 层",
+        "done": false
+      }
+    ],
+    "logs": [
+      {
+        "id": "fl1",
+        "date": "2026-07-27",
+        "typeId": "ft-run",
+        "duration": 25,
+        "calories": 210,
+        "note": "晨跑 3km"
+      },
+      {
+        "id": "fl2",
+        "date": "2026-07-28",
+        "typeId": "ft-strength",
+        "duration": 40,
+        "calories": 260,
+        "note": "胸背训练"
+      },
+      {
+        "id": "fl3",
+        "date": "2026-07-29",
+        "typeId": "ft-yoga",
+        "duration": 30,
+        "calories": 90,
+        "note": ""
+      },
+      {
+        "id": "fl4",
+        "date": "2026-07-30",
+        "typeId": "ft-cycle",
+        "duration": 45,
+        "calories": 380,
+        "note": "通勤骑行"
+      },
+      {
+        "id": "fl5",
+        "date": "2026-07-31",
+        "typeId": "ft-run",
+        "duration": 24,
+        "calories": 205,
+        "note": "晨跑 3km"
+      }
+    ]
+  },
+  "inspirations": {
+    "ideas": [
+      {
+        "id": "i1",
+        "title": "AI 辅助科研工作流全攻略",
+        "desc": "从文献检索到论文写作，一套完整流程"
+      },
+      {
+        "id": "i2",
+        "title": "用 AI 漫剧讲好一个故事",
+        "desc": "分镜设计 + 提示词工程实战"
+      },
+      {
+        "id": "i3",
+        "title": "英语学习 100 天打卡总结",
+        "desc": "方法论 + 工具 + 踩坑经验"
+      },
+      {
+        "id": "i4",
+        "title": "健身打卡数据可视化",
+        "desc": "用图表展示你的运动轨迹"
+      },
+      {
+        "id": "i5",
+        "title": "每日计划工具横评",
+        "desc": "5 款主流工具深度对比"
+      },
+      {
+        "id": "i6",
+        "title": "创作者的一天 vlog",
+        "desc": "记录高效创作的完整一天"
+      }
+    ],
+    "trends": [
+      {
+        "id": "t1",
+        "title": "🔥 AI Agent 实战",
+        "desc": "自动化工作流是当前最大热点"
+      },
+      {
+        "id": "t2",
+        "title": "🔥 AI 漫剧/短剧",
+        "desc": "短内容消费持续增长"
+      },
+      {
+        "id": "t3",
+        "title": "📈 终身学习方法论",
+        "desc": "知识焦虑驱动学习类内容需求"
+      },
+      {
+        "id": "t4",
+        "title": "📈 健康生活方式",
+        "desc": "运动 + 冥想类内容受众扩大"
+      }
+    ],
+    "sources": [
+      {
+        "id": "s1",
+        "title": "📌 社群热议话题",
+        "desc": "读者提问和讨论中挖掘痛点"
+      },
+      {
+        "id": "s2",
+        "title": "📌 热搜榜单",
+        "desc": "结合热点做时效性内容"
+      },
+      {
+        "id": "s3",
+        "title": "📌 个人实践复盘",
+        "desc": "把踩过的坑变成内容"
+      },
+      {
+        "id": "s4",
+        "title": "📌 跨领域迁移",
+        "desc": "把 A 领域方法用到 B 领域"
+      }
+    ]
+  },
+  "review": {
+    "week": 31,
+    "stats": {
+      "published": 5,
+      "reads": "2.3w",
+      "interactions": 186
+    },
+    "interactionRate": 43,
+    "topContent": [
+      {
+        "id": "tc1",
+        "rank": "🥇",
+        "title": "AI 工具测评：5 款神器横评",
+        "desc": "阅读 8.2k · 互动 72 · 收藏 340"
+      },
+      {
+        "id": "tc2",
+        "rank": "🥈",
+        "title": "创作者时间管理术",
+        "desc": "阅读 5.6k · 互动 45 · 收藏 210"
+      },
+      {
+        "id": "tc3",
+        "rank": "🥉",
+        "title": "英语学习 30 天心得",
+        "desc": "阅读 4.1k · 互动 38 · 收藏 180"
+      }
+    ],
+    "actions": {
+      "continue": "AI 工具类选题互动最高，持续深耕",
+      "start": "增加漫剧类视觉内容，抓住短内容红利",
+      "stop": "纯文字长文阅读完成率低，改为图文"
+    }
+  },
+  "comic": {
+    "current": {
+      "title": "《AI 创作者的日常》第 3 集",
+      "storyboards": "8/12"
+    },
+    "published": [
+      {
+        "id": "p1",
+        "title": "第 1 集 · 灵感来了",
+        "desc": "播放 1.2w · 点赞 230"
+      },
+      {
+        "id": "p2",
+        "title": "第 2 集 · 卡壳时刻",
+        "desc": "播放 8.6k · 点赞 180"
+      }
+    ]
+  },
+  "learning": {
+    "ai": {
+      "resources": [
+        {
+          "id": "lr1",
+          "title": "📚 提示词工程指南",
+          "desc": "系统化学习提示词设计方法论"
+        },
+        {
+          "id": "lr2",
+          "title": "📚 LangChain 实战教程",
+          "desc": "从零搭建 AI 应用开发能力"
+        },
+        {
+          "id": "lr3",
+          "title": "📚 AI 绘画原理与实践",
+          "desc": "理解扩散模型，掌握出图技巧"
+        }
+      ]
+    },
+    "english": {
+      "challenge": {
+        "current": 28,
+        "total": 100,
+        "streak": 12,
+        "lastCompletedDate": ""
+      }
+    },
+    "research": {
+      "current": {
+        "title": "AI 辅助科研写作效率研究",
+        "desc": "探索 LLM 对论文写作流程的影响与优化"
+      },
+      "milestones": [
+        {
+          "id": "ms1",
+          "icon": "✅",
+          "title": "文献调研",
+          "desc": "已完成 · 收集 32 篇相关文献",
+          "status": "done"
+        },
+        {
+          "id": "ms2",
+          "icon": "🔵",
+          "title": "实验设计",
+          "desc": "进行中 · 预计 2 周内完成",
+          "status": "active"
+        },
+        {
+          "id": "ms3",
+          "icon": "⚪",
+          "title": "数据收集",
+          "desc": "待开始",
+          "status": "pending"
+        },
+        {
+          "id": "ms4",
+          "icon": "⚪",
+          "title": "论文撰写",
+          "desc": "待开始",
+          "status": "pending"
+        }
+      ],
+      "readingLogs": [
+        {
+          "id": "rl1",
+          "date": "2026-07-25",
+          "title": "Attention Is All You Need",
+          "type": "会议论文"
+        },
+        {
+          "id": "rl2",
+          "date": "2026-07-27",
+          "title": "BERT: Pre-training of Deep Bidirectional Transformers",
+          "type": "会议论文"
+        },
+        {
+          "id": "rl3",
+          "date": "2026-07-28",
+          "title": "GPT-3: Language Models are Few-Shot Learners",
+          "type": "会议论文"
+        },
+        {
+          "id": "rl4",
+          "date": "2026-07-30",
+          "title": "LLaMA: Open and Efficient Foundation Language Models",
+          "type": "预印本"
+        },
+        {
+          "id": "rl5",
+          "date": "2026-08-01",
+          "title": "A Survey of Large Language Models",
+          "type": "期刊论文"
+        },
+        {
+          "id": "rl6",
+          "date": "2026-08-02",
+          "title": "Chain-of-Thought Prompting",
+          "type": "会议论文"
+        },
+        {
+          "id": "rl7",
+          "date": "2026-08-03",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks",
+          "type": "会议论文"
+        }
+      ],
+      "inspirations": {
+        "items": [
+          {
+            "id": "ri1",
+            "title": "将阅读轨迹作为 RAG 的个性化检索信号",
+            "content": "不同研究者的阅读序列能够反映其问题空间。可尝试将近期阅读论文的主题分布编码为查询侧先验，并比较个性化重排对科研问答质量的影响。",
+            "category": "研究方法",
+            "tags": [
+              "RAG",
+              "个性化",
+              "阅读行为"
+            ],
+            "status": "待验证",
+            "sourceType": "论文阅读",
+            "sourceReference": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks",
+            "project": "AI 辅助科研写作效率研究",
+            "favorite": true,
+            "archived": false,
+            "createdAt": "2026-08-05T10:40:00",
+            "updatedAt": "2026-08-05T10:40:00",
+            "occurredAt": "2026-08-05"
+          },
+          {
+            "id": "ri2",
+            "title": "用失败样本驱动论文写作辅助的自我修正",
+            "content": "把导师批注、审稿意见和历史改稿版本抽取为失败案例，构建面向论证完整性与证据匹配度的修正提示。优先验证其对方法章节改写的收益。",
+            "category": "研究设计",
+            "tags": [
+              "LLM",
+              "论文写作",
+              "自我修正"
+            ],
+            "status": "进行中",
+            "sourceType": "会议讨论",
+            "sourceReference": "组会记录 · 8 月第 1 周",
+            "project": "AI 辅助科研写作效率研究",
+            "favorite": false,
+            "archived": false,
+            "createdAt": "2026-08-04T16:20:00",
+            "updatedAt": "2026-08-05T09:15:00",
+            "occurredAt": "2026-08-04"
+          },
+          {
+            "id": "ri3",
+            "title": "构建面向科研任务的多维引用可信度评分",
+            "content": "引用是否可信不应只看相关性，还可结合出处类型、证据跨度、时效性和与研究问题的直接关联。先在文献综述摘要任务上设计小规模评测集。",
+            "category": "评估与基准",
+            "tags": [
+              "评测",
+              "引用",
+              "可信度"
+            ],
+            "status": "待整理",
+            "sourceType": "实验观察",
+            "sourceReference": "文献综述写作试验",
+            "project": "AI 辅助科研写作效率研究",
+            "favorite": false,
+            "archived": false,
+            "createdAt": "2026-08-02T14:10:00",
+            "updatedAt": "2026-08-02T14:10:00",
+            "occurredAt": "2026-08-02"
+          },
+          {
+            "id": "ri4",
+            "title": "将研究问题拆解为可追踪的证据链",
+            "content": "每个研究问题拆成主张、所需证据、候选数据和反例，使后续文献阅读与实验设计可以直接回链到问题本身。",
+            "category": "知识组织",
+            "tags": [
+              "研究问题",
+              "证据链",
+              "知识管理"
+            ],
+            "status": "已采用",
+            "sourceType": "个人复盘",
+            "sourceReference": "科研工作流复盘",
+            "project": "科研工作台",
+            "favorite": true,
+            "archived": true,
+            "createdAt": "2026-07-28T11:30:00",
+            "updatedAt": "2026-08-01T18:00:00",
+            "occurredAt": "2026-07-28"
+          }
+        ]
+      }
+    }
+  },
+  "weeklyReview": {
+    "week": 31,
+    "good": "连续 5 天更新内容，选题质量提升明显",
+    "improve": "科研文献阅读偏少，下周需增加投入",
+    "focus": "AI 漫剧系列上线 + 英语打卡满 30 天"
+  },
+  "news": {
+    "tech": [
+      {
+        "id": "n1",
+        "title": "🔥 GPT-5 发布引发行业讨论",
+        "desc": "多模态能力大幅提升，推理成本下降 40%"
+      },
+      {
+        "id": "n2",
+        "title": "🔥 国产大模型百花齐放",
+        "desc": "多家厂商发布开源模型，性能逼近 GPT-4"
+      },
+      {
+        "id": "n3",
+        "title": "📈 AI Agent 商业化加速",
+        "desc": "多家创业公司获得大额融资"
+      }
+    ],
+    "creation": [
+      {
+        "id": "cn1",
+        "title": "📰 短剧市场持续增长",
+        "desc": "AI 生成内容占比提升，创作门槛降低"
+      },
+      {
+        "id": "cn2",
+        "title": "📰 知识付费回暖",
+        "desc": "AI 学习类课程需求旺盛"
+      },
+      {
+        "id": "cn3",
+        "title": "📰 内容平台算法更新",
+        "desc": "推荐机制更注重完播率和互动"
+      }
+    ],
+    "hotlist": [
+      {
+        "id": "h1",
+        "title": "1. AI 编程助手普及",
+        "desc": "开发者使用率突破 60%"
+      },
+      {
+        "id": "h2",
+        "title": "2. 终身学习理念走红",
+        "desc": "\"学习如何学习\"成热门话题"
+      },
+      {
+        "id": "h3",
+        "title": "3. 数字健康关注升温",
+        "desc": "屏幕时间管理工具需求增长"
+      },
+      {
+        "id": "h4",
+        "title": "4. AI 绘画版权争议",
+        "desc": "行业规范逐步建立中"
+      },
+      {
+        "id": "h5",
+        "title": "5. 远程办公常态化",
+        "desc": "混合办公模式成为主流"
+      }
+    ]
+  }
+}

@@ -1,50 +1,28 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
+import { buildApp } from './app.js';
 import { config } from './config.js';
-import { closeDatabase, db } from './db/client.js';
-import { ensureSchema } from './db/schema.js';
-import { healthRoutes } from './modules/health/health.route.js';
-import { taskRoutes } from './modules/tasks/task.route.js';
-import { workspaceRoutes } from './modules/workspaces/workspace.route.js';
-import { checkinRoutes } from './modules/checkins/checkin.route.js';
-import { fitnessRoutes } from './modules/fitness/fitness.route.js';
-import { dashboardRoutes } from './modules/dashboard/dashboard.route.js';
-import { researchRoutes } from './modules/research/research.route.js';
-import { learningRoutes } from './modules/learning/learning.route.js';
-import { contentRoutes } from './modules/content/content.route.js';
-import { dataProtectionRoutes } from './modules/data-protection/data.route.js';
-import { legacyWorkspaceRoutes } from './modules/legacy/legacy.route.js';
-import { weatherRoutes } from './modules/weather/weather.route.js';
-import { ccfddlRoutes } from './modules/research/ccfddl.route.js';
 
-ensureSchema();
-const now = new Date().toISOString();
-db.prepare(`INSERT OR IGNORE INTO workspaces(id, name, schema_version, created_at, updated_at) VALUES ('default', 'AI工作台', 4, ?, ?)`).run(now, now);
+const app = await buildApp();
+let shuttingDown = false;
 
-const app = Fastify({ logger: true });
-await app.register(cors, { origin: config.corsOrigin, credentials: true });
-app.setErrorHandler((error, request, reply) => {
-  const normalized = error instanceof Error ? error : new Error(String(error));
-  const isValidationError = normalized.name === 'ZodError';
-  const statusCode = isValidationError ? 400 : Number((error as { statusCode?: number }).statusCode) || 500;
-  request.log.error(normalized);
-  reply.code(statusCode).send({ error: { code: isValidationError ? 'VALIDATION_ERROR' : (error as { code?: string }).code || 'INTERNAL_ERROR', message: statusCode >= 500 ? '服务器内部错误' : normalized.message } });
-});
-await app.register(healthRoutes);
-await app.register(workspaceRoutes);
-await app.register(taskRoutes);
-await app.register(checkinRoutes);
-await app.register(fitnessRoutes);
-await app.register(dashboardRoutes);
-await app.register(researchRoutes);
-await app.register(learningRoutes);
-await app.register(contentRoutes);
-await app.register(dataProtectionRoutes);
-await app.register(legacyWorkspaceRoutes);
-await app.register(weatherRoutes);
-await app.register(ccfddlRoutes);
+const shutdown = async (signal: string) => {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  app.log.info({ signal }, 'Shutting down API');
+  try {
+    await app.close();
+  } catch (error) {
+    app.log.error({ err: error }, 'Unable to close API cleanly');
+    process.exitCode = 1;
+  }
+};
 
-const shutdown = async () => { await app.close(); closeDatabase(); };
-process.once('SIGINT', shutdown);
-process.once('SIGTERM', shutdown);
-await app.listen({ host: config.host, port: config.port });
+process.once('SIGINT', () => { void shutdown('SIGINT'); });
+process.once('SIGTERM', () => { void shutdown('SIGTERM'); });
+
+try {
+  await app.listen({ host: config.host, port: config.port });
+} catch (error) {
+  app.log.error({ err: error }, 'Unable to start API');
+  await shutdown('startup-failure');
+  process.exitCode = 1;
+}

@@ -6,10 +6,11 @@ services:
       API_PORT: 3001
       WORKSPACE_DB_PATH: /data/workspace.db
       WORKSPACE_BACKUP_DIR: /data/backups
+      WEB_ORIGIN: http://127.0.0.1:8080,http://localhost:8080
       LEGACY_JSON_PATH: /data/workspace.json
     volumes: ["./data:/data"]
     entrypoint: ["/bin/sh", "-c"]
-    command: ["node apps/api/dist/db/migrate.js && if [ ! -f /data/.workspace-initialized ]; then if [ -f /data/workspace.json ]; then node apps/api/dist/db/import-legacy.js; fi; touch /data/.workspace-initialized; fi"]
+    command: ["node apps/api/dist/db/migrate.js && if [ ! -f /data/.workspace-initialized ] && [ -f /data/workspace.json ]; then node apps/api/dist/db/import-legacy.js; fi && node apps/api/dist/db/seed-default.js && touch /data/.workspace-initialized"]
   api:
     build: { context: ., dockerfile: Dockerfile.api }
     depends_on:
@@ -19,9 +20,13 @@ services:
       API_PORT: 3001
       WORKSPACE_DB_PATH: /data/workspace.db
       WORKSPACE_BACKUP_DIR: /data/backups
+      WEB_ORIGIN: http://127.0.0.1:8080,http://localhost:8080
+      LOG_LEVEL: info
+      API_BODY_LIMIT_BYTES: 26214400
+      API_REQUEST_TIMEOUT_MS: 30000
     volumes: ["./data:/data"]
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 3

@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
-import { db } from '../../db/client.js';
 
 export async function workspaceRoutes(app: FastifyInstance) {
+  const db = app.db;
   app.get('/api/v1/workspaces/:workspaceId', async (request) => {
     const id = String((request.params as { workspaceId?: string }).workspaceId || '');
     const row = db.prepare('SELECT id, name, schema_version, created_at, updated_at FROM workspaces WHERE id = ?').get(id) as Record<string, unknown> | undefined;

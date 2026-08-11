@@ -1,17 +1,21 @@
-# Application data is local-only and can contain personal records.
-# Keep the directory marker, but never commit workspace snapshots, databases,
-# WAL files, exports, or backup archives.
-data/*
+# Private runtime data. Everything under data/ is denied by default; only the
+# empty directory marker is allowed. The public, sanitised starter document is
+# stored separately at templates/workspace.default.json.
+data/**
 !data/.gitkeep
 workspace.json
 workspace.db
 workspace.db-*
+workspace*.db-wal
+workspace*.db-shm
 *.db
 *.db-*
 *.sqlite
 *.sqlite3
 *.sqlite-*
 backups/
+*.backup.json
+workspace-*.json
 
 # Environment files and local secrets. Keep .env.example tracked as a template.
 .env
@@ -57,6 +61,7 @@ coverage/
 playwright-report/
 test-results/
 *.lcov
+output/
 
 # Python virtual environments, package artifacts, and caches.
 .venv/

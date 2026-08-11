@@ -1,20 +1,17 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
 import { App } from './App.js';
 import './styles.css';
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 30_000, retry: 1 } }
+// This is the production client/server boundary. The compatibility HTML keeps
+// its historical same-origin/local fallback behaviour, while the React entry
+// always requires a reachable API and never silently changes persistence mode.
+window.__AI_WORKSPACE_CLIENT_CONFIG__ = Object.freeze({
+  apiBaseUrl: (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, ''),
+  requireApi: true,
 });
 
+// React is the only application entry. StrictMode is intentionally omitted:
+// the workspace runtime installs document-level listeners exactly once.
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
-  </StrictMode>
+  <App />
 );

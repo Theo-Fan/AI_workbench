@@ -11,15 +11,15 @@
     "pretypecheck": "npm run build -w @ai-workspace/contracts",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:import": "tsx src/db/import-legacy.ts",
+    "db:seed": "tsx src/db/seed-default.ts",
     "db:backup": "tsx src/db/backup.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@ai-workspace/contracts": "*",
+    "@fastify/cors": "^10.0.2",
     "better-sqlite3": "^11.7.0",
     "fastify": "^5.2.1",
-    "@fastify/cors": "^10.0.2",
-    "drizzle-orm": "^0.38.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {

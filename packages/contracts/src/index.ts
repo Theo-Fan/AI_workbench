@@ -52,11 +52,11 @@ export const checkinSchema = z.object({
   id: z.string().min(1), workspaceId: z.string().min(1), icon: z.string(), name: z.string().min(1), done: z.boolean(), updatedAt: z.string().datetime()
 });
 export const toggleCheckinSchema = z.object({ done: z.boolean() });
-export const legacyWorkspaceSnapshotSchema = z.object({
+export const workspaceDocumentSchema = z.object({
   data: z.record(z.string(), z.unknown()),
   version: z.number().int().nonnegative()
 });
-export const updateLegacyWorkspaceSnapshotSchema = z.object({
+export const updateWorkspaceDocumentSchema = z.object({
   data: z.record(z.string(), z.unknown()),
   expectedVersion: z.number().int().nonnegative()
 });
@@ -69,8 +69,8 @@ export type CreateTaskInput = z.infer<typeof createTaskSchema>;
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
 export type Workspace = z.infer<typeof workspaceSchema>;
 export type Checkin = z.infer<typeof checkinSchema>;
-export type LegacyWorkspaceSnapshot = z.infer<typeof legacyWorkspaceSnapshotSchema>;
-export type UpdateLegacyWorkspaceSnapshotInput = z.infer<typeof updateLegacyWorkspaceSnapshotSchema>;
+export type WorkspaceDocument = z.infer<typeof workspaceDocumentSchema>;
+export type UpdateWorkspaceDocumentInput = z.infer<typeof updateWorkspaceDocumentSchema>;
 export type FitnessType = z.infer<typeof fitnessTypeSchema>;
 export type FitnessPlan = z.infer<typeof fitnessPlanSchema>;
 export type WorkoutLog = z.infer<typeof workoutLogSchema>;

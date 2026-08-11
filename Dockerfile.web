@@ -8,7 +8,6 @@ COPY packages/contracts/package.json packages/contracts/package.json
 RUN npm ci
 COPY apps/web apps/web
 COPY packages/contracts packages/contracts
-COPY creator-workspace.html creator-workspace.html
 RUN npm run build -w @ai-workspace/contracts && npm run build:web
 
 FROM nginx:1.27-alpine

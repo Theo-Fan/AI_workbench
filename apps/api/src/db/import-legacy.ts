@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { db, closeDatabase } from './client.js';
+import { closeDatabase, openDatabase } from './client.js';
 import { ensureSchema } from './schema.js';
 
 type LegacyTask = {
@@ -17,6 +17,7 @@ type LegacyTask = {
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 const sourcePath = path.resolve(projectRoot, process.env.LEGACY_JSON_PATH || 'data/workspace.json');
+const db = openDatabase();
 const raw = JSON.parse(fs.readFileSync(sourcePath, 'utf8')) as Record<string, any>;
 const now = new Date().toISOString();
 const taskGroups: Array<[string, string, string | null]> = [
@@ -30,7 +31,7 @@ const taskGroups: Array<[string, string, string | null]> = [
   ['dailyPlan.evening', 'dailyPlan', 'evening']
 ];
 
-ensureSchema();
+ensureSchema(db);
 db.prepare(`INSERT OR IGNORE INTO workspaces(id, name, schema_version, created_at, updated_at) VALUES ('default', 'AI工作台', 4, ?, ?)`).run(now, now);
 
 const insertTask = db.prepare(`
@@ -51,7 +52,7 @@ const insertResource = db.prepare(`INSERT INTO learning_resources(id, workspace_
 const upsertEnglishChallenge = db.prepare(`INSERT INTO english_challenges(workspace_id, current, total, streak, last_completed_date) VALUES ('default', ?, ?, ?, ?) ON CONFLICT(workspace_id) DO UPDATE SET current=excluded.current, total=excluded.total, streak=excluded.streak, last_completed_date=excluded.last_completed_date`);
 const insertContentItem = db.prepare(`INSERT INTO content_items(id, workspace_id, kind, group_name, title, description, metadata_json, created_at, updated_at) VALUES (?, 'default', ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET kind=excluded.kind, group_name=excluded.group_name, title=excluded.title, description=excluded.description, metadata_json=excluded.metadata_json, updated_at=excluded.updated_at, deleted_at=NULL`);
 const upsertDocument = db.prepare(`INSERT INTO workspace_documents(workspace_id, document_key, data_json, updated_at) VALUES ('default', ?, ?, ?) ON CONFLICT(workspace_id, document_key) DO UPDATE SET data_json=excluded.data_json, updated_at=excluded.updated_at`);
-const insertLegacySnapshot = db.prepare(`INSERT OR IGNORE INTO workspace_documents(workspace_id, document_key, data_json, updated_at) VALUES ('default', 'legacy_snapshot', ?, ?)`);
+const insertWorkspaceDocument = db.prepare(`INSERT OR IGNORE INTO workspace_documents(workspace_id, document_key, data_json, updated_at) VALUES ('default', 'workspace_document', ?, ?)`);
 
 const importTransaction = db.transaction(() => {
   let imported = 0;
@@ -105,9 +106,9 @@ const importTransaction = db.transaction(() => {
   upsertDocument.run('review', JSON.stringify(raw.review || {}), now);
   upsertDocument.run('comic_current', JSON.stringify(raw.comic?.current || {}), now);
   upsertDocument.run('weekly_review', JSON.stringify(raw.weeklyReview || {}), now);
-  insertLegacySnapshot.run(JSON.stringify({ data: raw, version: 0 }), now);
+  insertWorkspaceDocument.run(JSON.stringify({ data: raw, version: 0 }), now);
   return imported;
 });
 
 console.log(`Imported ${importTransaction()} tasks from ${sourcePath}`);
-closeDatabase();
+closeDatabase(db);

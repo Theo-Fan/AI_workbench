@@ -1,7 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { createTaskSchema, taskScopeSchema, updateTaskSchema } from '@ai-workspace/contracts';
-import { db } from '../../db/client.js';
 
 const workspaceParam = (params: unknown) => {
   const value = (params as { workspaceId?: unknown })?.workspaceId;
@@ -25,6 +24,7 @@ const mapTask = (row: Record<string, unknown>) => ({
 });
 
 export async function taskRoutes(app: FastifyInstance) {
+  const db = app.db;
   app.get('/api/v1/workspaces/:workspaceId/tasks', async (request) => {
     const workspaceId = workspaceParam(request.params);
     const query = request.query as { scope?: string; includeDeleted?: string };

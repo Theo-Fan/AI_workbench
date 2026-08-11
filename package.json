@@ -9,6 +9,7 @@
   "scripts": {
     "setup": "node scripts/setup.mjs",
     "dev": "node scripts/dev.mjs",
+    "dev:node22": "npm exec --yes node@22 scripts/dev.mjs",
     "dev:api": "npm --workspace apps/api run dev",
     "dev:web": "npm --workspace apps/web run dev",
     "dev:zotero-agent": "npm --workspace apps/zotero-agent run dev",
@@ -17,12 +18,15 @@
     "start:api": "npm --workspace apps/api run start",
     "db:migrate": "npm --workspace apps/api run db:migrate",
     "db:import": "npm --workspace apps/api run db:import",
+    "db:seed": "npm --workspace apps/api run db:seed",
     "db:backup": "npm --workspace apps/api run db:backup",
+    "pretest": "npm run build:api",
     "test": "node --test tests/*.test.mjs",
+    "test:api": "node --test tests/api-app.test.mjs",
     "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "allowScripts": {
     "better-sqlite3@11.10.0": true,

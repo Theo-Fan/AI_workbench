@@ -2,11 +2,17 @@
 
 一个面向个人创作者的本地优先工作台，用来统一管理日常计划、健身、学习、科研、内容创作和阶段复盘。
 
-项目采用 Fastify + SQLite 的前后端分离架构，同时保留旧版完整用户体验。旧版的页面、侧栏、主题、快捷键、命令面板、科研编辑器、回收站、导入导出、天气和 Zotero 阅读器仍然是唯一的界面基准。
+项目采用 React + Fastify + SQLite 的严格前后端分离架构。React 前端只通过 HTTP API 读写工作区，Fastify 是 SQLite 和备份目录的唯一访问者。前端源码、构建和运行不依赖根目录的任何旧版 HTML 文件。
 
 > 推荐新用户使用 Docker：安装 Docker Desktop 后，执行两条命令即可运行。
 
 ## 快速启动
+
+### macOS 一键启动
+
+在 Finder 中双击项目根目录的 `start-workspace.command`。脚本会检查依赖、使用 Node.js 22 启动前端和 API，并在就绪后自动打开浏览器。
+
+需要关闭时，双击同目录的 `stop-workspace.command`。关闭脚本只处理当前项目中监听 `3001` 和 `5173` 端口的进程，不会关闭其他 Node.js 服务。
 
 ### Docker（推荐）
 
@@ -42,7 +48,7 @@ Compose 会自动创建 data 目录和 SQLite 表；如果首次启动时存在 
 
 环境要求：
 
-- Node.js 20 或更高版本，推荐 Node.js 22 LTS；
+- Node.js 22.x（项目固定版本，better-sqlite3 需要匹配 Node ABI）；
 - npm 10 或更高版本；
 - Chrome、Edge 或其他现代浏览器。
 
@@ -62,6 +68,8 @@ Compose 会自动创建 data 目录和 SQLite 表；如果首次启动时存在 
     http://127.0.0.1:5173
 
 npm run setup 会检查 Node 版本、创建或升级 SQLite schema、检测并导入旧版 JSON。npm run dev 会同时启动 API 和前端，按 Ctrl+C 可停止两个服务。
+
+如果当前终端不是 Node 22，可以直接运行 `npm run dev:node22`；该命令会使用 Node 22 启动开发服务，避免 `better-sqlite3` 原生 ABI 不匹配导致数据库无法连接。
 
 ### 分开启动
 
@@ -90,8 +98,10 @@ API 地址为 http://127.0.0.1:3001，健康检查为 http://127.0.0.1:3001/heal
 
 从 GitHub 克隆干净仓库时：
 
-1. 没有 data/workspace.json：第一次打开工作台会自动创建示例数据。
+1. 没有 data/workspace.json：`npm run setup` 或 Docker 会在空数据库中安装 `templates/workspace.default.json` 脱敏示例模板。
 2. 如果私下复制了旧版 JSON 到 data：运行 npm run setup 或 Docker 首次启动会自动导入。
+
+`data/` 中的所有运行数据默认禁止提交；唯一可提交的默认数据是独立的脱敏模板 [templates/workspace.default.json](templates/workspace.default.json)。`npm run db:seed` 仅在数据库没有工作区文档时写入模板，不会覆盖个人数据。
 
 导入脚本是幂等的，可以重复执行：
 
@@ -107,11 +117,7 @@ API 地址为 http://127.0.0.1:3001，健康检查为 http://127.0.0.1:3001/heal
 | --- | --- |
 | http://127.0.0.1:5173 | 本地 Node 开发模式 |
 | http://127.0.0.1:8080 | Docker 模式 |
-| /workspace.html#dashboard | 工作台首页（推荐，地址简洁） |
-| /legacy/creator-workspace.html#dashboard | 旧版兼容别名，保留历史书签 |
-| http://127.0.0.1:8788/creator-workspace.html | 旧版直连回退入口 |
-
-旧版工作区包括：首页、每日计划、健身打卡、AI 学习、英语学习、科研待办、文献、灵感、实验、论文、选题灵感、内容复盘、AI 漫剧、新闻热点和数据管理。
+| / | React 工作台正式入口（推荐） |
 
 ### 快捷键
 
@@ -124,21 +130,9 @@ API 地址为 http://127.0.0.1:3001，健康检查为 http://127.0.0.1:3001/heal
 
 ## SQLite 数据、备份与恢复
 
-## 两种数据存储模式
+## 数据存储模式
 
-工作台支持两种可切换的持久化方式，界面和功能完全相同：
-
-1. **SQLite（默认、推荐）**：由 Fastify API 统一读写 `data/workspace.db`，支持事务、乐观锁和服务端备份，适合日常使用以及多浏览器访问。
-2. **指定文件夹**：通过 Chrome/Edge 的文件系统权限读写所选目录中的 `workspace.json`，适合 iCloud、Dropbox 或 U 盘的手动/跨设备同步。SQLite 文件不要放进同步盘。
-
-在“数据管理 → 数据同步”中切换：
-
-- 如果页面显示“本地回退”，点击“连接 SQLite”即可重新探测并连接 API；连接已有数据库前会弹出覆盖确认。
-- SQLite → 文件夹：选择目录后，如果目录为空，当前 SQLite 数据会自动写入 `workspace.json`；如果已有文件，界面会先确认，再决定是否加载它覆盖当前页面。
-- 文件夹 → SQLite：点击“切换到 SQLite”，确认后以当前 `workspace.json` 覆盖数据库中的工作区，并使用版本号检测并发修改。
-- 两种模式不会同时写入；切换完成后只有当前模式会继续保存。取消确认不会改变原来的数据源。
-
-文件夹模式需要浏览器支持 File System Access API，并且每次授权只授予你主动选择的目录。若浏览器不支持，页面会自动使用 SQLite（兼容层）或 localStorage（旧版直连回退）。
+工作台只使用 SQLite API。API 不可用时页面会明确报错，不会切换到文件夹、IndexedDB 或 `localStorage` 保存工作区。跨设备迁移通过 JSON 导出/导入或 SQLite 备份完成。
 
 ### 数据文件
 
@@ -198,25 +192,48 @@ Docker 模式下备份同样位于项目目录的 data/backups。
     浏览器
       │
       ├─ Vite/Nginx 前端
-      │    └─ 原样提供 creator-workspace.html
+      │    └─ React + TypeScript 静态资产
       ├─ Fastify API
-      │    ├─ 工作区快照 API（乐观锁）
+      │    ├─ 工作区文档 API（乐观锁）
       │    ├─ 任务、健身、科研、学习、内容 API
       │    ├─ 天气代理
       │    └─ 导出与 SQLite 备份
       ├─ SQLite
       │    ├─ 规范化业务表
-      │    └─ workspace_documents.legacy_snapshot
+      │    └─ workspace_documents.workspace_document
       └─ Zotero Agent
            └─ 本机只读访问 Zotero Local API
 
-技术栈：Node.js 20+、Fastify 5、TypeScript、SQLite、better-sqlite3、Zod、Vite、Nginx、Docker Compose。
+技术栈：Node.js 22.x、Fastify 5、TypeScript、SQLite、better-sqlite3、Zod、Vite、Nginx、Docker Compose。
+
+### 项目目录
+
+```text
+AI工作台/
+├── apps/
+│   ├── web/                 # React/Vite 前端
+│   │   ├── public/          # 构建时原样复制的静态资源
+│   │   └── src/workspace/    # 工作台界面和独立运行时
+│   ├── api/                 # Fastify API、SQLite 和备份
+│   └── zotero-agent/        # 可选的 Zotero 本机只读代理
+├── packages/contracts/    # 共享 Zod 契约和 TypeScript 类型
+├── templates/             # 可提交的脱敏默认数据模板
+├── data/                  # 本机数据库与备份（不提交）
+├── infra/                 # Nginx 生产反向代理
+├── scripts/               # 开发和初始化脚本
+├── tests/                 # 契约、API 和架构回归测试
+├── Dockerfile.api
+├── Dockerfile.web
+└── docker-compose.yml
+```
+
+根目录不再保留旧版 HTML、重复的页面实现或未被使用的空包。正式界面唯一入口是 `apps/web/src/main.tsx`。
 
 ### 为什么使用完整快照？
 
-旧版包含科研阶段编辑器、图谱状态、回收站、历史记录和大量交互。直接重写成另一套页面会造成界面或功能差异，因此采用兼容层加 SQLite 快照：
+工作区包含科研阶段编辑器、图谱状态、回收站和历史记录等复合状态，因此当前以有版本号的工作区文档作为权威数据：
 
-1. 用户看到的页面和旧版一致；
+1. React 前端独立维护所有页面与交互；
 2. API 负责统一持久化、备份和版本冲突；
 3. 规范化领域表继续为后续服务提供数据；
 4. 后续拆分必须通过逐项等价回归。
@@ -248,8 +265,13 @@ Agent 只监听 127.0.0.1:8788，只读代理 Zotero Local API，不读取或修
 | API_PORT | 3001 | API 端口 |
 | WORKSPACE_DB_PATH | ./data/workspace.db | SQLite 路径 |
 | WORKSPACE_BACKUP_DIR | ./data/backups | 备份目录 |
-| WEB_ORIGIN | http://127.0.0.1:5173 | CORS 前端地址 |
+| WEB_ORIGIN | http://127.0.0.1:5173 | CORS 前端地址；多个来源用逗号分隔 |
 | LEGACY_JSON_PATH | ./data/workspace.json | 旧 JSON 导入源 |
+| API_BODY_LIMIT_BYTES | 26214400 | API 请求体上限（默认 25 MiB） |
+| API_REQUEST_TIMEOUT_MS | 30000 | API 请求和连接超时（毫秒） |
+| VITE_API_BASE_URL | 空 | 单独部署前端时的 API 基地址；默认沿用同源 `/api` |
+
+React 前端可通过 `VITE_API_BASE_URL` 与 Fastify API 分别部署到不同域名。
 
 ## 故障排查
 

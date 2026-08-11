@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import { toggleCheckinSchema } from '@ai-workspace/contracts';
-import { db } from '../../db/client.js';
 
 export async function checkinRoutes(app: FastifyInstance) {
+  const db = app.db;
   app.get('/api/v1/workspaces/:workspaceId/checkins/today', async request => {
     const workspaceId = String((request.params as { workspaceId?: string }).workspaceId || '');
     const rows = db.prepare('SELECT id, workspace_id, icon, name, done, updated_at FROM checkins WHERE workspace_id = ? ORDER BY id').all(workspaceId) as Record<string, unknown>[];

@@ -1,16 +1,17 @@
 import { randomUUID } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { db } from '../../db/client.js';
+import { parseJsonObject } from '../shared/request.js';
 
 const createContentSchema = z.object({ group: z.enum(['ideas', 'trends', 'sources']), title: z.string().trim().min(1).max(500), description: z.string().max(5000).optional() });
 
 export async function contentRoutes(app: FastifyInstance) {
+  const db = app.db;
   app.get('/api/v1/workspaces/:workspaceId/content', async request => {
     const workspaceId = String((request.params as { workspaceId?: string }).workspaceId || '');
-    const items = db.prepare('SELECT * FROM content_items WHERE workspace_id=? AND deleted_at IS NULL ORDER BY kind, group_name, created_at').all(workspaceId).map((row: any) => ({ id: row.id, kind: row.kind, group: row.group_name, title: row.title, description: row.description, metadata: JSON.parse(row.metadata_json) }));
+    const items = db.prepare('SELECT * FROM content_items WHERE workspace_id=? AND deleted_at IS NULL ORDER BY kind, group_name, created_at').all(workspaceId).map((row: any) => ({ id: row.id, kind: row.kind, group: row.group_name, title: row.title, description: row.description, metadata: parseJsonObject(row.metadata_json) }));
     const docs = db.prepare('SELECT document_key, data_json FROM workspace_documents WHERE workspace_id=?').all(workspaceId) as Array<{ document_key: string; data_json: string }>;
-    return { data: { items, documents: Object.fromEntries(docs.map(document => [document.document_key, JSON.parse(document.data_json)])) } };
+    return { data: { items, documents: Object.fromEntries(docs.map(document => [document.document_key, parseJsonObject(document.data_json)])) } };
   });
   app.post('/api/v1/workspaces/:workspaceId/content/ideas', async (request, reply) => {
     const workspaceId = String((request.params as { workspaceId?: string }).workspaceId || ''); const input = createContentSchema.parse(request.body); const now = new Date().toISOString(); const id = randomUUID();

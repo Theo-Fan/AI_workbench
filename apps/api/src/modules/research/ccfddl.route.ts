@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 
 const RSS_URL = 'https://ccfddl.com/conference/deadlines_en.xml';
+const maxRssBytes = 5 * 1024 * 1024;
 
 function toBeijingDate(raw: string) {
   const match = raw.match(/(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}:\d{2})/);
@@ -15,10 +16,19 @@ function toBeijingDate(raw: string) {
 export async function ccfddlRoutes(app: FastifyInstance) {
   app.get('/api/ccfddl', async (request, reply) => {
     const query = String((request.query as { query?: string }).query || '').trim().toLowerCase();
-    if (!query) return reply.code(400).send({ error: { message: '缺少会议名称' } });
-    const response = await fetch(RSS_URL);
-    if (!response.ok) return reply.code(502).send({ error: { message: '无法读取 CCFDDL' } });
-    const xml = await response.text();
+    if (!query || query.length > 120) return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: '会议名称无效' } });
+    let response: Response;
+    try {
+      response = await fetch(RSS_URL, { signal: AbortSignal.timeout(8_000) });
+    } catch {
+      return reply.code(502).send({ error: { code: 'UPSTREAM_TIMEOUT', message: '无法读取 CCFDDL' } });
+    }
+    if (!response.ok) return reply.code(502).send({ error: { code: 'UPSTREAM_ERROR', message: '无法读取 CCFDDL' } });
+    const contentLength = Number(response.headers.get('content-length') || 0);
+    if (contentLength > maxRssBytes) return reply.code(502).send({ error: { code: 'UPSTREAM_TOO_LARGE', message: 'CCFDDL 响应过大' } });
+    let xml: string;
+    try { xml = await response.text(); } catch { return reply.code(502).send({ error: { code: 'UPSTREAM_ERROR', message: '无法读取 CCFDDL' } }); }
+    if (Buffer.byteLength(xml, 'utf8') > maxRssBytes) return reply.code(502).send({ error: { code: 'UPSTREAM_TOO_LARGE', message: 'CCFDDL 响应过大' } });
     const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(match => match[1]);
     const result = items.map(item => {
       const title = (item.match(/<title>([\s\S]*?)<\/title>/) || [,''])[1].replace(/<!\[CDATA\[|\]\]>/g, '').trim();

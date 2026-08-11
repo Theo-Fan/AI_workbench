@@ -1,8 +1,5 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import type { FastifyInstance } from 'fastify';
-import { config } from '../../config.js';
-import { db } from '../../db/client.js';
+import { createSqliteBackup } from '../../db/backup-utils.js';
 
 const workspaceTables = [
   'workspaces',
@@ -21,6 +18,7 @@ const workspaceTables = [
 ] as const;
 
 export async function dataProtectionRoutes(app: FastifyInstance) {
+  const db = app.db;
   app.get('/api/v1/workspaces/:workspaceId/export', async request => {
     const workspaceId = String((request.params as { workspaceId?: string }).workspaceId || '');
     const data: Record<string, unknown> = { exportedAt: new Date().toISOString(), schemaVersion: 1, workspaceId };
@@ -39,12 +37,7 @@ export async function dataProtectionRoutes(app: FastifyInstance) {
     return { data };
   });
   app.post('/api/v1/workspaces/:workspaceId/backups', async () => {
-    fs.mkdirSync(config.backupDir, { recursive: true });
-    const filename = `workspace-${new Date().toISOString().replace(/[:.]/g, '-')}.db`;
-    const destination = path.join(config.backupDir, filename);
-    await db.backup(destination);
-    const backups = fs.readdirSync(config.backupDir).filter(name => name.endsWith('.db')).sort().reverse();
-    for (const obsolete of backups.slice(10)) fs.unlinkSync(path.join(config.backupDir, obsolete));
-    return { data: { filename, createdAt: new Date().toISOString() } };
+    const backup = await createSqliteBackup(db, app.config.backupDir);
+    return { data: { filename: backup.filename, createdAt: backup.createdAt } };
   });
 }

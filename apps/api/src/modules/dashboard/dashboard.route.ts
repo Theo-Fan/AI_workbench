@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
-import { db } from '../../db/client.js';
 
 export async function dashboardRoutes(app: FastifyInstance) {
+  const db = app.db;
   app.get('/api/v1/workspaces/:workspaceId/dashboard', async request => {
     const workspaceId = String((request.params as { workspaceId?: string }).workspaceId || '');
     const taskTotal = Number((db.prepare('SELECT COUNT(*) AS count FROM tasks WHERE workspace_id = ? AND deleted_at IS NULL').get(workspaceId) as { count: number }).count);
