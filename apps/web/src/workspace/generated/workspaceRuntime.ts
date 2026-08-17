@@ -776,7 +776,7 @@ themeMedia.addEventListener('change', () => {
   if (currentThemePref() === 'system') applyTheme();
 });
 
-document.getElementById('themeToggle').addEventListener('click', cycleTheme);
+document.getElementById('themeToggle')?.addEventListener('click', cycleTheme);
 
 // ========================================================================
 // DATA PATH HELPERS
@@ -1925,14 +1925,14 @@ function autoResizeResearchTextareas(root) {
 function afterPageRender() {
   requestAnimationFrame(() => autoResizeResearchTextareas(document.getElementById('mainContent')));
   if (currentPage === 'dashboard') {
-    startClock();
+    requestAnimationFrame(mountDashboardEyes);
     // On every site entry, request the latest weather once; later rerenders reuse state.
     if (!weatherAutoRefreshStarted) {
       weatherAutoRefreshStarted = true;
       fetchWeather({ force: true });
     }
   } else {
-    stopClock();
+    dashboardEyesCleanup();
   }
   if (currentPage === 'research' && knowledgeGraphMounted) {
     requestAnimationFrame(() => mountKnowledgeGraph());
@@ -5189,7 +5189,7 @@ const GEOCODE_ENDPOINT = workspaceApiUrl('/api/weather/geocode');
 // status: 'idle' | 'loading' | 'ready' | 'error'
 const weatherState = { status: 'idle', data: null, error: '', place: '' };
 let weatherAutoRefreshStarted = false;
-let clockTimer = null;
+let dashboardEyesCleanup = () => {};
 
 // WMO weather interpretation codes → label + glyph (day / night)
 const WMO_CODES = {
@@ -5228,6 +5228,36 @@ function wmoInfo(code, isDay) {
   return { label: e[0], glyph: isDay === 0 ? e[2] : e[1] };
 }
 
+// Keep weather symbols in the same quiet, outlined language as the dashboard.
+// Emoji have wildly different weights between operating systems and made this
+// otherwise restrained panel feel visually inconsistent.
+function weatherGlyph(code, isDay, className = '') {
+  const rain = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99].includes(Number(code));
+  const snow = [71, 73, 75, 77, 85, 86].includes(Number(code));
+  const cloudy = [2, 3, 45, 48].includes(Number(code));
+  const partly = [1].includes(Number(code));
+  const sky = isDay === 0
+    ? '<path d="M16.2 5.1A6.8 6.8 0 1 0 19 17.8 7.2 7.2 0 0 1 16.2 5.1Z"/>'
+    : '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.2v2.1M12 19.7v2.1M2.2 12h2.1M19.7 12h2.1M5.1 5.1l1.5 1.5M17.4 17.4l1.5 1.5M18.9 5.1l-1.5 1.5M6.6 17.4l-1.5 1.5"/>';
+  let body = sky;
+  if (cloudy || partly || rain || snow) {
+    body = (partly ? '<circle cx="8" cy="8" r="3.1"/><path d="M8 2.3v1.4M8 12.3v1.4M2.3 8h1.4M12.3 8h1.4"/>' : '') +
+      '<path d="M6.8 17.2h10a4.1 4.1 0 0 0 .4-8.2 5.5 5.5 0 0 0-10.5 1.8A3.3 3.3 0 0 0 6.8 17.2Z"/>';
+  }
+  if (rain) body += '<path d="M8.5 19.3l-1 2M13 19.3l-1 2M17.5 19.3l-1 2"/>';
+  if (snow) body += '<path d="M9 20.1h0M13 20.1h0M17 20.1h0" stroke-width="3" stroke-linecap="round"/>';
+  return '<svg class="ov-weather-icon ' + className + '" viewBox="0 0 24 24" fill="none" aria-hidden="true">' + body + '</svg>';
+}
+
+function weatherDaylightHTML() {
+  const daily = weatherState.data && weatherState.data.daily;
+  const format = (value) => value ? new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '—';
+  return '<div class="personal-daylight">' +
+    '<div class="personal-daylight-item"><span class="personal-daylight-icon personal-daylight-icon--sunrise"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h16M6 20h12M12 3v3M5.6 8.6l2.1 2.1M18.4 8.6l-2.1 2.1M3 14h18"/><path d="M7 14a5 5 0 0 1 10 0"/></svg></span><div><small>日出</small><strong>' + format(daily && daily.sunrise && daily.sunrise[0]) + '</strong></div></div>' +
+    '<div class="personal-daylight-item"><span class="personal-daylight-icon personal-daylight-icon--sunset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h16M6 20h12M12 3v3M5.6 8.6l2.1 2.1M18.4 8.6l-2.1 2.1M3 14h18"/><path d="M7 14a5 5 0 0 1 10 0"/></svg></span><div><small>日落</small><strong>' + format(daily && daily.sunset && daily.sunset[0]) + '</strong></div></div>' +
+  '</div>';
+}
+
 function weatherConfig() {
   const w = (DATA && DATA.settings && DATA.settings.weather) || {};
   return {
@@ -5245,11 +5275,6 @@ function greetingFor(hour) {
   if (hour < 18) return { text: '下午好',     emoji: '🌤️', sub: '执行时段，把清单一条条划掉' };
   if (hour < 22) return { text: '晚上好',     emoji: '🌆', sub: '复盘今天，顺手规划明天' };
   return { text: '夜里好', emoji: '🌛', sub: '收个尾就好，别熬太晚' };
-}
-
-function dayProgressPercent(now = new Date()) {
-  const mins = now.getHours() * 60 + now.getMinutes();
-  return Math.round(mins / 1440 * 100);
 }
 
 // Cached read — never triggers a network request
@@ -5289,8 +5314,8 @@ async function fetchWeather(opts = {}) {
   const params = new URLSearchParams({
     latitude: String(cfg.lat),
     longitude: String(cfg.lon),
-    current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m',
-    daily: 'weather_code,temperature_2m_max,temperature_2m_min',
+    current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,visibility,uv_index,precipitation_probability',
+    daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max',
     timezone: 'auto',
     forecast_days: '4'
   });
@@ -5328,9 +5353,9 @@ function weatherPanelHTML() {
   const cfg = weatherConfig();
   const head = '<div class="ov-weather-head">' +
     '<button class="ov-weather-place" data-action="weather-city" title="切换城市">' +
-      '<span>📍</span><span class="ov-weather-place-name">' + escapeHTML(cfg.city) + '</span><span class="ov-caret">▼</span>' +
+      '<svg class="ov-location-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"/><circle cx="10" cy="7" r="2"/></svg><span class="ov-weather-place-name">' + escapeHTML(cfg.city) + '</span><span class="ov-caret">⌄</span>' +
     '</button>' +
-    '<button class="ov-weather-locate" data-action="weather-locate" title="使用当前位置" aria-label="使用当前位置">◎</button>' +
+    '<div class="ov-weather-head-actions"><button class="ov-weather-city-switch" data-action="weather-city">切换城市</button><button class="ov-weather-locate" data-action="weather-locate" title="使用当前位置" aria-label="使用当前位置">+</button></div>' +
   '</div>';
 
   if (weatherState.status === 'loading') {
@@ -5363,18 +5388,15 @@ function weatherPanelHTML() {
   const daily = d.daily || {};
   const units = d.current_units || {};
   const tempUnit = units.temperature_2m || '°C';
-
-  const today = {
-    max: daily.temperature_2m_max ? Math.round(daily.temperature_2m_max[0]) : null,
-    min: daily.temperature_2m_min ? Math.round(daily.temperature_2m_min[0]) : null
-  };
-
+  const visibility = Number.isFinite(Number(cur.visibility)) ? (Number(cur.visibility) / 1000).toFixed(Number(cur.visibility) < 10000 ? 1 : 0) : '—';
+  const uv = Number.isFinite(Number(cur.uv_index)) ? Number(cur.uv_index).toFixed(0) : '—';
+  const wind = Number.isFinite(Number(cur.wind_speed_10m)) ? (Number(cur.wind_speed_10m) / 3.6).toFixed(1) : '—';
+  const metric = (label, value, unit) => '<div class="ov-weather-metric"><span>' + label + '</span><strong>' + value + (unit ? '<small>' + unit + '</small>' : '') + '</strong></div>';
   const metrics = '<div class="ov-weather-metrics">' +
-    '<div class="ov-weather-metric"><span>体感</span><strong>' + Math.round(cur.apparent_temperature) + '°</strong></div>' +
-    '<div class="ov-weather-metric"><span>湿度</span><strong>' + Math.round(cur.relative_humidity_2m) + '%</strong></div>' +
-    '<div class="ov-weather-metric"><span>风速</span><strong>' + Math.round(cur.wind_speed_10m) + '</strong></div>' +
-    '<div class="ov-weather-metric"><span>高/低</span><strong>' +
-      (today.max !== null ? today.max + '°/' + today.min + '°' : '—') + '</strong></div>' +
+    metric('湿度', Math.round(cur.relative_humidity_2m || 0), '%') +
+    metric('风速', wind, 'm/s') +
+    metric('紫外线', uv, '') +
+    metric('能见度', visibility, 'km') +
   '</div>';
 
   // Next three days (index 0 is today)
@@ -5388,7 +5410,7 @@ function weatherPanelHTML() {
       const fi = wmoInfo(daily.weather_code[i], 1);
       cards.push('<div class="ov-fc-day">' +
         '<span>' + escapeHTML(label) + '</span>' +
-        '<span class="ov-fc-glyph" title="' + escapeAttribute(fi.label) + '">' + fi.glyph + '</span>' +
+        '<span class="ov-fc-glyph" title="' + escapeAttribute(fi.label) + '">' + weatherGlyph(daily.weather_code[i], 1, 'ov-weather-icon--small') + '</span>' +
         '<strong>' + Math.round(daily.temperature_2m_max[i]) + '°/' + Math.round(daily.temperature_2m_min[i]) + '°</strong>' +
       '</div>');
     }
@@ -5396,50 +5418,87 @@ function weatherPanelHTML() {
   }
 
   const updated = cur.time ? new Date(cur.time).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '';
+  const precipitation = Number.isFinite(Number(cur.precipitation_probability)) ? Math.round(Number(cur.precipitation_probability)) + '%' : '—';
+  const weatherNote = '<div class="ov-weather-note"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12a6 6 0 0 1 12 0H6Zm6 0v7M9 21h6"/><path d="M5 12H3m18 0h-2M7.8 6.8 6.4 5.4m9.8 1.4 1.4-1.4"/></svg>降水概率 <b>' + precipitation + '</b></span><span>体感 <b>' + Math.round(cur.apparent_temperature) + '°</b></span></div>';
 
   return '<div class="ov-weather">' + head +
     '<div class="ov-weather-now">' +
-      '<div class="ov-weather-glyph" title="' + escapeAttribute(info.label) + '">' + info.glyph + '</div>' +
+      '<div class="ov-weather-glyph" title="' + escapeAttribute(info.label) + '">' + weatherGlyph(cur.weather_code, cur.is_day) + '</div>' +
       '<div style="min-width:0;">' +
         '<div class="ov-weather-temp">' + Math.round(cur.temperature_2m) + '<sup>' + escapeHTML(tempUnit) + '</sup></div>' +
-        '<div class="ov-weather-desc">' + escapeHTML(info.label) + '</div>' +
+        '<div class="ov-weather-desc"><span>' + escapeHTML(info.label) + '</span><b>空气优</b></div>' +
       '</div>' +
     '</div>' +
-    metrics + forecast +
+    metrics + forecast + weatherNote +
     (updated ? '<div class="ov-weather-updated">更新于 ' + escapeHTML(updated) + '</div>' : '') +
   '</div>';
+}
+
+// A dashboard is a glanceable starting point, not a weather page. Keep the
+// live reading available in the hero without giving it a whole column.
+function dashboardWeatherCompactHTML() {
+  const cfg = weatherConfig();
+  if (weatherState.status === 'ready' && weatherState.data && weatherState.data.current) {
+    const cur = weatherState.data.current;
+    const info = wmoInfo(cur.weather_code, cur.is_day);
+    return '<div class="dashboard-weather">' +
+      '<button class="dashboard-weather-location" data-action="weather-city" title="切换城市：' + escapeAttribute(cfg.city) + '" aria-label="切换城市，当前' + escapeAttribute(cfg.city) + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"/><circle cx="10" cy="7" r="2"/></svg></button>' +
+      weatherGlyph(cur.weather_code, cur.is_day, 'dashboard-weather-glyph') +
+      '<strong>' + Math.round(cur.temperature_2m) + '°</strong><small>' + escapeHTML(info.label) + '</small>' +
+    '</div>';
+  }
+  return '<div class="dashboard-weather dashboard-weather--loading"><button class="dashboard-weather-location" data-action="weather-city" title="切换城市：' + escapeAttribute(cfg.city) + '" aria-label="切换城市，当前' + escapeAttribute(cfg.city) + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"/><circle cx="10" cy="7" r="2"/></svg></button><small>' + (weatherState.status === 'loading' ? '天气加载中' : '查看天气') + '</small></div>';
 }
 
 // Repaint just the weather panel — avoids a full page rerender
 function paintWeather() {
   const slot = document.getElementById('ovWeatherSlot');
   if (slot) slot.innerHTML = weatherPanelHTML();
+  const dashboardWeather = document.getElementById('ovDashboardWeather');
+  if (dashboardWeather) dashboardWeather.innerHTML = dashboardWeatherCompactHTML();
+  const globalDashboardWeather = document.getElementById('globalDashboardWeather');
+  if (globalDashboardWeather) globalDashboardWeather.innerHTML = dashboardWeatherCompactHTML();
+  const daylightSlot = document.getElementById('ovTimeDaylightSlot');
+  if (daylightSlot) daylightSlot.innerHTML = weatherDaylightHTML();
 }
 
-function paintClock() {
-  const now = new Date();
-  const el = document.getElementById('ovClock');
-  if (!el) return;
-  const h = String(now.getHours()).padStart(2, '0');
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const s = String(now.getSeconds()).padStart(2, '0');
-  el.innerHTML = h + ':' + m + '<span class="ov-clock-sec">' + s + '</span>';
-
-  const bar = document.getElementById('ovDayFill');
-  const pct = document.getElementById('ovDayPct');
-  const p = dayProgressPercent(now);
-  if (bar) bar.style.width = p + '%';
-  if (pct) pct.textContent = p + '%';
-}
-
-function startClock() {
-  stopClock();
-  paintClock();
-  clockTimer = setInterval(paintClock, 1000);
-}
-
-function stopClock() {
-  if (clockTimer) { clearInterval(clockTimer); clockTimer = null; }
+function mountDashboardEyes() {
+  const eyes = document.getElementById('dashboardEyes');
+  if (!eyes) return;
+  dashboardEyesCleanup();
+  const reset = () => {
+    eyes.style.setProperty('--eye-x', '0px');
+    eyes.style.setProperty('--eye-y', '0px');
+  };
+  const followPointer = (event) => {
+    const rect = eyes.getBoundingClientRect();
+    const x = Math.max(-6, Math.min(6, (event.clientX - (rect.left + rect.width / 2)) / 16));
+    const y = Math.max(-5, Math.min(5, (event.clientY - (rect.top + rect.height / 2)) / 16));
+    eyes.style.setProperty('--eye-x', x.toFixed(2) + 'px');
+    eyes.style.setProperty('--eye-y', y.toFixed(2) + 'px');
+  };
+  const reactToClick = () => {
+    eyes.classList.remove('is-pulsing');
+    void eyes.offsetWidth;
+    eyes.classList.add('is-pulsing');
+  };
+  const reactToKey = (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    reactToClick();
+  };
+  document.addEventListener('pointermove', followPointer);
+  window.addEventListener('blur', reset);
+  eyes.addEventListener('click', reactToClick);
+  eyes.addEventListener('keydown', reactToKey);
+  dashboardEyesCleanup = () => {
+    document.removeEventListener('pointermove', followPointer);
+    window.removeEventListener('blur', reset);
+    eyes.removeEventListener('click', reactToClick);
+    eyes.removeEventListener('keydown', reactToKey);
+    dashboardEyesCleanup = () => {};
+  };
+  reset();
 }
 
 async function promptWeatherCity() {
@@ -5643,109 +5702,43 @@ function englishLearningPageHTML() {
 // ========================================================================
 const PAGES = {
   dashboard: {
-    title: '首页',
+    title: '仪表盘',
     render: () => {
       const tasks = DATA.tasks.dashboard;
       const done = tasks.filter(t => t.done).length;
       const percent = calcTaskPercent(tasks);
       const checkins = DATA.checkins.daily;
       const ciDone = checkins.filter(c => c.done).length;
-      const inspirations = DATA.inspirations.ideas.slice(0, 3);
-      const streak = calcStreak();
-      const all = countAllTasks();
-
       const now = new Date();
-      const greet = greetingFor(now.getHours());
-      const dayPct = dayProgressPercent(now);
-      const dateFull = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
+      const dateFull = (now.getMonth() + 1) + '月' + now.getDate() + '日';
       const weekday = '星期' + '日一二三四五六'[now.getDay()];
       const remainingTasks = tasks.length - done;
-
-      // --- hero: greeting + live clock + date context + weather ---
-      const hero = '<div class="ov-hero">' +
-        '<div class="ov-hero-left">' +
-          '<span class="ov-eyebrow"><span class="ov-eyebrow-emoji">' + greet.emoji + '</span>' + escapeHTML(greet.text) + '</span>' +
-          '<h2 class="ov-greeting">' + (remainingTasks > 0
-            ? '今天还有 ' + remainingTasks + ' 件事待完成'
-            : (tasks.length > 0 ? '今天的任务全部完成 🎉' : '今天还没有安排任务')) + '</h2>' +
-          '<div class="ov-greeting-sub">' + escapeHTML(greet.sub) + '</div>' +
-          '<div class="ov-clock-row">' +
-            '<div class="ov-clock" id="ovClock" role="timer" aria-label="当前时间">--:--<span class="ov-clock-sec">--</span></div>' +
-          '</div>' +
-          '<div class="ov-datebar">' +
-            '<strong>' + escapeHTML(dateFull) + '</strong>' +
-            '<span class="ov-dot-sep"></span><span>' + escapeHTML(weekday) + '</span>' +
-            '<span class="ov-chip">第 ' + weekNum() + ' 周</span>' +
-          '</div>' +
-          '<div class="ov-daybar">' +
-            '<div class="ov-daybar-head"><span>今日已过</span><strong id="ovDayPct">' + dayPct + '%</strong></div>' +
-            '<div class="ov-daybar-track"><div class="ov-daybar-fill" id="ovDayFill" style="width:' + dayPct + '%"></div></div>' +
-          '</div>' +
-        '</div>' +
-        '<div id="ovWeatherSlot">' + weatherPanelHTML() + '</div>' +
-      '</div>';
-
-      // --- KPI strip ---
-      const kpi = (glyph, accent, value, unit, label) =>
-        '<div class="ov-kpi" style="--kpi-accent:' + accent + ';">' +
-          '<div class="ov-kpi-glyph">' + glyph + '</div>' +
-          '<div class="ov-kpi-body">' +
-            '<div class="ov-kpi-value">' + value + (unit ? '<small>' + escapeHTML(unit) + '</small>' : '') + '</div>' +
-            '<div class="ov-kpi-label">' + escapeHTML(label) + '</div>' +
-          '</div>' +
-        '</div>';
-
-      const kpis = '<div class="ov-kpis">' +
-        kpi('◎', 'var(--primary)', percent + '<small>%</small>', '', '今日完成度') +
-        kpi('✓', 'var(--success)', ciDone, '/ ' + checkins.length, '每日打卡') +
-        kpi('🔥', '#f5813a', streak, '天', '连续打卡') +
-        kpi('∑', '#7c6cf0', all.done, '/ ' + all.total, '全部任务进度') +
-      '</div>';
-
-      // --- left column: today's tasks + trend ---
-      const left = '<div class="ov-col">' +
-        '<div class="card">' +
-          '<div class="ov-focus-head">' +
-            '<div class="ov-focus-ring">' +
-              ringHTML(percent, '今日完成度', done + ' / ' + tasks.length + ' 项任务',
-                percent === 100 ? '全部完成，太棒了！' : '继续加油') +
-            '</div>' +
-            '<div class="stat-row" style="margin-top:0;flex:0 0 auto;">' +
-              statBox('stats.dashboard.focusHours', DATA.stats.dashboard.focusHours, '专注时长') +
-              statBox('stats.dashboard.output', DATA.stats.dashboard.output, '今日产出') +
-            '</div>' +
-          '</div>' +
-          taskListHTML('tasks.dashboard', tasks) +
-        '</div>' +
-        linkedTodayActionsHTML() +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>完成率趋势</div><span class="card-tag">近 8 周</span></div>' +
-          trendChartHTML() +
-        '</div>' +
-      '</div>';
-
-      // --- right column: check-ins + learning + inspirations ---
-      const right = '<div class="ov-col">' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>每日打卡</div><span class="card-tag">' + ciDone + '/' + checkins.length + '</span></div>' +
-          checkinHTML('daily', checkins) +
-        '</div>' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>学习进度</div><span class="card-tag">自动</span></div>' +
-          barHTMLAuto('AI 学习', calcTaskPercent(DATA.tasks.aiLearn)) +
-          barHTMLAuto('英语学习', calcTaskPercent(DATA.tasks.english)) +
-          barHTMLAuto('科研文献', calcTaskPercent(DATA.tasks.researchPapers)) +
-        '</div>' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>最新灵感</div><span class="card-tag">' + DATA.inspirations.ideas.length + ' 条</span></div>' +
-          (inspirations.length === 0 ? emptyStateHTML('💡', '暂无灵感', '去「选题灵感」页添加第一条') :
-            inspirations.map(i =>
-              '<div class="inspire-item"><div class="inspire-title">' + escapeHTML(i.title) + '</div>' +
-              '<div class="inspire-desc">' + escapeHTML(i.desc) + '</div></div>').join('')) +
-        '</div>' +
-      '</div>';
-
-      return hero + kpis + '<div class="ov-grid">' + left + right + '</div>';
+      const hour = now.getHours();
+      const overviewNote = hour < 5 || hour >= 22
+        ? ['深夜了', '早点休息吧']
+        : hour < 9
+          ? ['早上好', '慢慢进入状态']
+          : hour < 12
+            ? ['上午好', '先做最重要的事']
+            : hour < 14
+              ? ['中午好', '休息后再继续']
+              : hour < 18
+                ? ['下午好', '保持专注节奏']
+                : ['晚上好', '给今天收个尾'];
+      const dashboardStats = [
+        ['今日待办', remainingTasks, '项等待推进', true],
+        ['已完成', done, '项已划掉', false],
+        ['今日进度', percent + '%', '完成度', true],
+        ['每日打卡', ciDone + '/' + checkins.length, '保持节奏', false]
+      ].map(stat => '<div class="dashboard-stat' + (stat[3] ? ' is-accent' : '') + '"><small>' + stat[0] + '</small><strong>' + stat[1] + '</strong><span>' + stat[2] + '</span></div>').join('');
+      const hero = '<section class="dashboard-hero" id="dashboardHero">' +
+        '<div class="dashboard-hero-copy"><div class="dashboard-kicker"><b>//</b> WORKBENCH DASHBOARD <i></i> ' + escapeHTML(dateFull) + escapeHTML(weekday) + '</div><h2>工作台总览</h2><p><b>' + escapeHTML(overviewNote[0]) + '</b>，今天还有 <strong>' + remainingTasks + '</strong> 项待完成。<em>' + escapeHTML(overviewNote[1]) + '。</em></p></div>' +
+        '<div class="dashboard-hero-right"><div class="dashboard-eyes" id="dashboardEyes" role="button" tabindex="0" aria-label="仪表盘助手，会跟随鼠标移动；点击可以互动"><span class="dashboard-eye"><i></i></span><span class="dashboard-eye"><i></i></span></div></div>' +
+      '</section><section class="dashboard-stat-strip">' + dashboardStats + '</section>';
+      const focusCard = '<div class="card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日完成度</div><span class="card-tag">' + percent + '%</span></div>' + taskListHTML('tasks.dashboard', tasks) + '</div>';
+      const checkinCard = '<div class="card"><div class="card-header"><div class="card-title"><span class="dot"></span>每日打卡</div><span class="card-tag">' + ciDone + '/' + checkins.length + '</span></div>' + checkinHTML('daily', checkins) + '</div>';
+      const learningCard = '<div class="card"><div class="card-header"><div class="card-title"><span class="dot"></span>学习进度</div></div>' + barHTMLAuto('AI 学习', calcTaskPercent(DATA.tasks.aiLearn)) + barHTMLAuto('英语学习', calcTaskPercent(DATA.tasks.english)) + barHTMLAuto('科研文献', calcTaskPercent(DATA.tasks.researchPapers)) + '</div>';
+      return hero + '<div class="personal-work-grid">' + focusCard + checkinCard + learningCard + '</div>';
     }
   },
 
@@ -6123,7 +6116,7 @@ const PAGES = {
   },
 
   settings: {
-    title: '数据管理',
+    title: '设置',
     render: () => {
       const isAPI = storage.mode === 'api';
       const isFSAA = storage.mode === 'fsaa';
@@ -6241,6 +6234,9 @@ const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review
 // The overview hero already shows a full date + week line, so the page header
 // there is just the title.
 function mainHeaderHTML(page, pageId) {
+  if (pageId === 'dashboard') {
+    return '';
+  }
   const dateLine = pageId === 'dashboard'
     ? ''
     : '<div class="date">' + todayCN() + ' · 第' + weekNum() + '周</div>';
@@ -6814,7 +6810,7 @@ function showShortcutsHelp() {
   document.getElementById('modalOk').addEventListener('click', closeModal);
 }
 
-document.getElementById('kbdHelpBtn').addEventListener('click', showShortcutsHelp);
+document.getElementById('kbdHelpBtn')?.addEventListener('click', showShortcutsHelp);
 
 document.addEventListener('keydown', (e) => {
   const modalOverlay = document.getElementById('modalOverlay');
