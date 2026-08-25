@@ -99,4 +99,8 @@ Desktop.ini
 *.tar.gz
 *.tgz
 
+# Documentation: keep README files available on GitHub, but keep other
+# Markdown design/working notes local to the repository checkout.
 *.md
+!README.md
+!**/README.md
