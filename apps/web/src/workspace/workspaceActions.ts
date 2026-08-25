@@ -22,4 +22,5 @@ export const workspaceActions = {
   clearDone(paths: string[]) { runtimeActions().clearDone(paths); },
   rolloverPlan() { runtimeActions().rolloverPlan(); },
   setTheme(theme: 'light' | 'dark' | 'system') { runtimeActions().setTheme(theme); },
+  setDisplayName(name: string) { runtimeActions().setDisplayName(name); },
 };

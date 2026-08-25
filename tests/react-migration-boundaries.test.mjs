@@ -43,12 +43,12 @@ test('React 源码没有 innerHTML 提交或非 TypeScript 业务源文件', () 
   assert.deepEqual(files.filter(file => /\.(jsx|js)$/.test(file)), []);
 });
 
-test('15 个工作台页面由独立 React 入口承载', () => {
+test('14 个工作台页面由独立 React 入口承载', () => {
   const bridge = read('apps/web/src/workspace/runtimeBridge.ts');
   const pageSurface = read('apps/web/src/workspace/PageSurface.tsx');
   const vite = read('apps/web/vite.config.ts');
   const routeBlock = bridge.match(/workspacePageIds\s*=\s*\[([\s\S]*?)\]\s*as const/)?.[1] || '';
-  assert.equal((routeBlock.match(/'[^']+'/g) || []).length, 15);
+  assert.equal((routeBlock.match(/'[^']+'/g) || []).length, 14);
   assert.match(pageSurface, /getPageMarkup\(\)/);
   assert.match(pageSurface, /<ReactMarkupPage/);
   assert.doesNotMatch(pageSurface, /\.\/pages\//);

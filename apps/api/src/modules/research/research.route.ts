@@ -12,7 +12,12 @@ export async function researchRoutes(app: FastifyInstance) {
     const workspaceId = String((request.params as { workspaceId?: string }).workspaceId || '');
     const ideas = db.prepare('SELECT * FROM research_ideas WHERE workspace_id = ? AND deleted_at IS NULL ORDER BY favorite DESC, updated_at DESC').all(workspaceId).map((row: any) => ({ id: row.id, title: row.title, content: row.content, category: row.category, tags: parseJsonArray(row.tags_json), status: row.status, favorite: Boolean(row.favorite), archived: Boolean(row.archived), metadata: parseJsonObject(row.metadata_json), createdAt: row.created_at, updatedAt: row.updated_at, version: row.version }));
     const todos = db.prepare('SELECT * FROM research_todos WHERE workspace_id = ? AND deleted_at IS NULL ORDER BY status, due_date IS NULL, due_date, updated_at DESC').all(workspaceId).map((row: any) => ({ id: row.id, ideaId: row.idea_id, title: row.title, stage: row.stage, priority: row.priority, dueDate: row.due_date, status: row.status, notes: row.notes, completedAt: row.completed_at, version: row.version }));
-    const readingLogs = db.prepare('SELECT * FROM research_reading_logs WHERE workspace_id = ? ORDER BY date DESC LIMIT 60').all(workspaceId).map((row: any) => ({ id: row.id, date: row.date, title: row.title, tags: parseJsonArray(row.tags_json) }));
+    // Reading check-ins are historical records. Do not cap the API projection;
+    // records remain available until the user explicitly deletes them.
+    const readingLogs = db.prepare('SELECT * FROM research_reading_logs WHERE workspace_id = ? ORDER BY date DESC').all(workspaceId).map((row: any) => {
+      const metadata = parseJsonObject(row.metadata_json);
+      return { id: row.id, date: row.date, title: row.title, type: typeof metadata.type === 'string' ? metadata.type : undefined, domain: typeof metadata.domain === 'string' ? metadata.domain : undefined, journal: typeof metadata.journal === 'string' ? metadata.journal : undefined, authors: Array.isArray(metadata.authors) ? metadata.authors.filter((author: unknown): author is string => typeof author === 'string') : undefined, publicationYear: typeof metadata.publicationYear === 'string' ? metadata.publicationYear : undefined, tags: parseJsonArray(row.tags_json) };
+    });
     return { data: { ideas, todos, readingLogs } };
   });
   app.post('/api/v1/workspaces/:workspaceId/research/ideas', async (request, reply) => {

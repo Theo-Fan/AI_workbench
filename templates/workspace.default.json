@@ -7,6 +7,7 @@
   },
   "settings": {
     "theme": "system",
+    "displayName": "TheoFan",
     "onboarded": false,
     "weather": {
       "city": "上海",
@@ -583,43 +584,57 @@
           "id": "rl1",
           "date": "2026-07-25",
           "title": "Attention Is All You Need",
-          "type": "会议论文"
+          "type": "会议论文",
+          "domain": "LLMs后训练",
+          "tags": ["Transformer"]
         },
         {
           "id": "rl2",
           "date": "2026-07-27",
           "title": "BERT: Pre-training of Deep Bidirectional Transformers",
-          "type": "会议论文"
+          "type": "会议论文",
+          "domain": "LLMs后训练",
+          "tags": ["预训练"]
         },
         {
           "id": "rl3",
           "date": "2026-07-28",
           "title": "GPT-3: Language Models are Few-Shot Learners",
-          "type": "会议论文"
+          "type": "会议论文",
+          "domain": "LLMs后训练",
+          "tags": ["大语言模型"]
         },
         {
           "id": "rl4",
           "date": "2026-07-30",
           "title": "LLaMA: Open and Efficient Foundation Language Models",
-          "type": "预印本"
+          "type": "预印本",
+          "domain": "LLMs后训练",
+          "tags": ["基础模型"]
         },
         {
           "id": "rl5",
           "date": "2026-08-01",
           "title": "A Survey of Large Language Models",
-          "type": "期刊论文"
+          "type": "期刊论文",
+          "domain": "LLMs后训练",
+          "tags": ["综述"]
         },
         {
           "id": "rl6",
           "date": "2026-08-02",
           "title": "Chain-of-Thought Prompting",
-          "type": "会议论文"
+          "type": "会议论文",
+          "domain": "LLMs后训练",
+          "tags": ["提示学习"]
         },
         {
           "id": "rl7",
           "date": "2026-08-03",
           "title": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks",
-          "type": "会议论文"
+          "type": "会议论文",
+          "domain": "知识图谱",
+          "tags": ["RAG"]
         }
       ],
       "inspirations": {

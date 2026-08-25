@@ -1,5 +1,5 @@
 export const workspacePageIds = [
-  'dashboard', 'daily-plan', 'research-todo', 'research', 'research-inspiration',
+  'dashboard', 'daily-plan', 'research', 'research-inspiration',
   'research-experiments', 'research-papers', 'fitness', 'ai-learn', 'english',
   'inspiration', 'review', 'comic', 'news', 'settings'
 ] as const;
@@ -23,6 +23,7 @@ export interface WorkspaceActions {
   clearDone(paths: string[]): void;
   rolloverPlan(): void;
   setTheme(theme: 'light' | 'dark' | 'system'): void;
+  setDisplayName(name: string): void;
 }
 
 export interface WorkspaceRuntime {

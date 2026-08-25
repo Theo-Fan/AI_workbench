@@ -8,6 +8,20 @@ import { mountGeneratedWorkspaceRuntime } from './workspace/generated/workspaceR
 import type { RenderState, WorkspacePageId } from './workspace/runtimeBridge.js';
 import { workspaceActions } from './workspace/workspaceActions.js';
 import { syncWorkspaceStore, useWorkspaceRenderState } from './workspace/workspaceStore.js';
+import {
+  WorkspaceAccessScreen,
+  WorkspaceAccountMenu,
+  WorkspaceAvatar,
+  WorkspaceNameDialog,
+  WorkspaceProfileDialog,
+  clearWorkspaceAccountSession,
+  enterLocalWorkspace,
+  loadWorkspaceAccount,
+  loginWorkspaceAccount,
+  registerWorkspaceAccount,
+  updateWorkspaceAccount
+} from './WorkspaceAccount.js';
+import type { WorkspaceAccount } from './WorkspaceAccount.js';
 
 const ActivePageContext = createContext('dashboard');
 
@@ -52,7 +66,13 @@ function MenuDisclosure({ title, expanded, active, onToggle, children, path }: {
   </div>;
 }
 
-function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
+function WorkspaceShell({ renderState, account, onRequestLogin, onSignOut, onUpdateAccount }: {
+  renderState: RenderState | null;
+  account: WorkspaceAccount;
+  onRequestLogin: () => void;
+  onSignOut: () => void;
+  onUpdateAccount: (name: string, email: string) => void;
+}) {
   const activePage = renderState?.pageId || 'dashboard';
   // A new workspace starts in the compact state; once the user chooses a state,
   // preserve that choice across refreshes.
@@ -67,6 +87,8 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
       return [];
     }
   });
+  const [accountMenuPlacement, setAccountMenuPlacement] = useState<'topbar' | 'sidebar' | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
   const previousActivePage = useRef(activePage);
   useEffect(() => {
     localStorage.setItem('ai-workspace-expanded-menus', JSON.stringify(expandedMenus));
@@ -74,7 +96,7 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
   useEffect(() => {
     if (previousActivePage.current === activePage) return;
     previousActivePage.current = activePage;
-    const group = ['research-todo', 'research', 'research-inspiration', 'research-experiments', 'research-papers'].includes(activePage)
+    const group = ['research', 'research-inspiration', 'research-experiments', 'research-papers'].includes(activePage)
       ? 'research'
       : ['ai-learn', 'english'].includes(activePage)
         ? 'learning'
@@ -88,6 +110,10 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
     localStorage.setItem('ai-workspace-sidebar', next ? 'collapsed' : 'expanded');
     return next;
   });
+  const toggleAccountMenu = (placement: 'topbar' | 'sidebar') => {
+    setAccountMenuPlacement(current => current === placement ? null : placement);
+  };
+  const navigateToSettings = () => window.__AI_WORKSPACE_RUNTIME__?.navigate('settings');
   return <ActivePageContext.Provider value={activePage}><div className={`workspace-shell${isSidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}>
     <button className="hamburger" id="hamburger" aria-label="打开菜单" onClick={() => workspaceActions.openDrawer()}>☰</button>
     <div className="drawer-backdrop" id="drawerBackdrop" onClick={() => workspaceActions.closeDrawer()}></div>
@@ -97,11 +123,11 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
         <button className="sidebar-collapse-toggle" type="button" onClick={toggleSidebar} aria-label={isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'} title={isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M10 4v16"/></svg>
         </button>
-        <div className="topbar-brand-copy"><strong>AI工作台</strong><span>PERSONAL WORKSPACE</span></div>
+        <div className="topbar-brand-copy"><strong>个人工作台</strong><span>PERSONAL WORKSPACE</span></div>
       </div>
       <nav className="topbar-nav" aria-label="快速导航">
         <HeaderNavItem page="dashboard">仪表盘</HeaderNavItem>
-        <HeaderNavItem page="daily-plan">每日计划</HeaderNavItem>
+        <HeaderNavItem page="daily-plan">任务规划</HeaderNavItem>
         <HeaderNavItem page="research">科研</HeaderNavItem>
         <HeaderNavItem page="comic">创作</HeaderNavItem>
       </nav>
@@ -109,6 +135,7 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
         <div className="topbar-weather-slot" id="globalDashboardWeather" aria-live="polite"></div>
         <button className="topbar-search" type="button" title="搜索（Cmd/Ctrl + K）" aria-label="搜索" onClick={() => workspaceActions.dispatchAction('open-palette')}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"/><path d="m15.5 15.5 4.4 4.4"/></svg><span>搜索</span></button>
         <button className="topbar-icon-button" type="button" title="切换主题" aria-label="切换主题" onClick={() => workspaceActions.cycleTheme()}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg></button>
+        <button className="topbar-account-button" type="button" title={account.name} aria-label="打开用户菜单" aria-expanded={accountMenuPlacement === 'topbar'} onClick={() => toggleAccountMenu('topbar')}><WorkspaceAvatar account={account} size="small" /></button>
       </div>
     </header>
 
@@ -121,14 +148,13 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
         <div className="menu-primary-list">
           <div className="menu-section-label">常规</div>
           <MenuItem page="dashboard" title="仪表盘" path={<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z" />}>仪表盘</MenuItem>
-          <MenuItem page="daily-plan" title="每日计划" path={<><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18m-11 5 2 2 4-4" /></>}>每日计划</MenuItem>
+          <MenuItem page="daily-plan" title="任务规划" path={<><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18m-11 5 2 2 4-4" /></>}>任务规划</MenuItem>
           <div className="menu-section-label">工作</div>
-          <MenuDisclosure title="科研" expanded={expandedMenus.includes('research')} active={['research-todo', 'research', 'research-inspiration', 'research-experiments', 'research-papers'].includes(activePage)} onToggle={() => setExpandedMenus(current => current.includes('research') ? current.filter(item => item !== 'research') : [...current, 'research'])} path={<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v19H6.5A2.5 2.5 0 0 1 4 18.5v-14A2.5 2.5 0 0 1 6.5 2Z" /></>}>
-            <MenuItem page="research-todo" title="待办" path={<><rect x="4" y="4" width="16" height="16" rx="3" /><path d="m8 12 2.5 2.5L16 9" /></>}>待办</MenuItem>
-            <MenuItem page="research" title="文献" path={<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v19H6.5A2.5 2.5 0 0 1 6.5 2Z" /><path d="M8 7h8M8 11h8" /></>}>文献</MenuItem>
-            <MenuItem page="research-inspiration" title="灵感" path={<path d="M9 18h6M10 22h4M8.1 14.7A7 7 0 1 1 15.9 14.7c-.8.7-1.4 1.6-1.6 2.6H9.7c-.2-1-.8-1.9-1.6-2.6Z" />}>灵感</MenuItem>
-            <MenuItem page="research-experiments" title="实验" path={<><path d="M9 3h6M10 3v6.2l-4.7 8.1A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.2-3.7L14 9.2V3" /><path d="M8.5 14h7" /></>}>实验</MenuItem>
-            <MenuItem page="research-papers" title="论文" path={<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12V8Z" /><path d="M14 2v6h6M8 13h8M8 17h6" /></>}>论文</MenuItem>
+          <MenuDisclosure title="科研" expanded={expandedMenus.includes('research')} active={['research', 'research-inspiration', 'research-experiments', 'research-papers'].includes(activePage)} onToggle={() => setExpandedMenus(current => current.includes('research') ? current.filter(item => item !== 'research') : [...current, 'research'])} path={<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v19H6.5A2.5 2.5 0 0 1 4 18.5v-14A2.5 2.5 0 0 1 6.5 2Z" /></>}>
+            <MenuItem page="research" title="文献管理" path={<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v19H6.5A2.5 2.5 0 0 1 6.5 2Z" /><path d="M8 7h8M8 11h8" /></>}>文献管理</MenuItem>
+            <MenuItem page="research-inspiration" title="灵感构思" path={<path d="M9 18h6M10 22h4M8.1 14.7A7 7 0 1 1 15.9 14.7c-.8.7-1.4 1.6-1.6 2.6H9.7c-.2-1-.8-1.9-1.6-2.6Z" />}>灵感构思</MenuItem>
+            <MenuItem page="research-experiments" title="实验验证" path={<><path d="M9 3h6M10 3v6.2l-4.7 8.1A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.2-3.7L14 9.2V3" /><path d="M8.5 14h7" /></>}>实验验证</MenuItem>
+            <MenuItem page="research-papers" title="写作投稿" path={<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12V8Z" /><path d="M14 2v6h6M8 13h8M8 17h6" /></>}>写作投稿</MenuItem>
           </MenuDisclosure>
           <MenuDisclosure title="内容创作" expanded={expandedMenus.includes('creation')} active={['inspiration', 'review', 'comic'].includes(activePage)} onToggle={() => setExpandedMenus(current => current.includes('creation') ? current.filter(item => item !== 'creation') : [...current, 'creation'])} path={<><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z" /><path d="m19 16-.8 2.2L16 19l2.2.8L19 22l.8-2.2L22 19l-2.2-.8Z" /></>}>
             <MenuItem page="inspiration" title="选题灵感" path={<><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z" /><path d="m19 16-.8 2.2L16 19l2.2.8L19 22l.8-2.2L22 19l-2.2-.8Z" /></>}>选题灵感</MenuItem>
@@ -148,11 +174,18 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
       </div>
 
       <div className="sidebar-footer">
-        <MenuItem page="settings" title="设置" path={<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.1 2.1-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-3v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-2.1-2.1.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H5.3v-3h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2.1-2.1.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2h3v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 2.1 2.1-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v3h-.2a1.7 1.7 0 0 0-1.5 1Z" /></>}>设置</MenuItem>
+        <button className="sidebar-account-card" type="button" title={account.name} aria-label="打开用户菜单" aria-expanded={accountMenuPlacement === 'sidebar'} onClick={() => toggleAccountMenu('sidebar')}>
+          <WorkspaceAvatar account={account} />
+          <span className="sidebar-account-copy"><strong>{account.name}</strong><small>{account.email}</small></span>
+          <svg className="sidebar-account-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4-4 4 4M8 14l4 4 4-4" /></svg>
+        </button>
       </div>
     </aside>
 
     <PageSurface state={renderState} />
+
+    <div className="workspace-weather-backdrop" id="weatherPopoverBackdrop" data-action="weather-detail-close" aria-hidden="true"></div>
+    <aside className="workspace-weather-popover" id="weatherPopover" role="dialog" aria-modal="false" aria-label="详细天气" aria-hidden="true"></aside>
 
     <div className="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle"><div className="modal" id="modalContent"></div></div>
 
@@ -163,6 +196,18 @@ function WorkspaceShell({ renderState }: { renderState: RenderState | null }) {
     <div className="palette-overlay" id="paletteOverlay"><div className="palette" role="dialog" aria-label="全局搜索"><div className="palette-input-row"><span className="p-icon">🔍</span><input className="palette-input" id="paletteInput" placeholder="搜索任务、灵感、页面… 输入 > 执行命令" autoComplete="off" /><span className="palette-kbd">Esc</span></div><div className="palette-list" id="paletteList"></div></div></div>
     <div className="onboard-overlay" id="onboardOverlay"><div className="onboard" id="onboardContent" role="dialog" aria-label="新手引导"></div></div>
     <div className="toast-container" id="toastContainer" aria-live="polite"></div>
+    {accountMenuPlacement && <WorkspaceAccountMenu
+      account={account}
+      placement={accountMenuPlacement}
+      onClose={() => setAccountMenuPlacement(null)}
+      onProfile={() => setProfileOpen(true)}
+      onSettings={navigateToSettings}
+      onData={navigateToSettings}
+      onShortcuts={() => workspaceActions.showShortcuts()}
+      onLogin={onRequestLogin}
+      onSignOut={onSignOut}
+    />}
+    {profileOpen && account.kind === 'signed-in' && <WorkspaceProfileDialog account={account} onClose={() => setProfileOpen(false)} onSave={(name, email) => { onUpdateAccount(name, email); setProfileOpen(false); }} />}
   </div></ActivePageContext.Provider>;
 }
 
@@ -170,13 +215,21 @@ export function WorkspaceApp() {
   const mountedRef = useRef(false);
   const [error, setError] = useState<string>();
   const renderState = useWorkspaceRenderState();
+  const [account, setAccount] = useState<WorkspaceAccount | null>(() => loadWorkspaceAccount());
+  const [showAccessScreen, setShowAccessScreen] = useState(false);
+  const guestAccount: WorkspaceAccount = {
+    kind: 'local',
+    id: 'LOCAL',
+    name: '个人',
+    email: '请先设置名称'
+  };
 
   useEffect(() => {
     if (mountedRef.current) return;
     mountedRef.current = true;
 
     void (async () => { try {
-      document.title = 'AI工作台';
+      document.title = '个人工作台';
       if (window.__AI_WORKSPACE_RUNTIME__) {
         syncWorkspaceStore();
         return;
@@ -188,5 +241,38 @@ export function WorkspaceApp() {
     } })();
   }, []);
 
-  return createPortal(<>{error ? <main className="main" role="main"><div className="error-card" role="alert">{error}</div></main> : <WorkspaceShell renderState={renderState} />}</>, document.body);
+  useEffect(() => {
+    if (!account || !renderState) return;
+    workspaceActions.setDisplayName(account.name);
+  }, [account, renderState !== null]);
+
+  const signOut = () => {
+    clearWorkspaceAccountSession();
+    setShowAccessScreen(false);
+    setAccount(null);
+  };
+  const requestLogin = () => {
+    clearWorkspaceAccountSession();
+    setAccount(null);
+    setShowAccessScreen(true);
+  };
+  const updateAccount = (name: string, email: string) => {
+    if (!account) return;
+    setAccount(updateWorkspaceAccount(account, name, email));
+  };
+
+  const content = error
+    ? <main className="main" role="main"><div className="error-card" role="alert">{error}</div></main>
+    : !account && showAccessScreen
+      ? <WorkspaceAccessScreen
+          onLocal={() => setShowAccessScreen(false)}
+          onLogin={async details => { setAccount(await loginWorkspaceAccount(details)); setShowAccessScreen(false); }}
+          onRegister={async details => { setAccount(await registerWorkspaceAccount(details)); setShowAccessScreen(false); }}
+        />
+      : <>
+          <WorkspaceShell renderState={renderState} account={account ?? guestAccount} onRequestLogin={requestLogin} onSignOut={signOut} onUpdateAccount={updateAccount} />
+          {!account && <WorkspaceNameDialog onContinue={name => setAccount(enterLocalWorkspace(name))} onAccount={() => setShowAccessScreen(true)} />}
+        </>;
+
+  return createPortal(content, document.body);
 }

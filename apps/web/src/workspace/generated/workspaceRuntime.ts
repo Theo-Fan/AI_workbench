@@ -26,6 +26,7 @@ const DEFAULT_DATA = {
   "meta": { "revision": 0, "deviceId": "", "savedAt": "" },
   "settings": {
     "theme": "system",
+    "displayName": "TheoFan",
     "onboarded": false,
     "weather": { "city": "上海", "lat": 31.2222, "lon": 121.4581 },
     "lastActiveDate": "",
@@ -193,13 +194,13 @@ const DEFAULT_DATA = {
         { "id": "ms4", "icon": "⚪", "title": "论文撰写", "desc": "待开始", "status": "pending" }
       ],
       "readingLogs": [
-        { "id": "rl1", "date": "2026-07-25", "title": "Attention Is All You Need", "type": "会议论文" },
-        { "id": "rl2", "date": "2026-07-27", "title": "BERT: Pre-training of Deep Bidirectional Transformers", "type": "会议论文" },
-        { "id": "rl3", "date": "2026-07-28", "title": "GPT-3: Language Models are Few-Shot Learners", "type": "会议论文" },
-        { "id": "rl4", "date": "2026-07-30", "title": "LLaMA: Open and Efficient Foundation Language Models", "type": "预印本" },
-        { "id": "rl5", "date": "2026-08-01", "title": "A Survey of Large Language Models", "type": "期刊论文" },
-        { "id": "rl6", "date": "2026-08-02", "title": "Chain-of-Thought Prompting", "type": "会议论文" },
-      { "id": "rl7", "date": "2026-08-03", "title": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks", "type": "会议论文" }
+        { "id": "rl1", "date": "2026-07-25", "title": "Attention Is All You Need", "type": "会议论文", "domain": "LLMs后训练", "tags": ["Transformer"] },
+        { "id": "rl2", "date": "2026-07-27", "title": "BERT: Pre-training of Deep Bidirectional Transformers", "type": "会议论文", "domain": "LLMs后训练", "tags": ["预训练"] },
+        { "id": "rl3", "date": "2026-07-28", "title": "GPT-3: Language Models are Few-Shot Learners", "type": "会议论文", "domain": "LLMs后训练", "tags": ["大语言模型"] },
+        { "id": "rl4", "date": "2026-07-30", "title": "LLaMA: Open and Efficient Foundation Language Models", "type": "预印本", "domain": "LLMs后训练", "tags": ["基础模型"] },
+        { "id": "rl5", "date": "2026-08-01", "title": "A Survey of Large Language Models", "type": "期刊论文", "domain": "LLMs后训练", "tags": ["综述"] },
+        { "id": "rl6", "date": "2026-08-02", "title": "Chain-of-Thought Prompting", "type": "会议论文", "domain": "LLMs后训练", "tags": ["提示学习"] },
+      { "id": "rl7", "date": "2026-08-03", "title": "Retrieval-Augmented Generation for Knowledge-Intensive Tasks", "type": "会议论文", "domain": "知识图谱", "tags": ["RAG"] }
     ],
     "inspirations": {
       "items": [
@@ -412,7 +413,9 @@ class StorageManager {
 const storage = new StorageManager();
 let DATA = null;
 let currentPage = 'dashboard';
-let activeReadingLogTag = '';
+let dailyPlanViewDate = todayKey();
+let dailyPlanCalendarMonth = todayKey().slice(0, 7);
+let activeReadingLogTags = [];
 let literatureView = 'overview';
 let researchInspirationState = {
   query: '',
@@ -502,6 +505,13 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
+function commaTitleHTML(value) {
+  const title = String(value == null ? '' : value).trim();
+  const commaSplit = title.match(/^([\s\S]*?[，,])\s*([\s\S]+)$/);
+  if (!commaSplit) return escapeHTML(title);
+  return '<span class="title-line">' + escapeHTML(commaSplit[1]) + '</span><span class="title-line">' + escapeHTML(commaSplit[2]) + '</span>';
+}
+
 function escapeAttribute(str) {
   return escapeHTML(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
@@ -511,6 +521,174 @@ function todayKey(d = new Date()) {
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return y + '-' + m + '-' + day;
+}
+
+function shiftDateKey(dateKey, amount) {
+  const parts = String(dateKey || todayKey()).split('-').map(Number);
+  const date = parts.length === 3 && parts.every(Number.isFinite)
+    ? new Date(parts[0], parts[1] - 1, parts[2])
+    : new Date();
+  date.setDate(date.getDate() + amount);
+  return todayKey(date);
+}
+
+function shiftPlanCalendarMonth(monthKey, amount) {
+  const match = String(monthKey || todayKey().slice(0, 7)).match(/^(\d{4})-(\d{2})$/);
+  const date = match ? new Date(Number(match[1]), Number(match[2]) - 1, 1) : new Date();
+  date.setMonth(date.getMonth() + amount);
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+}
+
+const SOLAR_TERM_NAMES = ['小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪', '冬至'];
+const SOLAR_TERM_MINUTES = [0, 21208, 42467, 63836, 85337, 107014, 128867, 150921, 173149, 195551, 218072, 240693, 263343, 285989, 308563, 331033, 353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758];
+const FIXED_CHINA_FESTIVALS = {
+  '01-01': '元旦', '03-08': '妇女节', '05-01': '劳动节', '05-04': '青年节',
+  '06-01': '儿童节', '09-10': '教师节', '10-01': '国庆节'
+};
+const LUNAR_CHINA_FESTIVALS = {
+  '正月初一': '春节', '正月十五': '元宵节', '二月初二': '龙抬头',
+  '三月初三': '上巳节', '五月初五': '端午节', '七月初七': '七夕节',
+  '七月十五': '中元节', '八月十五': '中秋节', '九月初九': '重阳节',
+  '十月初一': '寒衣节', '十月十五': '下元节', '腊月初八': '腊八节',
+  '腊月廿三': '小年'
+};
+const LUNAR_DAY_NAMES = ['', '初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+
+function solarTermsForMonth(year, month) {
+  const terms = {};
+  if (year < 1900 || year > 2100) return terms;
+  const firstIndex = (month - 1) * 2;
+  [firstIndex, firstIndex + 1].forEach(index => {
+    const timestamp = 31556925974.7 * (year - 1900) + SOLAR_TERM_MINUTES[index] * 60000 + Date.UTC(1900, 0, 6, 2, 5);
+    terms[new Date(timestamp).getUTCDate()] = SOLAR_TERM_NAMES[index];
+  });
+  return terms;
+}
+
+function chineseLunarInfo(date) {
+  try {
+    const formatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { month: 'long', day: 'numeric' });
+    const parts = formatter.formatToParts(date);
+    const month = parts.find(part => part.type === 'month')?.value || '';
+    const rawDay = parts.find(part => part.type === 'day')?.value || '';
+    const day = LUNAR_DAY_NAMES[Number(rawDay)] || rawDay;
+    let festival = LUNAR_CHINA_FESTIVALS[month + day] || '';
+    if (!festival && month === '腊月') {
+      const tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1, 12);
+      const tomorrowMonth = formatter.formatToParts(tomorrow).find(part => part.type === 'month')?.value || '';
+      if (tomorrowMonth === '正月') festival = '除夕';
+    }
+    return { month, day, label: day === '初一' ? month : day, festival };
+  } catch (_) {
+    return { month: '', day: '', label: '', festival: '' };
+  }
+}
+
+function chinaOfficialHolidaySchedule(year) {
+  const schedule = {};
+  const markRange = (start, end) => {
+    let cursor = start;
+    while (cursor <= end) {
+      schedule[cursor] = { type: 'holiday' };
+      cursor = shiftDateKey(cursor, 1);
+    }
+  };
+  const annual = {
+    2024: {
+      holidays: [['2024-01-01', '2024-01-01', '元旦假期'], ['2024-02-10', '2024-02-17', '春节假期'], ['2024-04-04', '2024-04-06', '清明假期'], ['2024-05-01', '2024-05-05', '劳动节假期'], ['2024-06-08', '2024-06-10', '端午假期'], ['2024-09-15', '2024-09-17', '中秋假期'], ['2024-10-01', '2024-10-07', '国庆假期']],
+      workdays: ['2024-02-04', '2024-02-18', '2024-04-07', '2024-04-28', '2024-05-11', '2024-09-14', '2024-09-29', '2024-10-12']
+    },
+    2025: {
+      holidays: [['2025-01-01', '2025-01-01', '元旦假期'], ['2025-01-28', '2025-02-04', '春节假期'], ['2025-04-04', '2025-04-06', '清明假期'], ['2025-05-01', '2025-05-05', '劳动节假期'], ['2025-05-31', '2025-06-02', '端午假期'], ['2025-10-01', '2025-10-08', '国庆中秋假期']],
+      workdays: ['2025-01-26', '2025-02-08', '2025-04-27', '2025-05-10', '2025-09-28', '2025-10-11']
+    },
+    2026: {
+      holidays: [['2026-01-01', '2026-01-03', '元旦假期'], ['2026-02-15', '2026-02-23', '春节假期'], ['2026-04-04', '2026-04-06', '清明假期'], ['2026-05-01', '2026-05-05', '劳动节假期'], ['2026-06-19', '2026-06-21', '端午假期'], ['2026-09-25', '2026-09-27', '中秋假期'], ['2026-10-01', '2026-10-07', '国庆假期']],
+      workdays: ['2026-01-04', '2026-02-14', '2026-02-28', '2026-05-09', '2026-09-20', '2026-10-10']
+    }
+  };
+  const arrangement = annual[year];
+  if (!arrangement) return schedule;
+  arrangement.holidays.forEach(([start, end]) => markRange(start, end));
+  arrangement.workdays.forEach(date => {
+    schedule[date] = { type: 'workday', label: '调休上班' };
+  });
+  return schedule;
+}
+
+function planDateLabel(dateKey) {
+  const parts = String(dateKey || todayKey()).split('-').map(Number);
+  const date = parts.length === 3 && parts.every(Number.isFinite)
+    ? new Date(parts[0], parts[1] - 1, parts[2])
+    : new Date();
+  const relation = dateKey === todayKey() ? '今天 · ' : dateKey === shiftDateKey(todayKey(), -1) ? '昨天 · ' : dateKey === shiftDateKey(todayKey(), 1) ? '明天 · ' : '';
+  return relation + (date.getMonth() + 1) + '月' + date.getDate() + '日 · 周' + '日一二三四五六'[date.getDay()];
+}
+
+function normalizePlanTime(value, fallback = '09:00') {
+  const time = String(value || '').trim();
+  return /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time) ? time : fallback;
+}
+
+function planSlotForTime(value) {
+  const hour = Number(normalizePlanTime(value).slice(0, 2));
+  if (hour < 12) return 'morning';
+  if (hour < 18) return 'afternoon';
+  return 'evening';
+}
+
+function defaultPlanTimeForSlot(slot) {
+  return slot === 'afternoon' ? '13:30' : slot === 'evening' ? '18:30' : '08:30';
+}
+
+function roundedPlanTimeForNow(now = new Date()) {
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const roundedMinutes = Math.min(23 * 60 + 30, Math.ceil(currentMinutes / 30) * 30);
+  return String(Math.floor(roundedMinutes / 60)).padStart(2, '0') + ':' + String(roundedMinutes % 60).padStart(2, '0');
+}
+
+function roundPlanTimeToHalfHour(value, fallback = '09:00') {
+  const time = normalizePlanTime(value, fallback);
+  const parts = time.split(':').map(Number);
+  const roundedMinutes = Math.min(23 * 60 + 30, Math.ceil((parts[0] * 60 + parts[1]) / 30) * 30);
+  return String(Math.floor(roundedMinutes / 60)).padStart(2, '0') + ':' + String(roundedMinutes % 60).padStart(2, '0');
+}
+
+function planAddTimeForSlot(slot, dateKey = todayKey(), now = new Date()) {
+  const fixedTime = defaultPlanTimeForSlot(slot);
+  if (dateKey !== todayKey()) return fixedTime;
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const morningStart = 8 * 60 + 30;
+  const noon = 12 * 60;
+  const eveningStart = 18 * 60;
+  if (slot === 'morning' && currentMinutes >= morningStart && currentMinutes < noon) {
+    return roundedPlanTimeForNow(now);
+  }
+  if (slot === 'afternoon' && currentMinutes >= noon && currentMinutes < eveningStart) {
+    return roundedPlanTimeForNow(now);
+  }
+  if (slot === 'evening' && currentMinutes >= eveningStart) {
+    return roundedPlanTimeForNow(now);
+  }
+  return fixedTime;
+}
+
+function planPathForTime(value) {
+  return 'tasks.dailyPlan.' + planSlotForTime(value);
+}
+
+function isTaskOnPlanDate(task, dateKey) {
+  return String(task && task.dueDate || '') === dateKey;
+}
+
+function sortedPlanTasks(tasks) {
+  return [...(tasks || [])].sort((a, b) => {
+    const doneDiff = Number(Boolean(a.done)) - Number(Boolean(b.done));
+    if (doneDiff) return doneDiff;
+    const timeDiff = normalizePlanTime(a.scheduledTime).localeCompare(normalizePlanTime(b.scheduledTime));
+    if (timeDiff) return timeDiff;
+    return String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
+  });
 }
 
 function isoWeekInfo(input = new Date()) {
@@ -836,7 +1014,7 @@ function validateWorkspaceData(candidate) {
   assertSafeDataGraph(candidate);
   if (candidate.version !== undefined && typeof candidate.version !== 'string') throw new Error('版本号格式不正确');
   if (candidate.tasks !== undefined && !isPlainObject(candidate.tasks)) throw new Error('任务数据格式不正确');
-  if (candidate.tasks && candidate.tasks.dailyPlan !== undefined && !isPlainObject(candidate.tasks.dailyPlan)) throw new Error('每日计划格式不正确');
+  if (candidate.tasks && candidate.tasks.dailyPlan !== undefined && !isPlainObject(candidate.tasks.dailyPlan)) throw new Error('任务规划格式不正确');
   const arrayPaths = [
     ['tasks', 'dashboard'], ['tasks', 'aiLearn'], ['tasks', 'english'], ['tasks', 'comicStoryboard'], ['tasks', 'researchPapers'],
     ['tasks', 'dailyPlan', 'morning'], ['tasks', 'dailyPlan', 'afternoon'], ['tasks', 'dailyPlan', 'evening'],
@@ -850,36 +1028,53 @@ function validateWorkspaceData(candidate) {
   return true;
 }
 
-function normalizeTask(task, date = todayKey()) {
+function normalizeTask(task, date = todayKey(), defaultTime = '') {
   if (!isPlainObject(task)) return null;
   const text = String(task.text || '').trim();
   if (!text) return null;
+  const scheduledTime = task.scheduledTime || defaultTime;
   return {
     ...task,
     id: String(task.id || uid()),
     text,
     done: Boolean(task.done),
     createdAt: task.createdAt || new Date().toISOString(),
-    dueDate: task.dueDate || date
+    dueDate: task.dueDate || date,
+    ...(scheduledTime ? { scheduledTime: normalizePlanTime(scheduledTime, defaultTime || '09:00') } : {})
   };
 }
 
-function normalizeTaskList(list, date = todayKey()) {
-  return (Array.isArray(list) ? list : []).map(task => normalizeTask(task, date)).filter(Boolean);
+function normalizeTaskList(list, date = todayKey(), defaultTime = '') {
+  return (Array.isArray(list) ? list : []).map(task => normalizeTask(task, date, defaultTime)).filter(Boolean);
 }
 
 function migrateWorkspaceData(raw) {
   validateWorkspaceData(raw);
   const data = mergeDefaults(cloneData(raw), DEFAULT_DATA);
+  if (data.learning && data.learning.research && Array.isArray(data.learning.research.readingLogs)) {
+    data.learning.research.readingLogs = data.learning.research.readingLogs.map(log => ({
+      ...log,
+      type: readingLogType(log),
+      domain: readingLogDomain(log),
+      journal: readingLogJournal(log),
+      authors: readingLogAuthors(log),
+      publicationYear: readingLogPublicationYear(log),
+      tags: normalizedReadingLogTags(log)
+    }));
+  }
   const today = todayKey();
   data.tasks.dashboard = normalizeTaskList(data.tasks.dashboard, today);
   data.tasks.aiLearn = normalizeTaskList(data.tasks.aiLearn, today);
   data.tasks.english = normalizeTaskList(data.tasks.english, today);
   data.tasks.comicStoryboard = normalizeTaskList(data.tasks.comicStoryboard, today);
   data.tasks.researchPapers = normalizeTaskList(data.tasks.researchPapers, today);
+  const normalizedPlan = { morning: [], afternoon: [], evening: [] };
   ['morning', 'afternoon', 'evening'].forEach(slot => {
-    data.tasks.dailyPlan[slot] = normalizeTaskList(data.tasks.dailyPlan[slot], today);
+    normalizeTaskList(data.tasks.dailyPlan[slot], today, defaultPlanTimeForSlot(slot)).forEach(task => {
+      normalizedPlan[planSlotForTime(task.scheduledTime)].push(task);
+    });
   });
+  data.tasks.dailyPlan = normalizedPlan;
   if (!isPlainObject(data.history)) data.history = { daily: {} };
   if (!isPlainObject(data.history.daily)) data.history.daily = {};
   if (!isPlainObject(data.meta)) data.meta = {};
@@ -926,6 +1121,41 @@ function snapshotDailyState(date, reason = 'date-change') {
   dates.slice(0, Math.max(0, dates.length - 90)).forEach(key => delete DATA.history.daily[key]);
 }
 
+function restoreHistoricalPlanCompletions() {
+  if (!DATA.meta) DATA.meta = {};
+  if (DATA.meta.planCompletionRepairVersion === 1) return false;
+  const completedById = new Map();
+  const completedByDateAndText = new Map();
+  const dailyHistory = DATA.history && DATA.history.daily;
+  Object.values(isPlainObject(dailyHistory) ? dailyHistory : {}).forEach(record => {
+    (Array.isArray(record && record.snapshots) ? record.snapshots : []).forEach(snapshot => {
+      const plan = snapshot && snapshot.tasks && snapshot.tasks.dailyPlan;
+      ['morning', 'afternoon', 'evening'].forEach(slot => {
+        (plan && Array.isArray(plan[slot]) ? plan[slot] : []).forEach(task => {
+          if (!task || !task.done) return;
+          const completedAt = task.completedAt || snapshot.savedAt || new Date().toISOString();
+          if (task.id) completedById.set(String(task.id), completedAt);
+          completedByDateAndText.set(String(task.dueDate || record.date || '') + '|' + metricTaskKey(task), completedAt);
+        });
+      });
+    });
+  });
+  let restored = 0;
+  ['morning', 'afternoon', 'evening'].forEach(slot => {
+    (DATA.tasks.dailyPlan[slot] || []).forEach(task => {
+      if (task.done || !task.dueDate || task.dueDate >= todayKey()) return;
+      const completedAt = completedById.get(String(task.id)) || completedByDateAndText.get(String(task.dueDate) + '|' + metricTaskKey(task));
+      if (!completedAt) return;
+      task.done = true;
+      task.completedAt = completedAt;
+      task.updatedAt = completedAt;
+      restored++;
+    });
+  });
+  DATA.meta.planCompletionRepairVersion = 1;
+  return true;
+}
+
 function ensureTemporalState() {
   const today = todayKey();
   const currentWeek = weekKey();
@@ -936,7 +1166,6 @@ function ensureTemporalState() {
   } else if (DATA.settings.lastActiveDate !== today) {
     snapshotDailyState(DATA.settings.lastActiveDate, 'date-change');
     resetDoneFlags(DATA.tasks.dashboard);
-    ['morning', 'afternoon', 'evening'].forEach(slot => resetDoneFlags(DATA.tasks.dailyPlan[slot]));
     resetDoneFlags(DATA.tasks.english);
     (DATA.checkins.daily || []).forEach(item => { item.done = false; });
     DATA.settings.lastActiveDate = today;
@@ -955,6 +1184,7 @@ function ensureTemporalState() {
     DATA.settings.lastPlanWeek = currentWeek;
     changed = true;
   }
+  if (restoreHistoricalPlanCompletions()) changed = true;
   return changed;
 }
 
@@ -964,6 +1194,11 @@ function ensureTemporalState() {
 function calcTaskPercent(tasks) {
   if (!tasks || tasks.length === 0) return 0;
   return Math.round(tasks.filter(t => t.done).length / tasks.length * 100);
+}
+
+function dayElapsedPercent(now = new Date()) {
+  const minutesElapsed = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+  return Math.min(100, Math.max(0, Math.round(minutesElapsed / (24 * 60) * 100)));
 }
 
 function metricTaskKey(task) {
@@ -1382,7 +1617,7 @@ function barHTML(category, id, name, value) {
   '</div>';
 }
 
-function taskListHTML(path, tasks) {
+function taskListHTML(path, tasks, options = {}) {
   let html = '<ul class="task-list">';
   if (!tasks || tasks.length === 0) {
     html += emptyStateHTML('📝', '暂无任务', '在下方输入框添加第一条任务');
@@ -1390,6 +1625,7 @@ function taskListHTML(path, tasks) {
     for (const t of tasks) {
       html += '<li class="task-item ' + (t.done ? 'done' : '') + '">' +
         '<div class="task-checkbox ' + (t.done ? 'done' : '') + '" data-path="' + path + '" data-id="' + t.id + '" role="checkbox" aria-checked="' + t.done + '" aria-label="' + escapeHTML((t.done ? '取消完成：' : '完成：') + t.text) + '" tabindex="0">' + (t.done ? '✓' : '') + '</div>' +
+        (options.showTime ? '<input class="task-time-input" type="time" step="1800" value="' + escapeAttribute(normalizePlanTime(t.scheduledTime, options.defaultTime || '09:00')) + '" data-task-time data-path="' + path + '" data-id="' + t.id + '" aria-label="调整任务时间（每半小时）：' + escapeAttribute(t.text) + '">' : '') +
         '<span class="task-text" data-path="' + path + '" data-id="' + t.id + '" title="双击编辑">' + escapeHTML(t.text) + '</span>' +
         '<button class="task-delete" data-path="' + path + '" data-id="' + t.id + '" title="删除" aria-label="删除任务：' + escapeHTML(t.text) + '">✕</button>' +
       '</li>';
@@ -1397,13 +1633,10 @@ function taskListHTML(path, tasks) {
   }
   html += '</ul>';
   html += '<div class="add-task-row">' +
-    '<input class="add-task-input" data-path="' + path + '" placeholder="添加任务，回车快速创建" aria-label="添加任务">' +
-    '<button class="add-btn" data-path="' + path + '">添加</button>' +
-  '</div>';
-  const doneCount = (tasks || []).filter(t => t.done).length;
-  if (doneCount > 0) {
-    html += '<div class="clear-done-row"><button class="clear-done-btn" data-clear-path="' + path + '">清除已完成（' + doneCount + '）</button></div>';
-  }
+    (options.showTime ? '<input class="add-task-time" type="time" step="1800" value="' + escapeAttribute(options.defaultTime || '09:00') + '" data-schedule-time data-path="' + path + '" aria-label="任务时间（每半小时）">' : '') +
+    '<input class="add-task-input" data-path="' + path + '"' + (options.planDate ? ' data-due-date="' + escapeAttribute(options.planDate) + '"' : '') + ' placeholder="添加任务，回车快速创建" aria-label="添加任务">' +
+    '<button class="add-btn" data-path="' + path + '"' + (options.planDate ? ' data-due-date="' + escapeAttribute(options.planDate) + '"' : '') + '>添加</button>' +
+    '</div>';
   return html;
 }
 
@@ -1483,16 +1716,188 @@ function zoteroItemTypeLabel(type) {
 }
 
 function readingLogTags(log) {
-  const source = Array.isArray(log.tags) ? log.tags.join(',') : (log.tags || log.type || '未分类');
-  return String(source)
-    .split(/[,，;；、\s]+/)
-    .map(tag => tag.trim())
+  const source = Array.isArray(log.tags)
+    ? log.tags
+    : String(log.tags || '').split(/[,，;；、]+/);
+  return source
+    .map(tag => String(tag || '').trim())
     .filter(Boolean);
 }
 
+const READING_TYPES = ['期刊论文', '会议论文', '预印本', '学位论文', '图书', '图书章节', '报告', '网页', '数据集', '其他文献'];
+const READING_DOMAIN_SUGGESTIONS = ['矩阵博弈', 'LLMs后训练', '多智能体强化学习', '强化学习', '自然语言处理', '知识图谱', '计算机视觉', '其他'];
+const READING_TAG_COLORS = [
+  '#4778df', '#169b91', '#c6802b', '#7958cf',
+  '#d35b78', '#5f70ba', '#4b9a62', '#c7613c',
+  '#2e9cbd', '#9b6a3e', '#a657d1', '#6f8f32'
+];
+const READING_TAG_LIGHT_COLORS = [
+  '#88c3b0', '#79c0b8', '#d3a35c', '#a083d3',
+  '#d487a2', '#8e9fd2', '#79ba8e', '#d27e63',
+  '#7dbbd1', '#ba966e', '#a878cf', '#a5bd70'
+];
+// Keep the overview labels deterministic and easy to scan. The Chinese
+// collator orders Chinese names by their pronunciation while also handling
+// Latin labels and embedded numbers (for example, “Q-Learning” and “SDs”).
+const READING_LOG_LABEL_COLLATOR = new Intl.Collator('zh-CN', {
+  numeric: true,
+  sensitivity: 'base'
+});
+function sortReadingLogLabels(values) {
+  return [...values].sort((a, b) => {
+    const left = String(a || '').trim();
+    const right = String(b || '').trim();
+    return READING_LOG_LABEL_COLLATOR.compare(left, right) || left.localeCompare(right);
+  });
+}
+
+function readingLogDomainOptions() {
+  const existing = (DATA.learning.research.readingLogs || []).map(log => readingLogDomain(log));
+  return Array.from(new Set([...READING_DOMAIN_SUGGESTIONS, ...existing.map(value => String(value || '').trim()).filter(Boolean)]));
+}
+
+function readingLogJournalOptions() {
+  const defaults = ['Nature', 'Nature Communications', 'Science', 'NeurIPS', 'ICML', 'ICLR'];
+  const existing = (DATA.learning.research.readingLogs || []).map(log => readingLogJournal(log));
+  return Array.from(new Set([...defaults, ...existing.map(value => String(value || '').trim()).filter(Boolean)]));
+}
+
+function readingLogAuthorOptions() {
+  return Array.from(new Set((DATA.learning.research.readingLogs || [])
+    .flatMap(log => readingLogAuthors(log))
+    .map(value => String(value || '').trim())
+    .filter(Boolean)));
+}
+
+function readingLogSubtagOptions() {
+  return sortReadingLogLabels(Array.from(new Set((DATA.learning.research.readingLogs || [])
+    .flatMap(log => editableReadingLogTags(log))
+    .map(value => String(value || '').trim())
+    .filter(Boolean))));
+}
+
+function readingLogType(log) {
+  return String(log.type || log.itemType || '其他文献').trim() || '其他文献';
+}
+
+function readingLogDomain(log) {
+  const explicit = String(log.domain || log.field || '').trim();
+  return explicit || '未指定领域';
+}
+
+function readingLogJournal(log) {
+  return String(log.journal || log.venue || log.publication || '').trim();
+}
+
+function readingLogAuthors(log) {
+  const source = Array.isArray(log.authors) ? log.authors : (log.authors || log.author || '');
+  return (Array.isArray(source) ? source : String(source).split(/[,，;；、]+/))
+    .map(author => String(author || '').trim())
+    .filter(Boolean)
+    .filter((author, index, authors) => authors.indexOf(author) === index);
+}
+
+function readingLogPublicationYear(log) {
+  const explicit = [log.publicationYear, log.publishedYear, log.year]
+    .map(value => String(value == null ? '' : value).trim())
+    .map(value => value.match(/\b(?:19|20)\d{2}\b/))
+    .find(Boolean);
+  if (explicit) return explicit[0];
+
+  const rawTags = Array.isArray(log.tags)
+    ? log.tags
+    : String(log.tags || '').split(/[,，;；、\s]+/);
+  const inferred = rawTags
+    .map(tag => String(tag || '').trim())
+    .find(tag => /^(?:19|20)\d{2}$/.test(tag));
+  return inferred || '';
+}
+
+function readingLogStructuredTags(log) {
+  return [readingLogJournal(log), ...readingLogAuthors(log)].filter(Boolean);
+}
+
+function readingLogStructuredTagParts(log) {
+  const parts = new Set(readingLogStructuredTags(log));
+  readingLogStructuredTags(log).forEach(tag => {
+    String(tag).split(/\s+/).filter(Boolean).forEach(part => parts.add(part));
+  });
+  return parts;
+}
+
+function normalizedReadingLogTags(log) {
+  const publicationYear = readingLogPublicationYear(log);
+  const structuredTags = new Set([readingLogDomain(log), publicationYear, ...readingLogStructuredTags(log)]);
+  const structuredTagParts = readingLogStructuredTagParts(log);
+  const tags = readingLogTags(log).filter(tag => !structuredTags.has(tag) && !structuredTagParts.has(tag));
+  return Array.from(new Set([readingLogDomain(log), publicationYear, ...readingLogStructuredTags(log), ...tags].filter(Boolean)));
+}
+
+function editableReadingLogTags(log) {
+  const structuredTags = new Set([readingLogDomain(log), readingLogPublicationYear(log), ...readingLogStructuredTags(log)]);
+  const structuredTagParts = readingLogStructuredTagParts(log);
+  return Array.from(new Set(readingLogTags(log).filter(tag => !structuredTags.has(tag) && !structuredTagParts.has(tag))));
+}
+
 function readingLogTagLabel(log) {
-  const tags = readingLogTags(log);
+  const tags = normalizedReadingLogTags(log);
   return tags.length ? tags.join(' / ') : '未分类';
+}
+
+// 主标签优先使用分散的色相，避免相邻研究类别同时落在绿色系。
+const READING_DOMAIN_COLOR_ORDER = [3, 0, 7, 4, 8, 2, 10, 5, 9, 1, 6, 11];
+
+function readingLogDomainColorIndex(tag) {
+  const target = String(tag || '').trim();
+  const logs = typeof DATA !== 'undefined' ? DATA.learning?.research?.readingLogs || [] : [];
+  const domains = Array.from(new Set(logs.map(log => readingLogDomain(log)).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'zh-CN'));
+  const position = domains.indexOf(target);
+  if (position < 0) return null;
+  return READING_DOMAIN_COLOR_ORDER[position % READING_DOMAIN_COLOR_ORDER.length];
+}
+
+function readingLogTagColorIndex(tag) {
+  const target = String(tag || '').trim();
+  const domainIndex = readingLogDomainColorIndex(target);
+  if (domainIndex !== null) return domainIndex;
+  let hash = 0;
+  for (const character of target) hash = (hash * 31 + character.codePointAt(0)) >>> 0;
+
+  // Keep colors stable for the same label while avoiding palette collisions
+  // between labels currently visible in the reading log whenever possible.
+  const knownLabels = new Set();
+  const logs = typeof DATA !== 'undefined' ? DATA.learning?.research?.readingLogs || [] : [];
+  logs.forEach(log => normalizedReadingLogTags(log).forEach(label => knownLabels.add(label)));
+  const occupied = new Set();
+  for (const label of Array.from(knownLabels).sort((a, b) => a.localeCompare(b))) {
+    let labelHash = 0;
+    for (const character of label) labelHash = (labelHash * 31 + character.codePointAt(0)) >>> 0;
+    let index = labelHash % READING_TAG_COLORS.length;
+    while (occupied.has(index) && occupied.size < READING_TAG_COLORS.length) index = (index + 1) % READING_TAG_COLORS.length;
+    occupied.add(index);
+    if (label === target) return index;
+  }
+  return hash % READING_TAG_COLORS.length;
+}
+
+function readingLogTagColorClass(tag) {
+  return 'reading-log-tag-color-' + readingLogTagColorIndex(tag);
+}
+
+function readingLogTagColorValue(tag) {
+  return READING_TAG_COLORS[readingLogTagColorIndex(tag)];
+}
+
+function readingLogTagLightColorValue(tag) {
+  return READING_TAG_LIGHT_COLORS[readingLogTagColorIndex(tag)];
+}
+
+function readingLogTagPillsHTML(log) {
+  const domain = readingLogDomain(log);
+  return normalizedReadingLogTags(log).map((tag, index) =>
+    '<button class="reading-log-pill reading-log-tag-pill' + (index === 0 && tag === domain ? ' is-primary' : '') + (activeReadingLogTags.includes(tag) ? ' is-active' : '') + ' ' + readingLogTagColorClass(tag) + '" type="button" data-reading-tag="' + escapeAttribute(tag) + '" title="按标签筛选：' + escapeAttribute(tag) + '" aria-label="按标签筛选：' + escapeAttribute(tag) + '">' + escapeHTML(tag) + '</button>'
+  ).join('');
 }
 
 async function zoteroReadStatusForTitle(title) {
@@ -1533,10 +1938,8 @@ function readingLogRangeStart(date = new Date()) {
 function pruneReadingLogs() {
   const research = DATA && DATA.learning && DATA.learning.research;
   if (!research || !Array.isArray(research.readingLogs)) return false;
-  const cutoffKey = todayKey(readingLogRangeStart());
-  const originalLength = research.readingLogs.length;
-  research.readingLogs = research.readingLogs.filter(log => String(log.date || '') >= cutoffKey);
-  return research.readingLogs.length !== originalLength;
+  // 历史阅读记录始终保留；热力图会单独按近六个月的时间窗口筛选显示。
+  return false;
 }
 
 function readingLogHeatmapHTML() {
@@ -1661,38 +2064,40 @@ function fitReadingLogHeatmap() {
 function literatureOverviewStats() {
   const connected = zoteroState.status === 'connected' || zoteroState.status === 'loading';
   const logs = DATA.learning.research.readingLogs || [];
-  const logTypes = new Map();
-  let tagTotal = 0;
+  const logDomains = new Map();
+  const logTags = new Map();
   logs.forEach(log => {
-    const tags = readingLogTags(log);
-    tagTotal += tags.length || 1;
-    (tags.length ? tags : ['未分类']).forEach(label => {
-      logTypes.set(label, (logTypes.get(label) || 0) + 1);
+    const domain = readingLogDomain(log);
+    logDomains.set(domain, (logDomains.get(domain) || 0) + 1);
+    normalizedReadingLogTags(log).forEach(label => {
+      logTags.set(label, (logTags.get(label) || 0) + 1);
     });
   });
-  const types = Array.from(logTypes.entries())
-    .map(([label, count]) => ({ label, count, percent: tagTotal ? Math.round(count / tagTotal * 100) : 0 }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  const domains = Array.from(logDomains.entries())
+    .map(([label, count]) => ({ label, count, percent: logs.length ? Math.round(count / logs.length * 100) : 0 }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+  const tags = Array.from(logTags.entries())
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
   const dates = logs.map(l => l.date).filter(Boolean).sort();
   const recentYears = dates.length ? dates[dates.length - 1] + ' / ' + dates[0] : '暂无记录';
   const daysWithLogs = new Set(logs.map(l => l.date).filter(Boolean)).size;
   const today = todayKey(new Date());
   const todayCount = logs.filter(log => log.date === today).length;
   const latestDate = dates.length ? dates[dates.length - 1] : '';
-  return { total: logs.length, loaded: logs.length, types, recentYears, tagged: tagTotal, localLogs: logs.length, connected, daysWithLogs, todayCount, latestDate };
+  return { total: logs.length, loaded: logs.length, domains, tags, recentYears, tagged: tags.length, localLogs: logs.length, connected, daysWithLogs, todayCount, latestDate };
 }
 
-function literatureTypePieChartHTML(stats) {
-  if (!stats.types || !stats.types.length) return '<div class="literature-pie-wrap"><div class="literature-pie-figure"><div class="literature-pie-center"><div><div class="literature-pie-center-value">0</div><div class="literature-pie-center-label">文献数量</div></div></div></div><div class="literature-pie-legend"><div class="literature-pie-legend-item"><span class="literature-pie-dot" style="background:#b0c4d8"></span><span class="literature-pie-label">未分类</span><span class="literature-pie-pct">0</span></div></div></div>';
-  const colors = ['#4d83ff', '#14b8a6', '#e38a42', '#8b5cf6', '#64748b', '#f84d7d', '#22c55e', '#a855f7'];
-  const total = stats.types.reduce((sum, t) => sum + t.count, 0);
+function literatureDomainPieChartHTML(stats) {
+  if (!stats.domains || !stats.domains.length) return '<div class="literature-pie-wrap"><div class="literature-pie-figure"><div class="literature-pie-center"><div><div class="literature-pie-center-value">0</div><div class="literature-pie-center-label">文献数量</div></div></div></div><div class="literature-pie-legend"><div class="literature-pie-legend-item"><span class="literature-pie-dot" style="background:#d4dce8"></span><span class="literature-pie-label">未指定领域</span><span class="literature-pie-pct">0</span></div></div></div>';
+  const total = stats.total || stats.domains.reduce((sum, t) => sum + t.count, 0);
+  const hasActiveDomain = stats.domains.some(domain => activeReadingLogTags.includes(domain.label));
   const cx = 70, cy = 70, r = 58;
   let cumulative = 0;
   let slices = '';
   let legend = '';
-  stats.types.forEach((type, i) => {
-    const angle = (type.count / total) * 2 * Math.PI;
+  stats.domains.forEach((domain, i) => {
+    const angle = (domain.count / total) * 2 * Math.PI;
     const startAngle = cumulative;
     cumulative += angle;
     const x1 = cx + r * Math.cos(startAngle);
@@ -1700,68 +2105,70 @@ function literatureTypePieChartHTML(stats) {
     const x2 = cx + r * Math.cos(startAngle + angle);
     const y2 = cy + r * Math.sin(startAngle + angle);
     const largeArc = angle > Math.PI ? 1 : 0;
-    const color = colors[i % colors.length];
-    const accessibleLabel = type.label + '，' + type.count + ' 篇，占 ' + type.percent + '%';
-    slices += '<path class="literature-pie-slice" data-pie-index="' + i + '" data-pie-label="' + escapeHTML(type.label) + '" data-pie-count="' + type.count + '" tabindex="0" role="button" aria-label="' + escapeHTML(accessibleLabel) + '" d="M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2) +
+    const color = readingLogTagLightColorValue(domain.label);
+    const accessibleLabel = domain.label + '，' + domain.count + ' 篇，占 ' + domain.percent + '%';
+    slices += '<path class="literature-pie-slice' + (activeReadingLogTags.includes(domain.label) ? ' is-active' : '') + '" data-pie-index="' + i + '" data-pie-label="' + escapeHTML(domain.label) + '" data-reading-tag="' + escapeAttribute(domain.label) + '" data-pie-count="' + domain.count + '" tabindex="0" role="button" aria-pressed="' + activeReadingLogTags.includes(domain.label) + '" aria-label="' + escapeHTML(accessibleLabel) + '" d="M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2) +
       ' A' + r + ',' + r + ' 0 ' + largeArc + ',1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z" ' +
       'fill="' + color + '" stroke="var(--card-bg)" stroke-width="2">' +
-      '<title>' + escapeHTML(type.label) + ': ' + type.count + ' (' + type.percent + '%)</title></path>';
-    legend += '<div class="literature-pie-legend-item" data-pie-index="' + i + '" data-pie-label="' + escapeHTML(type.label) + '" data-pie-count="' + type.count + '" tabindex="0" role="button" aria-label="突出显示' + escapeHTML(accessibleLabel) + '" style="--pie-color:' + color + '">' +
+      '<title>' + escapeHTML(domain.label) + ': ' + domain.count + ' (' + domain.percent + '%)</title></path>';
+    legend += '<div class="literature-pie-legend-item' + (activeReadingLogTags.includes(domain.label) ? ' is-active' : '') + '" data-pie-index="' + i + '" data-pie-label="' + escapeHTML(domain.label) + '" data-reading-tag="' + escapeAttribute(domain.label) + '" data-pie-count="' + domain.count + '" tabindex="0" role="button" aria-pressed="' + activeReadingLogTags.includes(domain.label) + '" aria-label="按主标签筛选：' + escapeHTML(accessibleLabel) + '" style="--pie-color:' + color + '">' +
       '<span class="literature-pie-dot" style="background:' + color + '"></span>' +
-      '<span class="literature-pie-label">' + escapeHTML(type.label) + '</span>' +
-      '<span class="literature-pie-pct">' + type.count + '</span>' +
+      '<span class="literature-pie-label">' + escapeHTML(domain.label) + '</span>' +
+      '<span class="literature-pie-pct">' + domain.count + '</span>' +
     '</div>';
   });
-  return '<div class="literature-pie-wrap">' +
+  return '<div class="literature-pie-wrap' + (hasActiveDomain ? ' has-active' : '') + '">' +
     '<div class="literature-pie-figure">' +
-      '<svg class="literature-pie-svg" viewBox="0 0 140 140" width="148" height="148" aria-label="文献类型分布饼图">' + slices + '</svg>' +
+      '<svg class="literature-pie-svg" viewBox="0 0 140 140" width="148" height="148" aria-label="文献领域分布饼图">' + slices + '</svg>' +
       '<div class="literature-pie-center"><div><div class="literature-pie-center-value">' + (stats.total || 0) + '</div><div class="literature-pie-center-label">文献数量</div></div></div>' +
     '</div>' +
-    '<div class="literature-pie-legend">' + legend + '</div>' +
+    '<div class="literature-pie-legend" aria-label="文献领域图例">' + legend + '</div>' +
   '</div>';
+}
+
+function literatureTagGroups() {
+  const logs = DATA.learning.research.readingLogs || [];
+  const unique = values => Array.from(new Set(values.map(value => String(value || '').trim()).filter(Boolean)));
+  const groups = [
+    { key: 'domain', label: '主标签', tags: sortReadingLogLabels(unique(logs.map(log => readingLogDomain(log)))) },
+    { key: 'year', label: '年份', tags: unique(logs.map(log => readingLogPublicationYear(log))).sort((a, b) => b.localeCompare(a)) },
+    { key: 'author', label: '作者', tags: sortReadingLogLabels(unique(logs.flatMap(log => readingLogAuthors(log)))) },
+    { key: 'journal', label: '发表期刊', tags: sortReadingLogLabels(unique(logs.map(log => readingLogJournal(log)))) },
+    { key: 'subtag', label: '子标签', tags: sortReadingLogLabels(unique(logs.flatMap(log => editableReadingLogTags(log)))) }
+  ];
+  return groups.filter(group => group.tags.length);
 }
 
 function literatureOverviewHTML() {
   const stats = literatureOverviewStats();
 
-  // --- Left column: overview metrics ---
-  const monthDays = new Set((DATA.learning.research.readingLogs || []).filter(log => String(log.date || '').slice(0, 7) === todayKey(new Date()).slice(0, 7)).map(log => log.date)).size;
-  const rhythmPercent = Math.min(100, Math.round((stats.daysWithLogs || 0) / 20 * 100));
-  const tagChips = stats.types.length
-    ? stats.types.map(type => {
-      const isActive = activeReadingLogTag === type.label;
-      const label = escapeHTML(type.label);
-      return '<button class="literature-tag-chip' + (isActive ? ' is-active' : '') + '" type="button" data-reading-tag="' + escapeAttribute(type.label) + '" aria-pressed="' + isActive + '" title="筛选标签：' + label + '">' + label + '</button>';
-    }).join('')
-    : '<span class="literature-tag-chip">未分类</span>';
+  // --- Left column: grouped tags ---
+  const tagGroups = literatureTagGroups();
+  const tagButtonHTML = tag => {
+    const isActive = activeReadingLogTags.includes(tag);
+    const label = escapeHTML(tag);
+    return '<button class="literature-tag-chip ' + readingLogTagColorClass(tag) + (isActive ? ' is-active' : '') + '" type="button" data-reading-tag="' + escapeAttribute(tag) + '" aria-pressed="' + isActive + '" title="筛选标签：' + label + '">' + label + '</button>';
+  };
+  const tagGroupsHTML = tagGroups.length
+    ? tagGroups.map(group => '<section class="literature-tag-group" data-tag-group="' + group.key + '">' +
+        '<div class="literature-tag-group-title"><span class="literature-tag-group-dot"></span>' + escapeHTML(group.label) + '<span class="literature-tag-group-count">' + group.tags.length + '</span></div>' +
+        '<div class="literature-tag-group-list">' + group.tags.map(tagButtonHTML).join('') + '</div>' +
+      '</section>').join('')
+    : '<span class="literature-tag-empty">暂无标签</span>';
 
   const leftHTML = '<section class="literature-overview-panel literature-overview-main">' +
     '<div>' +
       '<div class="literature-overview-kicker">阅读节奏</div>' +
       '<div class="literature-overview-title">本地阅读总览</div>' +
-      '<div class="literature-metric-grid">' +
-        '<div class="literature-metric"><div class="literature-metric-value">' + stats.total.toLocaleString('zh-CN') + '</div><div class="literature-metric-label">本地已读</div></div>' +
-        '<div class="literature-metric"><div class="literature-metric-value">' + (stats.todayCount || 0).toLocaleString('zh-CN') + '</div><div class="literature-metric-label">今日打卡</div></div>' +
-        '<div class="literature-metric"><div class="literature-metric-value">' + (stats.daysWithLogs || 0).toLocaleString('zh-CN') + '</div><div class="literature-metric-label">累计天数</div></div>' +
-        '<div class="literature-metric"><div class="literature-metric-value">' + stats.types.length.toLocaleString('zh-CN') + '</div><div class="literature-metric-label">涵盖标签</div></div>' +
-      '</div>' +
     '</div>' +
-    '<div class="literature-overview-rhythm">' +
-      '<div class="literature-rhythm-track"><div class="literature-rhythm-fill" style="width:' + Math.max(4, rhythmPercent) + '%"></div></div>' +
-      '<div class="literature-rhythm-grid">' +
-        '<div class="literature-rhythm-item"><div class="literature-rhythm-value">' + monthDays.toLocaleString('zh-CN') + '</div><div class="literature-rhythm-label">本月活跃</div></div>' +
-        '<div class="literature-rhythm-item"><div class="literature-rhythm-value">' + (stats.total || 0).toLocaleString('zh-CN') + '</div><div class="literature-rhythm-label">文献数量</div></div>' +
-        '<div class="literature-rhythm-item"><div class="literature-rhythm-value">' + (stats.latestDate ? stats.latestDate.slice(5).replace('-', '/') : '--') + '</div><div class="literature-rhythm-label">最近一次</div></div>' +
-      '</div>' +
-      '<div class="literature-tag-cloud">' + tagChips + '</div>' +
-    '</div>' +
+    '<div class="literature-tag-groups" aria-label="文献标签分类">' + tagGroupsHTML + '</div>' +
   '</section>';
 
   // --- Middle column: pie chart (top) + heatmap (bottom) ---
   const pieHTML = '<section class="literature-overview-panel">' +
     '<div class="literature-overview-kicker">阅读构成</div>' +
-    '<div class="literature-progress-title" style="margin-top:8px;">文献类型分布</div>' +
-    literatureTypePieChartHTML(stats) +
+    '<div class="literature-progress-title" style="margin-top:8px;">文献领域分布</div>' +
+    literatureDomainPieChartHTML(stats) +
   '</section>';
 
   const heatmapHTML = '<section class="literature-overview-panel literature-activity-card">' +
@@ -1790,8 +2197,8 @@ function literatureOverviewHTML() {
 
   return '<div class="card literature-overview-card">' +
     '<div class="literature-overview-inner">' +
-      leftHTML +
       middleHTML +
+      leftHTML +
       checkinHTML +
     '</div>' +
   '</div>';
@@ -1803,70 +2210,534 @@ const MS_ICON = { pending: '⚪', active: '🔵', done: '✅' };
 function readingLogListHTML() {
   const logs = DATA.learning.research.readingLogs || [];
   if (!logs.length) return emptyStateHTML('📖', '暂无阅读打卡记录', '点击右上角 + 添加你今天读了什么文献');
-  const activeTag = activeReadingLogTag;
-  const filtered = activeTag ? logs.filter(log => readingLogTags(log).includes(activeTag)) : logs;
+  const activeTags = activeReadingLogTags;
+  const filtered = activeTags.length
+    ? logs.filter(log => {
+      const tags = new Set(normalizedReadingLogTags(log));
+      return activeTags.every(tag => tags.has(tag));
+    })
+    : logs;
   const ordered = [...filtered].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.id || '').localeCompare(String(a.id || '')));
-  const filterHTML = activeTag
+  const filterHTML = activeTags.length
     ? '<div class="reading-log-filter" role="status" aria-live="polite">' +
-        '<span class="reading-log-filter-label">标签 <strong>' + escapeHTML(activeTag) + '</strong> · ' + ordered.length + ' 篇</span>' +
-        '<button class="reading-log-filter-clear" type="button" data-action="clear-reading-log-tag" title="清除标签筛选" aria-label="清除标签筛选">×</button>' +
+        '<span class="reading-log-filter-label">已选 <strong>' + activeTags.length + ' 个标签</strong> · ' + ordered.length + ' 篇</span>' +
+        '<div class="reading-log-filter-tags">' + activeTags.map(tag => '<button class="reading-log-filter-tag ' + readingLogTagColorClass(tag) + '" type="button" data-reading-tag="' + escapeAttribute(tag) + '" title="取消筛选：' + escapeAttribute(tag) + '">' + escapeHTML(tag) + ' ×</button>').join('') + '</div>' +
+        '<button class="reading-log-filter-clear" type="button" data-action="clear-reading-log-tag" title="清除全部标签筛选" aria-label="清除全部标签筛选">清除</button>' +
       '</div>'
     : '';
   if (!ordered.length) {
-    return filterHTML + '<div class="reading-log-empty">没有带“' + escapeHTML(activeTag) + '”标签的阅读记录。</div>';
+    return filterHTML + '<div class="reading-log-empty">没有同时带“' + escapeHTML(activeTags.join('、')) + '”标签的阅读记录。</div>';
   }
   return filterHTML + '<div class="reading-log-scroll">' + ordered.map(log =>
     '<div class="reading-log-row">' +
       '<div class="reading-log-main">' +
-        '<div class="reading-log-title" title="' + escapeAttribute(log.title || '未命名文献') + '">' + escapeHTML(log.title || '未命名文献') + '</div>' +
+        '<button class="reading-log-title" type="button" data-reading-log-edit="' + escapeAttribute(log.id) + '" title="点击编辑：' + escapeAttribute(log.title || '未命名文献') + '" aria-label="编辑阅读记录：' + escapeAttribute(log.title || '未命名文献') + '">' + escapeHTML(log.title || '未命名文献') + '</button>' +
         '<div class="reading-log-meta">' +
-          '<span class="reading-log-pill" title="' + escapeAttribute(readingLogTagLabel(log)) + '">' + escapeHTML(readingLogTagLabel(log)) + '</span>' +
-          '<span class="reading-log-date">' + escapeHTML(log.date || '未记录日期') + '</span>' +
+          readingLogTagPillsHTML(log) +
         '</div>' +
+        '<div class="reading-log-date">' + escapeHTML(log.date || '未记录日期') + '</div>' +
       '</div>' +
-      '<button class="inspire-delete" style="position:static;opacity:1;flex-shrink:0;" data-reading-log-del="' + log.id + '" title="删除" aria-label="删除阅读记录">✕</button>' +
+          '<button class="inspire-delete reading-log-delete" data-reading-log-del="' + log.id + '" title="删除这条阅读记录" aria-label="删除阅读记录">×</button>' +
     '</div>'
   ).join('') + '</div>';
 }
 
-function openReadingLogModal() {
-  let html = '<div class="modal-content" style="max-width:480px;">' +
-    '<h3 style="margin-bottom:16px;">添加文献打卡</h3>' +
+function openReadingLogModal(editingLog = null, supplement = false) {
+  let modalTags = editingLog ? editableReadingLogTags(editingLog) : [];
+  let draggedTagIndex = -1;
+  let dragTargetChip = null;
+  let dragTargetSide = '';
+  let longPressTimer = null;
+  let pointerDragActive = false;
+  let pointerDragId = null;
+  let pointerPressPoint = null;
+  let ignoreTagClickUntil = 0;
+  let editingTagIndex = -1;
+  let subtagMenuOpen = false;
+  const domainValue = editingLog ? (String(editingLog.domain || '').trim() || readingLogDomain(editingLog)) : '';
+  const journalValue = editingLog ? readingLogJournal(editingLog) : '';
+  const authorsValue = editingLog ? readingLogAuthors(editingLog).join('、') : '';
+  const publicationYearValue = editingLog ? readingLogPublicationYear(editingLog) : '';
+  const comboOptionsHTML = options => options.map(option => '<button type="button" class="reading-log-domain-option" role="option" aria-selected="false" data-reading-combo-option="' + escapeAttribute(option) + '">' + escapeHTML(option) + '</button>').join('');
+  const readingLogComboHTML = ({ inputId, toggleId, menuId, value, placeholder, label, options }) =>
+    '<div class="reading-log-combobox">' +
+      '<input class="add-task-input reading-log-combobox-input" id="' + inputId + '" autocomplete="off" style="width:100%;" placeholder="' + escapeAttribute(placeholder) + '" value="' + escapeAttribute(value) + '" role="combobox" aria-label="' + escapeAttribute(label) + '" aria-autocomplete="list" aria-controls="' + menuId + '" aria-expanded="false">' +
+      '<button type="button" class="reading-log-combobox-toggle" id="' + toggleId + '" aria-label="展开' + escapeAttribute(label) + '选项" aria-expanded="false"><span aria-hidden="true"></span></button>' +
+      '<div class="reading-log-domain-menu reading-log-suggestion-menu" id="' + menuId + '" role="listbox" hidden>' + comboOptionsHTML(options) + '</div>' +
+    '</div>';
+  const subtagOptionsHTML = query => {
+    const normalizedQuery = String(query || '').trim().toLocaleLowerCase();
+    const options = readingLogSubtagOptions()
+      .filter(tag => !modalTags.includes(tag))
+      .filter(tag => !normalizedQuery || tag.toLocaleLowerCase().includes(normalizedQuery));
+    return options.length
+      ? options.map(tag => '<button type="button" class="reading-log-domain-option" role="option" aria-selected="false" data-reading-subtag-option="' + escapeAttribute(tag) + '">' + escapeHTML(tag) + '</button>').join('')
+      : '<div class="reading-log-domain-empty">没有可选子标签，可直接输入新标签</div>';
+  };
+  const tagEditorHTML = () => '<div class="reading-log-tag-picker">' +
+    '<div class="reading-log-tag-editor" id="readingLogTagEditor">' +
+    modalTags.map((tag, index) => '<span class="reading-log-tag-chip' + (editingTagIndex === index ? ' is-editing' : '') + '" draggable="false" data-reading-tag-index="' + index + '" title="' + (editingTagIndex === index ? '编辑子标签' : '长按拖动；双击编辑子标签') + '">' +
+      '<span class="reading-log-tag-drag" aria-hidden="true">⠿</span>' +
+      (editingTagIndex === index
+        ? '<input class="reading-log-tag-edit-input" data-edit-reading-tag="' + index + '" aria-label="编辑子标签 ' + escapeAttribute(tag) + '" value="' + escapeAttribute(tag) + '" autocomplete="off">'
+        : '<span class="reading-log-tag-label">' + escapeHTML(tag) + '</span>') +
+      '<button type="button" class="reading-log-tag-remove" draggable="false" data-remove-reading-tag="' + escapeAttribute(tag) + '" aria-label="移除子标签 ' + escapeAttribute(tag) + '">×</button>' +
+    '</span>').join('') +
+    '<input id="readingLogTagInput" class="reading-log-tag-input" placeholder="输入或选择多个子标签" aria-label="添加子标签" autocomplete="off" aria-controls="readingLogSubtagSuggestions" aria-expanded="' + String(subtagMenuOpen) + '">' +
+    '<button type="button" class="reading-log-combobox-toggle reading-log-tag-toggle' + (subtagMenuOpen ? ' is-open' : '') + '" id="readingLogTagToggle" aria-label="展开子标签选项" aria-expanded="' + String(subtagMenuOpen) + '"><span aria-hidden="true"></span></button>' +
+    '</div>' +
+    '<div class="reading-log-domain-menu reading-log-suggestion-menu reading-log-subtag-menu" id="readingLogSubtagSuggestions" role="listbox"' + (subtagMenuOpen ? '' : ' hidden') + '>' + subtagOptionsHTML('') + '</div>' +
+    '</div>';
+  let html = '<div class="modal-content" style="max-width:500px;">' +
+    '<h3 style="margin-bottom:16px;">' + (editingLog ? '编辑文献打卡' : (supplement ? '补卡' : '添加文献打卡')) + '</h3>' +
     '<div style="display:grid;gap:12px;">' +
-        '<div><label style="font-size:12px;color:var(--text-muted);">文献名称</label><input class="add-task-input" id="readingLogTitle" style="width:100%;margin-top:4px;" placeholder="输入文献名称"></div>' +
-      '<div><label style="font-size:12px;color:var(--text-muted);">标签</label><input class="add-task-input" id="readingLogTags" style="width:100%;margin-top:4px;" placeholder="例如：MARL, RL, Game, SSDs"></div>' +
-      '<div><label style="font-size:12px;color:var(--text-muted);">打卡时间</label><input class="add-task-input" id="readingLogDate" type="date" style="width:100%;margin-top:4px;" value="' + new Date().toISOString().slice(0, 10) + '"></div>' +
+        '<div><label style="font-size:12px;color:var(--text-muted);">文献名称</label><input class="add-task-input" id="readingLogTitle" style="width:100%;margin-top:4px;" placeholder="输入文献名称" value="' + escapeAttribute(editingLog?.title || '') + '"></div>' +
+      '<div class="reading-log-domain-field"><label style="font-size:12px;color:var(--text-muted);">主标签（文献领域，用于饼图统计）</label>' + readingLogComboHTML({ inputId: 'readingLogDomain', toggleId: 'readingLogDomainToggle', menuId: 'readingLogDomainSuggestions', value: domainValue, placeholder: '输入或选择主标签，如：矩阵博弈、LLMs后训练', label: '主标签', options: readingLogDomainOptions() }) + '<div class="reading-log-domain-hint">已有领域会在输入时提示；输入新领域并保存即可创建</div></div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">发表年份（仅填写年份）</label><input class="add-task-input reading-log-publication-year" id="readingLogPublicationYear" type="text" inputmode="numeric" maxlength="4" pattern="(?:19|20)\\d{2}" style="width:100%;margin-top:4px;" placeholder="如：2025" value="' + escapeAttribute(publicationYearValue) + '"></div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">发表期刊名称（作为标签显示）</label>' + readingLogComboHTML({ inputId: 'readingLogJournal', toggleId: 'readingLogJournalToggle', menuId: 'readingLogJournalSuggestions', value: journalValue, placeholder: '输入或选择发表期刊名称，如：Nature、NeurIPS', label: '发表期刊名称', options: readingLogJournalOptions() }) + '</div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">作者（作为标签显示，多位作者用逗号分隔）</label>' + readingLogComboHTML({ inputId: 'readingLogAuthors', toggleId: 'readingLogAuthorsToggle', menuId: 'readingLogAuthorsSuggestions', value: authorsValue, placeholder: '输入或选择作者，可用逗号分隔多人', label: '作者', options: readingLogAuthorOptions() }) + '</div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">子标签（可添加多个）</label>' + tagEditorHTML() + '<div class="reading-log-tag-hint">长按标签可拖动排序；双击标签可编辑；新标签默认添加到末尾</div></div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">文献类型</label><div class="reading-log-select-wrap"><select class="add-task-input reading-log-select" id="readingLogType" style="width:100%;">' + READING_TYPES.map(type => '<option value="' + escapeAttribute(type) + '"' + (readingLogType(editingLog || {}) === type ? ' selected' : '') + '>' + escapeHTML(type) + '</option>').join('') + '</select><span class="reading-log-select-chevron" aria-hidden="true"></span></div></div>' +
+      '<div><label style="font-size:12px;color:var(--text-muted);">打卡时间</label><div style="position:relative;margin-top:4px;"><input class="add-task-input" id="readingLogDate" type="date" style="width:100%;padding-right:12px;" value="' + escapeAttribute(editingLog?.date || new Date().toISOString().slice(0, 10)) + '"><button class="card-btn reading-log-random-btn" type="button" id="randomReadingLogDate" title="根据发表年份随机生成补卡时间" aria-label="随机生成补卡时间"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"></path><path d="M21 3v5h-5"></path></svg></button></div>' + (supplement ? '<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">随机日期范围：文章发表后至今天</div>' : '') + '</div>' +
     '</div>' +
     '<div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">' +
-      '<button class="btn btn-outline btn-sm" onclick="closeModal()">取消</button>' +
-      '<button class="btn btn-primary btn-sm" id="confirmReadingLog">确认添加</button>' +
-    '</div>' +
+      '<button class="btn btn-outline btn-sm" type="button" id="cancelReadingLog">取消</button>' +
+      '<button class="btn btn-primary btn-sm" id="confirmReadingLog">' + (editingLog ? '保存修改' : '确认添加') + '</button>' +
+  '</div>' +
   '</div>';
   showModal(html);
+  document.getElementById('cancelReadingLog').addEventListener('click', closeModal);
+  document.getElementById('randomReadingLogDate').addEventListener('click', () => {
+    const year = document.getElementById('readingLogPublicationYear').value.match(/^(?:19|20)\d{2}$/)?.[0];
+    if (!year) { showToast('请先填写有效的发表年份', 'warning'); return; }
+    const start = new Date(Number(year), 0, 1);
+    const end = new Date(); end.setHours(0, 0, 0, 0);
+    if (start > end) { showToast('发表年份不能晚于当前日期', 'warning'); return; }
+    const day = start.getTime() + Math.floor(Math.random() * (end.getTime() - start.getTime() + 86400000));
+    document.getElementById('readingLogDate').value = todayKey(new Date(day));
+  });
+  const bindReadingLogCombo = ({ inputId, toggleId, menuId, getOptions, queryValue = value => value, selectValue = (input, value) => { input.value = value; } }) => {
+    const input = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    const menu = document.getElementById(menuId);
+    let highlightedIndex = -1;
+    const setMenuOpen = open => {
+      menu.hidden = !open;
+      input.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.classList.toggle('is-open', open);
+      if (!open) highlightedIndex = -1;
+    };
+    const renderOptions = () => {
+      const normalizedQuery = String(queryValue(input.value) || '').trim().toLocaleLowerCase();
+      const options = getOptions().filter(option => !normalizedQuery || option.toLocaleLowerCase().includes(normalizedQuery));
+      menu.innerHTML = options.length
+        ? comboOptionsHTML(options)
+        : '<div class="reading-log-domain-empty">输入内容后即可创建新选项</div>';
+      highlightedIndex = -1;
+    };
+    const updateHighlight = index => {
+      const options = Array.from(menu.querySelectorAll('[data-reading-combo-option]'));
+      if (!options.length) {
+        highlightedIndex = -1;
+        return;
+      }
+      highlightedIndex = Math.max(0, Math.min(index, options.length - 1));
+      options.forEach((option, optionIndex) => {
+        const active = optionIndex === highlightedIndex;
+        option.classList.toggle('is-highlighted', active);
+        option.setAttribute('aria-selected', String(active));
+      });
+      options[highlightedIndex].scrollIntoView({ block: 'nearest' });
+    };
+    const selectOption = option => {
+      if (!option) return;
+      selectValue(input, option.dataset.readingComboOption || '');
+      setMenuOpen(false);
+      input.focus();
+    };
+    toggle.addEventListener('mousedown', event => event.preventDefault());
+    toggle.addEventListener('click', () => {
+      const willOpen = menu.hidden;
+      renderOptions();
+      setMenuOpen(willOpen);
+      if (willOpen) input.focus();
+    });
+    input.addEventListener('focus', () => {
+      renderOptions();
+      setMenuOpen(true);
+    });
+    input.addEventListener('input', () => {
+      renderOptions();
+      setMenuOpen(true);
+    });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (menu.hidden) {
+          renderOptions();
+          setMenuOpen(true);
+        }
+        const options = menu.querySelectorAll('[data-reading-combo-option]');
+        if (!options.length) return;
+        const direction = event.key === 'ArrowDown' ? 1 : -1;
+        const nextIndex = highlightedIndex < 0
+          ? (direction > 0 ? 0 : options.length - 1)
+          : (highlightedIndex + direction + options.length) % options.length;
+        updateHighlight(nextIndex);
+        return;
+      }
+      if (event.key === 'Enter' && !menu.hidden && highlightedIndex >= 0) {
+        event.preventDefault();
+        selectOption(menu.querySelectorAll('[data-reading-combo-option]')[highlightedIndex]);
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setMenuOpen(false);
+      }
+    });
+    input.addEventListener('blur', () => setTimeout(() => setMenuOpen(false), 160));
+    menu.addEventListener('mousedown', event => event.preventDefault());
+    menu.addEventListener('click', event => {
+      const option = event.target.closest('[data-reading-combo-option]');
+      if (!option) return;
+      selectOption(option);
+    });
+    renderOptions();
+  };
+  bindReadingLogCombo({
+    inputId: 'readingLogDomain',
+    toggleId: 'readingLogDomainToggle',
+    menuId: 'readingLogDomainSuggestions',
+    getOptions: readingLogDomainOptions
+  });
+  bindReadingLogCombo({
+    inputId: 'readingLogJournal',
+    toggleId: 'readingLogJournalToggle',
+    menuId: 'readingLogJournalSuggestions',
+    getOptions: readingLogJournalOptions
+  });
+  bindReadingLogCombo({
+    inputId: 'readingLogAuthors',
+    toggleId: 'readingLogAuthorsToggle',
+    menuId: 'readingLogAuthorsSuggestions',
+    getOptions: readingLogAuthorOptions,
+    queryValue: value => String(value || '').split(/[,，;；、]+/).pop(),
+    selectValue: (input, value) => {
+      const parts = String(input.value || '').split(/[,，;；、]+/).slice(0, -1).map(part => part.trim()).filter(Boolean);
+      input.value = [...parts, value].join('、');
+    }
+  });
+  const replaceModalTagEditor = () => {
+    const picker = document.querySelector('.reading-log-tag-picker');
+    if (!picker) return;
+    draggedTagIndex = -1;
+    dragTargetChip = null;
+    dragTargetSide = '';
+    pointerDragActive = false;
+    pointerDragId = null;
+    pointerPressPoint = null;
+    picker.outerHTML = tagEditorHTML();
+    bindModalTagEditor();
+  };
+  let subtagHighlightedIndex = -1;
+  const addModalTag = (value, keepMenuOpen = false) => {
+    // Commas delimit multiple tags; whitespace is part of a tag name so
+    // entries such as “AI 安全” remain a single subtag.
+    String(value || '').split(/[,，;；、]+/).map(tag => tag.trim()).filter(Boolean).forEach(tag => {
+      if (!modalTags.includes(tag)) modalTags.push(tag);
+    });
+    subtagMenuOpen = keepMenuOpen;
+    subtagHighlightedIndex = -1;
+    replaceModalTagEditor();
+    if (keepMenuOpen) requestAnimationFrame(() => document.getElementById('readingLogTagInput')?.focus());
+  };
+  const finishModalTagEdit = (index, value, input = null) => {
+    if (editingTagIndex !== index) return;
+    const next = String(value || '').trim();
+    if (!next) {
+      input?.focus();
+      return;
+    }
+    if (modalTags.some((tag, tagIndex) => tagIndex !== index && tag === next)) {
+      showToast('该子标签已存在，请换一个名称', 'warning');
+      input?.focus();
+      input?.select();
+      return;
+    }
+    modalTags[index] = next;
+    editingTagIndex = -1;
+    replaceModalTagEditor();
+  };
+  const beginModalTagEdit = index => {
+    if (!Number.isInteger(index) || index < 0 || index >= modalTags.length) return;
+    editingTagIndex = index;
+    subtagMenuOpen = false;
+    replaceModalTagEditor();
+    requestAnimationFrame(() => {
+      const editInput = document.querySelector('[data-edit-reading-tag="' + index + '"]');
+      editInput?.focus();
+      editInput?.select();
+    });
+  };
+  const bindModalTagEditor = () => {
+    const editor = document.getElementById('readingLogTagEditor');
+    const input = document.getElementById('readingLogTagInput');
+    const toggle = document.getElementById('readingLogTagToggle');
+    const menu = document.getElementById('readingLogSubtagSuggestions');
+    const setSubtagMenuOpen = open => {
+      subtagMenuOpen = open;
+      menu.hidden = !open;
+      input.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.classList.toggle('is-open', open);
+      if (!open) subtagHighlightedIndex = -1;
+    };
+    const renderSubtagOptions = () => {
+      menu.innerHTML = subtagOptionsHTML(input.value);
+      subtagHighlightedIndex = -1;
+    };
+    const updateSubtagHighlight = index => {
+      const options = Array.from(menu.querySelectorAll('[data-reading-subtag-option]'));
+      if (!options.length) {
+        subtagHighlightedIndex = -1;
+        return;
+      }
+      subtagHighlightedIndex = Math.max(0, Math.min(index, options.length - 1));
+      options.forEach((option, optionIndex) => {
+        const active = optionIndex === subtagHighlightedIndex;
+        option.classList.toggle('is-highlighted', active);
+        option.setAttribute('aria-selected', String(active));
+      });
+      options[subtagHighlightedIndex].scrollIntoView({ block: 'nearest' });
+    };
+    const selectSubtagOption = option => {
+      if (!option) return;
+      // The old input's blur handler must not re-add the query (for example, "ip")
+      // after selecting an existing option such as "IPD".
+      input.value = '';
+      addModalTag(option.dataset.readingSubtagOption || '', true);
+    };
+    const syncTagIndices = () => editor.querySelectorAll('.reading-log-tag-chip').forEach((chip, index) => {
+      chip.dataset.readingTagIndex = String(index);
+    });
+    const moveDraggedTagTo = (targetChip, event) => {
+      const sourceIndex = draggedTagIndex;
+      const originalTargetIndex = Number(targetChip?.dataset.readingTagIndex);
+      if (!targetChip || !Number.isInteger(sourceIndex) || !Number.isInteger(originalTargetIndex) || sourceIndex < 0 || sourceIndex >= modalTags.length) return;
+      const rect = targetChip.getBoundingClientRect();
+      const moveAfter = event.clientX > rect.left + rect.width / 2;
+      const side = moveAfter ? 'after' : 'before';
+      if (targetChip === dragTargetChip && side === dragTargetSide) return;
+      dragTargetChip = targetChip;
+      dragTargetSide = side;
+      let targetIndex = originalTargetIndex + (moveAfter ? 1 : 0);
+      if (targetIndex > sourceIndex) targetIndex -= 1;
+      if (targetIndex === sourceIndex) return;
+      const sourceChip = editor.querySelector('.reading-log-tag-chip[data-reading-tag-index="' + sourceIndex + '"]');
+      if (!sourceChip) return;
+      const [movedTag] = modalTags.splice(sourceIndex, 1);
+      modalTags.splice(targetIndex, 0, movedTag);
+      if (sourceIndex < originalTargetIndex) targetChip.after(sourceChip);
+      else targetChip.before(sourceChip);
+      draggedTagIndex = targetIndex;
+      syncTagIndices();
+    };
+    editor.addEventListener('click', event => {
+      if (performance.now() < ignoreTagClickUntil) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      const remove = event.target.closest('[data-remove-reading-tag]');
+      if (!remove) return;
+      event.preventDefault();
+      event.stopPropagation();
+      modalTags = modalTags.filter(tag => tag !== remove.dataset.removeReadingTag);
+      replaceModalTagEditor();
+    });
+    editor.querySelectorAll('[data-edit-reading-tag]').forEach(editInput => {
+      const index = Number(editInput.dataset.editReadingTag);
+      editInput.addEventListener('pointerdown', event => event.stopPropagation());
+      editInput.addEventListener('click', event => event.stopPropagation());
+      editInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          finishModalTagEdit(index, editInput.value, editInput);
+        } else if (event.key === 'Escape') {
+          event.preventDefault();
+          editingTagIndex = -1;
+          replaceModalTagEditor();
+        }
+      });
+      editInput.addEventListener('blur', () => {
+        setTimeout(() => finishModalTagEdit(index, editInput.value, editInput), 0);
+      });
+    });
+    editor.querySelectorAll('.reading-log-tag-chip').forEach(chip => {
+      const startPointerDrag = () => {
+        const sourceIndex = Number(chip.dataset.readingTagIndex);
+        if (!Number.isInteger(sourceIndex) || sourceIndex < 0 || sourceIndex >= modalTags.length) return;
+        draggedTagIndex = sourceIndex;
+        dragTargetChip = null;
+        dragTargetSide = '';
+        pointerDragActive = true;
+        editor.classList.add('is-dragging');
+        chip.classList.add('is-drag-source');
+      };
+      const clearPointerDrag = () => {
+        if (longPressTimer) clearTimeout(longPressTimer);
+        longPressTimer = null;
+        pointerDragActive = false;
+        pointerDragId = null;
+        pointerPressPoint = null;
+        draggedTagIndex = -1;
+        dragTargetChip = null;
+        dragTargetSide = '';
+        editor.classList.remove('is-dragging');
+        editor.querySelectorAll('.reading-log-tag-chip.is-drag-source').forEach(source => source.classList.remove('is-drag-source'));
+      };
+      chip.addEventListener('pointerdown', event => {
+        if (event.target.closest?.('[data-remove-reading-tag], [data-edit-reading-tag]')) return;
+        const sourceIndex = Number(chip.dataset.readingTagIndex);
+        if (!Number.isInteger(sourceIndex)) return;
+        pointerDragId = event.pointerId;
+        pointerPressPoint = { x: event.clientX, y: event.clientY };
+        chip.setPointerCapture?.(event.pointerId);
+        longPressTimer = setTimeout(() => {
+          startPointerDrag();
+        }, 320);
+      });
+      chip.addEventListener('pointermove', event => {
+        if (pointerDragId !== event.pointerId) return;
+        if (!pointerDragActive) {
+          const start = pointerPressPoint || { x: event.clientX, y: event.clientY };
+          const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y) > 8;
+          // Native mouse drags usually begin moving before a long-press timer
+          // can fire (including Computer Use and trackpad input). Start the
+          // drag on movement for a mouse, while keeping the long-press gesture
+          // for touch/pen pointers to avoid accidental reordering while scrolling.
+          if (moved) startPointerDrag();
+          if (!pointerDragActive) return;
+        }
+        event.preventDefault();
+        const target = document.elementFromPoint(event.clientX, event.clientY)?.closest?.('.reading-log-tag-chip');
+        if (target && target.parentElement === editor) moveDraggedTagTo(target, event);
+      });
+      chip.addEventListener('pointerup', event => {
+        if (pointerDragId !== event.pointerId) return;
+        if (pointerDragActive) {
+          event.preventDefault();
+          // Prevent the release from being interpreted as a click (including
+          // an accidental click on a neighbouring tag's remove button).
+          ignoreTagClickUntil = performance.now() + 350;
+        }
+        chip.releasePointerCapture?.(event.pointerId);
+        clearPointerDrag();
+      });
+      chip.addEventListener('pointercancel', event => {
+        if (pointerDragId === event.pointerId) chip.releasePointerCapture?.(event.pointerId);
+        clearPointerDrag();
+      });
+      chip.addEventListener('dblclick', event => {
+        if (event.target.closest?.('[data-remove-reading-tag]')) return;
+        event.preventDefault();
+        event.stopPropagation();
+        beginModalTagEdit(Number(chip.dataset.readingTagIndex));
+      });
+    });
+    toggle.addEventListener('mousedown', event => event.preventDefault());
+    toggle.addEventListener('click', () => {
+      const willOpen = menu.hidden;
+      renderSubtagOptions();
+      setSubtagMenuOpen(willOpen);
+      if (willOpen) input.focus();
+    });
+    input.addEventListener('focus', () => {
+      renderSubtagOptions();
+      setSubtagMenuOpen(true);
+    });
+    input.addEventListener('input', () => {
+      renderSubtagOptions();
+      setSubtagMenuOpen(true);
+    });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !menu.hidden && subtagHighlightedIndex >= 0) {
+        event.preventDefault();
+        const option = menu.querySelectorAll('[data-reading-subtag-option]')[subtagHighlightedIndex];
+        selectSubtagOption(option);
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ',' || event.key === '，') {
+        event.preventDefault();
+        addModalTag(input.value);
+        return;
+      }
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (menu.hidden) {
+          renderSubtagOptions();
+          setSubtagMenuOpen(true);
+        }
+        const options = menu.querySelectorAll('[data-reading-subtag-option]');
+        if (!options.length) return;
+        const direction = event.key === 'ArrowDown' ? 1 : -1;
+        const nextIndex = subtagHighlightedIndex < 0
+          ? (direction > 0 ? 0 : options.length - 1)
+          : (subtagHighlightedIndex + direction + options.length) % options.length;
+        updateSubtagHighlight(nextIndex);
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setSubtagMenuOpen(false);
+      }
+    });
+    input.addEventListener('blur', () => setTimeout(() => {
+      if (input.value.trim()) addModalTag(input.value);
+      else setSubtagMenuOpen(false);
+    }, 160));
+    menu.addEventListener('mousedown', event => event.preventDefault());
+    menu.addEventListener('click', event => {
+      const option = event.target.closest('[data-reading-subtag-option]');
+      if (!option) return;
+      selectSubtagOption(option);
+    });
+  };
+  bindModalTagEditor();
   document.getElementById('confirmReadingLog').addEventListener('click', async () => {
     const confirmButton = document.getElementById('confirmReadingLog');
     if (!confirmButton || confirmButton.disabled) return;
     const title = document.getElementById('readingLogTitle').value.trim();
-    const tags = readingLogTags({ tags: document.getElementById('readingLogTags').value });
+    const pendingTag = document.getElementById('readingLogTagInput').value;
+    if (pendingTag) addModalTag(pendingTag);
+    const tags = Array.from(new Set(modalTags));
+    const domain = document.getElementById('readingLogDomain').value.trim();
+    const journal = document.getElementById('readingLogJournal').value.trim();
+    const authors = readingLogAuthors({ authors: document.getElementById('readingLogAuthors').value });
+    const publicationYear = document.getElementById('readingLogPublicationYear').value.replace(/\D/g, '').slice(0, 4);
+    const type = document.getElementById('readingLogType').value;
     const date = document.getElementById('readingLogDate').value;
-    if (!title || !date || !tags.length) { showToast('请填写文献名称、标签和打卡时间', 'warning'); return; }
-    const cutoff = readingLogRangeStart();
-    if (date < todayKey(cutoff) || date > todayKey(new Date())) {
-      showToast('仅保留近六个月的记录，请选择有效日期', 'warning');
+    if (!title || !date || !domain) { showToast('请填写文献名称、研究领域和打卡时间', 'warning'); return; }
+    if (publicationYear && !/^(?:19|20)\d{2}$/.test(publicationYear)) { showToast('发表年份请填写 1900 至 2099 年之间的四位数字', 'warning'); return; }
+    const publicationStart = publicationYear ? todayKey(new Date(Number(publicationYear), 0, 1)) : '';
+    if ((supplement && publicationStart && date < publicationStart) || date > todayKey(new Date())) {
+      showToast(supplement ? '补卡日期必须在文章发表后至今天之间' : '打卡日期不能晚于今天', 'warning');
       return;
     }
     const logs = DATA.learning.research.readingLogs || [];
     DATA.learning.research.readingLogs = logs;
     const titleKey = readingLogTitleKey(title);
-    const existing = logs.find(log => readingLogTitleKey(log.title) === titleKey);
+    const existing = logs.find(log => log.id !== editingLog?.id && readingLogTitleKey(log.title) === titleKey);
     if (existing) {
       showToast('该文献已于 ' + (existing.date || '此前') + ' 打卡，已阻止重复记录', 'warning');
       return;
     }
     confirmButton.disabled = true;
     confirmButton.setAttribute('aria-busy', 'true');
-    confirmButton.textContent = '检查中…';
-    const zoteroStatus = await zoteroReadStatusForTitle(title);
+    confirmButton.textContent = editingLog ? '保存中…' : '检查中…';
+    const zoteroStatus = editingLog ? null : await zoteroReadStatusForTitle(title);
     if (zoteroStatus && zoteroStatus.read) {
       confirmButton.disabled = false;
       confirmButton.removeAttribute('aria-busy');
@@ -1881,12 +2752,19 @@ function openReadingLogModal() {
       showToast('无法确认 Zotero 阅读状态，请稍后重试', 'warning');
       return;
     }
-    logs.push({ id: uid(), date, title, tags });
+    // Journal and authors are first-class visible/filterable tags, but remain
+    // separate structured fields so they are never copied into the subtag editor.
+    const persistedTags = Array.from(new Set([domain, publicationYear, journal, ...authors, ...tags].filter(Boolean)));
+    if (editingLog) {
+      Object.assign(editingLog, { date, title, type, domain, journal, authors, publicationYear, tags: persistedTags });
+    } else {
+      logs.push({ id: uid(), date, title, type, domain, journal, authors, publicationYear, tags: persistedTags, isSupplement: supplement });
+    }
     const pruned = pruneReadingLogs();
     save();
     closeModal();
     rerender();
-    showToast(pruned ? '已添加阅读记录，并清理三个月前历史' : '已添加阅读记录', 'success');
+    showToast(editingLog ? '阅读记录已更新' : (supplement ? '补卡成功' : (pruned ? '已添加阅读记录，并清理历史' : '已添加阅读记录')), 'success');
   });
 }
 
@@ -1924,13 +2802,17 @@ function autoResizeResearchTextareas(root) {
 
 function afterPageRender() {
   requestAnimationFrame(() => autoResizeResearchTextareas(document.getElementById('mainContent')));
+  // The weather control lives in the persistent React top bar, so it must be
+  // initialized regardless of which page is currently open.
+  if (!weatherAutoRefreshStarted) {
+    weatherAutoRefreshStarted = true;
+    fetchWeather({ force: true });
+  }
+  // The persistent top bar is committed by React after the runtime's first
+  // render; repaint here as well to cover that initial mount race.
+  paintWeather();
   if (currentPage === 'dashboard') {
     requestAnimationFrame(mountDashboardEyes);
-    // On every site entry, request the latest weather once; later rerenders reuse state.
-    if (!weatherAutoRefreshStarted) {
-      weatherAutoRefreshStarted = true;
-      fetchWeather({ force: true });
-    }
   } else {
     dashboardEyesCleanup();
   }
@@ -4470,7 +5352,7 @@ function researchIdeaHTML() {
       '<div class="research-idea-list">' + list + '</div>' +
     '</section>' + detail + '</div>';
   return '<div class="research-idea-page">' +
-    '<section class="research-idea-hero"><div><div class="research-idea-eyebrow">Idea to Paper Journey</div><h2>让一个 Idea，<br>沿着证据长成一篇 Paper</h2><div class="research-idea-hero-copy">从最初的问题意识出发，持续沉淀研究动机、相关工作、方法设计与实验方案，让每一次判断、取舍和修改都有迹可循。</div></div>' +
+    '<section class="research-idea-hero"><div><div class="research-idea-eyebrow">Idea to Paper Journey</div><h2>' + commaTitleHTML('让一个 Idea，沿着证据长成一篇 Paper') + '</h2><div class="research-idea-hero-copy">从最初的问题意识出发，持续沉淀研究动机、相关工作、方法设计与实验方案，让每一次判断、取舍和修改都有迹可循。</div></div>' +
     '<div class="research-idea-stats" aria-label="研究路径概览"><div class="research-idea-stat"><strong>' + activeItems.length + '</strong><span>研究路径</span></div><div class="research-idea-stat"><strong>' + developingCount + '</strong><span>推进中</span></div><div class="research-idea-stat"><strong>' + completedCount + '</strong><span>已完成</span></div></div></section>' +
     '<div class="research-idea-capture"><span class="research-idea-capture-icon">✦</span><input id="researchIdeaQuickTitle" type="text" placeholder="先写下这个 Idea 想解决的问题…" aria-label="快速记录灵感"><span class="research-idea-capture-hint">Enter 快速建立路径</span><button type="button" class="research-idea-primary" data-action="research-idea-new">新建研究路径</button></div>' + viewbar +
     (researchInspirationState.view === 'overview' ? researchIdeaOverviewHTML(items, visible, filters) : journeyWorkspace) + '</div>';
@@ -4880,7 +5762,7 @@ function researchExperimentHTML() {
   const ideas = researchIdeaStore().filter(item => !item.archived);
   if (!ideas.length) {
     return '<div class="research-lab-page">' +
-      '<section class="research-lab-head research-lab-head--narrative"><div><div class="research-lab-eyebrow">Evidence Building</div><h2>让一个假设，<br>在实验中经得起检验</h2><p>实验从一个清晰的问题开始；建立 Idea 后，把方案、结果与分析沉淀为可复盘的验证链路。</p></div></section>' +
+      '<section class="research-lab-head research-lab-head--narrative"><div><div class="research-lab-eyebrow">Evidence Building</div><h2>' + commaTitleHTML('让一个假设，在实验中经得起检验') + '</h2><p>实验从一个清晰的问题开始；建立 Idea 后，把方案、结果与分析沉淀为可复盘的验证链路。</p></div></section>' +
       '<section class="research-lab-onboarding"><div class="research-lab-onboarding-copy"><span class="research-lab-onboarding-mark">⌁</span><div><div class="research-lab-section-kicker">开始验证</div><h3>先建立一条研究路径</h3><p>选择一个值得验证的问题，再在这里记录假设、实验设置、结果与结论。</p></div></div><div class="research-lab-onboarding-steps"><div><b>01</b><span>提出问题</span><em>在灵感中记录研究动机</em></div><div><b>02</b><span>设计验证</span><em>配置方案与对照条件</em></div><div><b>03</b><span>沉淀证据</span><em>复盘结果与下一步</em></div></div><button type="button" class="research-lab-btn primary" data-action="research-experiment-go-ideas">去建立 Idea</button></section></div>';
   }
   if (!ideas.some(item => item.id === researchExperimentState.ideaId)) researchExperimentState.ideaId = ideas[0].id;
@@ -4902,7 +5784,7 @@ function researchExperimentHTML() {
   })).join('') : '';
   const editor = selected ? '<div class="research-experiment-editor"><div class="research-experiment-editor-head"><input class="research-experiment-title-input" data-research-experiment-field="title" data-research-experiment-id="' + selected.id + '" value="' + escapeAttribute(selected.title || '') + '" placeholder="实验名称" aria-label="实验名称"><button type="button" class="research-experiment-delete" data-action="research-experiment-delete" title="删除实验" aria-label="删除实验">🗑</button></div><div class="research-experiment-fields">' + editorFields + '</div></div>' : '<div class="research-lab-empty"><div class="research-lab-empty-icon">⌁</div><strong>这个 Idea 还没有实验记录</strong><span>从研究动机、实验设置到结果分析，建立可追溯的验证过程。</span><button type="button" class="research-lab-btn primary" data-action="research-experiment-new">＋ 创建第一组实验</button></div>';
   return '<div class="research-lab-page">' +
-    '<section class="research-lab-head research-lab-head--narrative"><div><div class="research-lab-eyebrow">Evidence Building</div><h2>让一个假设，<br>在实验中经得起检验</h2><p>围绕同一条 Idea，记录每一次设计、观察与判断，让实验过程可追溯、可复盘。</p></div><div class="research-lab-selector"><label for="researchExperimentIdeaSelect">关联 Idea</label><select id="researchExperimentIdeaSelect" class="research-lab-select">' + options + '</select></div></section>' +
+    '<section class="research-lab-head research-lab-head--narrative"><div><div class="research-lab-eyebrow">Evidence Building</div><h2>' + commaTitleHTML('让一个假设，在实验中经得起检验') + '</h2><p>围绕同一条 Idea，记录每一次设计、观察与判断，让实验过程可追溯、可复盘。</p></div><div class="research-lab-selector"><label for="researchExperimentIdeaSelect">关联 Idea</label><select id="researchExperimentIdeaSelect" class="research-lab-select">' + options + '</select></div></section>' +
     '<section class="research-lab-section"><div class="research-lab-section-head"><div><div class="research-lab-section-kicker">实验记录</div><div class="research-lab-section-title">验证方案与结果</div><div class="research-lab-section-note">当前关联“' + escapeHTML(idea.title || '未命名 Idea') + '”；阶段计划已填写 ' + filledPlan + ' / ' + RESEARCH_IDEA_STAGES.find(stage => stage.key === 'experiment').fields.length + ' 项。</div></div><div class="research-lab-head-actions"><button type="button" class="research-lab-btn" data-action="research-experiment-open-plan">查看阶段计划</button><button type="button" class="research-lab-btn primary" data-action="research-experiment-new">＋ 新建实验</button></div></div>' +
       (records.length ? '<div class="research-experiment-tabs">' + tabs + '</div>' : '') + editor + '</section></div>';
 }
@@ -4987,7 +5869,7 @@ function researchPaperStatus(paper) {
 function researchPaperHTML() {
   const ideas = researchIdeaStore().filter(item => !item.archived);
   const papers = researchPaperStore().map(normalizeResearchPaper);
-  if (!ideas.length) return '<div class="research-paper-page"><section class="research-paper-hero research-paper-hero--narrative"><div><div class="research-paper-eyebrow">Writing to Submission</div><h2>让一个发现，<br>在写作中被完整表达</h2><p>从结构化写作到投稿与返修，让每一项成果都有清晰的下一步。</p></div></section><section class="research-paper-onboarding"><span class="research-lab-onboarding-mark">▧</span><div><div class="research-lab-section-kicker">开始写作</div><h3>先从一个明确的 Idea 开始</h3><p>建立研究路径后，即可创建关联论文，并沿着写作、投稿、审稿的节奏持续推进。</p></div><button type="button" class="research-paper-new" data-action="research-experiment-go-ideas">去建立 Idea</button></section></div>';
+  if (!ideas.length) return '<div class="research-paper-page"><section class="research-paper-hero research-paper-hero--narrative"><div><div class="research-paper-eyebrow">Writing to Submission</div><h2>' + commaTitleHTML('让一个发现，在写作中被完整表达') + '</h2><p>从结构化写作到投稿与返修，让每一项成果都有清晰的下一步。</p></div></section><section class="research-paper-onboarding"><span class="research-lab-onboarding-mark">▧</span><div><div class="research-lab-section-kicker">开始写作</div><h3>先从一个明确的 Idea 开始</h3><p>建立研究路径后，即可创建关联论文，并沿着写作、投稿、审稿的节奏持续推进。</p></div><button type="button" class="research-paper-new" data-action="research-experiment-go-ideas">去建立 Idea</button></section></div>';
   if (!ideas.some(item => item.id === researchPaperState.ideaId)) researchPaperState.ideaId = ideas[0].id;
   const idea = ideas.find(item => item.id === researchPaperState.ideaId);
   const scoped = papers.filter(paper => paper.ideaId === idea.id).sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
@@ -5022,7 +5904,7 @@ function researchPaperHTML() {
   const statsHTML = papers.length
     ? '<div class="research-paper-stats"><div class="research-paper-stat"><strong>' + papers.length + '</strong><span>全部论文</span></div><div class="research-paper-stat"><strong>' + writing + '</strong><span>写作中</span></div><div class="research-paper-stat"><strong>' + submitted + '</strong><span>投稿进行中</span></div><div class="research-paper-stat"><strong>' + accepted + '</strong><span>已录用</span></div></div>'
     : '<div class="research-paper-zero-progress"><span>论文进度</span><strong>尚未开始</strong><em>选择一个 Idea 后，创建第一篇论文即可开启写作流程。</em></div>';
-  return '<div class="research-paper-page"><section class="research-paper-hero research-paper-hero--narrative"><div><div class="research-paper-eyebrow">Writing to Submission</div><h2>让一个发现，<br>在写作中被完整表达</h2><p>从结构化写作到投稿与返修，让每一项成果都有清晰的下一步。</p></div><div class="research-paper-create"><label for="researchPaperIdeaSelect">关联 Idea</label><select id="researchPaperIdeaSelect" class="research-paper-idea-select">' + ideaOptions + '</select><button type="button" class="research-paper-new" data-action="research-paper-new">＋ 新建论文</button></div></section>' +
+  return '<div class="research-paper-page"><section class="research-paper-hero research-paper-hero--narrative"><div><div class="research-paper-eyebrow">Writing to Submission</div><h2>' + commaTitleHTML('让一个发现，在写作中被完整表达') + '</h2><p>从结构化写作到投稿与返修，让每一项成果都有清晰的下一步。</p></div><div class="research-paper-create"><label for="researchPaperIdeaSelect">关联 Idea</label><select id="researchPaperIdeaSelect" class="research-paper-idea-select">' + ideaOptions + '</select><button type="button" class="research-paper-new" data-action="research-paper-new">＋ 新建论文</button></div></section>' +
     statsHTML +
     '<section class="research-paper-workspace"><aside class="research-paper-list"><div class="research-paper-list-head">论文列表 <span>' + completed + ' 篇已完成</span></div>' + list + '</aside>' + detail + '</section></div>';
 }
@@ -5110,7 +5992,7 @@ function researchTodoHTML() {
       ];
   const groups = groupDefs.filter(group => group[2].length).map(group => '<section class="research-todo-group"><div class="research-todo-group-head">' + group[1] + ' <span>' + group[2].length + '</span></div>' + group[2].map(item => researchTodoRowHTML(item, ideaMap)).join('') + '</section>').join('');
   const scopes = [['all', '全部任务'], ['overdue', '逾期'], ['completed', '已完成']].map(scope => '<button type="button" class="research-todo-scope' + (researchTodoState.scope === scope[0] ? ' is-active' : '') + '" data-research-todo-scope="' + scope[0] + '">' + scope[1] + '</button>').join('');
-  return '<div class="research-todo-page"><section class="research-todo-hero"><div><div class="research-todo-eyebrow">Research Action Flow</div><h2>科研行动台</h2><p>记录研究任务，关联对应 Idea，并按照完成期限和优先级逐项推进。</p></div><div class="research-todo-capture"><input id="researchTodoQuickInput" class="research-todo-title-input" placeholder="记下一件需要推进的研究行动…" aria-label="快速添加科研任务"><input id="researchTodoQuickDue" class="research-todo-due-input" type="date" aria-label="完成期限" title="完成期限"><button type="button" data-action="research-todo-quick-add">添加任务</button></div></section>' +
+  return '<div class="research-todo-page"><section class="research-todo-hero"><div><div class="research-todo-eyebrow">Research Action Flow</div><h2>待办</h2><p>记录研究任务，关联对应 Idea，并按照完成期限和优先级逐项推进。</p></div><div class="research-todo-capture"><input id="researchTodoQuickInput" class="research-todo-title-input" placeholder="记下一件需要推进的研究行动…" aria-label="快速添加科研任务"><input id="researchTodoQuickDue" class="research-todo-due-input" type="date" aria-label="完成期限" title="完成期限"><button type="button" data-action="research-todo-quick-add">添加任务</button></div></section>' +
     '<div class="research-todo-stats"><div class="research-todo-stat"><strong>' + active + '</strong><span>当前任务</span></div><div class="research-todo-stat"><strong>' + todayCount + '</strong><span>今天截止</span></div><div class="research-todo-stat' + (overdue ? ' is-risk' : '') + '"><strong>' + overdue + '</strong><span>已经逾期</span></div><div class="research-todo-stat"><strong>' + completedWeek + '</strong><span>本周完成</span></div></div>' +
     '<section class="research-todo-panel"><div class="research-todo-toolbar"><div class="research-todo-scopes">' + scopes + '</div><input id="researchTodoSearch" class="research-todo-search" value="' + escapeAttribute(researchTodoState.query) + '" placeholder="搜索任务"><select id="researchTodoIdeaFilter" class="research-todo-filter">' + ideaOptions + '</select></div><div class="research-todo-body">' + (groups || '<div class="research-todo-empty">当前视图没有任务。<br>从上方快速记录下一件研究行动。</div>') + '</div></section></div>';
 }
@@ -5184,6 +6066,7 @@ function deleteResearchTodo(id) {
 const WEATHER_CACHE_KEY = 'ai-workspace-weather';
 const WEATHER_TTL = 30 * 60 * 1000; // 30 min
 const WEATHER_ENDPOINT = workspaceApiUrl('/api/weather/forecast');
+const AIR_QUALITY_ENDPOINT = workspaceApiUrl('/api/weather/air-quality');
 const GEOCODE_ENDPOINT = workspaceApiUrl('/api/weather/geocode');
 
 // status: 'idle' | 'loading' | 'ready' | 'error'
@@ -5197,30 +6080,30 @@ const WMO_CODES = {
   1:  ['晴间多云', '🌤️', '🌙'],
   2:  ['多云',     '⛅', '☁️'],
   3:  ['阴',       '☁️', '☁️'],
-  45: ['有雾',     '🌫️', '🌫️'],
+  45: ['雾',       '🌫️', '🌫️'],
   48: ['冻雾',     '🌫️', '🌫️'],
-  51: ['小毛雨',   '🌦️', '🌧️'],
-  53: ['毛雨',     '🌦️', '🌧️'],
-  55: ['浓毛雨',   '🌧️', '🌧️'],
-  56: ['冻毛雨',   '🌧️', '🌧️'],
-  57: ['冻毛雨',   '🌧️', '🌧️'],
+  51: ['轻微细雨', '🌦️', '🌧️'],
+  53: ['中等细雨', '🌦️', '🌧️'],
+  55: ['强细雨',   '🌧️', '🌧️'],
+  56: ['轻度冻雨', '🌧️', '🌧️'],
+  57: ['强冻雨',   '🌧️', '🌧️'],
   61: ['小雨',     '🌦️', '🌧️'],
   63: ['中雨',     '🌧️', '🌧️'],
   65: ['大雨',     '🌧️', '🌧️'],
-  66: ['冻雨',     '🌧️', '🌧️'],
-  67: ['冻雨',     '🌧️', '🌧️'],
+  66: ['轻度冻雨', '🌧️', '🌧️'],
+  67: ['强冻雨',   '🌧️', '🌧️'],
   71: ['小雪',     '🌨️', '🌨️'],
   73: ['中雪',     '🌨️', '🌨️'],
   75: ['大雪',     '❄️', '❄️'],
   77: ['雪粒',     '🌨️', '🌨️'],
-  80: ['阵雨',     '🌦️', '🌧️'],
-  81: ['强阵雨',   '🌧️', '🌧️'],
-  82: ['暴雨',     '⛈️', '⛈️'],
-  85: ['阵雪',     '🌨️', '🌨️'],
-  86: ['强阵雪',   '❄️', '❄️'],
+  80: ['小阵雨',   '🌦️', '🌧️'],
+  81: ['中到大阵雨', '🌧️', '🌧️'],
+  82: ['强阵雨',   '⛈️', '⛈️'],
+  85: ['小阵雪',   '🌨️', '🌨️'],
+  86: ['大阵雪',   '❄️', '❄️'],
   95: ['雷阵雨',   '⛈️', '⛈️'],
-  96: ['雷阵雨伴冰雹', '⛈️', '⛈️'],
-  99: ['雷暴伴冰雹',   '⛈️', '⛈️']
+  96: ['雷阵雨伴小冰雹', '⛈️', '⛈️'],
+  99: ['强雷阵雨伴冰雹', '⛈️', '⛈️']
 };
 
 function wmoInfo(code, isDay) {
@@ -5262,6 +6145,9 @@ function weatherConfig() {
   const w = (DATA && DATA.settings && DATA.settings.weather) || {};
   return {
     city: w.city || '上海',
+    country: typeof w.country === 'string' && w.country ? w.country : '中国',
+    province: typeof w.province === 'string' ? w.province : '上海市',
+    district: typeof w.district === 'string' ? w.district : '',
     lat: typeof w.lat === 'number' ? w.lat : 31.2222,
     lon: typeof w.lon === 'number' ? w.lon : 121.4581
   };
@@ -5316,15 +6202,33 @@ async function fetchWeather(opts = {}) {
     longitude: String(cfg.lon),
     current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,visibility,uv_index,precipitation_probability',
     daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max',
+    language: 'zh-CN',
+    country_code: cfg.country === '中国' ? 'CN' : '',
     timezone: 'auto',
     forecast_days: '4'
   });
 
   try {
-    const res = await fetch(WEATHER_ENDPOINT + '?' + params.toString(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('天气服务返回 ' + res.status);
+    const airParams = new URLSearchParams({
+      latitude: String(cfg.lat),
+      longitude: String(cfg.lon),
+      current: 'european_aqi,us_aqi,pm10,pm2_5',
+      timezone: 'auto'
+    });
+    const [res, airResult] = await Promise.all([
+      fetch(WEATHER_ENDPOINT + '?' + params.toString(), { cache: 'no-store' }),
+      fetch(AIR_QUALITY_ENDPOINT + '?' + airParams.toString(), { cache: 'no-store' }).catch(() => null)
+    ]);
+    if (!res.ok) {
+      let message = '天气服务返回 ' + res.status;
+      try { const body = await res.json(); message = body && body.error && body.error.message ? body.error.message : message; } catch (_) { /* keep status */ }
+      throw new Error(message);
+    }
     const json = await res.json();
     if (!json || !json.current) throw new Error('天气数据格式异常');
+    if (airResult && airResult.ok) {
+      try { json.air_quality = await airResult.json(); } catch (_) { /* air data is optional */ }
+    }
     weatherState.status = 'ready';
     weatherState.data = json;
     weatherState.place = cfg.city;
@@ -5347,6 +6251,26 @@ async function fetchWeather(opts = {}) {
     }
   }
   paintWeather();
+}
+
+function weatherAirQuality(data) {
+  const current = data && data.air_quality && data.air_quality.current;
+  const aqi = current ? Number(current.european_aqi) : Number.NaN;
+  if (!Number.isFinite(aqi)) return { label: '暂无数据', short: '—', level: 'unknown', aqi: '—', pm25: '—', pm10: '—' };
+  let label = '优', level = 'good';
+  if (aqi > 100) { label = '极差'; level = 'very-poor'; }
+  else if (aqi > 80) { label = '很差'; level = 'very-poor'; }
+  else if (aqi > 60) { label = '差'; level = 'poor'; }
+  else if (aqi > 40) { label = '一般'; level = 'moderate'; }
+  else if (aqi > 20) { label = '尚可'; level = 'fair'; }
+  return {
+    label,
+    short: label,
+    level,
+    aqi: Math.round(aqi),
+    pm25: Number.isFinite(Number(current.pm2_5)) ? Math.round(Number(current.pm2_5)) : '—',
+    pm10: Number.isFinite(Number(current.pm10)) ? Math.round(Number(current.pm10)) : '—'
+  };
 }
 
 function weatherPanelHTML() {
@@ -5385,6 +6309,7 @@ function weatherPanelHTML() {
   const d = weatherState.data;
   const cur = d.current;
   const info = wmoInfo(cur.weather_code, cur.is_day);
+  const air = weatherAirQuality(d);
   const daily = d.daily || {};
   const units = d.current_units || {};
   const tempUnit = units.temperature_2m || '°C';
@@ -5419,18 +6344,19 @@ function weatherPanelHTML() {
 
   const updated = cur.time ? new Date(cur.time).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '';
   const precipitation = Number.isFinite(Number(cur.precipitation_probability)) ? Math.round(Number(cur.precipitation_probability)) + '%' : '—';
-  const weatherNote = '<div class="ov-weather-note"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12a6 6 0 0 1 12 0H6Zm6 0v7M9 21h6"/><path d="M5 12H3m18 0h-2M7.8 6.8 6.4 5.4m9.8 1.4 1.4-1.4"/></svg>降水概率 <b>' + precipitation + '</b></span><span>体感 <b>' + Math.round(cur.apparent_temperature) + '°</b></span></div>';
+  const weatherNote = '<div class="ov-weather-note"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12a6 6 0 0 1 12 0H6Zm6 0v7M9 21h6"/><path d="M5 12H3m18 0h-2M7.8 6.8 6.4 5.4m9.8 1.4 1.4-1.4"/></svg>降水概率 <b>' + precipitation + '</b></span><span>体感 <b>' + Math.round(cur.apparent_temperature) + '°</b></span></div>' +
+    '<div class="ov-weather-air"><span>空气质量 <b class="weather-aqi weather-aqi--' + air.level + '">' + escapeHTML(String(air.short)) + '</b></span><span>AQI <strong>' + air.aqi + '</strong></span><span>PM2.5 <strong>' + air.pm25 + '</strong></span><span>PM10 <strong>' + air.pm10 + '</strong></span></div>';
 
   return '<div class="ov-weather">' + head +
     '<div class="ov-weather-now">' +
       '<div class="ov-weather-glyph" title="' + escapeAttribute(info.label) + '">' + weatherGlyph(cur.weather_code, cur.is_day) + '</div>' +
       '<div style="min-width:0;">' +
         '<div class="ov-weather-temp">' + Math.round(cur.temperature_2m) + '<sup>' + escapeHTML(tempUnit) + '</sup></div>' +
-        '<div class="ov-weather-desc"><span>' + escapeHTML(info.label) + '</span><b>空气优</b></div>' +
+        '<div class="ov-weather-desc"><span>' + escapeHTML(info.label) + '</span><b class="weather-aqi weather-aqi--' + air.level + '">空气' + escapeHTML(String(air.short)) + '</b></div>' +
       '</div>' +
     '</div>' +
     metrics + forecast + weatherNote +
-    (updated ? '<div class="ov-weather-updated">更新于 ' + escapeHTML(updated) + '</div>' : '') +
+    '<div class="ov-weather-provider"><span>' + (updated ? '更新于 ' + escapeHTML(updated) : '实时天气') + '</span><a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Weather · Open-Meteo</a></div>' +
   '</div>';
 }
 
@@ -5443,11 +6369,31 @@ function dashboardWeatherCompactHTML() {
     const info = wmoInfo(cur.weather_code, cur.is_day);
     return '<div class="dashboard-weather">' +
       '<button class="dashboard-weather-location" data-action="weather-city" title="切换城市：' + escapeAttribute(cfg.city) + '" aria-label="切换城市，当前' + escapeAttribute(cfg.city) + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"/><circle cx="10" cy="7" r="2"/></svg></button>' +
-      weatherGlyph(cur.weather_code, cur.is_day, 'dashboard-weather-glyph') +
-      '<strong>' + Math.round(cur.temperature_2m) + '°</strong><small>' + escapeHTML(info.label) + '</small>' +
+      '<button class="dashboard-weather-summary" data-action="weather-detail" title="查看' + escapeAttribute(cfg.city) + '详细天气" aria-label="查看' + escapeAttribute(cfg.city) + '详细天气">' +
+        weatherGlyph(cur.weather_code, cur.is_day, 'dashboard-weather-glyph') +
+        '<strong>' + Math.round(cur.temperature_2m) + '°</strong><small>' + escapeHTML(info.label) + '</small>' +
+      '</button>' +
     '</div>';
   }
-  return '<div class="dashboard-weather dashboard-weather--loading"><button class="dashboard-weather-location" data-action="weather-city" title="切换城市：' + escapeAttribute(cfg.city) + '" aria-label="切换城市，当前' + escapeAttribute(cfg.city) + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"/><circle cx="10" cy="7" r="2"/></svg></button><small>' + (weatherState.status === 'loading' ? '天气加载中' : '查看天气') + '</small></div>';
+  return '<div class="dashboard-weather dashboard-weather--loading"><button class="dashboard-weather-location" data-action="weather-city" title="切换城市：' + escapeAttribute(cfg.city) + '" aria-label="切换城市，当前' + escapeAttribute(cfg.city) + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"/><circle cx="10" cy="7" r="2"/></svg></button><button class="dashboard-weather-summary" data-action="weather-detail"><small>' + (weatherState.status === 'loading' ? '天气加载中' : '查看天气') + '</small></button></div>';
+}
+
+function showWeatherDetails() {
+  const backdrop = document.getElementById('weatherPopoverBackdrop');
+  const popover = document.getElementById('weatherPopover');
+  if (!backdrop || !popover) return;
+  popover.innerHTML = '<div class="workspace-weather-popover-toolbar"><div><span>LOCAL WEATHER</span><strong>天气详情</strong></div><button type="button" data-action="weather-detail-close" aria-label="关闭天气详情">×</button></div><div class="workspace-weather-popover-content">' + weatherPanelHTML() + '</div>';
+  backdrop.classList.add('show');
+  popover.classList.add('show');
+  backdrop.setAttribute('aria-hidden', 'false');
+  popover.setAttribute('aria-hidden', 'false');
+}
+
+function closeWeatherDetails() {
+  const backdrop = document.getElementById('weatherPopoverBackdrop');
+  const popover = document.getElementById('weatherPopover');
+  if (backdrop) { backdrop.classList.remove('show'); backdrop.setAttribute('aria-hidden', 'true'); }
+  if (popover) { popover.classList.remove('show'); popover.setAttribute('aria-hidden', 'true'); }
 }
 
 // Repaint just the weather panel — avoids a full page rerender
@@ -5458,6 +6404,8 @@ function paintWeather() {
   if (dashboardWeather) dashboardWeather.innerHTML = dashboardWeatherCompactHTML();
   const globalDashboardWeather = document.getElementById('globalDashboardWeather');
   if (globalDashboardWeather) globalDashboardWeather.innerHTML = dashboardWeatherCompactHTML();
+  const popover = document.getElementById('weatherPopover');
+  if (popover && popover.classList.contains('show')) showWeatherDetails();
   const daylightSlot = document.getElementById('ovTimeDaylightSlot');
   if (daylightSlot) daylightSlot.innerHTML = weatherDaylightHTML();
 }
@@ -5501,36 +6449,239 @@ function mountDashboardEyes() {
   reset();
 }
 
-async function promptWeatherCity() {
-  const cfg = weatherConfig();
-  const input = await showPrompt('切换城市', '输入城市名称，将通过 Open-Meteo 公共接口查询坐标与天气。', cfg.city, '例如：北京 / 杭州 / Tokyo');
-  if (input === null) return;
-  const query = input.trim();
-  if (!query) { showToast('请输入城市名称', 'warning'); return; }
+const WEATHER_COUNTRIES = [
+  ['中国', 'CN'], ['日本', 'JP'], ['韩国', 'KR'], ['新加坡', 'SG'], ['美国', 'US'],
+  ['英国', 'GB'], ['加拿大', 'CA'], ['澳大利亚', 'AU'], ['法国', 'FR'], ['德国', 'DE']
+];
+const CHINA_PROVINCE_CITIES = {
+  '北京市': ['北京市'], '天津市': ['天津市'], '上海市': ['上海市'], '重庆市': ['重庆市'],
+  '河北省': ['石家庄市', '唐山市', '秦皇岛市', '保定市'], '山西省': ['太原市', '大同市', '晋中市'],
+  '辽宁省': ['沈阳市', '大连市', '鞍山市'], '吉林省': ['长春市', '吉林市'], '黑龙江省': ['哈尔滨市', '齐齐哈尔市'],
+  '江苏省': ['南京市', '苏州市', '无锡市', '常州市', '南通市'], '浙江省': ['杭州市', '宁波市', '温州市', '嘉兴市', '绍兴市'],
+  '安徽省': ['合肥市', '芜湖市', '黄山市'], '福建省': ['福州市', '厦门市', '泉州市'], '江西省': ['南昌市', '赣州市', '九江市'],
+  '山东省': ['济南市', '青岛市', '烟台市', '威海市'], '河南省': ['郑州市', '洛阳市', '开封市'],
+  '湖北省': ['武汉市', '宜昌市', '襄阳市'], '湖南省': ['长沙市', '株洲市', '岳阳市'],
+  '广东省': ['广州市', '深圳市', '珠海市', '佛山市', '东莞市', '惠州市'], '海南省': ['海口市', '三亚市'],
+  '四川省': ['成都市', '绵阳市', '乐山市'], '贵州省': ['贵阳市', '遵义市'], '云南省': ['昆明市', '大理市', '丽江市'],
+  '陕西省': ['西安市', '咸阳市', '宝鸡市'], '甘肃省': ['兰州市', '天水市'], '青海省': ['西宁市'],
+  '台湾省': ['台北市', '高雄市', '台中市'], '内蒙古自治区': ['呼和浩特市', '包头市'],
+  '广西壮族自治区': ['南宁市', '桂林市', '柳州市'], '西藏自治区': ['拉萨市'],
+  '宁夏回族自治区': ['银川市'], '新疆维吾尔自治区': ['乌鲁木齐市', '喀什市'], '香港特别行政区': ['香港'], '澳门特别行政区': ['澳门']
+};
+const CHINA_CITY_GEOCODE_NAMES = {
+  '北京市':'Beijing','天津市':'Tianjin','上海市':'Shanghai','重庆市':'Chongqing',
+  '石家庄市':'Shijiazhuang','唐山市':'Tangshan','秦皇岛市':'Qinhuangdao','保定市':'Baoding',
+  '太原市':'Taiyuan','大同市':'Datong','晋中市':'Jinzhong','沈阳市':'Shenyang','大连市':'Dalian','鞍山市':'Anshan',
+  '长春市':'Changchun','吉林市':'Jilin','哈尔滨市':'Harbin','齐齐哈尔市':'Qiqihar',
+  '南京市':'Nanjing','苏州市':'Suzhou','无锡市':'Wuxi','常州市':'Changzhou','南通市':'Nantong',
+  '杭州市':'Hangzhou','宁波市':'Ningbo','温州市':'Wenzhou','嘉兴市':'Jiaxing','绍兴市':'Shaoxing',
+  '合肥市':'Hefei','芜湖市':'Wuhu','黄山市':'Huangshan','福州市':'Fuzhou','厦门市':'Xiamen','泉州市':'Quanzhou',
+  '南昌市':'Nanchang','赣州市':'Ganzhou','九江市':'Jiujiang','济南市':'Jinan','青岛市':'Qingdao','烟台市':'Yantai','威海市':'Weihai',
+  '郑州市':'Zhengzhou','洛阳市':'Luoyang','开封市':'Kaifeng','武汉市':'Wuhan','宜昌市':'Yichang','襄阳市':'Xiangyang',
+  '长沙市':'Changsha','株洲市':'Zhuzhou','岳阳市':'Yueyang','广州市':'Guangzhou','深圳市':'Shenzhen','珠海市':'Zhuhai',
+  '佛山市':'Foshan','东莞市':'Dongguan','惠州市':'Huizhou','海口市':'Haikou','三亚市':'Sanya',
+  '成都市':'Chengdu','绵阳市':'Mianyang','乐山市':'Leshan','贵阳市':'Guiyang','遵义市':'Zunyi',
+  '昆明市':'Kunming','大理市':'Dali','丽江市':'Lijiang','西安市':'Xian','咸阳市':'Xianyang','宝鸡市':'Baoji',
+  '兰州市':'Lanzhou','天水市':'Tianshui','西宁市':'Xining','台北市':'Taipei','高雄市':'Kaohsiung','台中市':'Taichung',
+  '呼和浩特市':'Hohhot','包头市':'Baotou','南宁市':'Nanning','桂林市':'Guilin','柳州市':'Liuzhou','拉萨市':'Lhasa',
+  '银川市':'Yinchuan','乌鲁木齐市':'Urumqi','喀什市':'Kashgar','香港':'Hong Kong','澳门':'Macao'
+};
+const CHINA_CITY_DISTRICTS = {
+  '北京市': ['东城区', '西城区', '朝阳区', '海淀区', '丰台区', '通州区', '昌平区', '大兴区'],
+  '上海市': ['黄浦区', '徐汇区', '长宁区', '静安区', '浦东新区', '闵行区', '宝山区'],
+  '广州市': ['越秀区', '海珠区', '荔湾区', '天河区', '白云区', '番禺区', '黄埔区'],
+  '深圳市': ['福田区', '罗湖区', '南山区', '盐田区', '宝安区', '龙岗区', '龙华区'],
+  '杭州市': ['上城区', '拱墅区', '西湖区', '滨江区', '萧山区', '余杭区', '临平区'],
+  '南京市': ['玄武区', '秦淮区', '建邺区', '鼓楼区', '栖霞区', '雨花台区'],
+  '成都市': ['锦江区', '青羊区', '金牛区', '武侯区', '成华区', '高新区', '天府新区'],
+  '武汉市': ['江岸区', '江汉区', '硚口区', '汉阳区', '武昌区', '洪山区', '东西湖区']
+};
 
-  weatherState.status = 'loading';
-  paintWeather();
-  try {
-    const params = new URLSearchParams({ name: query, count: '1', language: 'zh', format: 'json' });
-    const res = await fetch(GEOCODE_ENDPOINT + '?' + params.toString());
-    if (!res.ok) throw new Error('城市查询失败 ' + res.status);
-    const json = await res.json();
-    const hit = json && json.results && json.results[0];
-    if (!hit) throw new Error('没有找到「' + query + '」');
-    DATA.settings.weather = {
-      city: hit.name + (hit.admin1 && hit.admin1 !== hit.name ? ' · ' + hit.admin1 : ''),
-      lat: hit.latitude,
-      lon: hit.longitude
-    };
-    save();
-    await fetchWeather({ force: true });
-    showToast('已切换到 ' + DATA.settings.weather.city, 'success');
-  } catch (err) {
-    weatherState.status = 'error';
-    weatherState.error = (err && err.message) || '城市查询失败';
-    paintWeather();
-    showToast(weatherState.error, 'error');
-  }
+function weatherCountryCode(country) {
+  const entry = WEATHER_COUNTRIES.find(item => item[0] === country);
+  return entry ? entry[1] : '';
+}
+
+function promptWeatherCityDetailed() {
+  const cfg = weatherConfig();
+  closeWeatherDetails();
+  const countries = WEATHER_COUNTRIES.map(item => '<option value="' + escapeAttribute(item[0]) + '"' + (item[0] === cfg.country ? ' selected' : '') + '>' + escapeHTML(item[0]) + '</option>').join('');
+  showModal(
+    '<div class="weather-location-dialog">' +
+      '<div class="weather-location-heading"><div><span>// LOCATION FILTER</span><div class="modal-title">选择天气位置</div></div><button class="weather-location-current" id="weatherUseCurrent" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>使用当前位置</button></div>' +
+      '<p class="weather-location-intro">按国家、省份、城市与区县逐级筛选。中国为默认国家，也可直接输入不在推荐列表中的地点。</p>' +
+      '<div class="weather-location-grid">' +
+        '<label><span>国家 / 地区</span><select id="weatherCountry">' + countries + '</select></label>' +
+        '<label><span>省份 / 州</span><input id="weatherProvince" list="weatherProvinceList" value="' + escapeAttribute(cfg.province || '') + '" placeholder="请选择或输入"><datalist id="weatherProvinceList"></datalist></label>' +
+        '<label><span>城市</span><input id="weatherCity" list="weatherCityList" value="' + escapeAttribute((cfg.city || '').startsWith('当前位置') ? '' : (cfg.city || '').split(' · ')[0]) + '" placeholder="请选择或输入"><datalist id="weatherCityList"></datalist></label>' +
+        '<label><span>区县</span><input id="weatherDistrict" list="weatherDistrictList" value="' + escapeAttribute(cfg.district || '') + '" placeholder="可选"><datalist id="weatherDistrictList"></datalist></label>' +
+      '</div>' +
+      '<div class="weather-location-searchbar"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"/><path d="m15.5 15.5 4.4 4.4"/></svg></span><div id="weatherLocationSummary">选择后查询准确坐标</div><button id="weatherLocationSearch" type="button">查询位置</button></div>' +
+      '<div class="weather-location-results" id="weatherLocationResults"><div class="weather-location-empty">选择地区后点击“查询位置”</div></div>' +
+      '<a class="weather-location-attribution" href="https://photon.komoot.io/" target="_blank" rel="noreferrer">位置搜索 Photon · 数据 © OpenStreetMap contributors</a>' +
+      '<div class="modal-actions"><button class="modal-btn cancel" id="modalCancel">取消</button></div>' +
+    '</div>'
+  );
+
+  const country = document.getElementById('weatherCountry');
+  const province = document.getElementById('weatherProvince');
+  const city = document.getElementById('weatherCity');
+  const district = document.getElementById('weatherDistrict');
+  const provinceList = document.getElementById('weatherProvinceList');
+  const cityList = document.getElementById('weatherCityList');
+  const districtList = document.getElementById('weatherDistrictList');
+  const results = document.getElementById('weatherLocationResults');
+  const summary = document.getElementById('weatherLocationSummary');
+  const setOptions = (node, values) => { node.innerHTML = values.map(value => '<option value="' + escapeAttribute(value) + '"></option>').join(''); };
+  const updateLists = () => {
+    setOptions(provinceList, country.value === '中国' ? Object.keys(CHINA_PROVINCE_CITIES) : []);
+    setOptions(cityList, country.value === '中国' ? (CHINA_PROVINCE_CITIES[province.value] || []) : []);
+    setOptions(districtList, country.value === '中国' ? (CHINA_CITY_DISTRICTS[city.value] || []) : []);
+    summary.textContent = [country.value, province.value, city.value, district.value].filter(Boolean).join(' · ') || '选择后查询准确坐标';
+  };
+  country.addEventListener('change', () => { province.value = ''; city.value = ''; district.value = ''; updateLists(); });
+  province.addEventListener('change', () => { city.value = ''; district.value = ''; updateLists(); });
+  city.addEventListener('change', () => { district.value = ''; updateLists(); });
+  district.addEventListener('input', updateLists);
+  updateLists();
+
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('weatherUseCurrent').addEventListener('click', () => { closeModal(); locateWeather(); });
+  document.getElementById('weatherLocationSearch').addEventListener('click', async () => {
+    const parts = [district.value, city.value, province.value, country.value].filter(Boolean);
+    const query = parts.join(', ');
+    if (!query) { showToast('请至少选择或输入城市', 'warning'); city.focus(); return; }
+    results.innerHTML = '<div class="weather-location-loading"><i></i>正在查找匹配位置…</div>';
+    try {
+      const params = new URLSearchParams({ name: query, count: '10', language: 'zh', format: 'json' });
+      const res = await fetch(GEOCODE_ENDPOINT + '?' + params.toString());
+      if (!res.ok) throw new Error('位置查询失败 ' + res.status);
+      const json = await res.json();
+      let hits = (json && json.results) || [];
+      const code = weatherCountryCode(country.value);
+      hits = hits.map(hit => {
+        let score = 0;
+        if (code && hit.country_code === code) score += 8;
+        if (province.value && String(hit.admin1 || '').includes(province.value.replace(/[省市]$/, ''))) score += 5;
+        if (city.value && [hit.name, hit.admin2, hit.admin3].some(value => String(value || '').includes(city.value.replace(/市$/, '')))) score += 4;
+        if (district.value && [hit.name, hit.admin2, hit.admin3, hit.admin4].some(value => String(value || '').includes(district.value.replace(/[区县]$/, '')))) score += 6;
+        return { hit, score };
+      }).sort((a, b) => b.score - a.score).map(item => item.hit).slice(0, 8);
+      if (!hits.length) throw new Error('没有找到匹配位置，请尝试简化区县名称');
+      results.innerHTML = hits.map((hit, index) => {
+        const path = [hit.country, hit.admin1, hit.admin2, hit.admin3].filter((value, idx, array) => value && array.indexOf(value) === idx);
+        return '<button class="weather-location-result" type="button" data-weather-result="' + index + '"><span class="weather-location-result-pin"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"/><circle cx="10" cy="7" r="2"/></svg></span><span><strong>' + escapeHTML(hit.name) + '</strong><small>' + escapeHTML(path.join(' · ')) + '</small></span><b>选择</b></button>';
+      }).join('');
+      results.querySelectorAll('[data-weather-result]').forEach(button => button.addEventListener('click', async () => {
+        const hit = hits[Number(button.dataset.weatherResult)];
+        const chosenCountry = hit.country || country.value;
+        const chosenProvince = hit.admin1 || province.value;
+        const chosenDistrict = district.value || (hit.admin3 && hit.admin3 !== hit.name ? hit.admin3 : '');
+        const display = chosenDistrict || hit.name;
+        DATA.settings.weather = {
+          city: display + (chosenProvince && chosenProvince !== display ? ' · ' + chosenProvince : ''),
+          country: chosenCountry,
+          province: chosenProvince,
+          district: chosenDistrict,
+          lat: Number(hit.latitude),
+          lon: Number(hit.longitude)
+        };
+        save();
+        closeModal();
+        weatherState.status = 'loading';
+        paintWeather();
+        await fetchWeather({ force: true });
+        showToast('天气位置已切换到 ' + display, 'success');
+      }));
+    } catch (err) {
+      results.innerHTML = '<div class="weather-location-empty weather-location-empty--error">' + escapeHTML((err && err.message) || '位置查询失败') + '</div>';
+    }
+  });
+}
+
+function promptWeatherCity() {
+  const cfg = weatherConfig();
+  closeWeatherDetails();
+  const provinceNames = Object.keys(CHINA_PROVINCE_CITIES);
+  const initialProvince = CHINA_PROVINCE_CITIES[cfg.province] ? cfg.province : '北京市';
+  const configuredCity = String(cfg.city || '').split(' · ')[0];
+  const initialCities = CHINA_PROVINCE_CITIES[initialProvince] || [];
+  const initialCity = initialCities.includes(configuredCity) ? configuredCity : initialCities[0];
+  const provinceOptions = provinceNames.map(name => '<option value="' + escapeAttribute(name) + '"' + (name === initialProvince ? ' selected' : '') + '>' + escapeHTML(name) + '</option>').join('');
+  const cityOptions = initialCities.map(name => '<option value="' + escapeAttribute(name) + '"' + (name === initialCity ? ' selected' : '') + '>' + escapeHTML(name) + '</option>').join('');
+
+  showModal(
+    '<div class="weather-location-dialog weather-location-dialog--simple">' +
+      '<div class="weather-location-heading"><div><span>// CITY WEATHER</span><div class="modal-title">选择天气城市</div></div></div>' +
+      '<p class="weather-location-intro">选择省份和城市，即可直接切换并显示该市天气。</p>' +
+      '<div class="weather-location-grid">' +
+        '<label><span>省份</span><select id="weatherProvince">' + provinceOptions + '</select></label>' +
+        '<label><span>城市</span><select id="weatherCity">' + cityOptions + '</select></label>' +
+      '</div>' +
+      '<div class="weather-location-simple-status" id="weatherLocationStatus" aria-live="polite"></div>' +
+      '<div class="weather-location-simple-footer"><div class="modal-actions"><button class="modal-btn cancel" id="modalCancel">取消</button><button class="modal-btn primary" id="weatherLocationApply">显示天气</button></div></div>' +
+    '</div>'
+  );
+
+  const province = document.getElementById('weatherProvince');
+  const city = document.getElementById('weatherCity');
+  const status = document.getElementById('weatherLocationStatus');
+  const apply = document.getElementById('weatherLocationApply');
+  const updateCities = () => {
+    const cities = CHINA_PROVINCE_CITIES[province.value] || [];
+    city.innerHTML = cities.map(name => '<option value="' + escapeAttribute(name) + '">' + escapeHTML(name) + '</option>').join('');
+  };
+  province.addEventListener('change', updateCities);
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  apply.addEventListener('click', async () => {
+    const selectedProvince = province.value;
+    const selectedCity = city.value;
+    if (!selectedProvince || !selectedCity) {
+      status.textContent = '请选择省份和城市。';
+      status.classList.add('is-error');
+      return;
+    }
+    status.classList.remove('is-error');
+    status.textContent = '正在获取' + selectedCity + '天气…';
+    apply.disabled = true;
+    apply.textContent = '加载中…';
+    try {
+      const params = new URLSearchParams({ name: CHINA_CITY_GEOCODE_NAMES[selectedCity] || selectedCity, count: '8', language: 'zh', format: 'json' });
+      const res = await fetch(GEOCODE_ENDPOINT + '?' + params.toString());
+      if (!res.ok) throw new Error('城市定位失败 ' + res.status);
+      const json = await res.json();
+      const cityName = selectedCity.replace(/市$/, '');
+      const provinceName = selectedProvince.replace(/[省市]$/, '');
+      const hits = ((json && json.results) || []).filter(hit => Number.isFinite(Number(hit.latitude)) && Number.isFinite(Number(hit.longitude)));
+      const ranked = hits.map(hit => {
+        let score = hit.country_code === 'CN' ? 8 : 0;
+        if (String(hit.admin1 || '').includes(provinceName)) score += 5;
+        if ([hit.name, hit.admin2, hit.admin3].some(value => String(value || '').includes(cityName))) score += 7;
+        return { hit, score };
+      }).sort((a, b) => b.score - a.score);
+      if (!ranked.length) throw new Error('暂时无法定位该城市，请稍后重试');
+      const hit = ranked[0].hit;
+      DATA.settings.weather = {
+        city: selectedCity,
+        country: '中国',
+        province: selectedProvince,
+        district: '',
+        lat: Number(hit.latitude),
+        lon: Number(hit.longitude)
+      };
+      save();
+      closeModal();
+      weatherState.status = 'loading';
+      paintWeather();
+      await fetchWeather({ force: true });
+      showToast('已显示' + selectedCity + '天气', 'success');
+    } catch (err) {
+      status.textContent = (err && err.message) || '天气加载失败，请稍后重试';
+      status.classList.add('is-error');
+      apply.disabled = false;
+      apply.textContent = '显示天气';
+    }
+  });
 }
 
 function locateWeather() {
@@ -5538,19 +6689,9 @@ function locateWeather() {
   showToast('正在获取位置…', 'info');
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords;
-    let city = '当前位置';
-    try {
-      const params = new URLSearchParams({
-        latitude: String(latitude), longitude: String(longitude), count: '1', language: 'zh', format: 'json'
-      });
-      const res = await fetch(GEOCODE_ENDPOINT + '?' + params.toString());
-      if (res.ok) {
-        const json = await res.json();
-        const hit = json && json.results && json.results[0];
-        if (hit && hit.name) city = hit.name;
-      }
-    } catch (_) { /* keep the generic label */ }
-    DATA.settings.weather = { city, lat: latitude, lon: longitude };
+    const cfg = weatherConfig();
+    const city = '当前位置';
+    DATA.settings.weather = { city, country: cfg.country || '中国', province: '', district: '', lat: latitude, lon: longitude };
     save();
     await fetchWeather({ force: true });
     showToast('已更新为 ' + city, 'success');
@@ -5572,6 +6713,17 @@ function workspaceStatHTML(value, label, accent) {
   return '<div class="workspace-stat' + (accent ? ' is-accent' : '') + '"><div class="workspace-stat-value">' + escapeHTML(String(value)) + '</div><div class="workspace-stat-label">' + escapeHTML(label) + '</div></div>';
 }
 
+function refreshDayElapsedProgress() {
+  if (currentPage !== 'daily-plan') return;
+  document.querySelectorAll('.daily-plan-page .workspace-stat').forEach(stat => {
+    const label = stat.querySelector('.workspace-stat-label');
+    const value = stat.querySelector('.workspace-stat-value');
+    if (label && value && label.textContent.trim() === '今日进度') {
+      value.textContent = dayElapsedPercent() + '%';
+    }
+  });
+}
+
 function compactResourceListHTML(items) {
   if (!items || !items.length) return emptyStateHTML('📚', '暂无学习资源', '通过右上角按钮添加一条资源');
   return '<div class="study-resource-list">' + items.map((item, index) =>
@@ -5581,60 +6733,93 @@ function compactResourceListHTML(items) {
   ).join('') + '</div>';
 }
 
-function currentWeekdayName() {
-  const day = new Date().getDay();
-  return ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][day];
-}
-
-function linkedTodayActionsHTML() {
-  const dayName = currentWeekdayName();
-  const fitnessItems = fitnessPlanForDay(dayName);
-  const englishItems = DATA.tasks.english || [];
-  const items = [];
-  fitnessItems.forEach(item => {
-    const type = fitnessType(item.typeId);
-    items.push({ kind: 'fitness', item, title: type.name + (item.target ? ' · ' + item.target : ''), meta: '健身计划 · ' + dayName, done: !!item.done });
-  });
-  englishItems.forEach(item => {
-    items.push({ kind: 'english', item, title: item.text, meta: '英语练习 · 今日', done: !!item.done });
-  });
-  if (!items.length) return '<section class="workspace-sync-panel"><div class="workspace-section-heading"><h2>今日专项行动</h2><span>来自训练与学习计划</span></div><div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">还没有关联事项</div><div class="workspace-next-title">在健身打卡设置本周训练，或在英语学习添加今日练习。</div></div></div></section>';
-  return '<section class="workspace-sync-panel"><div class="workspace-section-heading"><h2>今日专项行动</h2><span>' + items.filter(item => item.done).length + '/' + items.length + ' 已完成</span></div><div class="workspace-sync-list">' + items.map(entry => {
-    const mark = entry.kind === 'fitness'
-      ? '<span class="workspace-sync-mark' + (entry.done ? ' is-done' : '') + '" data-plan-toggle="' + entry.item.id + '" role="checkbox" aria-checked="' + entry.done + '" tabindex="0" aria-label="切换训练计划完成状态">' + (entry.done ? '✓' : '') + '</span>'
-      : '<span class="workspace-sync-mark' + (entry.done ? ' is-done' : '') + '" data-path="tasks.english" data-id="' + entry.item.id + '" role="checkbox" aria-checked="' + entry.done + '" tabindex="0" aria-label="切换英语练习完成状态">' + (entry.done ? '✓' : '') + '</span>';
-    return '<div class="workspace-sync-item' + (entry.done ? ' is-done' : '') + '">' + mark + '<div><div class="workspace-sync-title">' + escapeHTML(entry.title) + '</div><div class="workspace-sync-meta">' + escapeHTML(entry.meta) + '</div></div><span class="workspace-sync-tag">' + (entry.done ? '完成' : '待办') + '</span></div>';
-  }).join('') + '</div></section>';
+function dailyPlanCalendarHTML(selectedDate, dailyPlan, calendarMonth) {
+  const activeDate = /^\d{4}-\d{2}-\d{2}$/.test(selectedDate || '') ? selectedDate : todayKey();
+  const visibleMonth = /^\d{4}-\d{2}$/.test(calendarMonth || '') ? calendarMonth : activeDate.slice(0, 7);
+  const [year, month] = visibleMonth.split('-').map(Number);
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const leadingBlanks = (new Date(year, month - 1, 1).getDay() + 6) % 7;
+  const today = todayKey();
+  const tasks = ['morning', 'afternoon', 'evening'].flatMap(slot => dailyPlan[slot] || []);
+  const solarTerms = solarTermsForMonth(year, month);
+  const officialSchedule = chinaOfficialHolidaySchedule(year);
+  const cells = [];
+  for (let index = 0; index < leadingBlanks; index++) {
+    cells.push('<div class="daily-plan-calendar-blank" aria-hidden="true"></div>');
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = String(year).padStart(4, '0') + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    const dayTasks = tasks.filter(task => isTaskOnPlanDate(task, date));
+    const completed = dayTasks.filter(task => task.done).length;
+    const isComplete = dayTasks.length > 0 && completed === dayTasks.length;
+    const holiday = officialSchedule[date];
+    const lunar = chineseLunarInfo(new Date(year, month - 1, day, 12));
+    const fixedFestival = FIXED_CHINA_FESTIVALS[date.slice(5)] || '';
+    const culturalLabel = lunar.festival || fixedFestival || solarTerms[day] || lunar.label;
+    const secondaryLabel = solarTerms[day] && solarTerms[day] !== culturalLabel ? solarTerms[day] : '';
+    const classes = [
+      'daily-plan-calendar-day',
+      date === activeDate ? 'is-selected' : '',
+      date === today ? 'is-today' : '',
+      date > today ? 'is-future' : '',
+      [0, 6].includes(new Date(year, month - 1, day, 12).getDay()) ? 'is-weekend' : '',
+      (lunar.festival || fixedFestival || solarTerms[day] === '清明') ? 'has-festival' : '',
+      solarTerms[day] ? 'has-solar-term' : '',
+      holiday?.type === 'holiday' ? 'is-holiday' : '',
+      holiday?.type === 'workday' ? 'is-workday' : '',
+      isComplete ? 'is-complete' : '',
+      dayTasks.length && !isComplete ? 'has-tasks' : ''
+    ].filter(Boolean).join(' ');
+    const taskSummary = dayTasks.length
+      ? '<span class="daily-plan-calendar-count">' + completed + '/' + dayTasks.length + '</span>'
+      : '<span class="daily-plan-calendar-empty">可规划</span>';
+    const scheduleBadge = holiday ? '<span class="daily-plan-calendar-badge">' + (holiday.type === 'holiday' ? '休' : '班') + '</span>' : '';
+    cells.push('<button class="' + classes + '" type="button" data-plan-calendar-date="' + date + '" aria-label="查看' + year + '年' + month + '月' + day + '日规划，' + escapeAttribute([culturalLabel, solarTerms[day] !== culturalLabel ? solarTerms[day] : '', dayTasks.length ? completed + '项已完成，共' + dayTasks.length + '项' : '暂无任务'].filter(Boolean).join('，')) + '"><span class="daily-plan-calendar-top"><span class="daily-plan-calendar-number">' + day + '</span>' + scheduleBadge + '</span><span class="daily-plan-calendar-culture">' + escapeHTML(culturalLabel) + (secondaryLabel ? '<small>' + escapeHTML(secondaryLabel) + '</small>' : '') + '</span>' + taskSummary + '</button>');
+  }
+  const trailingBlanks = (7 - ((leadingBlanks + daysInMonth) % 7)) % 7;
+  for (let index = 0; index < trailingBlanks; index++) {
+    cells.push('<div class="daily-plan-calendar-blank" aria-hidden="true"></div>');
+  }
+  const yearOptions = Array.from({ length: 21 }, (_, index) => year - 10 + index)
+    .map(optionYear => '<option value="' + optionYear + '"' + (optionYear === year ? ' selected' : '') + '>' + optionYear + '年</option>')
+    .join('');
+  const monthOptions = Array.from({ length: 12 }, (_, index) => index + 1)
+    .map(optionMonth => '<option value="' + String(optionMonth).padStart(2, '0') + '"' + (optionMonth === month ? ' selected' : '') + '>' + optionMonth + '月</option>')
+    .join('');
+  return '<section class="daily-plan-calendar-panel"><div class="daily-plan-calendar-heading"><h2 aria-label="' + year + '年' + month + '月"><span>' + year + '</span><i>/</i><strong>' + String(month).padStart(2, '0') + '</strong></h2><div class="daily-plan-calendar-nav"><button type="button" data-plan-calendar-month-shift="-12" aria-label="上一年">«</button><button type="button" data-plan-calendar-month-shift="-1" aria-label="上个月">‹</button><button type="button" data-plan-calendar-current>本月</button><button type="button" data-plan-calendar-month-shift="1" aria-label="下个月">›</button><button type="button" data-plan-calendar-month-shift="12" aria-label="下一年">»</button><span class="daily-plan-calendar-nav-divider" aria-hidden="true"></span><label class="daily-plan-calendar-select"><select data-plan-calendar-year aria-label="选择年份">' + yearOptions + '</select></label><label class="daily-plan-calendar-select"><select data-plan-calendar-month aria-label="选择月份">' + monthOptions + '</select></label></div><span>点击日期查看或安排当天任务</span></div>' +
+    '<div class="daily-plan-calendar-weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>' +
+    '<div class="daily-plan-calendar-grid">' + cells.join('') + '</div>' +
+    '<div class="daily-plan-calendar-legend"><span><i class="is-today"></i>今天</span><span><i class="has-tasks"></i>已有规划</span><span><i class="is-complete"></i>全部完成</span></div></section>';
 }
 
 function dailyPlanPageHTML() {
   const dp = DATA.tasks.dailyPlan;
   const review = DATA.weeklyReview;
+  const selectedDate = dailyPlanViewDate || todayKey();
+  const selectedDateLabel = planDateLabel(selectedDate);
+  const selectedDateShort = selectedDate === todayKey() ? '今日' : selectedDateLabel.split(' · ')[0];
   const slots = [
-    { key: 'morning', label: '上午 · 专注时段', icon: '☀' },
-    { key: 'afternoon', label: '下午 · 执行时段', icon: '●' },
-    { key: 'evening', label: '晚上 · 收束时段', icon: '○' }
+    { key: 'morning', label: '上午 · 专注时段', defaultTime: planAddTimeForSlot('morning', selectedDate) },
+    { key: 'afternoon', label: '下午 · 执行时段', defaultTime: planAddTimeForSlot('afternoon', selectedDate) },
+    { key: 'evening', label: '晚上 · 收束时段', defaultTime: planAddTimeForSlot('evening', selectedDate) }
   ];
-  const all = slots.flatMap(slot => dp[slot.key] || []);
+  const all = slots.flatMap(slot => sortedPlanTasks((dp[slot.key] || []).filter(task => isTaskOnPlanDate(task, selectedDate))));
   const done = all.filter(task => task.done).length;
   const percent = calcTaskPercent(all);
   const firstPending = all.find(task => !task.done);
+  const firstPendingPath = firstPending ? planPathForTime(firstPending.scheduledTime) : '';
   const taskCards = slots.map(slot => {
-    const tasks = dp[slot.key] || [];
+    const tasks = sortedPlanTasks((dp[slot.key] || []).filter(task => isTaskOnPlanDate(task, selectedDate)));
     const completed = tasks.filter(task => task.done).length;
-    return '<section class="workspace-task-card"><div class="card-header"><div class="card-title"><span class="dot"></span>' + slot.icon + ' ' + slot.label + '</div><span class="card-tag">' + completed + '/' + tasks.length + '</span></div>' + taskListHTML('tasks.dailyPlan.' + slot.key, tasks) + '</section>';
+    return '<section class="workspace-task-card"><div class="card-header"><div class="card-title"><span class="dot"></span>' + slot.label + '</div><span class="card-tag">' + completed + '/' + tasks.length + '</span></div>' + taskListHTML('tasks.dailyPlan.' + slot.key, tasks, { showTime: true, defaultTime: slot.defaultTime, planDate: selectedDate }) + '</section>';
   }).join('');
   return '<div class="workspace-page daily-plan-page">' +
-    '<section class="workspace-hero"><div><div class="workspace-kicker">Daily operating system</div><div class="workspace-hero-title">把今天拆成可完成的三个时段</div><div class="workspace-hero-copy">先完成最重要的一项，再让计划带动节奏。未完成事项可以在晚间复盘后统一结转。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="open-palette">快速添加或搜索</button><button class="btn btn-outline btn-sm" data-action="rollover-plan">结转未完成事项</button></div></div>' +
-    '<div class="workspace-hero-side">' + workspaceProgressHTML('今日计划完成度', percent, done + ' / ' + all.length + ' 项已完成') +
-    '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">下一项待办</div><div class="workspace-next-title">' + escapeHTML(firstPending ? firstPending.text : '今日计划已全部完成') + '</div></div></div></div></section>' +
-    '<div class="workspace-stat-strip">' + workspaceStatHTML(done, '已完成', true) + workspaceStatHTML(all.length - done, '待完成', false) + workspaceStatHTML(dp.morning.filter(task => task.done).length + '/' + dp.morning.length, '上午进度', false) + workspaceStatHTML('第 ' + review.week + ' 周', '当前复盘周期', false) + '</div>' +
-    '<div class="workspace-section-heading"><h2>时段计划</h2><span>双击任务文字即可编辑</span></div><div class="daily-plan-grid">' + taskCards + '</div>' +
-    linkedTodayActionsHTML() + '<div class="workspace-bottom-grid"><section class="workspace-note-panel"><div class="workspace-section-heading"><h2>本周复盘</h2><span>点击文字直接编辑</span></div>' +
-    '<div class="workspace-note-row"><div class="workspace-note-label">做得好的</div><div class="workspace-note-value" contenteditable="true" data-wr="good">' + escapeHTML(review.good) + '</div></div>' +
-    '<div class="workspace-note-row"><div class="workspace-note-label">待改进</div><div class="workspace-note-value" contenteditable="true" data-wr="improve">' + escapeHTML(review.improve) + '</div></div>' +
-    '<div class="workspace-note-row"><div class="workspace-note-label">下周重点</div><div class="workspace-note-value" contenteditable="true" data-wr="focus">' + escapeHTML(review.focus) + '</div></div></section>' +
-    '<section class="workspace-note-panel workspace-execution-panel"><div class="workspace-section-heading"><h2>执行提示</h2><span>今日</span></div><div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">优先级建议</div><div class="workspace-next-title">优先完成上午的深度工作，再处理沟通与整理类事项。</div></div></div></section></div></div>';
+    '<section class="workspace-hero"><div><div class="workspace-kicker">Task planning</div><div class="workspace-hero-title">' + commaTitleHTML('把近期任务，拆成清晰可执行的安排') + '</div><div class="workspace-hero-copy">既可以安排今天，也可以提前整理未来几天或一周的重点；根据实际节奏推进，未完成事项可继续调整和结转。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="open-palette">快速添加或搜索</button><button class="btn btn-outline btn-sm" data-action="rollover-plan">结转未完成事项</button></div></div>' +
+    '<div class="workspace-hero-side">' + workspaceProgressHTML(selectedDateShort + '计划完成度', percent, done + ' / ' + all.length + ' 项已完成') +
+    '<div class="workspace-next">' + (firstPending ? '<button class="workspace-next-mark is-task-toggle" type="button" data-path="' + firstPendingPath + '" data-id="' + firstPending.id + '" aria-label="完成下一项待办：' + escapeAttribute(firstPending.text) + '"></button>' : '<div class="workspace-next-mark is-done">✓</div>') + '<div><div class="workspace-next-label">下一项待办</div><div class="workspace-next-title">' + escapeHTML(firstPending ? normalizePlanTime(firstPending.scheduledTime) + ' · ' + firstPending.text : selectedDateShort + '计划已全部完成') + '</div></div></div></div></section>' +
+    '<div class="workspace-stat-strip">' + workspaceStatHTML(done, '已完成', true) + workspaceStatHTML(all.length - done, '待完成', false) + workspaceStatHTML(dayElapsedPercent() + '%', '今日进度', true) + workspaceStatHTML('第 ' + review.week + ' 周', '当前复盘周期', false) + '</div>' +
+    '<div class="workspace-section-heading"><h2>时段计划</h2><span>点击左侧完成任务；调整时间会自动移动分栏</span></div><div class="daily-plan-grid">' + taskCards + '</div>' +
+    dailyPlanCalendarHTML(selectedDate, dp, dailyPlanCalendarMonth) + '</div>';
 }
 
 function fitnessPageHTML() {
@@ -5661,7 +6846,7 @@ function fitnessPageHTML() {
     return '<div class="fit-log-row"><span class="fl-icon">' + type.icon + '</span><div class="fl-main"><div class="fl-title">' + escapeHTML(type.name + (log.note ? ' · ' + log.note : '')) + '</div><div class="fl-meta">' + escapeHTML(details) + '</div></div><button class="inspire-delete" style="position:static;opacity:1;flex-shrink:0;" data-path="fitness.logs" data-id="' + log.id + '" title="删除记录" aria-label="删除记录">×</button></div>';
   }).join('') : emptyStateHTML('📋', '暂无训练记录', '完成一次训练后会显示在这里');
   return '<div class="workspace-page fitness-page">' +
-    '<section class="workspace-hero"><div><div class="workspace-kicker">Training logbook</div><div class="workspace-hero-title">本周训练，按计划留下真实记录</div><div class="workspace-hero-copy">计划负责方向，训练日志记录真实投入。完成计划时可以补充时长、消耗与备注，周数据会自动汇总。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="add-workout-log">记录一次训练</button></div></div>' +
+    '<section class="workspace-hero"><div><div class="workspace-kicker">Training logbook</div><div class="workspace-hero-title">' + commaTitleHTML('本周训练，按计划留下真实记录') + '</div><div class="workspace-hero-copy">计划负责方向，训练日志记录真实投入。完成计划时可以补充时长、消耗与备注，周数据会自动汇总。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="add-workout-log">记录一次训练</button></div></div>' +
     '<div class="fitness-hero-side fitness-hero-heatmap"><div class="fitness-hero-heatmap-head"><div class="fitness-hero-heatmap-title">打卡记录</div><span class="card-tag">近 4 个月</span></div>' + fitnessHeatmapHTML() + '</div></section>' +
     '<div class="workspace-stat-strip">' + workspaceStatHTML(stats.sessions + ' 次', '本周训练', true) + workspaceStatHTML(stats.duration + ' min', '累计时长', false) + workspaceStatHTML(stats.calories + ' kcal', '活动消耗', false) + workspaceStatHTML(streak + ' 天', '连续训练', false) + '</div>' +
     '<div class="fitness-layout"><section class="workspace-task-card fitness-list"><div class="card-header"><div class="card-title"><span class="dot"></span>本周训练计划</div><span class="card-tag">' + completed + '/' + plan.length + '</span></div>' + planRows + '<div class="fit-add-form"><div class="fit-add-row"><select class="fit-select" id="planDay">' + dayOptions + '</select><select class="fit-select" id="planType" style="flex:1;">' + typeOptions + '</select></div><div class="fit-add-row"><input class="add-task-input" id="planTarget" placeholder="目标，如 3km / 30 分钟 / 4 组" aria-label="训练目标"><button class="add-btn" data-action="add-plan-item">添加计划</button></div></div></section>' +
@@ -5675,7 +6860,7 @@ function aiLearningPageHTML() {
   const percent = calcTaskPercent(tasks);
   const nextTask = tasks.find(task => !task.done);
   return '<div class="workspace-page ai-learning-page">' +
-    '<section class="workspace-hero"><div><div class="workspace-kicker">Learning studio</div><div class="workspace-hero-title">把输入、练习和输出组织成闭环</div><div class="workspace-hero-copy">每次学习都落在一项可检查的任务上。把资源沉淀在右侧，完成后整理成可复用的工作流或文章。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="add-resource">添加学习资源</button><button class="btn btn-outline btn-sm" data-action="open-palette">搜索任务</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('本轮学习完成度', percent, done + ' / ' + tasks.length + ' 个任务已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">继续推进</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '这一轮学习任务已完成，可以整理输出') + '</div></div></div></div></section>' +
+    '<section class="workspace-hero"><div><div class="workspace-kicker">Learning studio</div><div class="workspace-hero-title">' + commaTitleHTML('把输入、练习和输出组织成闭环') + '</div><div class="workspace-hero-copy">每次学习都落在一项可检查的任务上。把资源沉淀在右侧，完成后整理成可复用的工作流或文章。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="add-resource">添加学习资源</button><button class="btn btn-outline btn-sm" data-action="open-palette">搜索任务</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('本轮学习完成度', percent, done + ' / ' + tasks.length + ' 个任务已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">继续推进</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '这一轮学习任务已完成，可以整理输出') + '</div></div></div></div></section>' +
     '<div class="workspace-stat-strip">' + workspaceStatHTML(done, '已完成任务', true) + workspaceStatHTML(tasks.length - done, '待完成任务', false) + workspaceStatHTML(resources.length, '资源库条目', false) + workspaceStatHTML(percent + '%', '当前完成度', false) + '</div>' +
     '<div class="study-main-grid"><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>本轮学习任务</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' + taskListHTML('tasks.aiLearn', tasks) + '</section><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>学习资源库</div><button class="card-btn" data-action="add-resource" title="添加资源" aria-label="添加资源">+</button></div>' + compactResourceListHTML(resources) + '</section></div></div>';
 }
@@ -5692,7 +6877,7 @@ function englishLearningPageHTML() {
   const offset = circumference * (1 - percent / 100);
   const nextTask = tasks.find(task => !task.done);
   return '<div class="workspace-page english-learning-page">' +
-    '<section class="workspace-hero"><div><div class="workspace-kicker">Language practice</div><div class="workspace-hero-title">让英语练习成为稳定的每日节奏</div><div class="workspace-hero-copy">挑战进度记录长期投入，今日任务承接具体动作。完成今日全部任务后，可以一键完成当天挑战。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="complete-english-day">完成今日挑战</button><button class="btn btn-outline btn-sm" data-action="open-palette">添加学习任务</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('今日任务完成度', calcTaskPercent(tasks), done + ' / ' + tasks.length + ' 项已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">下一项练习</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '今日任务已完成，可以记录挑战进度') + '</div></div></div></div></section>' +
+    '<section class="workspace-hero"><div><div class="workspace-kicker">Language practice</div><div class="workspace-hero-title">' + commaTitleHTML('让英语练习成为稳定的每日节奏') + '</div><div class="workspace-hero-copy">挑战进度记录长期投入，今日任务承接具体动作。完成今日全部任务后，可以一键完成当天挑战。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="complete-english-day">完成今日挑战</button><button class="btn btn-outline btn-sm" data-action="open-palette">添加学习任务</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('今日任务完成度', calcTaskPercent(tasks), done + ' / ' + tasks.length + ' 项已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">下一项练习</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '今日任务已完成，可以记录挑战进度') + '</div></div></div></div></section>' +
     '<div class="workspace-stat-strip">' + workspaceStatHTML('第 ' + current + ' 天', '挑战进度', true) + workspaceStatHTML(challenge.streak + ' 天', '连续练习', false) + workspaceStatHTML(done + '/' + tasks.length, '今日任务', false) + workspaceStatHTML(percent + '%', '百日挑战完成度', false) + '</div>' +
     '<div class="study-main-grid"><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>100 天挑战</div><span class="card-tag">累计 ' + current + '/' + total + '</span></div><div class="english-challenge"><div class="english-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="english-ring-track" cx="60" cy="60" r="48" fill="none" stroke-width="9"></circle><circle class="english-ring-fill" cx="60" cy="60" r="48" fill="none" stroke-width="9" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"></circle></svg><div class="english-ring-center">' + percent + '%<small>挑战进度</small></div></div><div class="english-challenge-copy"><h3>' + current + ' / ' + total + ' 天</h3><p>已经连续练习 ' + challenge.streak + ' 天。维持短而稳定的输入与输出，比偶尔冲刺更重要。</p><button class="btn btn-outline btn-sm" data-action="complete-english-day">记录今天</button></div></div><div class="english-rhythm"><div class="english-rhythm-row"><div class="english-rhythm-day">输入</div><div class="english-rhythm-copy">精读、听力和词汇积累，构建可理解的语言材料。</div></div><div class="english-rhythm-row"><div class="english-rhythm-day">输出</div><div class="english-rhythm-copy">口语模仿或短写作，把当天输入转成可调用的表达。</div></div></div></section><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日练习</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' + taskListHTML('tasks.english', tasks) + '</section></div></div>';
 }
@@ -5700,6 +6885,10 @@ function englishLearningPageHTML() {
 // ========================================================================
 // PAGES
 // ========================================================================
+function secondaryPageHeroHTML(eyebrow, title, copy) {
+  return '<section class="secondary-page-hero"><div class="secondary-page-eyebrow">' + escapeHTML(eyebrow) + '</div><h2>' + commaTitleHTML(title) + '</h2><p>' + escapeHTML(copy) + '</p></section>';
+}
+
 const PAGES = {
   dashboard: {
     title: '仪表盘',
@@ -5713,18 +6902,22 @@ const PAGES = {
       const dateFull = (now.getMonth() + 1) + '月' + now.getDate() + '日';
       const weekday = '星期' + '日一二三四五六'[now.getDay()];
       const remainingTasks = tasks.length - done;
+      const savedDisplayName = String(DATA.settings.displayName || 'TheoFan').trim() || 'TheoFan';
+      const displayName = savedDisplayName.toLowerCase() === 'theofan' ? 'TheoFan' : savedDisplayName;
       const hour = now.getHours();
-      const overviewNote = hour < 5 || hour >= 22
-        ? ['深夜了', '早点休息吧']
-        : hour < 9
-          ? ['早上好', '慢慢进入状态']
-          : hour < 12
-            ? ['上午好', '先做最重要的事']
-            : hour < 14
-              ? ['中午好', '休息后再继续']
-              : hour < 18
-                ? ['下午好', '保持专注节奏']
-                : ['晚上好', '给今天收个尾'];
+      const dayPartNotes = [
+        [5, '深夜了', '早点休息'],
+        [7, '清晨好', '新的一天'],
+        [9, '早上好', '继续加油'],
+        [11, '上午好', '专心工作'],
+        [14, '中午好', '小憩一会'],
+        [17, '下午好', '继续加油'],
+        [19, '傍晚好', '放松一下'],
+        [22, '晚上好', '慢慢收尾'],
+        [24, '深夜了', '早点休息']
+      ];
+      const currentDayPart = dayPartNotes.find(note => hour < note[0]) || dayPartNotes[dayPartNotes.length - 1];
+      const overviewNote = [currentDayPart[1], currentDayPart[2]];
       const dashboardStats = [
         ['今日待办', remainingTasks, '项等待推进', true],
         ['已完成', done, '项已划掉', false],
@@ -5732,7 +6925,7 @@ const PAGES = {
         ['每日打卡', ciDone + '/' + checkins.length, '保持节奏', false]
       ].map(stat => '<div class="dashboard-stat' + (stat[3] ? ' is-accent' : '') + '"><small>' + stat[0] + '</small><strong>' + stat[1] + '</strong><span>' + stat[2] + '</span></div>').join('');
       const hero = '<section class="dashboard-hero" id="dashboardHero">' +
-        '<div class="dashboard-hero-copy"><div class="dashboard-kicker"><b>//</b> WORKBENCH DASHBOARD <i></i> ' + escapeHTML(dateFull) + escapeHTML(weekday) + '</div><h2>工作台总览</h2><p><b>' + escapeHTML(overviewNote[0]) + '</b>，今天还有 <strong>' + remainingTasks + '</strong> 项待完成。<em>' + escapeHTML(overviewNote[1]) + '。</em></p></div>' +
+        '<div class="dashboard-hero-copy"><div class="dashboard-kicker"><b>//</b> WORKBENCH DASHBOARD <i></i> ' + escapeHTML(dateFull) + escapeHTML(weekday) + '</div><h2>👋 欢迎回来，<span class="dashboard-display-name">' + escapeHTML(displayName) + '</span></h2><p><b>' + escapeHTML(overviewNote[0]) + '</b>，今天还有 <strong>' + remainingTasks + '</strong> 项待完成。<em>' + escapeHTML(overviewNote[1]) + '。</em></p></div>' +
         '<div class="dashboard-hero-right"><div class="dashboard-eyes" id="dashboardEyes" role="button" tabindex="0" aria-label="仪表盘助手，会跟随鼠标移动；点击可以互动"><span class="dashboard-eye"><i></i></span><span class="dashboard-eye"><i></i></span></div></div>' +
       '</section><section class="dashboard-stat-strip">' + dashboardStats + '</section>';
       const focusCard = '<div class="card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日完成度</div><span class="card-tag">' + percent + '%</span></div>' + taskListHTML('tasks.dashboard', tasks) + '</div>';
@@ -5743,7 +6936,7 @@ const PAGES = {
   },
 
   'daily-plan': {
-    title: '每日计划',
+    title: '任务规划',
     render: () => {
       const dp = DATA.tasks.dailyPlan;
       const wr = DATA.weeklyReview;
@@ -5878,7 +7071,7 @@ const PAGES = {
     title: '选题灵感',
     render: () => {
       const ins = DATA.inspirations;
-      return '<div class="card-grid">' +
+      return secondaryPageHeroHTML('Content Discovery', '把零散想法，整理成值得创作的方向', '收集正在发生的变化，也保留那些还不成熟、但值得继续追问的念头。') + '<div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>本周灵感库</div><span class="card-tag">' + ins.ideas.length + ' 条</span></div>' +
           inspireListHTML('inspirations.ideas', ins.ideas) +
@@ -5900,7 +7093,7 @@ const PAGES = {
     render: () => {
       const rv = DATA.review;
       const all = countAllTasks();
-      return '<div class="card-grid">' +
+      return secondaryPageHeroHTML('Creative Review', '让每一次发布，都沉淀为下一次判断', '用真实反馈校准方向，把有效的方法留下，把不再适用的做法及时放下。') + '<div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>上周数据概览</div><span class="card-tag">第' + rv.week + '周</span></div>' +
           '<div class="stat-row" style="margin-top:0;">' +
@@ -5940,7 +7133,7 @@ const PAGES = {
       const cm = DATA.comic;
       const sb = DATA.tasks.comicStoryboard;
       const sbDone = sb.filter(t => t.done).length;
-      return '<div class="card-grid">' +
+      return secondaryPageHeroHTML('Visual Storytelling', '把故事拆成可推进的画面与节奏', '从主题、分镜到发布记录，让每一段创作都有清晰的下一步。') + '<div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>当前制作</div><span class="card-tag">进行中</span></div>' +
           '<div class="inspire-item">' +
@@ -6007,13 +7200,8 @@ const PAGES = {
     }
   },
 
-  'research-todo': {
-    title: '科研待办',
-    render: () => researchTodoHTML()
-  },
-
   research: {
-    title: '文献',
+    title: '文献管理',
     render: () => {
       const rs = DATA.learning.research;
       const papers = DATA.tasks.researchPapers;
@@ -6075,22 +7263,22 @@ const PAGES = {
         : literatureView === 'graph'
           ? knowledgeGraphHTML()
           : literatureOverviewHTML();
-      return '<div class="literature-page">' + literatureTabs + currentViewHTML + '</div>';
+      return '<div class="literature-page">' + secondaryPageHeroHTML('Reading to Knowledge', '让每一篇文献，都进入可复用的知识网络', '把阅读、标注与关联整理成长期积累，让新的研究判断有据可循。') + literatureTabs + currentViewHTML + '</div>';
     }
   },
 
   'research-inspiration': {
-    title: '科研灵感',
+    title: '灵感构思',
     render: () => researchIdeaHTML()
   },
 
   'research-experiments': {
-    title: '实验',
+    title: '实验验证',
     render: () => researchExperimentHTML()
   },
 
   'research-papers': {
-    title: '论文',
+    title: '写作投稿',
     render: () => researchPaperHTML()
   },
 
@@ -6098,7 +7286,7 @@ const PAGES = {
     title: '新闻热点',
     render: () => {
       const n = DATA.news;
-      return '<div class="card-grid">' +
+      return secondaryPageHeroHTML('Signals and Trends', '从每日信息流里，留下真正值得跟进的信号', '区分短暂热度与长期变化，让资讯服务于研究、学习与创作。') + '<div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>科技动态</div><span class="card-tag">' + n.tech.length + ' 条</span></div>' +
           inspireListHTML('news.tech', n.tech) +
@@ -6127,7 +7315,7 @@ const PAGES = {
 
       const wcfg = weatherConfig();
 
-      return '<div class="settings-card">' +
+      return secondaryPageHeroHTML('Workspace Preferences', '让工作台保持顺手、稳定与可掌控', '集中管理外观、天气、数据同步与备份方式。') + '<div class="settings-card">' +
         '<h3>🎨 外观</h3>' +
         '<div class="settings-row">' +
           '<div><div class="settings-label">主题模式</div><div class="settings-desc">浅色 / 深色 / 跟随系统自动切换</div></div>' +
@@ -6229,28 +7417,18 @@ PAGES.english.render = englishLearningPageHTML;
 // ========================================================================
 // PAGE RENDERING + NAVIGATION
 // ========================================================================
-const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'research', 'news', 'settings', 'research-todo', 'research-inspiration', 'research-experiments', 'research-papers'];
+const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'research', 'news', 'settings', 'research-inspiration', 'research-experiments', 'research-papers'];
 
-// The overview hero already shows a full date + week line, so the page header
-// there is just the title.
+// Page-level titles and dates duplicate the persistent navigation and each
+// page's own content heading, so every workspace view uses the open canvas.
 function mainHeaderHTML(page, pageId) {
-  if (pageId === 'dashboard') {
-    return '';
-  }
-  const dateLine = pageId === 'dashboard'
-    ? ''
-    : '<div class="date">' + todayCN() + ' · 第' + weekNum() + '周</div>';
-  return '<div class="main-header">' +
-    '<div><h1>' + page.title + '</h1>' + dateLine + '</div>' +
-    '<div class="header-actions">' +
-      '<button class="btn btn-outline btn-sm" data-action="open-palette" title="Cmd/Ctrl+K">🔍 搜索</button>' +
-    '</div>' +
-  '</div>';
+  return '';
 }
 
 function pageIdFromHash() {
   try {
     const candidate = decodeURIComponent(location.hash.replace(/^#/, ''));
+    if (candidate === 'research-todo') return 'daily-plan';
     return PAGES[candidate] ? candidate : 'dashboard';
   } catch (error) {
     return 'dashboard';
@@ -6258,6 +7436,7 @@ function pageIdFromHash() {
 }
 
 function renderPage(pageId, options = {}) {
+  if (pageId === 'research-todo') pageId = 'daily-plan';
   const page = PAGES[pageId];
   if (!page) return;
   currentPage = pageId;
@@ -6331,15 +7510,41 @@ document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer)
 // ========================================================================
 // DATA MUTATIONS
 // ========================================================================
-function addTask(path, text) {
-  const arr = getNestedData(path);
+function addTask(path, text, options = {}) {
+  const dueDate = options.dueDate || todayKey();
+  const isPlanTask = path.startsWith('tasks.dailyPlan.');
+  const planSlot = isPlanTask ? path.split('.').pop() : '';
+  const planDefaultTime = isPlanTask ? planAddTimeForSlot(planSlot, dueDate) : '';
+  const requestedTime = options.scheduledTime || planDefaultTime;
+  const scheduledTime = isPlanTask ? roundPlanTimeToHalfHour(requestedTime, planDefaultTime) : requestedTime;
+  const targetPath = path.startsWith('tasks.dailyPlan.') ? planPathForTime(scheduledTime) : path;
+  const arr = getNestedData(targetPath);
   if (!Array.isArray(arr)) return;
-  const task = normalizeTask({ id: uid(), text, done: false }, todayKey());
+  const task = normalizeTask({ id: uid(), text, done: false, scheduledTime }, dueDate, scheduledTime);
   if (!task) return;
   arr.push(task);
   save();
   rerender();
   showToast('已添加', 'success');
+}
+
+function reschedulePlanTask(path, id, scheduledTime) {
+  const source = getNestedData(path);
+  if (!Array.isArray(source)) return;
+  const index = source.findIndex(task => task.id === id);
+  if (index < 0) return;
+  const task = source[index];
+  task.scheduledTime = roundPlanTimeToHalfHour(scheduledTime, task.scheduledTime || defaultPlanTimeForSlot(path.split('.').pop()));
+  task.updatedAt = new Date().toISOString();
+  const targetPath = planPathForTime(task.scheduledTime);
+  if (targetPath !== path) {
+    source.splice(index, 1);
+    const target = getNestedData(targetPath);
+    if (Array.isArray(target)) target.push(task);
+  }
+  save();
+  rerender();
+  showToast('任务时间已调整为 ' + task.scheduledTime, 'success');
 }
 
 function toggleTask(path, id) {
@@ -6391,19 +7596,25 @@ function toggleCheckin(cat, id) {
 // Rollover unfinished daily-plan tasks ("结转未完成到明天")
 function rolloverPlan() {
   const dp = DATA.tasks.dailyPlan;
-  const today = todayKey();
-  const tomorrowDate = new Date(); tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-  const tomorrow = todayKey(tomorrowDate);
-  snapshotDailyState(today, 'manual-rollover');
+  const sourceDate = dailyPlanViewDate || todayKey();
+  const nextDate = shiftDateKey(sourceDate, 1);
+  snapshotDailyState(sourceDate, 'manual-rollover');
   let moved = 0;
   for (const key of ['morning', 'afternoon', 'evening']) {
-    const remaining = dp[key].filter(t => !t.done);
-    moved += remaining.length;
-    dp[key] = remaining.map(t => normalizeTask({ ...t, id: uid(), done: false, carriedFrom: today, dueDate: tomorrow }, tomorrow));
+    dp[key].forEach(task => {
+      if (!task.done && isTaskOnPlanDate(task, sourceDate)) {
+        task.carriedFrom = sourceDate;
+        task.dueDate = nextDate;
+        task.updatedAt = new Date().toISOString();
+        moved++;
+      }
+    });
   }
+  dailyPlanViewDate = nextDate;
+  dailyPlanCalendarMonth = nextDate.slice(0, 7);
   save();
   rerender();
-  showToast(moved > 0 ? '已将 ' + moved + ' 项未完成任务结转到明天' : '没有未完成任务需要结转', 'success');
+  showToast(moved > 0 ? '已将 ' + moved + ' 项未完成任务结转到 ' + planDateLabel(nextDate) : '所选日期没有未完成任务需要结转', 'success');
 }
 
 // Auto-generate weekly review draft from live data (P3)
@@ -6639,7 +7850,6 @@ const COMMANDS = [
   { id: 'cmd-theme', icon: '🌙', text: '切换主题', run: () => cycleTheme() },
   { id: 'cmd-export', icon: '📤', text: '导出数据', run: () => exportData('workspace') },
   { id: 'cmd-import', icon: '📥', text: '导入数据', run: () => importData() },
-  { id: 'cmd-clear-done', icon: '🧹', text: '清除当前页已完成任务', run: () => clearDoneOnPage() },
   { id: 'cmd-rollover', icon: '⏭️', text: '结转未完成任务到明天', run: () => rolloverPlan() },
   { id: 'cmd-weekly', icon: '✨', text: '自动生成本周小结', run: () => genWeeklyDraft() },
   { id: 'cmd-settings', icon: '⚙️', text: '打开数据管理', run: () => renderPage('settings') },
@@ -6657,8 +7867,7 @@ function clearDoneOnPage() {
     'ai-learn': ['tasks.aiLearn'],
     'english': ['tasks.english'],
     'comic': ['tasks.comicStoryboard'],
-    'research': ['tasks.researchPapers'],
-    'research-todo': ['learning.research.todos.items']
+    'research': ['tasks.researchPapers']
   };
   const paths = map[currentPage];
   if (!paths) { showToast('当前页面没有任务列表', 'warning'); return; }
@@ -6691,8 +7900,7 @@ function buildPaletteIndex() {
     ['tasks.aiLearn', 'AI学习'],
     ['tasks.english', '英语'],
     ['tasks.comicStoryboard', '漫剧分镜'],
-    ['tasks.researchPapers', '科研文献'],
-    ['tasks.researchTodo', '科研待办']
+    ['tasks.researchPapers', '科研文献']
   ];
   for (const [path, label] of taskGroups) {
     const arr = getNestedData(path) || [];
@@ -6846,6 +8054,7 @@ document.addEventListener('keydown', (e) => {
     }
     if (document.getElementById('paletteOverlay').classList.contains('show')) { closePalette(); return; }
     if (document.getElementById('modalOverlay').classList.contains('show')) { closeModal(); return; }
+    if (document.getElementById('weatherPopover')?.classList.contains('show')) { closeWeatherDetails(); return; }
     closeDrawer();
     return;
   }
@@ -6986,16 +8195,53 @@ function setLiteraturePieActive(interactive) {
   const wrap = interactive ? interactive.closest('.literature-pie-wrap') : null;
   if (!wrap) return;
   const index = interactive.dataset.pieIndex;
-  wrap.classList.toggle('has-active', index !== undefined);
+  const selectedTags = new Set(activeReadingLogTags);
+  const hasSelectedDomain = Array.from(wrap.querySelectorAll('[data-pie-index][data-reading-tag]')).some(item => selectedTags.has(item.dataset.readingTag));
+  wrap.classList.toggle('has-active', index !== undefined || hasSelectedDomain);
   wrap.querySelectorAll('[data-pie-index]').forEach(item => {
-    item.classList.toggle('is-active', item.dataset.pieIndex === index);
+    item.classList.toggle('is-active', item.dataset.pieIndex === index || selectedTags.has(item.dataset.readingTag));
   });
+  setLiteratureLinkedTagActive(interactive.dataset.pieLabel || '');
 }
 
 function clearLiteraturePieActive(wrap) {
   if (!wrap) return;
-  wrap.classList.remove('has-active');
-  wrap.querySelectorAll('[data-pie-index].is-active').forEach(item => item.classList.remove('is-active'));
+  const selectedTags = new Set(activeReadingLogTags);
+  const hasSelectedDomain = Array.from(wrap.querySelectorAll('[data-pie-index][data-reading-tag]')).some(item => selectedTags.has(item.dataset.readingTag));
+  wrap.classList.toggle('has-active', hasSelectedDomain);
+  wrap.querySelectorAll('[data-pie-index]').forEach(item => {
+    item.classList.toggle('is-active', selectedTags.has(item.dataset.readingTag));
+  });
+  clearLiteratureLinkedTagActive();
+}
+
+function setLiteratureLinkedTagActive(domain) {
+  const target = String(domain || '');
+  document.querySelectorAll('.literature-tag-group[data-tag-group="domain"] [data-reading-tag]').forEach(item => {
+    item.classList.toggle('is-linked-active', Boolean(target) && item.dataset.readingTag === target);
+  });
+}
+
+function clearLiteratureLinkedTagActive() {
+  document.querySelectorAll('.literature-tag-group[data-tag-group="domain"] [data-reading-tag].is-linked-active').forEach(item => {
+    item.classList.remove('is-linked-active');
+  });
+}
+
+function setLiteratureDomainHighlight(domain) {
+  const target = String(domain || '');
+  document.querySelectorAll('.literature-pie-wrap').forEach(wrap => {
+    if (!target) {
+      clearLiteraturePieActive(wrap);
+      return;
+    }
+    const item = Array.from(wrap.querySelectorAll('[data-pie-index]')).find(candidate => candidate.dataset.pieLabel === target);
+    if (item) setLiteraturePieActive(item);
+  });
+}
+
+function clearLiteratureDomainHighlight() {
+  document.querySelectorAll('.literature-pie-wrap').forEach(clearLiteraturePieActive);
 }
 
 document.addEventListener('pointerover', (e) => {
@@ -7003,6 +8249,8 @@ document.addEventListener('pointerover', (e) => {
   if (heatmapCell) showReadingLogTooltip(heatmapCell, e.clientX, e.clientY);
   const pieItem = e.target.closest && e.target.closest('.literature-pie-wrap [data-pie-index]');
   if (pieItem) setLiteraturePieActive(pieItem);
+  const domainTag = e.target.closest && e.target.closest('.literature-tag-group[data-tag-group="domain"] [data-reading-tag]');
+  if (domainTag) setLiteratureDomainHighlight(domainTag.dataset.readingTag || '');
 });
 
 document.addEventListener('pointermove', (e) => {
@@ -7021,6 +8269,8 @@ document.addEventListener('pointerout', (e) => {
     if (nextItem && nextItem.closest('.literature-pie-wrap') === pieWrap) setLiteraturePieActive(nextItem);
     else clearLiteraturePieActive(pieWrap);
   }
+  const domainTag = e.target.closest && e.target.closest('.literature-tag-group[data-tag-group="domain"] [data-reading-tag]');
+  if (domainTag && (!e.relatedTarget || !domainTag.contains(e.relatedTarget))) clearLiteratureDomainHighlight();
 });
 
 document.addEventListener('focusin', (e) => {
@@ -7028,6 +8278,8 @@ document.addEventListener('focusin', (e) => {
   if (heatmapCell) showReadingLogTooltip(heatmapCell);
   const pieItem = e.target.closest && e.target.closest('.literature-pie-wrap [data-pie-index]');
   if (pieItem) setLiteraturePieActive(pieItem);
+  const domainTag = e.target.closest && e.target.closest('.literature-tag-group[data-tag-group="domain"] [data-reading-tag]');
+  if (domainTag) setLiteratureDomainHighlight(domainTag.dataset.readingTag || '');
 });
 
 document.addEventListener('focusout', (e) => {
@@ -7035,6 +8287,8 @@ document.addEventListener('focusout', (e) => {
   if (heatmapCell) hideReadingLogTooltip();
   const pieWrap = e.target.closest && e.target.closest('.literature-pie-wrap');
   if (pieWrap && (!e.relatedTarget || !pieWrap.contains(e.relatedTarget))) clearLiteraturePieActive(pieWrap);
+  const domainTag = e.target.closest && e.target.closest('.literature-tag-group[data-tag-group="domain"] [data-reading-tag]');
+  if (domainTag) clearLiteratureDomainHighlight();
 });
 
 // ========================================================================
@@ -7042,6 +8296,29 @@ document.addEventListener('focusout', (e) => {
 // ========================================================================
 document.addEventListener('click', (e) => {
   const t = e.target;
+
+  const planCalendarMonthShift = t.closest('[data-plan-calendar-month-shift]');
+  if (planCalendarMonthShift) {
+    dailyPlanCalendarMonth = shiftPlanCalendarMonth(dailyPlanCalendarMonth, Number(planCalendarMonthShift.dataset.planCalendarMonthShift) || 0);
+    rerender();
+    return;
+  }
+
+  if (t.closest('[data-plan-calendar-current]')) {
+    dailyPlanCalendarMonth = todayKey().slice(0, 7);
+    dailyPlanViewDate = todayKey();
+    rerender();
+    return;
+  }
+
+  const planCalendarDate = t.closest('[data-plan-calendar-date]');
+  if (planCalendarDate) {
+    dailyPlanViewDate = planCalendarDate.dataset.planCalendarDate || todayKey();
+    dailyPlanCalendarMonth = dailyPlanViewDate.slice(0, 7);
+    rerender();
+    requestAnimationFrame(() => document.querySelector('.daily-plan-page .workspace-hero')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    return;
+  }
 
   if (t.closest('[data-action="research-idea-focus-open"]')) {
     researchInspirationState.focusMode = true;
@@ -7091,6 +8368,12 @@ document.addEventListener('click', (e) => {
   }
 
   // --- Task checkbox toggle ---
+  const nextTaskToggle = t.closest('.workspace-next-mark.is-task-toggle[data-path][data-id]');
+  if (nextTaskToggle) {
+    toggleTask(nextTaskToggle.dataset.path, nextTaskToggle.dataset.id);
+    return;
+  }
+
   const checkbox = t.closest('.task-checkbox');
   if (checkbox && checkbox.dataset.path) {
     toggleTask(checkbox.dataset.path, checkbox.dataset.id);
@@ -7127,6 +8410,13 @@ document.addEventListener('click', (e) => {
   }
 
   // --- Inspire/news delete (soft) ---
+  const readingLogEdit = t.closest('[data-reading-log-edit]');
+  if (readingLogEdit) {
+    const log = (DATA.learning.research.readingLogs || []).find(item => item.id === readingLogEdit.dataset.readingLogEdit);
+    if (log) openReadingLogModal(log);
+    return;
+  }
+
   const inspDel = t.closest('.inspire-delete');
   if (inspDel) {
     if (inspDel.dataset.readingLogDel) {
@@ -7156,7 +8446,9 @@ document.addEventListener('click', (e) => {
   const readingTag = t.closest('[data-reading-tag]');
   if (readingTag) {
     const tag = readingTag.dataset.readingTag || '';
-    activeReadingLogTag = activeReadingLogTag === tag ? '' : tag;
+    activeReadingLogTags = activeReadingLogTags.includes(tag)
+      ? activeReadingLogTags.filter(item => item !== tag)
+      : [...activeReadingLogTags, tag];
     rerender();
     return;
   }
@@ -7389,7 +8681,9 @@ document.addEventListener('click', (e) => {
     const path = t.dataset.path;
     const input = document.querySelector('.add-task-input[data-path="' + path + '"]');
     if (input && input.value.trim()) {
-      addTask(path, input.value.trim());
+      const row = input.closest('.add-task-row');
+      const timeInput = row && row.querySelector('[data-schedule-time]');
+      addTask(path, input.value.trim(), { dueDate: t.dataset.dueDate || input.dataset.dueDate || todayKey(), scheduledTime: timeInput ? timeInput.value : '' });
       setTimeout(() => {
         const ni = document.querySelector('.add-task-input[data-path="' + path + '"]');
         if (ni) ni.focus();
@@ -7553,6 +8847,8 @@ function handleAction(action) {
       break;
     case 'open-palette': openPalette(); break;
     case 'weather-city': promptWeatherCity(); break;
+    case 'weather-detail': showWeatherDetails(); break;
+    case 'weather-detail-close': closeWeatherDetails(); break;
     case 'weather-locate': locateWeather(); break;
     case 'weather-refresh': fetchWeather({ force: true }); break;
     case 'zotero-connect':
@@ -7701,6 +8997,9 @@ function handleAction(action) {
     }
     case 'add-reading-log':
       openReadingLogModal();
+      break;
+    case 'add-reading-log-supplement':
+      openReadingLogModal(null, true);
       break;
     case 'research-todo-quick-add':
       quickAddResearchTodo();
@@ -7887,7 +9186,7 @@ function handleAction(action) {
       rerender();
       break;
     case 'clear-reading-log-tag':
-      activeReadingLogTag = '';
+      activeReadingLogTags = [];
       rerender();
       break;
     case 'generate-knowledge-graph':
@@ -7983,7 +9282,9 @@ document.addEventListener('keydown', (e) => {
   if (t.classList.contains('add-task-input') && t.dataset.path) {
     e.preventDefault();
     if (t.value.trim()) {
-      addTask(t.dataset.path, t.value.trim());
+      const row = t.closest('.add-task-row');
+      const timeInput = row && row.querySelector('[data-schedule-time]');
+      addTask(t.dataset.path, t.value.trim(), { dueDate: t.dataset.dueDate || todayKey(), scheduledTime: timeInput ? timeInput.value : '' });
       setTimeout(() => {
         const ni = document.querySelector('.add-task-input[data-path="' + t.dataset.path + '"]');
         if (ni) ni.focus();
@@ -8112,6 +9413,20 @@ document.addEventListener('blur', (e) => {
 }, true);
 
 document.addEventListener('change', (e) => {
+  if (e.target.matches('[data-plan-calendar-year]')) {
+    dailyPlanCalendarMonth = e.target.value + '-' + dailyPlanCalendarMonth.slice(5, 7);
+    rerender();
+    return;
+  }
+  if (e.target.matches('[data-plan-calendar-month]')) {
+    dailyPlanCalendarMonth = dailyPlanCalendarMonth.slice(0, 4) + '-' + e.target.value;
+    rerender();
+    return;
+  }
+  if (e.target.matches('[data-task-time][data-path][data-id]')) {
+    reschedulePlanTask(e.target.dataset.path, e.target.dataset.id, e.target.value);
+    return;
+  }
   if (e.target.matches('[data-research-experiment-image-input]')) {
     const wrapper = e.target.closest('[data-research-stage-field-wrap]');
     const textarea = wrapper && wrapper.querySelector('textarea[data-research-experiment-field="results"]');
@@ -8487,6 +9802,7 @@ async function init() {
 }
 
 const WORKSPACE_INIT_PROMISE = init();
+setInterval(refreshDayElapsedProgress, 60 * 1000);
 
 
   ;(() => {
@@ -8545,7 +9861,14 @@ const WORKSPACE_INIT_PROMISE = init();
         deleteItem(path, id) { softDelete(path, id); },
         clearDone(paths) { clearDoneTasks(paths); },
         rolloverPlan() { rolloverPlan(); },
-        setTheme(pref) { setTheme(pref); }
+        setTheme(pref) { setTheme(pref); },
+        setDisplayName(name) {
+          const nextName = String(name || '').trim();
+          if (!nextName || DATA.settings.displayName === nextName) return;
+          DATA.settings.displayName = nextName;
+          save();
+          rerender();
+        }
       }),
       subscribe(listener) {
         reactSubscribers.add(listener);

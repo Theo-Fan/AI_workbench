@@ -28,10 +28,17 @@ if curl -fsS --max-time 2 "$WORKSPACE_URL" >/dev/null 2>&1; then
 fi
 
 command -v npm >/dev/null 2>&1 || pause_on_error "未找到 npm，请先安装 Node.js。"
+NPM_CLI="$(npm root -g)/npm/bin/npm-cli.js"
+[[ -f "$NPM_CLI" ]] || pause_on_error "无法定位 npm CLI，请重新安装 Node.js。"
 
 if [[ ! -d node_modules ]]; then
   echo "首次运行，正在安装项目依赖…"
   npm install || pause_on_error "依赖安装失败。"
+fi
+
+if ! npm exec --yes node@22 -- -e "const Database = require('better-sqlite3'); new Database(':memory:').close()" >/dev/null 2>&1; then
+  echo "正在修复 Node.js 22 的 SQLite 原生依赖…"
+  npm exec --yes --package=node@22 -- node "$NPM_CLI" rebuild better-sqlite3 || pause_on_error "SQLite 原生依赖修复失败。"
 fi
 
 echo "正在启动 AI 工作台…"
