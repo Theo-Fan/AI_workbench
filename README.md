@@ -2,9 +2,7 @@
 
 一个本地优先的个人工作台，用于管理任务、日程、学习、健身、科研与内容创作，并支持阶段复盘和数据备份。
 
-![每日计划页面](.workbuddy/previews/daily-plan.png)
 
-技术栈：React + TypeScript、Fastify、SQLite、Docker Compose。
 
 ## 快速开始
 
