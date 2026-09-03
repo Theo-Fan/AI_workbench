@@ -1,6 +1,7 @@
 // Standalone workspace runtime owned by the React frontend.
 // @ts-nocheck -- parity module; all public access is typed by runtimeBridge.ts.
 import type { RenderState, WorkspacePageId } from '../runtimeBridge.js';
+import { IELTS_DOWNLOADED_VOCABULARY_SOURCE } from './ieltsVocabularySource.js';
 
 let mounted = false;
 let generatedRuntime;
@@ -70,7 +71,7 @@ const DEFAULT_DATA = {
     ],
     "english": [
       { "id": "en1", "text": "精读外刊 1 篇（30min）", "done": false },
-      { "id": "en2", "text": "背单词 50 个", "done": false },
+      { "id": "en2", "text": "背单词 100 个", "done": false },
       { "id": "en3", "text": "听力练习 20 分钟", "done": false },
       { "id": "en4", "text": "口语模仿 3 段", "done": false }
     ],
@@ -182,10 +183,142 @@ const DEFAULT_DATA = {
         { "id": "lr3", "title": "📚 AI 绘画原理与实践", "desc": "理解扩散模型，掌握出图技巧" }
       ]
     },
-    "english": {
-      "challenge": { "current": 28, "total": 100, "streak": 12, "lastCompletedDate": "" }
-    },
-    "research": {
+      "english": {
+      "profile": {
+        "target": "IELTS Academic",
+        "targetBand": "7.0+",
+        "currentBand": "6.5",
+        "dailyMinutes": 75,
+        "examDate": ""
+      },
+      "challenge": { "current": 28, "total": 100, "streak": 0, "lastCompletedDate": "" },
+      "vocab": {
+        "dailyTarget": 100,
+        "dailyDate": "",
+        "bankVersion": "IELTS Academic Core + Topic Bank · v2.0",
+        "words": [],
+        "seenIds": [],
+        "lastBatchIds": [],
+        "favorites": [],
+        "lastGeneratedAt": ""
+      },
+      "listening": {
+        "completed": 8,
+        "target": 12,
+        "streak": 0,
+        "lastCompletedDate": "",
+        "lastSyncedAt": "",
+        "queue": [
+          { "id": "listen-1", "title": "Urban farming and the future of food", "source": "BBC Learning English", "level": "Band 6.5–7.0", "duration": "08:42", "skill": "Section 3 · Note completion", "status": "done" },
+          { "id": "listen-2", "title": "How coral reefs adapt to warming oceans", "source": "TED-Ed", "level": "Band 7.0+", "duration": "06:18", "skill": "Section 4 · Summary completion", "status": "done" },
+          { "id": "listen-3", "title": "A conversation about creative routines", "source": "NPR Life Kit", "level": "Band 6.0–6.5", "duration": "09:05", "skill": "Section 2 · Multiple choice", "status": "done" },
+          { "id": "listen-4", "title": "Reading the signals in a changing climate", "source": "BBC Learning English", "level": "Band 7.0", "duration": "07:36", "skill": "Section 3 · Matching headings", "status": "done" },
+          { "id": "listen-5", "title": "The science of better sleep", "source": "TED-Ed", "level": "Band 7.0–7.5", "duration": "08:11", "skill": "Section 4 · Flow-chart completion", "status": "done" },
+          { "id": "listen-6", "title": "A campus project that changed its neighbourhood", "source": "NPR Life Kit", "level": "Band 6.5", "duration": "09:24", "skill": "Section 2 · Map labelling", "status": "done" },
+          { "id": "listen-7", "title": "Why some memories last longer than others", "source": "BBC Learning English", "level": "Band 7.0", "duration": "06:54", "skill": "Section 3 · Multiple choice", "status": "done" },
+          { "id": "listen-8", "title": "Designing cities for everyday movement", "source": "TED-Ed", "level": "Band 7.5", "duration": "10:02", "skill": "Section 4 · Note completion", "status": "done" },
+          { "id": "listen-9", "title": "How museums bring hidden histories to life", "source": "NPR Life Kit", "level": "Band 7.0", "duration": "08:47", "skill": "Section 2 · Form completion", "status": "next" },
+          { "id": "listen-10", "title": "The promise and limits of vertical forests", "source": "BBC Learning English", "level": "Band 7.5", "duration": "07:58", "skill": "Section 3 · Sentence completion", "status": "locked" },
+          { "id": "listen-11", "title": "When algorithms make everyday decisions", "source": "TED-Ed", "level": "Band 7.5–8.0", "duration": "09:16", "skill": "Section 4 · Summary completion", "status": "locked" },
+          { "id": "listen-12", "title": "A guide to negotiating across cultures", "source": "NPR Life Kit", "level": "Band 7.0", "duration": "08:29", "skill": "Section 2 · Matching information", "status": "locked" }
+        ]
+      },
+      "reading": {
+        "dailyGoal": 1,
+        "completed": 6,
+        "lastFetchedAt": "",
+        "lastSource": "",
+        "lastTopic": "",
+        "remoteTitles": [],
+        "activeArticleId": "article-1",
+        "articles": [
+          { "id": "article-1", "type": "科技与社会", "source": "The Conversation", "level": "Band 7.0", "minutes": 12, "title": "Why small AI tools are changing the way people learn", "excerpt": "From language practice to research notes, narrowly focused AI tools are becoming everyday study partners. The most useful systems do not replace effort; they make feedback easier to reach.", "tags": ["technology", "education"], "url": "https://theconversation.com/", "publishedAt": "2026-08-27", "saved": true },
+          { "id": "article-2", "type": "环境科学", "source": "National Geographic", "level": "Band 7.5", "minutes": 15, "title": "The quiet return of wetlands in crowded cities", "excerpt": "Urban wetlands are being restored as living infrastructure. They reduce flood risk, cool neighbourhoods and create habitats without demanding more concrete.", "tags": ["environment", "cities"], "url": "https://www.nationalgeographic.com/", "publishedAt": "2026-08-26", "saved": false },
+          { "id": "article-3", "type": "文化与历史", "source": "Smithsonian Magazine", "level": "Band 7.0", "minutes": 10, "title": "What old maps reveal about the way cities remember", "excerpt": "Maps are often treated as neutral records, yet every border, label and blank space reflects a decision about what deserves to be seen.", "tags": ["culture", "history"], "url": "https://www.smithsonianmag.com/", "publishedAt": "2026-08-25", "saved": false },
+          { "id": "article-4", "type": "商业与工作", "source": "Harvard Business Review", "level": "Band 7.5", "minutes": 14, "title": "The case for slower, more deliberate collaboration", "excerpt": "Teams that leave room for reflection often make fewer reactive decisions. Deliberate collaboration is not a refusal to move quickly; it is a way to spend speed where it matters.", "tags": ["work", "management"], "url": "https://hbr.org/", "publishedAt": "2026-08-24", "saved": false },
+          { "id": "article-5", "type": "心理与健康", "source": "Scientific American", "level": "Band 8.0", "minutes": 13, "title": "Why our attention needs a recovery rhythm", "excerpt": "Attention is not an unlimited resource. Short periods of recovery can improve the quality of the next focused interval more reliably than a longer stretch of forced concentration.", "tags": ["health", "psychology"], "url": "https://www.scientificamerican.com/", "publishedAt": "2026-08-23", "saved": false },
+          { "id": "article-6", "type": "艺术与设计", "source": "The Guardian", "level": "Band 7.0", "minutes": 11, "title": "How public spaces make room for unexpected encounters", "excerpt": "Good public design does more than direct movement. It leaves enough ambiguity for people to pause, observe one another and invent their own use for a place.", "tags": ["design", "culture"], "url": "https://www.theguardian.com/", "publishedAt": "2026-08-22", "saved": false }
+        ]
+      },
+      "writing": {
+        "weeklyGoal": 2,
+        "completed": 0,
+        "lastReviewedAt": "",
+        "completedPromptIds": [],
+        "prompts": [
+          { "id": "writing-1", "type": "Task 2 · Opinion", "title": "Should cities charge drivers to enter busy centres?", "focus": "观点展开 · 让步段", "time": 40, "status": "next" },
+          { "id": "writing-2", "type": "Task 1 · Report", "title": "The chart shows how households used energy in 2025", "focus": "概述段 · 比较趋势", "time": 20, "status": "planned" },
+          { "id": "writing-3", "type": "Task 2 · Discussion", "title": "Is remote work a benefit or a barrier to career growth?", "focus": "双边讨论 · 结论", "time": 40, "status": "planned" }
+        ],
+        "drafts": []
+      },
+        "history": []
+      },
+      "civilService": {
+        "profile": {
+          "target": "国考 / 省考通用",
+          "targetDate": "",
+          "targetScore": 75,
+          "dailyMinutes": 120
+        },
+        "weeklyGoal": 10,
+        "weeklyCompleted": 5,
+        "streak": 4,
+        "lastStudyDate": "",
+        "totalMinutes": 720,
+        "studyHistory": [
+          { "date": "2026-08-28", "minutes": 80, "completed": 3 },
+          { "date": "2026-08-29", "minutes": 110, "completed": 5 },
+          { "date": "2026-08-30", "minutes": 45, "completed": 2 },
+          { "date": "2026-08-31", "minutes": 95, "completed": 4 },
+          { "date": "2026-09-01", "minutes": 120, "completed": 6 },
+          { "date": "2026-09-02", "minutes": 70, "completed": 3 },
+          { "date": "2026-09-03", "minutes": 0, "completed": 0 }
+        ],
+        "subjects": [
+          { "id": "quantity", "title": "数量关系", "icon": "∑", "description": "用结构化方法拆解数量题，稳定拿到可得分的中低难度题。", "focus": "比例 · 方程 · 工程 · 排列组合", "progress": 42, "tasks": [
+            { "id": "quantity-1", "title": "掌握比例与倍数的统一建模", "done": true },
+            { "id": "quantity-2", "title": "完成工程问题 10 题并整理错因", "done": false },
+            { "id": "quantity-3", "title": "限时训练：资料型数量题 15 分钟", "done": false }
+          ], "weakPoints": ["复杂行程问题容易在单位换算上失分", "排列组合需要先判断是否重复取用"] },
+          { "id": "logic", "title": "逻辑判断", "icon": "◇", "description": "建立论证、削弱、加强与翻译推理的稳定判别路径。", "focus": "论证 · 翻译 · 真假 · 分析", "progress": 56, "tasks": [
+            { "id": "logic-1", "title": "区分加强、削弱与解释型论证", "done": true },
+            { "id": "logic-2", "title": "完成翻译推理基础题 12 题", "done": true },
+            { "id": "logic-3", "title": "整理一页常见逻辑连接词", "done": false }
+          ], "weakPoints": ["论证题先找结论，再定位隐含前提", "分析推理优先画约束关系而不是凭直觉"] },
+          { "id": "analogy", "title": "类比推理", "icon": "≈", "description": "从词项关系、语义属性和造句验证三层完成快速匹配。", "focus": "逻辑关系 · 言语关系 · 经验常识", "progress": 61, "tasks": [
+            { "id": "analogy-1", "title": "复习种属、组成与对应关系", "done": true },
+            { "id": "analogy-2", "title": "完成成语与词语类比 20 题", "done": true },
+            { "id": "analogy-3", "title": "建立易混关系辨析卡片", "done": false }
+          ], "weakPoints": ["优先验证关系方向与强度", "成语类比不能只凭感情色彩判断"] },
+          { "id": "graphic", "title": "图形推理", "icon": "▦", "description": "形成位置、样式、数量和属性四层观察顺序，减少无效试探。", "focus": "位置 · 样式 · 数量 · 属性", "progress": 35, "tasks": [
+            { "id": "graphic-1", "title": "完成图形位置规律专项 15 题", "done": false },
+            { "id": "graphic-2", "title": "整理旋转、翻转与叠加规律", "done": true },
+            { "id": "graphic-3", "title": "限时完成一组立体图形题", "done": false }
+          ], "weakPoints": ["先看位置变化，再看元素数量", "立体截面题需要固定观察视角"] },
+          { "id": "data", "title": "资料分析", "icon": "%", "description": "练熟增长率、比重、平均数与比较大小，提升读表和速算效率。", "focus": "增长 · 比重 · 平均 · 速算", "progress": 68, "tasks": [
+            { "id": "data-1", "title": "复习增长量与增长率的互换", "done": true },
+            { "id": "data-2", "title": "完成一套图表材料并控制在 20 分钟", "done": true },
+            { "id": "data-3", "title": "整理十组常用速算技巧", "done": false }
+          ], "weakPoints": ["注意基期量与现期量的对应关系", "比较题先估算数量级再精算"] },
+          { "id": "general", "title": "常识", "icon": "知", "description": "围绕高频主题搭建知识框架，用碎片时间滚动补齐盲区。", "focus": "法律 · 经济 · 科技 · 人文", "progress": 47, "tasks": [
+            { "id": "general-1", "title": "复习宪法与行政法高频考点", "done": true },
+            { "id": "general-2", "title": "完成科技人文常识晨读 30 条", "done": false },
+            { "id": "general-3", "title": "把本周错题归入知识树", "done": false }
+          ], "weakPoints": ["常识需要持续滚动，不适合考前一次性突击", "法律题先抓主体、行为和责任"] },
+          { "id": "politics", "title": "政治理论", "icon": "政", "description": "把理论原理、时政表达与材料分析连接起来，形成可复述的知识链。", "focus": "理论 · 时政 · 党史 · 表达", "progress": 52, "tasks": [
+            { "id": "politics-1", "title": "梳理新时代党的创新理论框架", "done": true },
+            { "id": "politics-2", "title": "完成时政热点专题笔记", "done": false },
+            { "id": "politics-3", "title": "用自己的话复述三个核心概念", "done": false }
+          ], "weakPoints": ["理论表述要回到关键词和逻辑关系", "时政材料要同时记录背景、措施和意义"] },
+          { "id": "essay", "title": "申论", "icon": "文", "description": "从审题、概括到文章写作建立完整闭环，让每次练笔都留下可复用表达。", "focus": "审题 · 概括 · 对策 · 文章", "progress": 39, "tasks": [
+            { "id": "essay-1", "title": "完成一篇归纳概括并对照采分点", "done": true },
+            { "id": "essay-2", "title": "积累五组公共政策规范表达", "done": false },
+            { "id": "essay-3", "title": "完成大作文提纲：基层治理", "done": false }
+          ], "weakPoints": ["先拆题干任务，再回材料找对应信息", "文章论点要落到分论点、案例与对策"] }
+        ]
+      },
+      "research": {
       "current": { "title": "AI 辅助科研写作效率研究", "desc": "探索 LLM 对论文写作流程的影响与优化" },
       "milestones": [
         { "id": "ms1", "icon": "✅", "title": "文献调研", "desc": "已完成 · 收集 32 篇相关文献", "status": "done" },
@@ -310,6 +443,282 @@ const GRAPH_MAX_NODES = 420;
 const GRAPH_MAX_LINKS = 900;
 const GRAPH_RELATED_MAX_PAPERS = 240;
 const GRAPH_MAX_CONCEPT_NODES = 300;
+
+// A compact, offline-first IELTS Academic word bank.  The bank is deliberately
+// broader than one day's target so the daily picker can avoid repeats while
+// still keeping the level focused on high-frequency Band 6.5–8 vocabulary.
+function englishWordExample(term, pos) {
+  const word = String(term || '').trim();
+  const partOfSpeech = String(pos || '').toLowerCase();
+  if (!word) return '';
+  // Keep the default sentence metalinguistic.  A generated example must not
+  // accidentally put an adjective in a verb slot (or vice versa), which is
+  // particularly easy to do when a word has more than one part of speech.
+  const examples = {
+    assess: 'Researchers assess whether the policy improves access to public services.',
+    mitigate: 'Tree cover can mitigate the effects of extreme heat in cities.',
+    allocate: 'The council allocated additional funding to public transport.',
+    reinforce: 'The findings reinforce the case for early intervention.',
+    fluctuate: 'Energy prices fluctuate when supply and demand change quickly.',
+    retain: 'Spaced retrieval helps learners retain new vocabulary for longer.',
+    sustainable: 'The proposal offers a sustainable way to reduce household waste.',
+    coherent: 'A coherent argument links each claim to relevant evidence.',
+    prevalent: 'The survey found that the practice was prevalent among younger adults.',
+    biodiversity: 'Protecting biodiversity requires connected habitats and careful monitoring.'
+  };
+  return examples[word.toLowerCase()] || 'In IELTS texts, “' + word + '” often appears in discussions of evidence, policy or social change.';
+}
+
+const IELTS_WORD_BANK = [
+  ['abundant', 'adj.', '丰富的；充足的', '7.0'], ['accumulate', 'v.', '积累；逐渐增加', '7.0'],
+  ['adjacent', 'adj.', '邻近的；毗连的', '7.0'], ['advocate', 'v./n.', '提倡；拥护者', '7.0'],
+  ['allocate', 'v.', '分配；拨出', '7.0'], ['alter', 'v.', '改变；修改', '6.5'],
+  ['ambiguous', 'adj.', '含糊的；模棱两可的', '7.5'], ['analogy', 'n.', '类比；相似之处', '7.5'],
+  ['anticipate', 'v.', '预期；预料', '7.0'], ['apparent', 'adj.', '明显的；表面上的', '6.5'],
+  ['arbitrary', 'adj.', '任意的；武断的', '8.0'], ['assess', 'v.', '评估；评价', '6.5'],
+  ['attribute', 'v./n.', '把……归因于；特征', '7.0'], ['authentic', 'adj.', '真实的；可信的', '6.5'],
+  ['bias', 'n./v.', '偏见；使有偏向', '7.0'], ['coherent', 'adj.', '连贯的；条理清楚的', '7.0'],
+  ['compel', 'v.', '迫使；使必须', '7.0'], ['comprehensive', 'adj.', '全面的；综合的', '7.0'],
+  ['conceive', 'v.', '构想；设想', '7.5'], ['concurrent', 'adj.', '同时发生的', '8.0'],
+  ['controversial', 'adj.', '有争议的', '6.5'], ['converse', 'v./adj.', '交谈；相反的', '7.5'],
+  ['crucial', 'adj.', '关键的；至关重要的', '6.5'], ['cumulative', 'adj.', '累积的', '7.5'],
+  ['decline', 'v./n.', '下降；衰退', '6.5'], ['deduce', 'v.', '推断；演绎', '7.5'],
+  ['demonstrate', 'v.', '证明；展示', '6.5'], ['denote', 'v.', '表示；意味着', '7.5'],
+  ['derive', 'v.', '获得；源于', '7.0'], ['diminish', 'v.', '减少；削弱', '7.0'],
+  ['dispose', 'v.', '处理；布置', '7.5'], ['diverse', 'adj.', '多样的；不同的', '6.5'],
+  ['empirical', 'adj.', '以实证为依据的', '8.0'], ['enhance', 'v.', '增强；提高', '6.5'],
+  ['equivalent', 'adj./n.', '等同的；对应物', '7.0'], ['erode', 'v.', '侵蚀；逐渐削弱', '7.5'],
+  ['explicit', 'adj.', '明确的；直白的', '7.0'], ['facilitate', 'v.', '促进；使便利', '7.0'],
+  ['feasible', 'adj.', '可行的', '7.5'], ['fluctuate', 'v.', '波动；起伏', '7.0'],
+  ['fundamental', 'adj.', '根本的；基础的', '6.5'], ['hinder', 'v.', '阻碍；妨碍', '7.0'],
+  ['hypothesis', 'n.', '假设；假说', '7.0'], ['illustrate', 'v.', '说明；阐明', '6.5'],
+  ['implement', 'v.', '实施；执行', '6.5'], ['implicit', 'adj.', '含蓄的；暗含的', '7.5'],
+  ['incentive', 'n.', '激励；刺激', '7.0'], ['incorporate', 'v.', '包含；合并', '7.0'],
+  ['induce', 'v.', '引起；诱导', '7.5'], ['inevitable', 'adj.', '不可避免的', '6.5'],
+  ['infer', 'v.', '推断；推论', '6.5'], ['inhibit', 'v.', '抑制；阻止', '7.5'],
+  ['innovative', 'adj.', '创新的', '6.5'], ['integral', 'adj.', '不可或缺的；完整的', '7.5'],
+  ['intervene', 'v.', '干预；介入', '7.5'], ['intrinsic', 'adj.', '固有的；内在的', '8.0'],
+  ['invoke', 'v.', '援引；引起', '8.0'], ['justify', 'v.', '证明……正当；为……辩护', '7.0'],
+  ['likewise', 'adv.', '同样地；也', '6.5'], ['magnitude', 'n.', '规模；重要性', '7.5'],
+  ['marginal', 'adj.', '边缘的；微小的', '7.5'], ['mediate', 'v.', '调解；斡旋', '8.0'],
+  ['mitigate', 'v.', '缓解；减轻', '7.5'], ['notwithstanding', 'prep./adv.', '尽管；然而', '8.0'],
+  ['obtain', 'v.', '获得；取得', '6.5'], ['paradigm', 'n.', '范式；典范', '8.0'],
+  ['perspective', 'n.', '观点；视角', '6.5'], ['predominant', 'adj.', '占主导地位的', '7.5'],
+  ['preliminary', 'adj.', '初步的；预备的', '7.0'], ['presume', 'v.', '假定；推测', '7.0'],
+  ['profound', 'adj.', '深刻的；深远的', '7.0'], ['prohibit', 'v.', '禁止；阻止', '6.5'],
+  ['prominent', 'adj.', '显著的；杰出的', '7.0'], ['proportion', 'n.', '比例；部分', '6.5'],
+  ['regulate', 'v.', '监管；调节', '6.5'], ['reinforce', 'v.', '加强；巩固', '7.0'],
+  ['reluctant', 'adj.', '不情愿的；勉强的', '6.5'], ['resilient', 'adj.', '有韧性的；能复原的', '7.5'],
+  ['restrict', 'v.', '限制；约束', '6.5'], ['retain', 'v.', '保留；保持', '7.0'],
+  ['rigid', 'adj.', '僵硬的；严格的', '7.0'], ['subordinate', 'adj./n.', '次要的；下属', '8.0'],
+  ['subsequent', 'adj.', '随后的；后来的', '7.0'], ['sustain', 'v.', '维持；支撑', '6.5'],
+  ['synthesize', 'v.', '综合；合成', '8.0'], ['tangible', 'adj.', '有形的；切实的', '7.5'],
+  ['tentative', 'adj.', '暂定的；试探性的', '7.5'], ['trigger', 'v./n.', '触发；诱因', '6.5'],
+  ['undergo', 'v.', '经历；经受', '7.0'], ['unprecedented', 'adj.', '前所未有的', '7.5'],
+  ['utilize', 'v.', '利用；使用', '6.5'], ['valid', 'adj.', '有效的；合理的', '6.5'],
+  ['viable', 'adj.', '可行的；能生存的', '7.5'], ['virtually', 'adv.', '几乎；实际上', '7.0'],
+  ['widespread', 'adj.', '广泛的；普遍的', '6.5'], ['yield', 'v./n.', '产生；产量', '7.0'],
+  ['adapt', 'v.', '适应；改编', '6.5'], ['aggregate', 'v./n.', '合计；总量', '7.5'],
+  ['cease', 'v.', '停止；终止', '7.5'], ['constrain', 'v.', '限制；约束', '7.5'],
+  ['correlate', 'v.', '相关；相互关联', '7.5'], ['discrete', 'adj.', '分离的；不连续的', '8.0'],
+  ['elicit', 'v.', '引出；诱发', '8.0'], ['exceed', 'v.', '超过；超出', '6.5'],
+  ['exploit', 'v.', '利用；开发', '7.0'], ['inherent', 'adj.', '固有的；内在的', '7.5'],
+  ['manipulate', 'v.', '操纵；巧妙处理', '7.5'], ['offset', 'v./n.', '抵消；补偿', '7.5'],
+  ['persist', 'v.', '坚持；持续存在', '7.0'], ['prevalent', 'adj.', '普遍的；流行的', '7.5'],
+  ['provoke', 'v.', '激起；引发', '7.0'], ['quantify', 'v.', '量化；确定数量', '7.5'],
+  ['reconcile', 'v.', '调和；使一致', '8.0'], ['refine', 'v.', '改进；提炼', '7.0'],
+  ['speculate', 'v.', '推测；投机', '7.0'], ['transform', 'v.', '转变；改变', '6.5'],
+  ['transmit', 'v.', '传输；传播', '7.0'], ['underlying', 'adj.', '潜在的；根本的', '7.5'],
+  ['unify', 'v.', '统一；使成一体', '7.0'], ['verify', 'v.', '核实；验证', '6.5']
+].map((entry, index) => ({
+  id: 'ielts-' + String(index + 1).padStart(3, '0'),
+  term: entry[0], pos: entry[1], meaning: entry[2], band: entry[3],
+  // The previous build approximated IPA by replacing vowels, which looked
+  // authoritative but was not reliable pronunciation data.  Leave it blank
+  // until a verified dictionary pronunciation is available; the speaker
+  // button still provides an immediate browser pronunciation.
+  phonetic: '', phoneticVerified: false,
+  example: englishWordExample(entry[0], entry[1])
+}));
+
+const IELTS_WORD_BANK_EXTRA = 'accessibility|accommodate|accompany|accordingly|acknowledge|acquisition|adaptation|administrative|aesthetic|agricultural|albeit|align|alleviate|amend|amplify|analogous|applicable|appreciate|arise|articulate|aspire|assemble|assert|attain|attitude|autonomous|beneficial|capability|cease|clarify|collaborate|commodity|compatible|compensate|complement|complexity|component|comprise|conceivable|confer|confine|consecutive|consent|considerable|consistency|constitute|contemporary|contradict|conventional|convert|correspond|credible|criterion|cultivate|deviate|devote|differentiate|dilemma|deteriorate|devise|dimension|dominant|duration|dynamic|elaborate|eliminate|emerge|emphasize|encounter|endure|enforce|enormous|ensure|ethical|exhibit|expose|external|extract|flexible|flourish|format|foster|framework|frustrate|generate|genuine|gradual|guarantee|guideline|hierarchy|highlight|identical|ideology|ignite|impose|incentivize|incidence|incline|infrastructure|inherent|innovate|inspect|integrity|interact|intermediate|interpret|interval|isolate|mature|mechanism|modest|modify|monitor|mutual|neglect|negligible|notion|objective|obscure|occupy|ongoing|orient|paradox|passive|persist|plausible|portion|pose|precede|precise|preserve|priority|proportionate|prospect|protocol|pursue|radical|random|rational|recover|refine|reinforce|reliable|resolve|reverse|robust|scenario|schedule|sequence|shift|simultaneous|solely|sphere|stable|statistic|substitute|supplement|surpass|suspend|target|temporary|terminate|territory|trace|trajectory|transparent|trigger|ultimate|uniform|unique|universal|urbanize|validity|variation|welfare|whereas|withdraw|yielding|biodiversity|carbon|climate|conservation|contaminate|deforestation|ecosystem|emission|fertility|habitat|renewable|scarcity|sustainable|vulnerable|wellbeing|curriculum|literacy|pedagogy|qualification|scholarship|tuition|workforce|employment|entrepreneur|productivity|revenue|stakeholder|venture|consumer|regulation|legislation|policy|governance|inequality|migration|population|demographic|heritage|identity|linguistic|mainstream|minority|participation|perception|prejudice|psychological|cognitive|motivation|attention|behaviour|perceive|retain|recall|reasoning|experiment|observation|sample|variable|methodology|analysis|outcome|accuracy|reproduce|evaluate|evidence|assumption|interpretation|correlation|distribution|sequence|chapter|notable|nevertheless|furthermore|thereby|hence|substantial|predominantly|respectively|approximately|dramatically|slightly|overall|contrast|whereby'.split('|').map((term, index) => ({
+  id: 'ielts-extra-' + String(index + 1).padStart(3, '0'),
+  term,
+  pos: /tion$|ity$|ism$|ness$|ment$/.test(term) ? 'n.' : 'v./adj.',
+  meaning: '雅思高频表达：' + term,
+  band: index % 4 === 0 ? '7.5' : index % 3 === 0 ? '7.0' : '6.5',
+  phonetic: '', phoneticVerified: false,
+  example: englishWordExample(term, /tion$|ity$|ism$|ness$|ment$/.test(term) ? 'n.' : 'v./adj.')
+}));
+// The downloaded source is topic-labelled and deliberately kept separate from
+// the hand-curated records above.  It fills the offline bank for more than
+// sixteen daily batches while retaining the source's Chinese glosses/examples.
+// The downloaded MIT source is retained verbatim in its own module for
+// attribution, but a handful of OCR/typing mistakes must never reach a
+// learner's daily batch. Corrections are applied at runtime so old snapshots
+// can continue to resolve corrected source IDs without rewriting the licensed
+// source file; explicitly rejected rows are omitted from new batches.
+const IELTS_SOURCE_TERM_FIXES = Object.freeze({
+  'padal': 'pedal',
+  'vagetation': 'vegetation',
+  'pretail': 'reptile',
+  'approac': 'approach',
+  'compus': 'campus',
+  'pratical': 'practical',
+  'consonent': 'consonant'
+});
+const IELTS_SOURCE_REJECT_TERMS = new Set(['frigde']);
+const IELTS_SOURCE_MEANING_FIXES = Object.freeze({
+  'latitude': '纬度',
+  'breeze': '微风；和风',
+  'gust': '一阵狂风；（情感的）迸发',
+  'parallel': '平行的；相似的；与……平行',
+  'deforest': '砍伐森林；使森林减少',
+  'fertilise': '施肥于；使肥沃',
+  'hybridisation': '杂交'
+});
+const IELTS_SOURCE_EXAMPLE_FIXES = Object.freeze({
+  'crust': 'The snow crust was thick enough for us to walk on.',
+  'hydrosphere': 'All the water on the Earth\'s surface is part of the hydrosphere.',
+  'lithosphere': 'The lithosphere and hydrosphere together form the Earth\'s surface.',
+  'mantle': 'The Earth\'s mantle lies between the crust and the core.',
+  'disaster': 'The flood was a major disaster for communities in eastern China.',
+  'endanger': 'If you work hard without rest, you may endanger your health.',
+  'polar': 'In these polar regions, the balance of nature has already been disrupted.',
+  'parallel': 'The two lines run parallel to each other.',
+  'shiver': 'She began to shiver because she was worried and afraid.',
+  'sprinkle': 'We have had only a sprinkle of rain recently.',
+  'inevitable': 'Such a difficult operation may not succeed, but it is an inevitable gamble.',
+  'vagetation': 'There is not much vegetation in deserts.',
+  'vegetation': 'There is not much vegetation in deserts.',
+  'classify': 'Librarians spend a lot of time classifying books.',
+  'flock': 'Sheep usually flock together.',
+  'tame': 'The tame lions can perform alongside the actors.',
+  'alumni': 'Many alumni attended the university anniversary.',
+  'dilute': 'The nurse diluted the drug with saline solution.',
+  'inherent': 'Polarity is inherent in a magnet.',
+  'curriculum': 'The staff should work together to revise the school curriculum.',
+  'bunch': 'I bought a bunch of lilacs.',
+  'short-day': 'Soybean is a typical short-day crop.',
+  'decompose': 'Heat can be applied to decompose organic compounds.',
+  'subsistence': 'The standard of living was close to subsistence.',
+  'boil': 'The watched pot never boils.',
+  'scrutinise': 'The committee scrutinised the proposal carefully.',
+  'precise': 'The meeting began at that precise moment.',
+  'cable': 'The cable car crossed the valley.',
+  'alga': 'Some algae are edible.',
+  'circulation': 'Sea-surface temperature and atmospheric circulation are strongly coupled.',
+  'derive': 'I derived a lot of pleasure from meeting new people at college.',
+  'pluck': 'She plucked a rose for her lover.',
+  'rear': 'Most farmers in this area rear sheep.',
+  'bud': 'The roses are in bud.',
+  'hay': 'Farmers make hay while the sun shines.',
+  'mature': 'You are a mature person now; you are no longer a boy.',
+  'parasite': 'The life of the parasite is maintained by blood-feeding mosquitoes.',
+  'dragon': 'Dragons are described as monsters in many Western stories.',
+  'galaxy': 'The Sun is only a very small star in the Galaxy.',
+  'excrete': 'The function of the kidneys is to excrete waste products.',
+  'intelligence': 'Use your intelligence and you will succeed one day.',
+  'circuit': 'For many years, he worked on the electrical circuit.',
+  'cataclysmic': 'The disappearance of the dinosaurs may be linked to a cataclysmic event.',
+  'enhance': 'A good IELTS score enhances my chances of receiving an offer.',
+  'impetus': 'The car rolled down the bridge under its own impetus.',
+  'abuse': 'It is easy to abuse one\'s power.',
+  'scheme': 'All the schemes and intrigues were doomed to failure.',
+  'brute': 'We all want to punish the brute.',
+  'subgroup': 'According to a subgroup analysis, violence can produce more violence.',
+  'lay': 'They lay eggs from July to the middle of August.',
+  'fauna': 'The park is home to grizzly bears and other Rocky Mountain fauna.',
+  'seal': 'Polar bears set off in search of their favourite meal: seals.',
+  'coed': 'The study recruited a representative group of coeds.',
+  'sphere': 'We move in different social spheres.',
+  'ratio': 'The ratio of 3 to 9 is the same as that of 9 to 27.',
+  'feudalism': 'Feudalism was not abolished in England until 1660.'
+});
+
+// A quality gate is intentionally conservative: terms and glosses may use
+// Chinese (the source is bilingual), while examples must be clean English.
+// Empty source examples are filled with the safe, POS-aware fallback above;
+// malformed examples are replaced by a curated correction or the fallback.
+const IELTS_SOURCE_BAD_TEXT_PATTERN = /\b(?:frigde|padal|vagetation|fertileze|diffcult|shivered|togather|labrarians|algea|atmosheric|cicruit|magent|sailine|persent|muture|drived|powser|util)\b/i;
+const IELTS_VOCAB_TERM_PATTERN = /^[A-Za-z][A-Za-z]*(?:[- ][A-Za-z]+)*$/;
+const IELTS_VOCAB_POS_PATTERN = /^(?:n|v|adj|adv|prep|conj|pron|det|num|phr|aux)\.?(?:\/(?:n|v|adj|adv|prep|conj|pron|det|num|phr|aux)\.?)*$/i;
+function isIELTSVocabularyWordQuality(word) {
+  if (!word || typeof word !== 'object') return false;
+  const term = String(word.term || '').trim();
+  const key = englishWordTermKey(term);
+  const pos = String(word.pos || '').trim();
+  const meaning = String(word.meaning || '').trim();
+  const example = String(word.example || '').trim();
+  if (!term || !IELTS_VOCAB_TERM_PATTERN.test(term) || IELTS_SOURCE_REJECT_TERMS.has(key)) return false;
+  if (!pos || !IELTS_VOCAB_POS_PATTERN.test(pos)) return false;
+  if (!meaning || meaning.toLowerCase() === key || IELTS_SOURCE_BAD_TEXT_PATTERN.test(meaning)) return false;
+  if (example && (/\p{Script=Han}/u.test(example) || IELTS_SOURCE_BAD_TEXT_PATTERN.test(example))) return false;
+  return true;
+}
+function normalizeIELTSSourcePos(value) {
+  // A couple of rows contain an escaped word-boundary marker or a space
+  // between labels ("\\bn." / "adj. n."). Normalize those harmless source
+  // artefacts while leaving the original MIT payload untouched.
+  return String(value || '').replace(/\\b/g, '').replace(/[\u0000-\u001f]/g, '').trim().replace(/\s+/g, '/');
+}
+
+const IELTS_DOWNLOADED_WORDS = IELTS_DOWNLOADED_VOCABULARY_SOURCE.map((entry, index) => {
+  const sourceTerm = String(entry[0] || '').trim();
+  const sourceKey = sourceTerm.toLowerCase();
+  if (IELTS_SOURCE_REJECT_TERMS.has(sourceKey)) return null;
+  const term = IELTS_SOURCE_TERM_FIXES[sourceKey] || sourceTerm;
+  const termKey = term.toLowerCase();
+  const pos = normalizeIELTSSourcePos(entry[1]) || 'n.';
+  const rawMeaning = String(entry[2] || '').trim();
+  const meaning = IELTS_SOURCE_MEANING_FIXES[sourceKey] || IELTS_SOURCE_MEANING_FIXES[termKey] || rawMeaning;
+  const rawExample = String(entry[3] || '').trim();
+  const correctedExample = IELTS_SOURCE_EXAMPLE_FIXES[sourceKey] || IELTS_SOURCE_EXAMPLE_FIXES[termKey];
+  const normalizedExample = correctedExample || (rawExample && !/\p{Script=Han}/u.test(rawExample) && !IELTS_SOURCE_BAD_TEXT_PATTERN.test(rawExample)
+    ? rawExample
+    : englishWordExample(term, pos));
+  const topic = String(entry[4] || '').trim();
+  return {
+    id: 'ielts-source-' + String(index + 1).padStart(4, '0'),
+    term,
+    pos,
+    meaning: meaning || '雅思主题词汇：' + term,
+    // The source is organised specifically around IELTS themes, rather than
+    // claiming a potentially misleading single-word score for each item.
+    band: '6.5–7.5',
+    topic,
+    phonetic: '',
+    phoneticVerified: false,
+    // A malformed bilingual sentence is worse than a short generated one.
+    // The quality gate below makes this fallback explicit and deterministic.
+    example: normalizedExample
+  };
+}).filter(word => word && word.term);
+const IELTS_CURATED_TERM_KEYS = new Set(IELTS_WORD_BANK.concat(IELTS_WORD_BANK_EXTRA).map(word => englishWordTermKey(word.term)));
+IELTS_WORD_BANK.push(...IELTS_DOWNLOADED_WORDS.filter(word => !IELTS_CURATED_TERM_KEYS.has(englishWordTermKey(word.term))));
+// Definitions for the supplemental bank come from the open Datamuse lexical
+// dataset at build time.  They are kept as plain text so the app remains
+// offline-first; unlike the old placeholder records, each entry has a real
+// part of speech and a concise English definition.
+const IELTS_EXTRA_DICTIONARY = {"acknowledge":{"pos":"v","def":"(transitive) To admit the knowledge of; to recognize as a fact or truth; to declare one's belief in. (transitive) To own or recognize in a particular quality, character or relationship; to admit the claims or authority of; to give recognition to."},"acquisition":{"pos":"n","def":"The act or process of acquiring. The thing acquired or gained; a gain."},"aesthetic":{"pos":"adj","def":"Concerned with beauty, artistic effect, or appearance. (rarely proscribed) Beautiful or appealing to one's sense of beauty or art."},"adaptation":{"pos":"n","def":"(uncountable) The process of adapting something or becoming adapted to a situation; adjustment, modification. (countable) A change that is made or undergone to suit a condition or environment."},"agricultural":{"pos":"adj","def":"Of or pertaining to agriculture. A product or commodity from agriculture."},"accommodate":{"pos":"v","def":"(transitive) To provide housing for. (transitive) To provide sufficient space for."},"accompany":{"pos":"v","def":"(transitive) To go with or attend as a companion or associate; to keep company with; to go along with. (transitive) To supplement with; add to."},"accessibility":{"pos":"n","def":"The quality of being accessible, or of admitting approach; receptiveness. (computing, web design) Features that increase software usability for users with certain impairments."},"accordingly":{"pos":"adv","def":"(conjunctive) In natural sequence; consequently; so. (manner) Agreeably; correspondingly; suitably"},"administrative":{"pos":"adj","def":"Of or relating to administering or administration."},"align":{"pos":"v","def":"(transitive) To adjust to a line; to range or form in line; to bring into line. (transitive) To organize in a consistent, defined way, perhaps in an abstract sense."},"albeit":{"pos":"conj","def":"Although; even though.","phon":""},"amplify":{"pos":"v","def":"(transitive) To render larger, more extended, or more intense. (transitive) To increase the amplitude of something, especially of an electric current."},"arise":{"pos":"v","def":"(intransitive) To come up from one's bed or place of repose; to get up. (intransitive) To spring up; to come into action, being, or notice; to become operative, sensible, or visible; to begin to act a part; to present itself."},"alleviate":{"pos":"v","def":"(transitive) To reduce or lessen the severity of a pain or difficulty. (transitive), (finance) to pay down partially."},"applicable":{"pos":"adj","def":"Suitable for application, relevant."},"analogous":{"pos":"adj","def":"Having analogy, the status of an analogue; corresponding to something else; bearing some resemblance or similar proportion (often followed by \"to\".) (biology) Functionally similar, but arising through convergent evolution rather than being homologous."},"appreciate":{"pos":"v","def":"(transitive) To view as valuable. (transitive) To be grateful or thankful for."},"amend":{"pos":"v","def":"(transitive) To make better; improve. (transitive) To make a formal alteration (in legislation, a report, etc.) by adding, deleting, or rephrasing."},"aspire":{"pos":"v","def":"(intransitive) To have a strong desire or ambition to achieve something. (intransitive, archaic, literary) To move upward; to be very tall."},"assemble":{"pos":"v","def":"(transitive) To put together. (ergative) To gather as a group."},"assert":{"pos":"v","def":"To declare with assurance or plainly and strongly; to state positively. To maintain or defend, as a cause or a claim, by words or measures; to vindicate a claim or title to."},"attain":{"pos":"v","def":"(transitive) To gain (an object or desired result). (transitive) To reach or come to, by progression or motion; to arrive at (a place, time, state, etc.)."},"autonomous":{"pos":"adj","def":"Self-governing. Intelligent, sentient, self-aware, thinking, feeling, governing independently. Acting on one's own or independently; of a child, acting without being governed by parental or guardian rules."},"attitude":{"pos":"n","def":"(figurative) Disposition or state of mind. (Canada, US, UK, Philippines, informal) Unpleasant behavior."},"beneficial":{"pos":"adj","def":"Helpful or good to something or someone. Something that provides a benefit."},"capability":{"pos":"n","def":"The power or ability to generate an outcome. (computing) A digital token allowing a user or process to interact in a specified way with an object that is subject to access control."},"cease":{"pos":"v","def":"(formal, intransitive) To stop. (formal, transitive) To stop doing (something)."},"articulate":{"pos":"v","def":"(ambitransitive) To speak clearly; to enunciate. (transitive) To make clear or effective."},"clarify":{"pos":"v","def":"(by extension) To make or become clear or easily understood; to explain or resolve in order to remove doubt or obscurity. (ergative, of liquids, such as wine or syrup) To make or become clear or bright by freeing from impurities or turbidity."},"compensate":{"pos":"v","def":"To pay or reward someone in exchange for work done or some other consideration. (ambitransitive) To make up for; to do something in place of something else; to correct, satisfy; to reach an agreement such that the scales are literally or (metaphorically) balanced; to equalize or make even."},"commodity":{"pos":"n","def":"(business) Anything movable (a good) that is bought and sold. (economics) Raw materials, agricultural and other primary products as objects of large-scale trading in specialized exchanges."},"collaborate":{"pos":"v","def":"To work together with others to achieve a common goal. To voluntarily cooperate treasonably, as with an enemy occupation force in one's country."},"complement":{"pos":"n","def":"The totality, the full amount or number which completes something. (nautical) The whole working force of a vessel."},"compatible":{"pos":"adj","def":"Able to get along well. Capable of easy interaction."},"conceivable":{"pos":"adj","def":"Capable of being conceived or imagined."},"component":{"pos":"n","def":"A smaller, self-contained part of a larger entity. Often refers to a manufactured object that is part of a larger device. Making up a larger whole."},"complexity":{"pos":"n","def":"(uncountable) The state of being complex; intricacy; entanglement. (countable) That which is and renders complex; intricacy; complication."},"confer":{"pos":"v","def":"(transitive) To grant as a possession; to bestow. (intransitive) To talk together, to consult, discuss; to collogue."},"consent":{"pos":"v","def":"(intransitive) To express willingness, to give permission. Voluntary agreement or permission."},"consecutive":{"pos":"adj","def":"Following, in succession, without interruption. Having some logical sequence."},"considerable":{"pos":"adj","def":"Significant; worth considering. Large in amount."},"confine":{"pos":"v","def":"(transitive) To restrict (someone or something) to a particular scope or area; to keep in or within certain bounds. (chiefly in the plural) A boundary or limit."},"constitute":{"pos":"v","def":"(transitive) To make up; to compose; to form. (transitive) To set up; to establish; to enact."},"consistency":{"pos":"n","def":"Reliability or uniformity; the quality of being consistent. Correspondence or compatibility."},"contemporary":{"pos":"adj","def":"Modern, of the present age (shorthand for ‘contemporary with the present’). From the same time period, coexistent in time; contemporaneous."},"contradict":{"pos":"v","def":"To deny the truth or validity of (a statement or statements). To oppose (a person) by denying the truth or pertinence of a given statement."},"conventional":{"pos":"adj","def":"Pertaining to a convention, as in following generally accepted principles, methods and behaviour. Ordinary, commonplace."},"comprise":{"pos":"v","def":"(transitive) To be made up of; to consist of (especially a comprehensive list of parts). (sometimes proscribed, usually in the passive) To compose; to constitute."},"convert":{"pos":"v","def":"(transitive) To transform or change (something) into another form, substance, state, or product. (transitive) To change (something) from one use, function, or purpose to another."},"correspond":{"pos":"v","def":"(intransitive, constructed with to) To be equivalent or similar in character, quantity, quality, origin, structure, function etc. (intransitive, constructed with with) To exchange messages, especially by postal letter, over a period of time."},"credible":{"pos":"adj","def":"Believable or plausible. Dependable, trustworthy, or reliable."},"criterion":{"pos":"n","def":"A standard, test, or requirement by which individual things or people may be compared and judged; a gauge."},"cultivate":{"pos":"v","def":"To grow plants, notably crops. To turn or stir soil in preparation for planting or as a method of weed control between growing crop plants."},"deviate":{"pos":"v","def":"(intransitive) To go off course from; to change course; to change plans. (intransitive, figurative) To fall outside of, or part from, some norm; to stray."},"dilemma":{"pos":"n","def":"A circumstance in which a choice must be made between two or more alternatives that seem equally undesirable. Any difficult circumstance or problem."},"devise":{"pos":"v","def":"(transitive) To use one’s intellect to plan or design (something). (transitive) To leave (property) in a will."},"devote":{"pos":"v","def":"to give one's time, focus one's efforts, commit oneself, etc. entirely for, on, or to a certain matter; to consecrate. to consign over; to doom"},"deteriorate":{"pos":"v","def":"(intransitive) To grow worse; to be impaired in quality; to degenerate. (transitive) To make worse; to make inferior in quality or value; to impair."},"dominant":{"pos":"adj","def":"Ruling; governing; prevailing Predominant, common, prevalent, of greatest importance."},"dimension":{"pos":"n","def":"A measure of spatial extent in a particular direction, such as height, width or breadth, or depth. A single aspect of a given thing."},"elaborate":{"pos":"adj","def":"Complex, detailed, or sophisticated. Intricate, fancy, flashy, or showy."},"differentiate":{"pos":"v","def":"(transitive) To show or be the difference or distinction between things. (transitive) To recognize as different or distinct."},"emerge":{"pos":"v","def":"(intransitive) To come into view. (intransitive) To become known."},"dynamic":{"pos":"adj","def":"Changing; active; in motion. Able to change and adapt."},"duration":{"pos":"n","def":"An amount of time or a particular time interval. (in the singular, not followed by \"of\") The time taken for the current situation to end, especially the current war."},"eliminate":{"pos":"v","def":"(transitive) To completely remove, get rid of, put an end to. (transitive) To exclude (from investigation or from further competition)."},"encounter":{"pos":"v","def":"(transitive) To meet (someone) or find (something), especially unexpectedly. A meeting, especially one that is unplanned or unexpected."},"enforce":{"pos":"v","def":"To keep up, impose or bring into effect something, not necessarily by force. To give strength or force to; to affirm, to emphasize."},"endure":{"pos":"v","def":"(intransitive) To continue or carry on, despite obstacles or hardships; to persist. (transitive) To tolerate or put up with something unpleasant."},"ensure":{"pos":"v","def":"(intransitive) To make sure or certain of something (usually some future event or condition). (transitive, obsolete) To make a pledge to (someone); to promise, guarantee (someone of something); to assure."},"emphasize":{"pos":"v","def":"(transitive) To stress, give emphasis or extra weight to (something)."},"ethical":{"pos":"adj","def":"(not comparable) Of or relating to the accepted principles of right and wrong, especially those of some organization or profession. (comparable) Morally approvable; good."},"enormous":{"pos":"adj","def":"Extremely large; greatly exceeding the common size, extent, etc. (obsolete) Deviating from the norm; unusual, extraordinary."},"expose":{"pos":"v","def":"(transitive) To reveal, uncover, make visible, bring to light, introduce (to). (transitive) To subject photographic film to light thereby recording an image."},"exhibit":{"pos":"v","def":"(transitive) To display or show (something) for others to see, especially at an exhibition or contest. (transitive) To demonstrate."},"external":{"pos":"adj","def":"Outside of something; on the exterior. (anatomy) Situated near or toward the surface of the body."},"extract":{"pos":"n","def":"Something that is extracted or drawn out. A portion of a book or document, incorporated distinctly in another work; a citation; a quotation."},"flexible":{"pos":"adj","def":"Capable of adapting or changing to suit new or modified conditions or situations. Capable of being flexed or bent without breaking; able to be turned or twisted without breaking."},"flourish":{"pos":"v","def":"(intransitive) To thrive or grow well. (intransitive) To prosper or fare well."},"format":{"pos":"n","def":"The layout of a publication or document. (by extension) The form of presentation of something."},"foster":{"pos":"v","def":"(transitive) To nurture or bring up offspring, or to provide similar parental care to an unrelated child. (transitive) To promote the development of something; to cultivate and grow a thing."},"genuine":{"pos":"adj","def":"Not counterfeit, spurious, false, or adulterated Belonging to, or proceeding from the original stock; native"},"frustrate":{"pos":"v","def":"(transitive) To disappoint or defeat; to vex by depriving of something expected or desired. (transitive) To hinder or thwart."},"framework":{"pos":"n","def":"(software engineering) A reusable piece of code (and, sometimes, other utilities) providing a standard environment within which an application can be implemented. (figuratively) A basic conceptual structure."},"generate":{"pos":"v","def":"(transitive) To bring into being; give rise to. (transitive) To produce as a result of a chemical or physical process."},"guarantee":{"pos":"n","def":"Anything that assures a certain outcome. A legal assurance of something, e.g. a security for the fulfillment of an obligation."},"gradual":{"pos":"adj","def":"Proceeding or advancing by small, slow, regular steps or degrees (Christianity) An antiphon or responsory after the epistle, in the Mass, which was sung on the steps, or while the deacon ascended the steps."},"hierarchy":{"pos":"n","def":"A social, religious, economic or political system or organization in which people or groups of people are ranked with some superior to others based on their status, authority or some other trait. A body of authoritative officials organized in nested ranks."},"identical":{"pos":"adj","def":"(not comparable) Bearing full likeness by having precisely the same set of characteristics; indistinguishable. (not comparable) Not different or other; not another or others; not different as regards self; selfsame; numerically identical."},"highlight":{"pos":"v","def":"(transitive) To make prominent; emphasize. (figurative) An especially significant or interesting detail or event or period of time."},"ignite":{"pos":"v","def":"(transitive) to set fire to (something), to light (something) (transitive) to spark off (something), to trigger"},"guideline":{"pos":"n","def":"A non-specific rule or principle that provides direction to action or behaviour. A plan or explanation to guide one in setting standards or determining a course of action."},"ideology":{"pos":"n","def":"Doctrine, philosophy, body of beliefs or principles belonging to an individual or group. (uncountable) The study of the origin and nature of ideas."},"impose":{"pos":"v","def":"(transitive) (figurative) To apply, enforce, or establish (something, often regarded as burdensome as a restriction or tax: see verb, sense 1.2.1) with authority. To encroach or intrude, especially in a manner regarded as unfair or unwarranted; to presume, to take advantage of; also, to be a burden or inconvenience."},"incline":{"pos":"v","def":"(chiefly intransitive, chiefly passive voice) To tend to do or believe something, or move or be moved in a certain direction, away from a point of view, attitude, etc. (transitive) To bend or move (something) out of a given plane or direction, often the horizontal or vertical."},"incidence":{"pos":"n","def":"The act of something happening; occurrence. The extent or the relative frequency of something happening."},"infrastructure":{"pos":"n","def":"The facilities, services and installations needed for the functioning of a community or society. (systems theory) An underlying base or foundation for a building, organization, or system."},"innovate":{"pos":"v","def":"(intransitive) To introduce something new to a particular environment; to do something new. (transitive) To introduce (something) as new."},"inspect":{"pos":"v","def":"To examine critically or carefully; especially, to search out problems or determine condition; to scrutinize. To view and examine officially."},"inherent":{"pos":"adj","def":"Naturally as part or consequence of something."},"integrity":{"pos":"n","def":"Steadfast adherence to a strict moral or ethical code. Trustworthiness; keeping one's word."},"interact":{"pos":"v","def":"(of people) To engage in communication and other shared activities (with someone). (of two or more things) To affect each other."},"intermediate":{"pos":"adj","def":"Being between two extremes, or in the middle of a range. Anything in an intermediate position."},"incentivize":{"pos":"v","def":"(transitive, business, economics) To provide incentives for; to encourage. (transitive, business, economics) To provide incentives to."},"interpret":{"pos":"v","def":"To explain or tell the meaning of; to translate orally into intelligible or familiar language or terms. applied especially to language, but also to dreams, signs, conduct, mysteries, etc. To decode the meaning of a topic and then act, whether to continue researching the topic, follow through, act in opposition, or further the understanding through sharing an interpretation."},"isolate":{"pos":"v","def":"(transitive) To set apart or cut off from others. (transitive) To place in quarantine or isolation."},"modest":{"pos":"adj","def":"Not bragging or boasting about oneself or one's achievements; unpretentious, humble. (especially of behavior or clothing) Intending to avoid the encouraging of sexual attraction in others."},"monitor":{"pos":"n","def":"(computing) A device similar to a television set used as to give a graphical display of the output from a computer. Someone who watches over something; a person in charge of something or someone."},"modify":{"pos":"v","def":"(transitive) To change part of. (transitive, grammar) To qualify the meaning of."},"mechanism":{"pos":"n","def":"(within a machine or machinery) Any mechanical means for the conversion or control of motion, or the transmission or control of power. Any combination of cams, gears, links, belts, chains and logical mechanical elements."},"neglect":{"pos":"v","def":"(transitive) To fail to care for or attend to something. (transitive) To fail to do or carry out something due to oversight or carelessness."},"mutual":{"pos":"adj","def":"Having the same relationship, each to each other. Reciprocal."},"interval":{"pos":"n","def":"A period of time. A distance in space."},"mature":{"pos":"adj","def":"Fully developed; grown up in terms of physical appearance, behaviour or thinking; ripe. Brought to a state of complete readiness."},"negligible":{"pos":"adj","def":"Able to be neglected, ignored or excluded from consideration; too small or unimportant to be of concern."},"notion":{"pos":"n","def":"Mental apprehension of whatever may be known, thought, or imagined; idea, concept. A sentiment; an opinion."},"occupy":{"pos":"v","def":"To possess or use the time or capacity of; to engage the service of. (transitive, of time) To take or use."},"ongoing":{"pos":"adj","def":"Presently or currently happening; being in progress. Something that is going on; a happening."},"orient":{"pos":"v","def":"(transitive) To build or place (something) so as to face eastward. (transitive, by extension) To align or place (a person or object) so that his, her, or its east side, north side, etc., is positioned toward the corresponding points of the compass; (specifically, surveying) to rotate (a map attached to a plane table) until the line of direction between any two of its points is parallel to the corresponding direction in nature."},"obscure":{"pos":"adj","def":"Difficult to understand; abstruse. Not well-known."},"objective":{"pos":"adj","def":"Not influenced by the strong emotions or prejudices. Based on observed facts; without purely subjective assessment."},"passive":{"pos":"adj","def":"Being subjected to an action without producing a reaction. Taking no action."},"persist":{"pos":"v","def":"(intransitive) To go on stubbornly or resolutely. (intransitive) To continue to exist."},"plausible":{"pos":"adj","def":"Seemingly or apparently valid, likely, or acceptable; conceivably true or likely. Obtaining approbation; specifically pleasing; apparently right; specious."},"portion":{"pos":"n","def":"An allocated amount. That which is divided off or separated, as a part from a whole; a separated part of anything."},"paradox":{"pos":"n","def":"An apparently self-contradictory statement, which can only be true if it is false, and vice versa. A counterintuitive conclusion or outcome."},"precise":{"pos":"adj","def":"(loosely) Both exact and accurate. (sciences, engineering, of data points, strictly) Consistent, clustered close together, agreeing with each other (this does not mean that they cluster near the true, correct, or accurate value)."},"pose":{"pos":"v","def":"(transitive) To place in an attitude or fixed position, for the sake of effect. (transitive) To constitute (a danger, a threat, a risk, etc.)."},"precede":{"pos":"v","def":"(transitive) To go before, go in front of. (transitive) To cause to be preceded; to preface; to introduce."},"priority":{"pos":"n","def":"An item's relative importance. A goal of a person or an organisation."},"preserve":{"pos":"v","def":"To protect; to keep from harm or injury. To save from decay by the use of some preservative substance, such as sugar or salt; to season and prepare (fruits, meat, etc.) for storage."},"proportionate":{"pos":"adj","def":"In proportion; proportional; commensurable. Harmonious and symmetrical."},"prospect":{"pos":"n","def":"The potential things that may come to pass, often favorable. The act of looking forward; foresight; anticipation."},"radical":{"pos":"adj","def":"Favoring fundamental change, or change at the root cause of a matter. (botany, not comparable) Pertaining to a root (of a plant)."},"pursue":{"pos":"v","def":"(transitive) To aim for, go after (a specified objective, situation etc.). (ambitransitive) To follow urgently, originally with intent to capture or harm; to chase."},"protocol":{"pos":"n","def":"(computing) A set of formal rules describing how to transmit or exchange data, especially across a network. The official rules and guidelines for heads of state and other dignitaries, governing accepted behaviour in relations with other diplomatic representatives or over affairs of state."},"random":{"pos":"adj","def":"Occurring for no particular reason; haphazard, unpredictable. (statistics) Involving an outcome which is impossible to predict, but which may be represented by a probability distribution; in the ideal case, involving outcomes which are equally likely."},"refine":{"pos":"v","def":"(ambitransitive) To improve in accuracy, delicacy, or excellence. (transitive) To purify of coarseness, vulgarity, inelegance, etc.; to polish."},"recover":{"pos":"v","def":"(transitive) To replenish to, resume (a good state of mind or body). (transitive) To get back, to regain (a physical thing; in astronomy and navigation, sight of a thing or a signal)."},"rational":{"pos":"adj","def":"Capable of reasoning. Logically sound; not self-contradictory or otherwise absurd."},"reliable":{"pos":"adj","def":"Suitable or fit to be relied on; worthy of dependence, reliance or trust; dependable, trustworthy Something or someone reliable or dependable"},"resolve":{"pos":"v","def":"(intransitive) To make a firm decision to do something. To become determined to reach a certain goal or take a certain action. (transitive) To find a solution to (a problem)."},"robust":{"pos":"adj","def":"Evincing strength and health; strong; (often, especially) both large and healthy. Able to withstand adverse conditions."},"reverse":{"pos":"adj","def":"Opposite, contrary; going in the opposite direction. Pertaining to engines, vehicle movement etc. moving in a direction opposite to the usual direction."},"reinforce":{"pos":"v","def":"(transitive) To strengthen, especially by addition or augmentation. (transitive) To encourage (a behavior or idea) through repeated stimulus."},"scenario":{"pos":"n","def":"An outline or model of an expected or supposed sequence of events. (dated) An outline of the plot of a dramatic or literary work."},"shift":{"pos":"n","def":"A movement to do something, a beginning. An act of shifting; a slight movement or change."},"schedule":{"pos":"n","def":"A procedural plan, usually but not necessarily tabular in nature, indicating a sequence of operations and the planned times at which those operations are to occur. A serial record of items, systematically arranged."},"simultaneous":{"pos":"adj","def":"Happening at the same moment. (mathematics, of a set of equations) To be solved for the same values of variables."},"sequence":{"pos":"n","def":"A set of things next to each other in a set order; a series. (uncountable) The state of being sequent or following; order of succession."},"sphere":{"pos":"n","def":"(mathematics) A surface in three dimensions consisting of all points equidistant from a center. . An object which appears to be bounded by a sphere; a round object, a ball."},"stable":{"pos":"n","def":"A building, wing or dependency set apart and adapted for lodging and feeding (and training) ungulates, especially horses. Relatively unchanging, steady, permanent; firmly fixed or established; consistent; not easily moved, altered, or destroyed."},"solely":{"pos":"adv","def":"Alone; exclusively."},"statistic":{"pos":"n","def":"A quantity calculated from the data in a sample, which characterises an important aspect in the sample (such as mean or standard deviation). A single item in a statistical study."},"supplement":{"pos":"n","def":"Something added; especially, such an addition added to make up for a deficiency. An extension to a document or publication that adds information, corrects errors, or brings up to date."},"surpass":{"pos":"v","def":"(transitive) To go beyond or exceed (something) in an adjudicative or literal sense."},"suspend":{"pos":"v","def":"To halt something temporarily. To discontinue or interrupt a function, task, position, or event."},"substitute":{"pos":"v","def":"(transitive) To use in place of something else, with the same function. (transitive, in the phrase \"substitute X for Y\") To use X in place of Y."},"target":{"pos":"n","def":"A goal or objective. A person, place, or thing that is frequently attacked, criticized, or ridiculed."},"temporary":{"pos":"adj","def":"Not permanent; existing only for a period or periods of time. Existing only for a short time or short times; transient, ephemeral."},"terminate":{"pos":"v","def":"(transitive) To end something, especially when left in an incomplete state. (transitive) To conclude."},"trace":{"pos":"n","def":"An act of tracing. An enquiry sent out for a missing article, such as a letter or an express package."},"territory":{"pos":"n","def":"A large extent or tract of land; for example a region, country or district. (Canada) One of three of Canada's federal entities, located in the country's Arctic, with fewer powers than a province and created by an act of Parliament rather than by the Constitution: Yukon, Northwest Territories, and Nunavut."},"transparent":{"pos":"adj","def":"(of a material or object) See-through, clear; having the property that light passes through it almost undisturbed, such that one can see through it clearly. (of a system or organization) Open, public; having the property that theories and practices are publicly visible, thereby reducing the chance of corruption."},"trajectory":{"pos":"n","def":"The path an object takes as it moves. (astronomy, space science) The path of a body as it travels through space."},"unique":{"pos":"adj","def":"(not comparable) Being the only one of its kind; unequaled, unparalleled or unmatched. A thing without a like; something unequalled or unparallelled; one of a kind."},"trigger":{"pos":"n","def":"(firearms) A finger-operated lever used to fire a gun. An event that initiates others, or incites a response."},"ultimate":{"pos":"adj","def":"Being the greatest possible; maximum; most extreme. (not comparable) Final; last in a series."},"urbanize":{"pos":"v","def":"To take up an urban way of life. To make something more urban in character."},"validity":{"pos":"n","def":"The state of being valid, authentic or genuine. State of having legal force."},"variation":{"pos":"n","def":"The act of varying; a partial change in the form, position, state, or qualities of a thing. A related but distinct thing."},"uniform":{"pos":"n","def":"A distinctive outfit that serves to identify members of a group, company, prison inmates, etc. (law enforcement) A uniformed police officer (as opposed to a detective)."},"welfare":{"pos":"n","def":"(uncountable) Health, safety, happiness and prosperity; well-being in any respect. (uncountable, chiefly US, informal) Shortened form of \"welfare spending\", \"welfare payments\", or \"welfare assistance\"."},"universal":{"pos":"adj","def":"Common to all members of a group or class. Common to all society; worldwide."},"whereas":{"pos":"n","def":"A clause, as in legal documents, stating whereas. (obsolete) Where (that)."},"yielding":{"pos":"adj","def":"Docile, or inclined to give way to pressure. A concession."},"biodiversity":{"pos":"n","def":"(ecology) The diversity (number and variety of species) of plant and animal life within a region."},"withdraw":{"pos":"v","def":"(transitive) To draw or pull (something) away or back from its original position or situation. (transitive) To take away or take back (something previously given or permitted); to remove, to retract."},"carbon":{"pos":"n","def":"(uncountable) The chemical element (symbol C) with an atomic number of 6. It can be found in pure form for example as graphite, a black, shiny and very soft material, or diamond, a colourless, transparent, crystalline solid and the hardest known material. (countable) An atom of this element, in reference to a molecule containing it."},"climate":{"pos":"n","def":"The long-term manifestations of weather and other atmospheric conditions in a given area or country, now usually represented by the statistical summary of its weather conditions during a period long enough to ensure that representative values are obtained (generally 30 years). (figuratively) The context in general of a particular political, moral, etc., situation."},"contaminate":{"pos":"v","def":"(transitive) To make something dangerous or toxic by introducing impurities or foreign matter. (transitive) To soil, stain, corrupt, or infect by contact or association."},"deforestation":{"pos":"n","def":"The process of destroying a forest and replacing it with something else, especially with an agricultural system. (computing theory) A transformation to eliminate intermediate data structures within a program."},"ecosystem":{"pos":"n","def":"A system formed by an ecological community and its environment that functions as a unit. The interconnectedness of organisms (plants, animals, microbes) with each other and their environment."},"emission":{"pos":"n","def":"Something which is emitted or sent out; issue. The act of emitting; the act of sending forth or putting into circulation."},"habitat":{"pos":"n","def":"(countable, biology) A range; a place where a species naturally occurs. (countable, biology) A terrestrial or aquatic area distinguished by geographic, abiotic and biotic features, whether entirely natural or semi-natural."},"fertility":{"pos":"n","def":"(uncountable) The condition, or the degree, of being fertile. (countable) The birthrate of a population; the number of live births per 1000 people per year."},"renewable":{"pos":"adj","def":"(of a resource) Sustainable; able to be regrown or renewed; having an ongoing or continuous source of supply. Able to be renewed; capable of renewal."},"conservation":{"pos":"n","def":"The act of preserving, guarding, or protecting; the keeping (of a thing) in a safe or entire state; preservation. Wise use of natural resources."},"scarcity":{"pos":"n","def":"(uncountable) The condition of something being scarce or deficient. (countable) An inadequate amount of something; a shortage."},"vulnerable":{"pos":"adj","def":"More or most likely to be exposed to the chance of being attacked or harmed, either physically or emotionally. Open to disclosing one's inner thoughts and feelings, acting in spite of one's instinct to self-preservation."},"sustainable":{"pos":"adj","def":"Able to be produced or sustained for an indefinite period without damaging the environment, or without depleting a resource; renewable. A renewable energy source."},"wellbeing":{"pos":"n","def":"Alternative form of well-being. [A state of health, happiness or prosperity.]"},"curriculum":{"pos":"n","def":"(US) The set of courses, coursework, and content offered at a school or university. (UK, Canada, Australia, Philippines) The set of standards schools are required to teach all students."},"literacy":{"pos":"n","def":"The ability to read and write. (by extension) The ability to understand and evaluate something."},"pedagogy":{"pos":"n","def":"The activities of educating, teaching or instructing. The profession of teaching."},"tuition":{"pos":"n","def":"(Canada, US, Philippines) A sum of money paid for instruction (such as in a private school, boarding school, university, or college). (Ireland, UK) The training or instruction provided by a teacher or tutor."},"scholarship":{"pos":"n","def":"A grant-in-aid to a student. The character or qualities of a scholar."},"workforce":{"pos":"n","def":"The total population of a country or region that is employed or employable. All the workers employed by a specific organization or state, or on a specific project."},"qualification":{"pos":"n","def":"The act or process of qualifying for a position, achievement etc. An ability or attribute that aids someone's chances of qualifying for something; specifically, completed professional training."},"employment":{"pos":"n","def":"The occupation or work for which one is used, and often paid. The state of being employed."},"revenue":{"pos":"n","def":"The total income received from a given source. All income generated for some political entity's treasury by taxation and other means."},"entrepreneur":{"pos":"n","def":"A person who sets up a business; generally, a person who owns and manages a business and assumes its financial risks. (now rare) A person who organizes concerts, plays, or other entertainments; the manager of a theatre or similar venue; an impresario."},"productivity":{"pos":"n","def":"The state of being productive, fertile, or efficient. The rate at which goods or services are produced by a standard population of workers; those workers' degree of efficiency."},"venture":{"pos":"n","def":"A risky or daring undertaking or journey. (transitive) To risk or offer."},"stakeholder":{"pos":"n","def":"(business) A person or organisation with a legitimate interest (a stake) in a given situation, action or enterprise. (law) A person such as a trustee, escrow agent or garnishee, who holds money or assets under trust for another party in a contractual agreement or as part of a claim."},"regulation":{"pos":"n","def":"(countable) A law or administrative rule, issued by an organization, used to guide or prescribe the conduct of members of that organization. (law, often in the plural) A type of law made by the executive branch of a government, usually as authorized by a statute made by the legislative branch giving the executive the authority to do so."},"policy":{"pos":"n","def":"A principle of behaviour, conduct which an entity (government, organization, etc.) applies or seeks to follow, especially as formally expressed by an authoritative body. A document describing such a policy."},"legislation":{"pos":"n","def":"A law which has been enacted by legislature or other governing body. The act of legislating; preparation and enactment of laws."},"migration":{"pos":"n","def":"An instance of moving to live in another place for a while. Seasonal moving of animals, as mammals, birds or fish, especially between breeding and non-breeding areas."},"governance":{"pos":"n","def":"The process, or the power, of governing; government or administration. The specific system by which a political system is ruled."},"inequality":{"pos":"n","def":"A condition or state (of social, cultural, or legal matters) that is not equal; especially, such a condition that is thereby also unfair. Absence of equality."},"consumer":{"pos":"n","def":"(economics) Someone who trades money for goods or services as an individual. (by extension) The consumer base of a product, service or business."},"demographic":{"pos":"n","def":"(chiefly in the plural) A demographic criterion: a characteristic used to classify people for statistical purposes, such as age, race, or gender. A demographic group: a collection of people sharing a value for a certain demographic criterion."},"population":{"pos":"n","def":"The people living within a political or geographical boundary. A count of the number of residents within a political or geographical boundary such as a town, a nation or the world."},"mainstream":{"pos":"adj","def":"Used or accepted broadly rather than by small portions of population, market, scientific community, etc. (usually with the) That which is common; the norm."},"heritage":{"pos":"n","def":"A tradition; a practice or set of values that is passed down from preceding generations through families or through institutional memory. An inheritance; property that may be inherited."},"minority":{"pos":"n","def":"Any subgroup that does not form a numerical majority. (sociology) A group of people seen as distinct who are subordinated and discriminated against in a society."},"identity":{"pos":"n","def":"The difference or character that marks off an individual or collective from the rest of the same kind; selfhood; the sense of who something or someone or oneself is, or the recurring characteristics that enable the recognition of such an individual or group by others or themselves. Sameness, identicalness; the quality or fact of (several specified things) being the same."},"linguistic":{"pos":"adj","def":"Of or relating to language. Of or relating to linguistics."},"participation":{"pos":"n","def":"The act of participating, of taking part in something. The process during which individuals, groups and organizations are consulted about or have the opportunity to become actively involved in a project or program of activity."},"prejudice":{"pos":"n","def":"(countable) An adverse judgment or opinion formed beforehand or without knowledge of the facts. (countable) A preconception, any preconceived opinion or feeling, whether positive or negative."},"perception":{"pos":"n","def":"The organisation, identification and interpretation of sensory information. Conscious understanding of something."},"psychological":{"pos":"adj","def":"Relating to the mind and behavior or to the mental, emotional, and behavioral characteristics pertaining to a specified person, group, or activity. Of or pertaining to psychology."},"behaviour":{"pos":"n","def":"British standard spelling of behavior."},"motivation":{"pos":"n","def":"An incentive or reason for doing something. Willingness of action especially in behavior."},"attention":{"pos":"n","def":"(uncountable) Mental focus. (countable) An action or remark expressing concern for or interest in someone or something, especially romantic interest."},"recall":{"pos":"v","def":"(transitive, intransitive) To call back (a situation, event, etc.) to one's mind; to remember; to recollect. Memory; the ability to remember."},"experiment":{"pos":"n","def":"A test under controlled conditions made to either demonstrate a known truth, examine the validity of a hypothesis, or determine the efficacy or likelihood of something previously untried. (intransitive) To conduct an experiment."},"cognitive":{"pos":"adj","def":"Relating to the part of mental functions that deals with logic, as opposed to affective which deals with emotions. Intellectual."},"observation":{"pos":"n","def":"The act of observing, and the fact of being observed (see observance) The act of noting and recording some event; or the record of such noting."},"perceive":{"pos":"v","def":"(transitive) To become aware of, through the physical senses, to see; to understand. To interpret something in a particular way."},"retain":{"pos":"v","def":"(transitive) Often followed by from: to hold back (someone or something); to check, to prevent, to restrain, to stop. (transitive) (education) To hold back (a pupil) instead of allowing them to advance to the next class or year; to keep back."},"reasoning":{"pos":"n","def":"(uncountable) The deduction of inferences or interpretations from premises, abstract thought, ratiocination; (countable) any instance of this, especially as a process leading to an action, motive. (countable) A Rastafari meeting held for the purposes of chanting, prayer and discussion."},"sample":{"pos":"n","def":"A part or snippet of something taken or presented for inspection, or shown as evidence of the quality of the whole; a specimen. (statistics) A subset or portion of a population that is systematically selected for measurement, observation, or questioning, with the objective of generating statistical information that accurately reflects the characteristics of the entire population."},"variable":{"pos":"adj","def":"(mathematics) Having no fixed quantitative value. (programming) A named memory location in which a program can store intermediate results and from which it can read them."},"methodology":{"pos":"n","def":"(loosely) A collection of methods, practices, procedures and rules used by those who work in some field. The implementation of such methods etc."},"analysis":{"pos":"n","def":"(countable) Decomposition into components in order to study (a complex thing, concept, theory, etc.). (countable) The result of such a process."},"outcome":{"pos":"n","def":"That which is produced or occurs as a result of an event or process. (education) The anticipated or desired results or evidence of a learning experience (often used in the phrase learning outcomes)."},"accuracy":{"pos":"n","def":"The state of being accurate; being free from error; exactness; correctness Exact conformity to truth, or to a rule or model; degree of conformity of a measure to a true or standard value."},"evidence":{"pos":"n","def":"Facts or observations presented in support of an assertion. (law) Anything admitted by a court to prove or disprove alleged matters of fact in a trial."},"evaluate":{"pos":"v","def":"(transitive) To draw conclusions from examining; to assess; to appraise. (transitive, mathematics, computing) To compute or determine the value of (an expression)."},"interpretation":{"pos":"n","def":"(countable) An act of interpreting or explaining something unclear; a translation; a version. (countable) A sense given by an interpreter; an exposition or explanation given; meaning."},"correlation":{"pos":"n","def":"(statistics) One of the several measures of the linear statistical relationship between two random variables, indicating both the strength and direction of the relationship. A reciprocal, parallel or complementary relationship between two or more comparable objects."},"chapter":{"pos":"n","def":"One of the main sections into which a published work is divided, especially a book. A section of a work, a collection of works, or fragments of works, often manuscripts or transcriptions, created by scholars or advocates, not the original authors, to aid in finding portions of the texts."},"notable":{"pos":"adj","def":"Worthy of note; remarkable; memorable; noted or distinguished. Easily noted (without connotations of value); clearly noticeable, conspicuous."},"reproduce":{"pos":"v","def":"(transitive or intransitive, biology) To generate or propagate offspring or organisms sexually or asexually. (transitive) To produce again; to recreate."},"nevertheless":{"pos":"adv","def":"(conjunctive) In spite of what preceded; yet."},"assumption":{"pos":"n","def":"The act of taking for granted, or supposing a thing without proof; a supposition; an unwarrantable claim. The thing supposed; a postulate, or proposition assumed; a supposition."},"distribution":{"pos":"n","def":"An act of distributing or state of being distributed. (business, marketing) The process by which goods get to final consumers over a geographical market, including storing, selling, shipping and advertising."},"furthermore":{"pos":"adv","def":"In addition; besides; further; what's more (i.e. to denote additional information)."},"thereby":{"pos":"adv","def":"(formal) By it; by that; by that means, or as a consequence of that."},"hence":{"pos":"adv","def":"(conjunctive) As a result; therefore, for this reason. (of a length of time) In the future from now."},"respectively":{"pos":"adv","def":"In a relative manner; often used when comparing array lists, where the term denotes that the items in the lists correspond to each other in the order they are given."},"predominantly":{"pos":"adv","def":"In a predominant manner. Most commonly or frequently by a large margin."},"dramatically":{"pos":"adv","def":"In a dramatic manner."},"approximately":{"pos":"adv","def":"Imprecise but close to in quantity or amount."},"overall":{"pos":"adv","def":"Generally; with everything considered. All-encompassing, all around."},"contrast":{"pos":"n","def":"(countable) A difference between two objects, people or concepts. (countable) Something that is opposite of or strikingly different from something else."},"whereby":{"pos":"adv","def":"By which. (nonstandard) Where, wherein, in which."},"slightly":{"pos":"adv","def":"(degree) To a small extent or degree. Slenderly; delicately."},"substantial":{"pos":"adj","def":"Large in size, quantity, or value; ample; significant. Not imaginary; real; actual; true; veritable."}};
+const IELTS_EXTRA_POS_LABELS = { n: 'n.', v: 'v.', adj: 'adj.', adv: 'adv.', conj: 'conj.', prep: 'prep.' };
+IELTS_WORD_BANK_EXTRA.forEach(word => {
+  const dictionary = IELTS_EXTRA_DICTIONARY[word.term];
+  if (!dictionary) return;
+  word.pos = IELTS_EXTRA_POS_LABELS[dictionary.pos] || word.pos;
+  word.meaning = dictionary.def ? '英文释义：' + dictionary.def : '学术语境词汇';
+  word.phonetic = String(dictionary.phon || '');
+  word.phoneticVerified = Boolean(word.phonetic);
+  word.example = englishWordExample(word.term, word.pos);
+});
+IELTS_WORD_BANK.push(...IELTS_WORD_BANK_EXTRA);
+// Terms are deduplicated case-insensitively so source variants such as
+// `Pacific`/`pacific` cannot occupy two slots in the daily rotation.
+const IELTS_WORD_BANK_DEDUPED = Array.from(new Map(IELTS_WORD_BANK.map(word => [englishWordTermKey(word.term), word])).values());
+IELTS_WORD_BANK.splice(0, IELTS_WORD_BANK.length, ...IELTS_WORD_BANK_DEDUPED);
+// Only this derived bank is used for new daily batches.  Keep the complete
+// bank above for backwards-compatible ID/term resolution and reading hints.
+const IELTS_DAILY_VOCABULARY_BANK = IELTS_WORD_BANK.filter(isIELTSVocabularyWordQuality);
 const WORKSPACE_CLIENT_CONFIG = window.__AI_WORKSPACE_CLIENT_CONFIG__ || {};
 const WORKSPACE_API_ORIGIN = String(WORKSPACE_CLIENT_CONFIG.apiBaseUrl || '').replace(/\/$/, '');
 const workspaceApiUrl = path => WORKSPACE_API_ORIGIN ? WORKSPACE_API_ORIGIN + (path.startsWith('/') ? path : '/' + path) : path;
@@ -379,7 +788,7 @@ class StorageManager {
     return snapshot.data;
   }
 
-  // Returns { ok: true } or { conflict: true, remote } or { ok: false }
+  // Returns { ok: true } or { conflict: true, remote, remoteVersion } or { ok: false }
   async write(data) {
     if (!data.meta) data.meta = {};
     data.meta.revision = (typeof data.meta.revision === 'number' ? data.meta.revision : 0) + 1;
@@ -395,7 +804,11 @@ class StorageManager {
     });
     const body = await response.json().catch(() => ({}));
     if (response.status === 409 && body && body.data && body.data.data) {
-      return { conflict: true, remote: body.data.data };
+      return {
+        conflict: true,
+        remote: body.data.data,
+        remoteVersion: Number.isInteger(body.data.version) ? body.data.version : null
+      };
     }
     if (!response.ok) throw new Error(body && body.error ? body.error.message : '保存工作区失败');
     this._apiVersion = body && body.data && Number.isInteger(body.data.version) ? body.data.version : this._apiVersion + 1;
@@ -417,6 +830,20 @@ let dailyPlanViewDate = todayKey();
 let dailyPlanCalendarMonth = todayKey().slice(0, 7);
 let activeReadingLogTags = [];
 let literatureView = 'overview';
+let englishVocabFilter = 'all';
+let englishVocabPage = 0;
+let englishReadingState = { status: 'idle', message: '' };
+// Keep one reading refresh in flight at a time.  The refresh traverses a
+// search result and several summary endpoints, so a second click must not
+// race the first one and overwrite the learner's active article.
+let englishReadingRefreshInFlight = null;
+// Automatic reading updates are session-level side effects.  Remember the
+// local calendar day on which an automatic attempt was made so rerenders (the
+// loading state, a successful response, or an offline error) cannot start a
+// second request.  A new day gets one fresh attempt without persisting this
+// bookkeeping into the learner's workspace data.
+let englishReadingAutoRefreshAttemptedDate = '';
+let englishWritingPromptId = 'writing-1';
 let researchInspirationState = {
   query: '',
   scope: 'active',
@@ -521,6 +948,1265 @@ function todayKey(d = new Date()) {
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return y + '-' + m + '-' + day;
+}
+
+function englishDaySeed(date = todayKey()) {
+  return String(date).split('').reduce((hash, char) => ((hash * 31) + char.charCodeAt(0)) >>> 0, 7);
+}
+
+function englishShuffle<T>(items: T[], seed: number) {
+  const output = items.slice();
+  let state = seed || 1;
+  for (let index = output.length - 1; index > 0; index -= 1) {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    const swapIndex = state % (index + 1);
+    const current = output[index];
+    output[index] = output[swapIndex];
+    output[swapIndex] = current;
+  }
+  return output;
+}
+
+function englishWordTermKey(value) {
+  return String(value == null ? '' : value).trim().toLowerCase();
+}
+
+function englishDateKey(value) {
+  const key = String(value == null ? '' : value).trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) return '';
+  const [year, month, day] = key.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? key : '';
+}
+
+function recentEnglishDate(value, today = todayKey()) {
+  const key = englishDateKey(value);
+  if (!key) return '';
+  return key === today || key === shiftDateKey(today, -1) ? key : '';
+}
+
+function normalizeEnglishChallengeState(english) {
+  const challenge = english.challenge || (english.challenge = cloneData(DEFAULT_DATA.learning.english.challenge));
+  const before = JSON.stringify(challenge);
+  const total = Math.max(1, Math.floor(Number(challenge.total) || 100));
+  const current = Math.max(0, Math.min(total, Math.floor(Number(challenge.current) || 0)));
+  const lastCompletedDate = recentEnglishDate(challenge.lastCompletedDate);
+  const rawStreak = Math.max(0, Math.floor(Number(challenge.streak) || 0));
+  challenge.total = total;
+  challenge.current = current;
+  challenge.lastCompletedDate = lastCompletedDate;
+  // A streak without a recent completion date is stale (the starter data
+  // used to ship with a non-zero streak and an empty date).
+  challenge.streak = lastCompletedDate ? Math.max(1, rawStreak) : 0;
+  return before !== JSON.stringify(challenge);
+}
+
+function normalizeEnglishListeningState(english) {
+  const listening = english.listening || (english.listening = cloneData(DEFAULT_DATA.learning.english.listening));
+  const defaults = DEFAULT_DATA.learning.english.listening;
+  const before = JSON.stringify(listening);
+  const sourceQueue = Array.isArray(listening.queue) ? listening.queue : [];
+  const queue = [];
+  const seen = new Set();
+
+  // Keep user-created/custom entries first, then append any missing seeded
+  // sessions. This upgrades old three-item snapshots without losing progress.
+  sourceQueue.forEach((entry, index) => {
+    if (!entry || typeof entry !== 'object') return;
+    const id = String(entry.id || 'listen-' + (index + 1));
+    if (seen.has(id)) return;
+    seen.add(id);
+    queue.push({
+      ...entry,
+      id,
+      title: String(entry.title || 'IELTS listening practice'),
+      source: String(entry.source || '精选听力'),
+      level: String(entry.level || 'Band 7.0'),
+      duration: String(entry.duration || '10:00'),
+      skill: String(entry.skill || '听力理解训练')
+    });
+  });
+  defaults.queue.forEach(entry => {
+    const id = String(entry.id);
+    if (seen.has(id)) return;
+    seen.add(id);
+    queue.push(cloneData(entry));
+  });
+
+  const target = 12;
+  // Keep the queue bounded to the weekly target. Older snapshots can contain
+  // duplicate/custom rows; the first twelve unique sessions are the ones the
+  // learner should see for this cycle.
+  const boundedQueue = queue.slice(0, target);
+  const requestedCompleted = Number(listening.completed);
+  const completedFromStatus = boundedQueue.filter(entry => entry.status === 'done').length;
+  const rawCompleted = Number.isFinite(requestedCompleted) ? Math.floor(requestedCompleted) : completedFromStatus;
+  const completed = Math.max(0, Math.min(target, rawCompleted));
+  // Status is derived from the completion count so legacy states such as
+  // completed=8 with a three-item queue become actionable and consistent.
+  boundedQueue.forEach((entry, index) => {
+    entry.status = index < completed ? 'done' : (index === completed && completed < target ? 'next' : 'locked');
+  });
+  listening.target = target;
+  listening.completed = completed;
+  listening.queue = boundedQueue;
+  const lastCompletedDate = recentEnglishDate(listening.lastCompletedDate);
+  const rawStreak = Math.max(0, Math.floor(Number(listening.streak) || 0));
+  listening.lastCompletedDate = lastCompletedDate;
+  // Do not display a stale listening streak after the date rolls over.
+  listening.streak = lastCompletedDate ? Math.max(1, rawStreak) : 0;
+  listening.lastSyncedAt = typeof listening.lastSyncedAt === 'string' ? listening.lastSyncedAt : '';
+  return before !== JSON.stringify(listening);
+}
+
+function normalizeEnglishWritingState(english) {
+  const writing = english.writing || (english.writing = cloneData(DEFAULT_DATA.learning.english.writing));
+  const before = JSON.stringify(writing);
+  const weeklyGoal = Math.max(1, Math.floor(Number(writing.weeklyGoal) || 2));
+  writing.weeklyGoal = weeklyGoal;
+  if (!Array.isArray(writing.prompts)) writing.prompts = cloneData(DEFAULT_DATA.learning.english.writing.prompts);
+  const promptIds = new Set();
+  writing.prompts = writing.prompts.map((prompt, index) => {
+    if (!prompt || typeof prompt !== 'object') return null;
+    const id = String(prompt.id || 'writing-' + (index + 1)).trim();
+    if (!id || promptIds.has(id)) return null;
+    promptIds.add(id);
+    return {
+      ...prompt,
+      id,
+      type: String(prompt.type || 'Writing'),
+      title: String(prompt.title || 'IELTS writing practice'),
+      focus: String(prompt.focus || '论证结构'),
+      time: Math.max(1, Math.floor(Number(prompt.time) || 30)),
+      status: ['next', 'planned', 'done'].includes(prompt.status) ? prompt.status : 'planned'
+    };
+  }).filter(Boolean);
+  if (!Array.isArray(writing.drafts)) writing.drafts = [];
+  writing.drafts = writing.drafts.map((draft, index) => {
+    if (!draft || typeof draft !== 'object') return null;
+    const promptId = String(draft.promptId || '').trim();
+    if (!promptId) return null;
+    return {
+      ...draft,
+      id: String(draft.id || 'writing-draft-' + (index + 1)),
+      promptId,
+      text: String(draft.text || ''),
+      updatedAt: String(draft.updatedAt || '')
+    };
+  }).filter(Boolean);
+  const statusCompletedIds = writing.prompts.filter(prompt => prompt.status === 'done').map(prompt => prompt.id);
+  const explicitCompletedIds = Array.isArray(writing.completedPromptIds)
+    ? writing.completedPromptIds.map(id => String(id || '').trim()).filter(Boolean)
+    : [];
+  const completedPromptIds = Array.from(new Set(explicitCompletedIds.concat(statusCompletedIds)));
+  writing.completedPromptIds = completedPromptIds;
+  // Legacy snapshots had only a numeric counter. If there is no prompt ID to
+  // attribute it to, discard the phantom count so completion cannot be
+  // double-counted later.
+  writing.completed = Math.min(weeklyGoal, completedPromptIds.length);
+  writing.lastReviewedAt = typeof writing.lastReviewedAt === 'string' ? writing.lastReviewedAt : '';
+  return before !== JSON.stringify(writing);
+}
+
+function englishHistoryTimestamp(value, fallbackDate = '') {
+  const parsed = new Date(value || '');
+  if (!Number.isNaN(parsed.getTime())) {
+    if (todayKey(parsed) === todayKey() && parsed.getTime() > Date.now() + 5 * 60 * 1000) return new Date().toISOString();
+    return parsed.toISOString();
+  }
+  const dateKey = englishDateKey(fallbackDate);
+  if (dateKey) return dateKey === todayKey() ? new Date().toISOString() : new Date(dateKey + 'T12:00:00').toISOString();
+  return new Date().toISOString();
+}
+
+function normalizeEnglishHistoryState(english) {
+  const before = JSON.stringify(english.history || []);
+  const allowedModules = new Set(['vocab', 'listening', 'reading', 'writing']);
+  const seen = new Set();
+  const history = (Array.isArray(english.history) ? english.history : []).map((entry, index) => {
+    if (!entry || typeof entry !== 'object') return null;
+    const module = String(entry.module || '').trim();
+    const title = String(entry.title || '').trim();
+    if (!allowedModules.has(module) || !title) return null;
+    const occurredAt = englishHistoryTimestamp(entry.occurredAt, entry.date);
+    const key = String(entry.key || '').trim();
+    const id = String(entry.id || key || 'english-history-' + index).trim();
+    const identity = key || id;
+    if (!identity || seen.has(identity)) return null;
+    seen.add(identity);
+    return {
+      id,
+      key,
+      module,
+      title,
+      detail: String(entry.detail || ''),
+      sourceId: String(entry.sourceId || ''),
+      date: todayKey(new Date(occurredAt)),
+      occurredAt
+    };
+  }).filter(Boolean).sort((a, b) => String(b.occurredAt).localeCompare(String(a.occurredAt))).slice(0, 160);
+  english.history = history;
+  return before !== JSON.stringify(history);
+}
+
+function seedEnglishHistoryState(english) {
+  if (Array.isArray(english.history) && english.history.length) return false;
+  const seeded = [];
+  const vocab = english.vocab || {};
+  const reviewedWords = (vocab.words || []).filter(word => word.familiar && word.lastReviewed);
+  if (reviewedWords.length) {
+    const latest = reviewedWords.map(word => englishHistoryTimestamp(word.lastReviewed)).sort().at(-1);
+    seeded.push({ id: 'history-vocab-' + todayKey(new Date(latest)), key: 'vocab:' + todayKey(new Date(latest)), module: 'vocab', title: '单词学习', detail: '熟悉 ' + reviewedWords.length + ' / ' + (vocab.dailyTarget || 100) + ' 词', sourceId: '', date: todayKey(new Date(latest)), occurredAt: latest });
+  }
+  const listening = english.listening || {};
+  if (englishDateKey(listening.lastCompletedDate)) {
+    const completedIndex = Math.max(0, Math.min((listening.queue || []).length - 1, (Number(listening.completed) || 1) - 1));
+    const item = (listening.queue || [])[completedIndex];
+    seeded.push({ id: 'history-listening-' + (item?.id || listening.lastCompletedDate), key: 'listening:' + (item?.id || listening.lastCompletedDate), module: 'listening', title: '完成听力训练', detail: item ? item.title : '完成一组听力练习', sourceId: item?.id || '', date: listening.lastCompletedDate, occurredAt: englishHistoryTimestamp(listening.lastSyncedAt, listening.lastCompletedDate) });
+  }
+  (english.reading?.articles || []).forEach(article => {
+    if (!englishDateKey(article.lastReadDate)) return;
+    seeded.push({ id: 'history-reading-' + article.id, key: 'reading:' + article.id, module: 'reading', title: '完成阅读', detail: article.title || '完成一篇精读', sourceId: article.id || '', date: article.lastReadDate, occurredAt: englishHistoryTimestamp('', article.lastReadDate) });
+  });
+  const prompts = new Map((english.writing?.prompts || []).map(prompt => [String(prompt.id), prompt]));
+  (english.writing?.drafts || []).forEach(draft => {
+    if (!draft.completedAt) return;
+    const prompt = prompts.get(String(draft.promptId));
+    const occurredAt = englishHistoryTimestamp(draft.completedAt);
+    seeded.push({ id: 'history-writing-' + draft.promptId, key: 'writing:' + draft.promptId, module: 'writing', title: '完成写作', detail: prompt?.title || '完成一篇写作练习', sourceId: draft.promptId || '', date: todayKey(new Date(occurredAt)), occurredAt });
+  });
+  if (!seeded.length) return false;
+  english.history = seeded;
+  normalizeEnglishHistoryState(english);
+  return true;
+}
+
+function recordEnglishHistory(module, title, detail, key, sourceId = '') {
+  const english = DATA?.learning?.english;
+  if (!english) return;
+  normalizeEnglishHistoryState(english);
+  const now = new Date().toISOString();
+  const stableKey = String(key || module + ':' + uid());
+  const existing = english.history.find(entry => entry.key === stableKey);
+  if (existing) {
+    existing.title = String(title || existing.title);
+    existing.detail = String(detail || existing.detail);
+    existing.sourceId = String(sourceId || existing.sourceId || '');
+    existing.date = todayKey();
+    existing.occurredAt = now;
+  } else {
+    english.history.unshift({ id: uid(), key: stableKey, module, title: String(title || ''), detail: String(detail || ''), sourceId: String(sourceId || ''), date: todayKey(), occurredAt: now });
+  }
+  normalizeEnglishHistoryState(english);
+}
+
+function recordEnglishListeningCompletion(item) {
+  const listening = DATA?.learning?.english?.listening;
+  if (!listening || !item || item.status !== 'next') return false;
+  const today = todayKey();
+  const previousDate = recentEnglishDate(listening.lastCompletedDate, today);
+  const previousStreak = Math.max(0, Math.floor(Number(listening.streak) || 0));
+  item.status = 'done';
+  listening.completed = Math.min(Number(listening.target) || 12, (Number(listening.completed) || 0) + 1);
+  const following = (listening.queue || []).find(entry => entry.status === 'locked');
+  if (following) following.status = 'next';
+  if (previousDate === today) listening.streak = Math.max(1, previousStreak);
+  else if (previousDate === shiftDateKey(today, -1)) listening.streak = previousStreak > 0 ? previousStreak + 1 : 1;
+  else listening.streak = 1;
+  listening.lastCompletedDate = today;
+  listening.lastSyncedAt = new Date().toISOString();
+  recordEnglishHistory('listening', '完成听力训练', (item.title || '一组听力练习') + (item.skill ? ' · ' + item.skill : ''), 'listening:' + item.id, item.id);
+  return true;
+}
+
+function resetEnglishListeningProgress() {
+  const listening = DATA?.learning?.english?.listening;
+  if (!listening) return false;
+  listening.completed = 0;
+  (listening.queue || []).forEach((item, index) => { item.status = index === 0 ? 'next' : 'locked'; });
+  listening.streak = 0;
+  listening.lastCompletedDate = '';
+  listening.lastSyncedAt = new Date().toISOString();
+  return true;
+}
+
+function recordEnglishWritingCompletion(promptId, text) {
+  const writing = DATA?.learning?.english?.writing;
+  if (!writing) return { ok: false, reason: 'missing' };
+  const id = String(promptId || '').trim();
+  const content = String(text || '').trim();
+  if (!id || !content) return { ok: false, reason: 'empty' };
+  if (!Array.isArray(writing.completedPromptIds)) writing.completedPromptIds = [];
+  const completedPromptIds = new Set(writing.completedPromptIds.map(value => String(value || '').trim()).filter(Boolean));
+  if (completedPromptIds.has(id)) return { ok: false, reason: 'duplicate' };
+  const weeklyGoal = Math.max(1, Math.floor(Number(writing.weeklyGoal) || 2));
+  if (completedPromptIds.size >= weeklyGoal) return { ok: false, reason: 'goal' };
+  const now = new Date().toISOString();
+  if (!Array.isArray(writing.drafts)) writing.drafts = [];
+  const draft = writing.drafts.find(entry => String(entry.promptId || '') === id);
+  if (draft) {
+    draft.text = String(text);
+    draft.updatedAt = now;
+    draft.completedAt = now;
+  } else {
+    writing.drafts.push({ id: uid(), promptId: id, text: String(text), updatedAt: now, completedAt: now });
+  }
+  completedPromptIds.add(id);
+  writing.completedPromptIds = Array.from(completedPromptIds);
+  writing.completed = Math.min(weeklyGoal, writing.completedPromptIds.length);
+  writing.lastReviewedAt = now;
+  const prompt = (writing.prompts || []).find(entry => entry.id === id);
+  if (prompt) prompt.status = 'done';
+  recordEnglishHistory('writing', '完成写作', prompt?.title || '完成一篇写作练习', 'writing:' + id, id);
+  return { ok: true };
+}
+
+function ensureEnglishStudyState(root = DATA) {
+  const workspace = root;
+  if (!workspace || !workspace.learning) return false;
+  const before = JSON.stringify({
+    english: workspace.learning.english,
+    englishTasks: workspace.tasks?.english
+  });
+  if (!workspace.learning.english) workspace.learning.english = {};
+  const english = workspace.learning.english;
+  if (!english.profile) english.profile = cloneData(DEFAULT_DATA.learning.english.profile);
+  if (!english.challenge) english.challenge = cloneData(DEFAULT_DATA.learning.english.challenge);
+  if (!english.vocab) english.vocab = cloneData(DEFAULT_DATA.learning.english.vocab);
+  if (!english.listening) english.listening = cloneData(DEFAULT_DATA.learning.english.listening);
+  if (!english.reading) english.reading = cloneData(DEFAULT_DATA.learning.english.reading);
+  if (!english.writing) english.writing = cloneData(DEFAULT_DATA.learning.english.writing);
+  if (!Array.isArray(english.history)) english.history = [];
+  if (!Array.isArray(english.listening.queue)) english.listening.queue = cloneData(DEFAULT_DATA.learning.english.listening.queue);
+  if (!Array.isArray(english.reading.articles)) english.reading.articles = cloneData(DEFAULT_DATA.learning.english.reading.articles);
+  if (!Array.isArray(english.reading.remoteTitles)) english.reading.remoteTitles = [];
+  english.reading.remoteTitles = englishReadingRemoteTitleHistory(english.reading.remoteTitles);
+  // Migrate older snapshots while keeping user flags (saved/read) intact.
+  // The original seed cards remain available, while curated primers fill the
+  // local cache so offline reading still spans a broad set of IELTS-like
+  // genres. Keep the returned flag so a cleaned reading cache is persisted.
+  const readingChanged = normalizeEnglishReadingLibrary(workspace);
+  if (!Array.isArray(english.writing.prompts)) english.writing.prompts = cloneData(DEFAULT_DATA.learning.english.writing.prompts);
+  if (!Array.isArray(english.writing.drafts)) english.writing.drafts = [];
+  const challengeChanged = normalizeEnglishChallengeState(english);
+  const listeningChanged = normalizeEnglishListeningState(english);
+  const writingChanged = normalizeEnglishWritingState(english);
+  let historyChanged = normalizeEnglishHistoryState(english);
+  if (!english.history.length) historyChanged = seedEnglishHistoryState(english) || historyChanged;
+  const vocab = english.vocab;
+  const target = Math.max(20, Math.min(100, Number(vocab.dailyTarget) || 100));
+  vocab.dailyTarget = target;
+  let changed = false;
+  if (!vocab.bankVersion || vocab.bankVersion === 'IELTS Academic Core · v1.0') {
+    vocab.bankVersion = 'IELTS Academic Core + Topic Bank · v2.0';
+    changed = true;
+  }
+  // Keep the starter task aligned with the focused IELTS target while leaving
+  // any user-authored task wording untouched.
+  (Array.isArray(workspace.tasks?.english) ? workspace.tasks.english : []).forEach(task => {
+    if (task && (task.id === 'en2' || /^背单词\s*\d+\s*个$/.test(String(task.text || '').trim()))) {
+      task.text = '背单词 ' + target + ' 个';
+      changed = true;
+    }
+  });
+  if (!Array.isArray(vocab.seenIds)) vocab.seenIds = [];
+  if (!Array.isArray(vocab.lastBatchIds)) vocab.lastBatchIds = [];
+  if (!Array.isArray(vocab.favorites)) vocab.favorites = [];
+  if (!Array.isArray(vocab.words)) vocab.words = [];
+  // Keep legacy/partial word records render-safe and make the list stable
+  // across migrations (the generated examples are intentionally conservative).
+  vocab.words = vocab.words.map((word, index) => ({
+    ...word,
+    id: String(word.id || 'ielts-user-' + index),
+    term: String(word.term || '').trim(),
+    meaning: String(word.meaning || ''),
+    example: String(word.example || ''),
+    phonetic: String(word.phonetic || ''),
+    phoneticVerified: Boolean(word.phoneticVerified),
+    pos: String(word.pos || ''),
+    band: String(word.band || '7.0')
+  })).filter(word => word.term);
+  const today = todayKey();
+  // New batches and canonical seen-ID bookkeeping use only quality-approved
+  // records.  Custom/imported words remain untouched below.
+  const bankById = new Map(IELTS_DAILY_VOCABULARY_BANK.map(word => [String(word.id), word]));
+  const bankByTerm = new Map(IELTS_DAILY_VOCABULARY_BANK.map(word => [englishWordTermKey(word.term), word]));
+  const hasCurrentBatch = vocab.dailyDate === today && vocab.words.length >= target && vocab.words.every(word => {
+    if (!String(word?.id || '').startsWith('ielts-')) return true;
+    const canonical = bankById.get(String(word.id)) || bankByTerm.get(englishWordTermKey(word.term));
+    return Boolean(canonical && isIELTSVocabularyWordQuality(canonical));
+  });
+  vocab.words = vocab.words.map(word => {
+    const wordId = String(word.id || '');
+    const rawTermKey = englishWordTermKey(word.term);
+    const repairedTermKey = IELTS_SOURCE_TERM_FIXES[rawTermKey] || rawTermKey;
+    const bankWord = bankById.get(wordId) || bankByTerm.get(repairedTermKey);
+    // Generated records that no longer pass the gate (for example the old
+    // `frigde` source row) are removed; a corrected alias is repaired in place
+    // so review/favourite flags from an existing snapshot survive migration.
+    if (wordId.startsWith('ielts-') && !bankWord) {
+      changed = true;
+      return null;
+    }
+    // Generated batches are safe to refresh when the bundled lexical record
+    // improves.  Custom/imported words keep their own notes untouched.
+    if (bankWord && wordId.startsWith('ielts-')) {
+      ['term', 'meaning', 'example', 'phonetic', 'phoneticVerified', 'pos', 'band'].forEach(field => {
+        if (word[field] !== bankWord[field]) {
+          word[field] = bankWord[field];
+          changed = true;
+        }
+      });
+    }
+    return word;
+  });
+  const canonicalSeenIds = Array.from(new Set(vocab.seenIds.map(id => String(id)).filter(id => bankById.has(id))));
+  const canonicalSeenTerms = new Set(canonicalSeenIds.map(id => englishWordTermKey(bankById.get(id).term)));
+  const previousBatchIds = Array.from(new Set((vocab.lastBatchIds.length ? vocab.lastBatchIds : vocab.words.map(word => word.id)).map(id => String(id))));
+  const previousBatchTerms = new Set(previousBatchIds.map(id => bankById.get(id)).filter(Boolean).map(word => englishWordTermKey(word.term)));
+  if (vocab.seenIds.length !== canonicalSeenIds.length || vocab.seenIds.some((id, index) => String(id) !== canonicalSeenIds[index])) {
+    vocab.seenIds = canonicalSeenIds;
+    changed = true;
+  }
+  if (!hasCurrentBatch) {
+    // Prefer never-seen words. When a cycle is exhausted, refill from older
+    // words but always exclude the immediately preceding batch, preventing
+    // adjacent-day repeats even when the bank is smaller than the target.
+    const candidates = IELTS_DAILY_VOCABULARY_BANK.filter(word => {
+      const term = englishWordTermKey(word.term);
+      return !canonicalSeenTerms.has(term) && !previousBatchTerms.has(term);
+    });
+    const historical = IELTS_DAILY_VOCABULARY_BANK.filter(word => !previousBatchTerms.has(englishWordTermKey(word.term)));
+    const seed = englishDaySeed(today);
+    const selected = englishShuffle(candidates, seed).concat(
+      englishShuffle(historical.filter(word => !candidates.includes(word)), seed ^ 0x9e3779b9)
+    ).slice(0, target);
+    // A very small imported/custom bank may still be unable to fill 100
+    // unique entries. Reuse only as a final fallback, never from yesterday.
+    if (selected.length < target) {
+      const fallback = englishShuffle(historical, seed ^ 0x85ebca6b);
+      let cursor = 0;
+      while (selected.length < target && fallback.length) {
+        selected.push(fallback[cursor % fallback.length]);
+        cursor += 1;
+      }
+    }
+    vocab.words = selected.map((word, index) => ({
+      ...word,
+      order: index,
+      status: 'new',
+      familiar: false,
+      reviewCount: 0,
+      lastReviewed: '',
+      favorite: vocab.favorites.includes(word.id)
+    }));
+    vocab.seenIds = Array.from(new Set(canonicalSeenIds.concat(selected.map(word => word.id))));
+    vocab.lastBatchIds = selected.map(word => word.id);
+    vocab.dailyDate = today;
+    vocab.lastGeneratedAt = new Date().toISOString();
+    changed = true;
+  } else {
+    vocab.words = vocab.words.map((word, index) => ({
+      ...word,
+      order: Number.isFinite(Number(word.order)) ? Number(word.order) : index,
+      status: ['new', 'learning', 'familiar'].includes(word.status) ? word.status : (word.familiar ? 'familiar' : 'new'),
+      familiar: Boolean(word.familiar || word.status === 'familiar'),
+      reviewCount: Math.max(0, Number(word.reviewCount) || 0),
+      favorite: Boolean(word.favorite || vocab.favorites.includes(word.id))
+    }));
+    if (!vocab.lastBatchIds.length) {
+      vocab.lastBatchIds = vocab.words.map(word => word.id);
+      changed = true;
+    }
+  }
+  return changed || challengeChanged || listeningChanged || writingChanged || historyChanged || readingChanged || before !== JSON.stringify({
+    english: workspace.learning.english,
+    englishTasks: workspace.tasks?.english
+  });
+}
+
+const ENGLISH_READING_TOPICS = [
+  { query: 'renewable energy', type: '环境与能源', genre: '科普说明', tag: 'climate' },
+  { query: 'marine conservation', type: '环境与生态', genre: '研究综述', tag: 'biodiversity' },
+  { query: '15-minute city', type: '城市与交通', genre: '政策评论', tag: 'urban-life' },
+  { query: 'behavioral economics', type: '商业与社会', genre: '学术导读', tag: 'decision-making' },
+  { query: 'epidemiology', type: '公共健康', genre: '科学说明', tag: 'health' },
+  { query: 'evolution of languages', type: '语言与文化', genre: '历史观察', tag: 'linguistics' },
+  { query: 'space exploration', type: '科学与探索', genre: '历史叙事', tag: 'space' },
+  { query: 'sustainable architecture', type: '建筑与设计', genre: '案例研究', tag: 'design' },
+  { query: 'psychology of music', type: '心理与艺术', genre: '跨学科文章', tag: 'creativity' },
+  { query: 'Volga trade route', type: '历史与贸易', genre: '历史叙事', tag: 'history' }
+];
+const ENGLISH_READING_FETCH_TIMEOUT_MS = 12_000;
+const ENGLISH_READING_REMOTE_TITLE_LIMIT = 180;
+const ENGLISH_READING_REFRESH_TIMEOUT_MS = 30_000;
+
+// Short, original learning primers keep the reading room useful when the
+// network is unavailable.  They intentionally cover more than the usual
+// technology/environment pair: IELTS Academic passages routinely move
+// between science, society, history, culture and design.
+const IELTS_READING_LIBRARY_VERSION = 'IELTS Reading Library · v2.0';
+const IELTS_READING_OFFLINE_LIBRARY = [
+  { id: 'article-7', type: '科学与探索', genre: '科普说明', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'How citizen scientists help map the night sky', excerpt: 'Large surveys once belonged almost exclusively to professional observatories. Today, volunteers can classify images and report unusual objects through carefully designed online projects. Their contribution is valuable not because every observation is perfect, but because thousands of small observations can reveal patterns that a single research team might miss.', tags: ['science', 'participation'], url: 'https://en.wikipedia.org/wiki/Citizen_science', publishedAt: '2026-08-21', saved: false, read: false },
+  { id: 'article-8', type: '公共健康', genre: '证据报告', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'What wastewater can reveal about a city', excerpt: 'Wastewater monitoring gives public-health teams a population-level signal without asking every resident to complete a survey. Researchers examine chemical and biological traces, compare them over time and combine them with clinical data. The method cannot explain every individual case, yet it can provide an early warning when a health pattern is changing.', tags: ['health', 'evidence'], url: 'https://en.wikipedia.org/wiki/Wastewater-based_epidemiology', publishedAt: '2026-08-20', saved: false, read: false },
+  { id: 'article-9', type: '语言与文化', genre: '历史观察', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 11, title: 'Why languages keep borrowing words', excerpt: 'Borrowed words are often treated as signs of linguistic change rather than linguistic failure. Trade, migration, education and popular culture all create opportunities for one language to adopt a useful expression from another. Over time, speakers reshape the borrowed term so that it fits local sounds, grammar and social meaning.', tags: ['language', 'culture'], url: 'https://en.wikipedia.org/wiki/Loanword', publishedAt: '2026-08-19', saved: false, read: false },
+  { id: 'article-10', type: '商业与社会', genre: '学术导读', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 12, title: 'The quiet influence of default choices', excerpt: 'A default option can guide behaviour even when people remain free to choose something else. In workplaces, schools and digital services, the position of an option may reduce effort and make one path seem normal. Good policy therefore asks not only whether alternatives exist, but also whether they are visible and practical.', tags: ['economics', 'decision-making'], url: 'https://en.wikipedia.org/wiki/Default_effect', publishedAt: '2026-08-18', saved: false, read: false },
+  { id: 'article-11', type: '建筑与设计', genre: '案例研究', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 14, title: 'Designing buildings for a changing climate', excerpt: 'Climate-conscious architecture is more than adding a few efficient devices to a conventional building. Designers consider orientation, shade, ventilation, materials and the daily routines of occupants. A successful building can reduce energy demand while also making indoor spaces healthier and more comfortable.', tags: ['design', 'climate'], url: 'https://en.wikipedia.org/wiki/Sustainable_architecture', publishedAt: '2026-08-17', saved: false, read: false },
+  { id: 'article-12', type: '农业与食物', genre: '问题解决', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'Can rooftop farms feed a growing city?', excerpt: 'Rooftop gardens rarely replace rural agriculture, but they can shorten the distance between production and consumption. Their wider benefits may include insulation, storm-water management and opportunities for community education. The main constraints are structural safety, water access and the cost of maintaining a skilled workforce.', tags: ['food', 'cities'], url: 'https://en.wikipedia.org/wiki/Urban_agriculture', publishedAt: '2026-08-16', saved: false, read: false },
+  { id: 'article-13', type: '心理与艺术', genre: '跨学科文章', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'Why music can make places easier to remember', excerpt: 'Music links rhythm, emotion and attention, which may explain why a familiar song can bring back a detailed memory of a place. Researchers do not regard music as a universal memory switch; the effect depends on personal experience and context. Nevertheless, carefully chosen sound can support learning and orientation.', tags: ['psychology', 'arts'], url: 'https://en.wikipedia.org/wiki/Psychology_of_music', publishedAt: '2026-08-15', saved: false, read: false },
+  { id: 'article-14', type: '历史与贸易', genre: '历史叙事', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'The routes that moved more than goods', excerpt: 'Historic trade routes carried technologies, stories and social customs as well as spices, metals or textiles. Merchants depended on bridges between languages and legal traditions. The effects of a route could therefore continue long after its commercial importance had declined.', tags: ['history', 'migration'], url: 'https://en.wikipedia.org/wiki/Trade_route', publishedAt: '2026-08-14', saved: false, read: false },
+  { id: 'article-15', type: '科技与伦理', genre: '观点评论', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'When an algorithm decides what we notice', excerpt: 'Recommendation systems are built to rank information, yet ranking can gradually shape what users believe is important. Personalisation may save time, but it can also narrow the range of viewpoints encountered. Transparent explanations and deliberate opportunities to explore unfamiliar sources can make the trade-off easier to manage.', tags: ['technology', 'ethics'], url: 'https://en.wikipedia.org/wiki/Recommender_system', publishedAt: '2026-08-13', saved: false, read: false },
+  { id: 'article-16', type: '海洋与气候', genre: '科学说明', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'The chemistry behind a warming sea', excerpt: 'As the ocean absorbs carbon dioxide, its chemistry changes gradually rather than all at once. The resulting shift in acidity can make it harder for some organisms to build shells, while other species may adapt or move. Understanding these different responses is essential when scientists estimate future ecosystem change.', tags: ['ocean', 'climate'], url: 'https://en.wikipedia.org/wiki/Ocean_acidification', publishedAt: '2026-08-12', saved: false, read: false },
+  { id: 'article-17', type: '教育与学习', genre: '研究摘要', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 11, title: 'The case for retrieval practice', excerpt: 'Trying to recall an idea is often more demanding than rereading it, but that effort can strengthen later access to the information. Effective retrieval practice is usually brief and spaced across several sessions. It works best when learners receive feedback and vary the context in which they use a concept.', tags: ['education', 'learning'], url: 'https://en.wikipedia.org/wiki/Testing_effect', publishedAt: '2026-08-11', saved: false, read: false },
+  { id: 'article-18', type: '人口与迁移', genre: '社会报告', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'How migration reshapes regional food', excerpt: 'When people move, they bring recipes, ingredients and ways of organising meals. Local food cultures do not simply disappear or remain unchanged; they often develop through adaptation and exchange. Markets, restaurants and home kitchens each influence which new combinations become familiar.', tags: ['society', 'migration'], url: 'https://en.wikipedia.org/wiki/Food_culture', publishedAt: '2026-08-10', saved: false, read: false }
+];
+
+function safeReadingUrl(value, title = '') {
+  const fallback = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(String(title || '').trim().replace(/\s+/g, '_'));
+  try {
+    const parsed = new URL(String(value || fallback), window.location.origin);
+    return parsed.protocol === 'https:' ? parsed.href : fallback;
+  } catch (_) {
+    return fallback;
+  }
+}
+
+function englishReadingTitleKey(value) {
+  return String(value || '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/[_\s]+/g, ' ')
+    .trim()
+    .toLocaleLowerCase('en-US');
+}
+
+// The reading shelf is intentionally bilingual without pretending that a
+// remote summary is a full article.  These compact reference translations are
+// paired with the bundled IELTS primers; remotely fetched summaries receive a
+// short comprehension rail below.  Keeping the pairings in the runtime also
+// means the editorial spread still works when the browser is offline.
+const ENGLISH_READING_TITLE_TRANSLATIONS = Object.freeze({
+  'why small ai tools are changing the way people learn': '小型 AI 工具正在改变人们学习的方式',
+  'the quiet return of wetlands in crowded cities': '拥挤城市中的湿地正在悄然回归',
+  'what old maps reveal about the way cities remember': '旧地图揭示城市如何记忆',
+  'the case for slower, more deliberate collaboration': '慢而审慎的协作为何值得',
+  'why our attention needs a recovery rhythm': '注意力需要恢复节律',
+  'how public spaces make room for unexpected encounters': '公共空间如何为意外相遇留出余地',
+  'how citizen scientists help map the night sky': '公民科学家如何协助绘制夜空地图',
+  'what wastewater can reveal about a city': '污水可以揭示一座城市什么',
+  'why languages keep borrowing words': '语言为什么不断借用词语',
+  'the quiet influence of default choices': '默认选项的悄然影响',
+  'designing buildings for a changing climate': '为变化中的气候设计建筑',
+  'can rooftop farms feed a growing city?': '屋顶农场能养活不断扩张的城市吗',
+  'why music can make places easier to remember': '音乐为何让地方更容易被记住',
+  'the routes that moved more than goods': '运送的不只是货物的路线',
+  'when an algorithm decides what we notice': '当算法决定我们注意什么',
+  'the chemistry behind a warming sea': '变暖海洋背后的化学变化',
+  'the case for retrieval practice': '为什么值得练习主动回忆',
+  'how migration reshapes regional food': '迁移如何重塑地方饮食'
+});
+
+const ENGLISH_READING_PARAGRAPH_TRANSLATIONS = Object.freeze({
+  'why small ai tools are changing the way people learn': [
+    '从语言练习到研究笔记，专注于单一任务的 AI 工具正成为日常学习伙伴。',
+    '最有用的系统并不会取代努力；它们只是让获得反馈变得更容易。'
+  ],
+  'the quiet return of wetlands in crowded cities': [
+    '城市湿地正作为一种“活的基础设施”得到修复。',
+    '它们可以降低洪水风险、为社区降温并创造栖息地，而无需继续增加混凝土建设。'
+  ],
+  'what old maps reveal about the way cities remember': [
+    '地图常被当作中性的记录，然而每一条边界、每一个标签和每一处留白，都反映了对“什么值得被看见”的选择。'
+  ],
+  'the case for slower, more deliberate collaboration': [
+    '给反思留出空间的团队，往往更少做出仓促、反应式的决定。',
+    '有意识的协作并不是拒绝快速行动；而是把速度用在真正重要的地方。'
+  ],
+  'why our attention needs a recovery rhythm': [
+    '注意力并不是无限的资源。',
+    '短暂的恢复时段，比长时间强迫自己集中，更可靠地提升下一段专注时段的质量。'
+  ],
+  'how public spaces make room for unexpected encounters': [
+    '好的公共空间设计不只是引导人流。',
+    '它还保留足够的开放性，让人们停下来观察彼此，并自行创造一个地方的使用方式。'
+  ],
+  'how citizen scientists help map the night sky': [
+    '过去，大型调查几乎只属于专业天文台。',
+    '如今，志愿者可以在精心设计的线上项目中分类图像，并报告异常天体。',
+    '他们的贡献之所以有价值，并不是因为每次观测都完美，而是因为成千上万条微小观测能够揭示单个研究团队可能错过的模式。'
+  ],
+  'what wastewater can reveal about a city': [
+    '污水监测让公共卫生团队无需要求每位居民填写问卷，也能获得一个群体层面的信号。',
+    '研究人员会检测化学和生物痕迹，比较它们随时间的变化，并与临床数据结合。',
+    '这种方法无法解释每个个体病例，但能在健康模式发生变化时提供早期预警。'
+  ],
+  'why languages keep borrowing words': [
+    '借词通常被视为语言变化的迹象，而不是语言失败。',
+    '贸易、迁移、教育和流行文化都会创造机会，使一种语言从另一种语言中吸收有用表达。',
+    '随着时间推移，使用者会重新塑造借词，使其适应本地的语音、语法和社会含义。'
+  ],
+  'the quiet influence of default choices': [
+    '即使人们仍可自由选择其他选项，默认选项也能引导行为。',
+    '在工作场所、学校和数字服务中，选项的位置可以减少行动成本，让某条路径看起来更为正常。',
+    '因此，好的政策不仅要问替代方案是否存在，还要问它们是否可见且切实可行。'
+  ],
+  'designing buildings for a changing climate': [
+    '气候意识型建筑不只是给传统建筑添加几个高效设备。',
+    '设计师会考虑朝向、遮阳、通风、材料以及居住者的日常活动。',
+    '成功的建筑既能降低能源需求，也能让室内空间更健康、更舒适。'
+  ],
+  'can rooftop farms feed a growing city?': [
+    '屋顶农场很少能取代乡村农业，但可以缩短生产与消费之间的距离。',
+    '它们更广泛的益处可能包括保温、雨洪管理和社区教育机会。',
+    '主要限制在于结构安全、供水以及维护一支熟练劳动力的成本。'
+  ],
+  'why music can make places easier to remember': [
+    '音乐把节奏、情绪和注意力连接起来，这或许解释了为什么熟悉的歌曲能唤回对某个地方的细致记忆。',
+    '研究人员并不认为音乐是万能的记忆开关；效果取决于个人经历和情境。',
+    '不过，经过精心选择的声音可以支持学习和定位。'
+  ],
+  'the routes that moved more than goods': [
+    '历史贸易路线除了香料、金属或纺织品，也运输技术、故事和社会习俗。',
+    '商人依赖跨越语言和法律传统的桥梁。',
+    '因此，一条路线的影响可能在其商业重要性下降很久之后仍然延续。'
+  ],
+  'when an algorithm decides what we notice': [
+    '推荐系统旨在对信息进行排序，但这种排序会逐渐塑造用户认为什么是重要的。',
+    '个性化可以节省时间，却也可能缩小人们接触到的观点范围。',
+    '透明的解释和有意识地探索陌生来源的机会，可以让这种取舍更容易管理。'
+  ],
+  'the chemistry behind a warming sea': [
+    '海洋吸收二氧化碳后，其化学性质会逐渐改变，而不是突然变化。',
+    '酸度的变化可能使一些生物更难形成外壳，而另一些物种则可能适应或迁移。',
+    '科学家估算未来生态系统变化时，理解这些不同反应至关重要。'
+  ],
+  'the case for retrieval practice': [
+    '尝试回忆一个观点通常比重新阅读更费力，但这种努力可以增强日后提取信息的能力。',
+    '有效的提取练习通常很短，并分散在几次学习中。',
+    '当学习者获得反馈并在不同语境中使用概念时，效果最好。'
+  ],
+  'how migration reshapes regional food': [
+    '人们迁移时，会带来食谱、食材以及组织用餐的方式。',
+    '当地饮食文化不会简单消失或保持不变；它们常通过适应与交流发展。',
+    '市场、餐馆和家庭厨房都会影响哪些新组合最终变得熟悉。'
+  ]
+});
+
+function englishReadingRemoteTitleHistory(value) {
+  const uniqueTitles = new Set();
+  (Array.isArray(value) ? value : []).forEach(title => {
+    const normalized = englishReadingTitleKey(title);
+    if (normalized) uniqueTitles.add(normalized);
+  });
+  return Array.from(uniqueTitles).slice(-ENGLISH_READING_REMOTE_TITLE_LIMIT);
+}
+
+function englishReadingCandidateUrl(candidate, title = '') {
+  const key = String(candidate?.key || '').trim().replace(/^\/+/, '');
+  if (key) return safeReadingUrl('https://en.wikipedia.org/wiki/' + encodeURIComponent(key.replace(/ /g, '_')), title);
+  return safeReadingUrl(candidate?.content_urls?.desktop?.page || candidate?.url, title);
+}
+
+async function englishReadingFetch(url, options = {}) {
+  const controller = new AbortController();
+  const externalSignal = options.signal;
+  const abortFromExternal = () => controller.abort();
+  if (externalSignal) {
+    if (externalSignal.aborted) controller.abort();
+    else externalSignal.addEventListener('abort', abortFromExternal, { once: true });
+  }
+  const timeout = setTimeout(() => controller.abort(), ENGLISH_READING_FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+    externalSignal?.removeEventListener?.('abort', abortFromExternal);
+  }
+}
+
+async function englishReadingSummaryForCandidate(candidate) {
+  const title = String(candidate?.title || '').trim();
+  const key = String(candidate?.key || title).trim().replace(/^\/+/, '');
+  if (!key) return null;
+  const summaryUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(key.replace(/ /g, '_'));
+  const response = await englishReadingFetch(summaryUrl, { headers: { Accept: 'application/json' } });
+  if (!response.ok) throw new Error('Wikipedia 摘要响应异常');
+  const payload = await response.json();
+  const extract = String(payload?.extract || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  const resolvedTitle = String(payload?.title || title).replace(/\s+/g, ' ').trim();
+  if (!resolvedTitle || extract.length < 180) return null;
+  return { ...payload, title: resolvedTitle, extract, url: englishReadingCandidateUrl({ ...candidate, ...payload }, resolvedTitle) };
+}
+
+function englishReadingTopicForDay(date = todayKey()) {
+  return ENGLISH_READING_TOPICS[englishDaySeed(date) % ENGLISH_READING_TOPICS.length];
+}
+
+function normalizeEnglishReadingArticle(article, index = 0) {
+  if (!article || typeof article !== 'object') return null;
+  const title = String(article.title || '').replace(/\s+/g, ' ').trim().slice(0, 180);
+  const excerpt = decodeEnglishHtml(article.excerpt || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 900);
+  if (!title || excerpt.length < 40) return null;
+  const tags = Array.isArray(article.tags) ? article.tags.map(tag => String(tag || '').trim().slice(0, 32)).filter(Boolean).slice(0, 6) : [];
+  const minutes = Math.max(5, Math.min(30, Number(article.minutes) || Math.ceil(excerpt.split(/\s+/).length / 145) || 10));
+  return {
+    ...article,
+    id: String(article.id || 'english-reading-' + index).slice(0, 96),
+    type: String(article.type || '跨学科选读').slice(0, 32),
+    genre: String(article.genre || '综合文章').slice(0, 32),
+    source: String(article.source || '精选来源').replace(/\s+/g, ' ').trim().slice(0, 80),
+    level: String(article.level || 'Band 7.0').slice(0, 20),
+    minutes,
+    title,
+    excerpt,
+    tags,
+    url: safeReadingUrl(article.url, title),
+    publishedAt: /^\d{4}-\d{2}-\d{2}$/.test(String(article.publishedAt || '')) ? String(article.publishedAt) : todayKey(),
+    saved: Boolean(article.saved),
+    read: Boolean(article.read),
+    // `completed` is an all-time counter. Keep a per-card marker so toggling
+    // an article off and on again (or revisiting it on a later day) cannot
+    // inflate that history. Legacy cards that were already marked read are
+    // treated as counted during migration.
+    readEver: Boolean(article.readEver || article.read || article.lastReadDate),
+    lastReadDate: englishDateKey(article.lastReadDate) || ''
+  };
+}
+
+// The reading detail intentionally works only with the locally stored excerpt.
+// It never invents a fuller article: numbered blocks preserve the source text
+// verbatim, and the two study aids only point to words/signals that are already
+// visible in that text.
+function englishReadingPassageParagraphs(value) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!text) return [];
+  const sentences = (text.match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)/g) || [])
+    .map(sentence => sentence.trim())
+    .filter(Boolean);
+  if (!sentences.length) return [text];
+  // Keep the detail compact without dropping the tail of a fetched summary.
+  if (sentences.length <= 5) return sentences;
+  return [...sentences.slice(0, 4), sentences.slice(4).join(' ')];
+}
+
+const ENGLISH_READING_CONNECTOR_RULES = [
+  { pattern: /\bnot only\b[\s\S]{0,90}?\bbut also\b/i, token: 'not only … but also', relation: '递进' },
+  { pattern: /\bas a result\b/i, token: 'as a result', relation: '结果' },
+  { pattern: /\brather than\b/i, token: 'rather than', relation: '对照' },
+  { pattern: /\bin contrast\b/i, token: 'in contrast', relation: '对比' },
+  { pattern: /\bhowever\b/i, token: 'however', relation: '转折' },
+  { pattern: /\btherefore\b/i, token: 'therefore', relation: '结果' },
+  { pattern: /\bnevertheless\b/i, token: 'nevertheless', relation: '让步' },
+  { pattern: /\balthough\b/i, token: 'although', relation: '让步' },
+  { pattern: /\bbecause\b/i, token: 'because', relation: '原因' },
+  { pattern: /\bwhile\b/i, token: 'while', relation: '对照 / 同时' },
+  { pattern: /\byet\b/i, token: 'yet', relation: '转折' },
+  { pattern: /\bbut\b/i, token: 'but', relation: '转折' },
+  { pattern: /\bover time\b/i, token: 'over time', relation: '时间推进' },
+  { pattern: /\binstead\b/i, token: 'instead', relation: '替代' }
+];
+
+function englishReadingConnectorHints(value) {
+  const text = String(value || '');
+  const matches = [];
+  const seen = new Set();
+  ENGLISH_READING_CONNECTOR_RULES.forEach(rule => {
+    const match = rule.pattern.exec(text);
+    if (!match || seen.has(rule.token)) return;
+    seen.add(rule.token);
+    matches.push({ ...rule, index: Number(match.index) || 0 });
+  });
+  return matches.sort((a, b) => a.index - b.index).slice(0, 4);
+}
+
+const ENGLISH_READING_VOCAB_STOPWORDS = new Set([
+  'about', 'after', 'again', 'also', 'among', 'another', 'around', 'because',
+  'before', 'being', 'between', 'could', 'each', 'every', 'first', 'from',
+  'have', 'into', 'more', 'most', 'much', 'only', 'other', 'over', 'than',
+  'that', 'their', 'there', 'these', 'they', 'this', 'those', 'through',
+  'today', 'under', 'using', 'what', 'when', 'where', 'which', 'while', 'with',
+  'would', 'your', 'city', 'cities', 'learn', 'make', 'people', 'small',
+  'system', 'systems', 'tool', 'tools', 'way', 'ways'
+]);
+
+function englishReadingVocabularyTerms(article, limit = 4) {
+  const title = String(article?.title || '');
+  const source = (title + ' ' + String(article?.excerpt || '')).replace(/\s+/g, ' ').trim();
+  const titleTerms = new Set((title.match(/[A-Za-z][A-Za-z'-]*/g) || []).map(term => term.toLowerCase()));
+  const bankTerms = new Set(IELTS_DAILY_VOCABULARY_BANK.map(word => englishWordTermKey(word.term)));
+  const candidates = new Map();
+  (source.match(/[A-Za-z][A-Za-z'-]*/g) || []).forEach(term => {
+    const normalized = term.toLowerCase();
+    if (normalized.length < 5 || ENGLISH_READING_VOCAB_STOPWORDS.has(normalized)) return;
+    const capitalized = /^[A-Z][a-z]/.test(term);
+    const existing = candidates.get(normalized) || { term, count: 0, title: titleTerms.has(normalized), inBank: bankTerms.has(normalized), hasLowercase: false, hasCapitalized: false };
+    existing.count += 1;
+    existing.hasLowercase = existing.hasLowercase || !capitalized;
+    existing.hasCapitalized = existing.hasCapitalized || capitalized;
+    candidates.set(normalized, existing);
+  });
+  return Array.from(candidates.values())
+    // Proper names (locations, people, organisations) are useful for factual
+    // reading comprehension but are poor standalone study targets. Keep a
+    // token only when it also appears in normal lowercase usage or in the
+    // curated IELTS bank.
+    .filter(item => !(item.hasCapitalized && !item.hasLowercase && !item.inBank))
+    .sort((a, b) => {
+      const score = item => (item.inBank ? 10 : 0) + (item.title && item.term.length >= 8 ? 3 : 0) + Math.min(item.count, 3) * 2 + Math.max(0, item.term.length - 5);
+      return score(b) - score(a) || a.term.localeCompare(b.term);
+    })
+    .slice(0, limit)
+    .map(item => item.term);
+}
+
+const ENGLISH_READING_GLOSS = Object.freeze({
+  'narrowly focused': '聚焦单一任务的', narrowly: '狭窄地；有限地', focused: '专注的',
+  'feedback': '反馈', 'wetlands': '湿地', 'infrastructure': '基础设施',
+  'flood': '洪水；淹没', 'habitats': '栖息地', 'neutral': '中性的',
+  'border': '边界', 'deliberate': '审慎的；有意识的', 'collaboration': '协作',
+  'attention': '注意力', 'recovery': '恢复', 'interval': '时段；间隔',
+  'ambiguity': '模糊性；开放空间', 'encounters': '相遇；邂逅',
+  'observatories': '天文台', 'classify': '分类', 'wastewater': '污水',
+  'population-level': '群体层面的', 'linguistic': '语言学的', 'migration': '迁移',
+  'default': '默认选项', 'alternatives': '替代方案', 'orientation': '定位；方向感',
+  'insulation': '隔热；保温', 'constraints': '限制条件', 'retrieval': '提取；主动回忆',
+  'context': '语境；背景', 'adaptation': '适应；调整', 'ecosystem': '生态系统',
+  'recommendation': '推荐', 'personalisation': '个性化', 'acidity': '酸度',
+  'organisms': '生物；有机体', 'sustainable': '可持续的', 'evidence': '证据'
+});
+
+function englishReadingTranslationInput(article, index) {
+  const collections = [article?.paragraphTranslations, article?.translations, article?.zhTranslations];
+  for (const collection of collections) {
+    const value = Array.isArray(collection) ? collection[index] : collection && typeof collection === 'object' ? collection[index] : '';
+    if (String(value || '').trim()) return String(value).replace(/\s+/g, ' ').trim();
+  }
+  return '';
+}
+
+function englishReadingTranslationForParagraph(article, paragraph, index, total) {
+  const supplied = englishReadingTranslationInput(article, index);
+  if (supplied) return { label: '参考译文', text: supplied, kind: 'translation', note: '以本段英文为准，先独立概括再对照。' };
+  const titleKey = englishReadingTitleKey(article?.title);
+  const known = ENGLISH_READING_PARAGRAPH_TRANSLATIONS[titleKey];
+  if (known && known[index]) {
+    const connector = englishReadingConnectorHints(paragraph)[0];
+    const note = connector
+      ? '信号词：' + connector.token + '（' + connector.relation + '）'
+      : index === 0 ? '阅读动作：先找主语、核心动作与结果。' : index === total - 1 ? '阅读动作：回看结论、限制或延伸。' : '阅读动作：找出本段补充信息与上一段的关系。';
+    return { label: '参考译文', text: known[index], kind: 'translation', note };
+  }
+  // Remote summaries do not carry an authorised Chinese translation.  Give a
+  // useful, clearly-labelled comprehension cue instead of manufacturing a
+  // sentence-by-sentence translation from incomplete source text.
+  const topic = String(article?.type || article?.tags?.[0] || '文章主题').replace(/\s+/g, ' ').trim();
+  const terms = englishReadingVocabularyTerms({ title: '', excerpt: paragraph }, 2);
+  const focus = terms.length ? '“' + terms.join('”与“') + '”' : '核心信息';
+  const relation = index === 0 ? '提出核心观察' : index === total - 1 ? '收束结论或延伸' : '补充证据或影响';
+  const connector = englishReadingConnectorHints(paragraph)[0];
+  const relationText = connector ? '通过“' + connector.token + '”表达' + connector.relation : '呈现前后信息的关系';
+  return {
+    label: '理解提示',
+    text: '本段围绕“' + topic + '”' + relation + '；抓住' + focus + '，' + relationText + '。',
+    kind: 'comprehension',
+    note: '中文栏是段意提示；完整语境请打开原文。'
+  };
+}
+
+function englishReadingTitleTranslation(article) {
+  const supplied = String(article?.titleTranslation || article?.titleZh || '').replace(/\s+/g, ' ').trim();
+  if (supplied) return supplied;
+  return ENGLISH_READING_TITLE_TRANSLATIONS[englishReadingTitleKey(article?.title)] || '';
+}
+
+function englishReadingVocabularyReview(article, limit = 4) {
+  const terms = englishReadingVocabularyTerms(article, limit);
+  return terms.map(term => {
+    const key = englishWordTermKey(term);
+    const bankWord = IELTS_DAILY_VOCABULARY_BANK.find(word => englishWordTermKey(word.term) === key) || IELTS_WORD_BANK.find(word => englishWordTermKey(word.term) === key);
+    const rawMeaning = String(bankWord?.meaning || '').replace(/^英文释义：/, '').trim();
+    const fallback = ENGLISH_READING_GLOSS[key] || ENGLISH_READING_GLOSS[key.replace(/s$/, '')] || '';
+    const meaning = fallback || (rawMeaning && !rawMeaning.startsWith('雅思高频表达') ? rawMeaning.split(/[。.;]/)[0].slice(0, 42) : '') || '回到原文核对语境';
+    return { term, meaning, pos: String(bankWord?.pos || '').trim() };
+  });
+}
+
+function englishReadingDetailStudyHTML(article) {
+  const paragraphs = englishReadingPassageParagraphs(article?.excerpt);
+  const connectors = englishReadingConnectorHints(article?.excerpt);
+  const vocabulary = englishReadingVocabularyReview(article);
+  const structure = paragraphs.map((_, index) => {
+    const number = String(index + 1).padStart(2, '0');
+    const isFirst = index === 0;
+    const isLast = index === paragraphs.length - 1;
+    const prompt = isFirst
+      ? '圈出主题与核心动作'
+      : isLast
+        ? '回看结论、限制或延伸'
+        : '找出补充信息之间的关系';
+    return '<div class="english-reading-structure-step"><span>' + number + '</span><div><b>第 ' + number + ' 段</b><small>' + escapeHTML(prompt) + '</small></div></div>';
+  }).join('');
+  const passage = paragraphs.map((paragraph, index) => {
+    const translation = englishReadingTranslationForParagraph(article, paragraph, index, paragraphs.length);
+    return '<article class="english-reading-paragraph english-reading-bilingual-row" aria-label="第 ' + String(index + 1).padStart(2, '0') + ' 段双语精读"><div class="english-reading-paragraph-index"><span class="english-reading-paragraph-number">' + String(index + 1).padStart(2, '0') + '</span><small>P' + String(index + 1).padStart(2, '0') + '</small></div><div class="english-reading-english"><p>' + escapeHTML(paragraph) + '</p></div><aside class="english-reading-translation ' + (translation.kind === 'comprehension' ? 'is-comprehension' : '') + '"><div class="english-reading-translation-label"><span>' + escapeHTML(translation.label) + '</span><small>中文</small></div><p>' + escapeHTML(translation.text) + '</p><small class="english-reading-translation-note">' + escapeHTML(translation.note) + '</small></aside></article>';
+  }).join('');
+  const connectorContent = connectors.length
+    ? connectors.map(item => '<span class="english-reading-connector"><b>' + escapeHTML(item.token) + '</b><small>' + escapeHTML(item.relation) + '</small></span>').join('')
+    : '<span class="english-reading-empty-tip">这段没有明显的连接词；留意代词、并列和句间指代。</span>';
+  const vocabularyContent = vocabulary.length
+    ? vocabulary.map(item => '<span class="english-reading-vocabulary-term" data-reading-vocab-term="' + escapeAttribute(item.term) + '"><b>' + escapeHTML(item.term) + '</b><small>' + escapeHTML(item.pos) + '</small><em>' + escapeHTML(item.meaning) + '</em></span>').join('')
+    : '<span class="english-reading-empty-tip">先从标题里挑一个名词和一个动词，回原文定位它们的搭配。</span>';
+  return '<div class="english-reading-study">' +
+    '<section class="english-reading-passage english-reading-bilingual" aria-label="文章摘要双语精读"><div class="english-reading-study-heading"><div><span>Editorial spread · EN / 中文</span><h3>按段精读</h3></div><small>中文栏为参考译文或段意提示<br>仅按已加载摘要分段</small></div><div class="english-reading-bilingual-head" aria-hidden="true"><span>原文 English</span><span>中文理解 / Translation rail</span></div><div class="english-reading-paragraphs">' + passage + '</div></section>' +
+    '<div class="english-reading-analysis-grid"><section class="english-reading-analysis"><div class="english-reading-analysis-heading"><b>结构地图</b><small>按段定位，再写一句主旨</small></div><div class="english-reading-structure">' + structure + '</div></section><section class="english-reading-analysis"><div class="english-reading-analysis-heading"><b>连接词提示</b><small>只标出片段中出现的信号词</small></div><div class="english-reading-connector-list">' + connectorContent + '</div></section></div>' +
+    '<section class="english-reading-vocabulary english-reading-vocabulary-box"><div class="english-reading-analysis-heading"><div><span>Vocabulary review</span><b>今日词汇复盘</b></div><small>均取自标题或摘要</small></div><div class="english-reading-vocabulary-list">' + vocabularyContent + '</div><p>先回原文定位，再记下词性、搭配和你自己的例句；需要完整释义时进入词汇记忆。</p></section>' +
+  '</div>';
+}
+
+// Wikimedia search snippets frequently contain entities such as &quot; and
+// &#039;. Decode them before quality checks and before presenting the passage;
+// the final render still escapes the value, so this never introduces markup.
+function decodeEnglishHtml(value) {
+  const raw = String(value || '');
+  if (!raw || typeof document === 'undefined') return raw;
+  const node = document.createElement('textarea');
+  node.innerHTML = raw;
+  return node.value;
+}
+
+const ENGLISH_READING_BLOCKLIST = /(?:\btv series\b|\btelevision drama\b|\bhorse racing\b|\bjockey\b|\bvideo game\b|\bfilm series\b|\bdiscography\b|\balbum\b|\bepisode\b|\bfictional character\b|\bprofessional wrestler\b|\bfootballer\b|\bcricketer\b|\bsoftcore\b|\bpornograph|\bpolitician\b|\bmayor\b|\bprime minister\b|\bbiographical\b)/i;
+
+function isEnglishReadingCandidate(title, excerpt) {
+  const normalizedTitle = String(title || '').trim();
+  const normalizedExcerpt = String(excerpt || '').trim();
+  if (normalizedTitle.length < 5 || normalizedExcerpt.length < 150) return false;
+  if (ENGLISH_READING_BLOCKLIST.test(normalizedTitle) || ENGLISH_READING_BLOCKLIST.test(normalizedExcerpt)) return false;
+  // Wikimedia occasionally returns a reference-style paragraph rather than a
+  // readable article (for example a news citation list). Those fragments are
+  // poor IELTS material even when they happen to be long enough.
+  if (/\b(?:sixth tone|report says|external links|see also|bibliography|isbn\b|doi:)\b/i.test(normalizedExcerpt)) return false;
+  // Reject list/reference snippets that merely concatenate unrelated titles.
+  const quotedTitles = (normalizedExcerpt.match(/["“][^"”]{3,}["”]/g) || []).length;
+  if (quotedTitles >= 2 || /\b(?:references|disambiguation|may refer to)\b/i.test(normalizedExcerpt)) return false;
+  return true;
+}
+
+function englishReadingTopicForText(text, fallbackIndex = 0) {
+  const value = String(text || '').toLowerCase();
+  const signals = [
+    ['environment', 'energy', 'climate', 'carbon', 'ecosystem', 'ocean', 'marine', 'biodiversity', 'wetland'],
+    ['city', 'urban', 'transport', 'commut', 'housing', 'architecture', 'building', 'design'],
+    ['econom', 'business', 'market', 'policy', 'decision', 'workplace', 'labour', 'trade'],
+    ['health', 'medical', 'disease', 'epidem', 'public health', 'wastewater'],
+    ['language', 'linguistic', 'culture', 'heritage', 'migration', 'historical', 'history'],
+    ['space', 'astronom', 'science', 'research', 'experiment', 'technology', 'algorithm'],
+    ['psycholog', 'music', 'memory', 'attention', 'learning', 'education', 'school']
+  ];
+  let bestIndex = -1;
+  let bestScore = 0;
+  signals.forEach((terms, index) => {
+    const score = terms.reduce((total, term) => total + (value.includes(term) ? 1 : 0), 0);
+    if (score > bestScore) { bestIndex = index; bestScore = score; }
+  });
+  const fallback = ENGLISH_READING_TOPICS[fallbackIndex % ENGLISH_READING_TOPICS.length];
+  if (bestIndex < 0) return fallback;
+  const topicMap = [
+    { type: '环境与生态', genre: '科普说明', tag: 'climate' },
+    { type: '城市与交通', genre: '政策评论', tag: 'urban-life' },
+    { type: '商业与社会', genre: '学术导读', tag: 'decision-making' },
+    { type: '公共健康', genre: '科学说明', tag: 'health' },
+    { type: '语言与文化', genre: '历史观察', tag: 'culture' },
+    { type: '科学与探索', genre: '研究摘要', tag: 'science' },
+    { type: '教育与心理', genre: '跨学科文章', tag: 'learning' }
+  ];
+  return topicMap[bestIndex] || fallback;
+}
+
+function normalizeEnglishReadingLibrary(root = DATA) {
+  const reading = root?.learning?.english?.reading;
+  if (!reading) return false;
+  const before = Array.isArray(reading.articles) ? JSON.stringify(reading.articles) : '';
+  const beforeRemoteTitles = JSON.stringify(reading.remoteTitles);
+  const beforeActiveArticleId = String(reading.activeArticleId || '');
+  const beforeLibraryVersion = String(reading.libraryVersion || '');
+  const normalized = [];
+  const ids = new Set();
+  const titles = new Set();
+  (Array.isArray(reading.articles) ? reading.articles : [])
+    .map(normalizeEnglishReadingArticle)
+    .filter(Boolean)
+    // Keep the shipped seed cards (even if their short teaser is below the
+    // remote-quality threshold); apply strict length/content filtering only to
+    // previously fetched external cards.
+    .filter(article => {
+      const isSeed = String(article.id || '').startsWith('article-');
+      const isCurated = String(article.source || '').includes('curated primer');
+      if (isSeed || isCurated) return true;
+      // Apply the same stricter checks used for fresh remote results when
+      // migrating an older cache; otherwise a previously stored list snippet
+      // would survive forever simply because it already had an ID.
+      return isEnglishReadingRemoteCandidate(article.title, article.excerpt, new Set());
+    })
+    .forEach(article => {
+      const titleKey = englishReadingTitleKey(article.title);
+      const duplicate = normalized.find(existing => existing.id === article.id || englishReadingTitleKey(existing.title) === titleKey);
+      if (duplicate) {
+        // Preserve learner state if an older refresh generated a second ID for
+        // the same Wikipedia page.
+        duplicate.saved = Boolean(duplicate.saved || article.saved);
+        duplicate.read = Boolean(duplicate.read || article.read);
+        duplicate.readEver = Boolean(duplicate.readEver || article.readEver);
+        if (!duplicate.lastReadDate && article.lastReadDate) duplicate.lastReadDate = article.lastReadDate;
+        return;
+      }
+      ids.add(article.id);
+      titles.add(titleKey);
+      normalized.push(article);
+    });
+  IELTS_READING_OFFLINE_LIBRARY
+    .filter(article => !ids.has(article.id) && !titles.has(englishReadingTitleKey(article.title)))
+    .map(normalizeEnglishReadingArticle)
+    .filter(Boolean)
+    .forEach(article => {
+      ids.add(article.id);
+      titles.add(englishReadingTitleKey(article.title));
+      normalized.push(article);
+    });
+  reading.articles = normalized.slice(0, 24);
+  reading.remoteTitles = englishReadingRemoteTitleHistory(reading.remoteTitles);
+  if (!reading.articles.some(article => article.id === reading.activeArticleId)) {
+    reading.activeArticleId = reading.articles[0]?.id || '';
+  }
+  if (!reading.libraryVersion) reading.libraryVersion = IELTS_READING_LIBRARY_VERSION;
+  return before !== JSON.stringify(reading.articles)
+    || beforeRemoteTitles !== JSON.stringify(reading.remoteTitles)
+    || beforeActiveArticleId !== String(reading.activeArticleId || '')
+    || beforeLibraryVersion !== String(reading.libraryVersion || '');
+}
+
+async function fetchEnglishResource(url, options = {}, timeoutMs = 9000) {
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const upstreamSignal = options.signal;
+  const forwardAbort = () => controller?.abort();
+  if (upstreamSignal) {
+    if (upstreamSignal.aborted) controller?.abort();
+    else upstreamSignal.addEventListener?.('abort', forwardAbort, { once: true });
+  }
+  const timer = setTimeout(() => controller?.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      ...options,
+      ...(controller ? { signal: controller.signal } : {})
+    });
+  } finally {
+    clearTimeout(timer);
+    upstreamSignal?.removeEventListener?.('abort', forwardAbort);
+  }
+}
+
+function isEnglishReadingRemoteCandidate(title, excerpt, seenTitles) {
+  const normalizedTitle = englishReadingTitleKey(title);
+  const normalizedExcerpt = String(excerpt || '').trim();
+  if (!normalizedTitle || !isEnglishReadingCandidate(title, normalizedExcerpt)) return false;
+  if (seenTitles.has(normalizedTitle)) return false;
+  // Search can return navigation pages, lists and disambiguation hubs. They
+  // are poor IELTS passages even when their snippets are long enough.
+  if (/^(main page|list of\b|timeline of\b|index of\b|category:|portal:|template:|help:|wikipedia:|file:)/i.test(String(title).trim())) return false;
+  if (/\bdisambiguation\b/i.test(String(title))) return false;
+  if (/\b(?:disambiguation|may refer to)\b/i.test(normalizedExcerpt)) return false;
+  // Organisation/movement lookups are usually terse encyclopedia entries,
+  // rather than passages with an argument or evidence trail.
+  if (/\b(?:front|party|movement|organization|organisation)\b/i.test(String(title)) && /\b(?:movement|organization|organisation|political)\b/i.test(normalizedExcerpt)) return false;
+  return true;
+}
+
+async function refreshEnglishReadingMaterials() {
+  if (englishReadingRefreshInFlight) {
+    showToast('阅读材料正在更新，请稍候', 'warning');
+    return englishReadingRefreshInFlight;
+  }
+  // Queue the implementation in a microtask so the lock is installed before
+  // any await point (including a same-tick double click) can start another run.
+  const refreshPromise = Promise.resolve().then(() => refreshEnglishReadingMaterialsImpl());
+  englishReadingRefreshInFlight = refreshPromise;
+  try {
+    return await refreshPromise;
+  } finally {
+    if (englishReadingRefreshInFlight === refreshPromise) englishReadingRefreshInFlight = null;
+  }
+}
+
+function englishReadingFetchedDate(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  // `lastFetchedAt` is normally an ISO timestamp.  Keep malformed/legacy
+  // values as stale rather than treating them as a successful daily refresh.
+  const parsed = new Date(raw);
+  if (!Number.isFinite(parsed.getTime())) return '';
+  return todayKey(parsed);
+}
+
+function maybeAutoRefreshEnglishReading() {
+  if (!DATA || !['english', 'english-reading'].includes(currentPage)) return;
+  const today = todayKey();
+  // This marker is intentionally not part of DATA: it is only a guard against
+  // duplicate effects during the current browser session/render lifecycle.
+  if (englishReadingAutoRefreshAttemptedDate === today) return;
+  const reading = DATA.learning?.english?.reading;
+  if (!reading) return;
+  if (englishReadingFetchedDate(reading.lastFetchedAt) === today) {
+    englishReadingAutoRefreshAttemptedDate = today;
+    return;
+  }
+  englishReadingAutoRefreshAttemptedDate = today;
+  // The refresh wrapper itself queues its implementation in a microtask. That
+  // keeps the loading rerender out of the current render/effect call stack,
+  // while still allowing the request to continue if the learner navigates to
+  // another page immediately after entering English.
+  void refreshEnglishReadingMaterials();
+}
+
+async function refreshEnglishReadingMaterialsImpl() {
+  ensureEnglishStudyState();
+  const reading = DATA.learning.english.reading;
+  englishReadingState = { status: 'loading', message: '' };
+  rerender();
+  const fallbacks = Array.isArray(reading.articles) ? reading.articles : [];
+  const topicIndex = englishDaySeed(todayKey()) % ENGLISH_READING_TOPICS.length;
+  const selectedTopic = ENGLISH_READING_TOPICS[topicIndex];
+  const randomTopic = { type: '跨学科选读', genre: '百科摘要', tag: 'interdisciplinary' };
+  const sourcePlans = [
+    { id: 'wikimedia-search', label: 'Wikimedia / Wikipedia', topic: selectedTopic, url: 'https://api.wikimedia.org/core/v1/wikipedia/en/search/page?q=' + encodeURIComponent(selectedTopic.query) + '&limit=10' },
+    { id: 'wikipedia-random', label: 'Wikipedia', topic: randomTopic, url: 'https://en.wikipedia.org/api/rest_v1/page/random/summary' }
+  ];
+  let lastError = new Error('网络暂不可用');
+  // Bound the complete refresh (including up to ten summary lookups) so a
+  // slow Wikimedia response cannot leave the reading page spinning forever.
+  const refreshDeadline = Date.now() + ENGLISH_READING_REFRESH_TIMEOUT_MS;
+  const refreshTimeoutError = () => {
+    const error = new Error('获取阅读材料超时，请稍后重试');
+    error.name = 'AbortError';
+    return error;
+  };
+  const seenTitles = new Set([
+    ...fallbacks.map(existing => englishReadingTitleKey(existing?.title)),
+    ...englishReadingRemoteTitleHistory(reading.remoteTitles)
+  ].filter(Boolean));
+  for (const plan of sourcePlans) {
+    if (Date.now() >= refreshDeadline) {
+      lastError = refreshTimeoutError();
+      break;
+    }
+    try {
+      const response = await fetchEnglishResource(plan.url, { headers: { Accept: 'application/json', 'User-Agent': 'IELTS-Workspace/1.0' } }, Math.min(9000, Math.max(1, refreshDeadline - Date.now())));
+      if (!response.ok) throw new Error(plan.label + ' 响应异常');
+      const payload = await response.json();
+      const candidates = plan.id === 'wikimedia-search' ? (Array.isArray(payload?.pages) ? payload.pages : []) : [payload];
+      let candidate = null;
+      let detail = null;
+      for (const item of candidates.slice(0, 10)) {
+        if (Date.now() >= refreshDeadline) throw refreshTimeoutError();
+        const title = String(item?.title || '').trim();
+        if (!title || seenTitles.has(englishReadingTitleKey(title))) continue;
+        const key = String(item?.key || title.replace(/\s+/g, '_')).replace(/^\/+/, '');
+        try {
+          const detailResponse = await fetchEnglishResource('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(key), { headers: { Accept: 'application/json' } }, Math.min(7000, Math.max(1, refreshDeadline - Date.now())));
+          if (detailResponse.ok) detail = await detailResponse.json();
+        } catch (_) {
+          detail = null;
+        }
+        // Wikimedia search excerpts are often only one sentence. Require the
+        // full Wikipedia summary for search results so a refresh never stores
+        // a thin navigation snippet as an IELTS reading passage.
+        const extract = decodeEnglishHtml(plan.id === 'wikimedia-search'
+          ? detail?.extract || ''
+          : detail?.extract || item?.excerpt || item?.extract || '')
+          .replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+        if (isEnglishReadingRemoteCandidate(title, extract, seenTitles)) { candidate = item; candidate._extract = extract; candidate._detail = detail; break; }
+        detail = null;
+      }
+      if (!candidate && plan.id === 'wikipedia-random') {
+        const title = String(payload?.title || '').trim();
+        const extract = decodeEnglishHtml(payload?.extract || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+        if (isEnglishReadingRemoteCandidate(title, extract, seenTitles)) {
+          candidate = payload;
+          candidate._extract = extract;
+          candidate._detail = payload;
+        }
+      }
+      if (!candidate) throw new Error(plan.label + ' 没有合适的 IELTS 材料');
+      const title = String(candidate.title || '').trim();
+      const extract = String(candidate._extract || '').trim();
+      // Search results inherit the selected rotation topic. A random fallback
+      // is intentionally marked as interdisciplinary instead of pretending it
+      // belongs to today's query.
+      const topic = plan.id === 'wikipedia-random' ? randomTopic : englishReadingTopicForText(title + ' ' + extract, topicIndex);
+      const id = 'wiki-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) + '-' + Date.now().toString(36);
+      const candidateKey = String(candidate.key || candidate._detail?.key || '').trim().replace(/^\/+/, '');
+      const detailUrl = (candidateKey ? 'https://en.wikipedia.org/wiki/' + encodeURIComponent(candidateKey.replace(/ /g, '_')) : '') || candidate._detail?.content_urls?.desktop?.page || candidate.url || candidate.content_urls?.desktop?.page || 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/ /g, '_'));
+      const article = {
+        id,
+        type: topic.type,
+        genre: topic.genre,
+        source: plan.label + ' · English summary',
+        level: extract.length > 900 ? 'Band 7.5' : extract.length > 500 ? 'Band 7.0' : 'Band 6.5–7.0',
+        minutes: Math.max(8, Math.min(18, Math.ceil(extract.split(/\s+/).length / 145))),
+        title,
+        excerpt: extract.slice(0, 720) + (extract.length > 720 ? '…' : ''),
+        tags: [topic.tag, '联网更新', '背景知识', '体裁：' + topic.genre],
+        url: safeReadingUrl(detailUrl, title),
+        publishedAt: todayKey(),
+        saved: false,
+        read: false
+      };
+      // Keep the full local reading shelf after a refresh. The new article is
+      // promoted to the front, while the remaining curated/remote cards stay
+      // available for topic variety and offline continuity.
+      reading.articles = [article, ...fallbacks.filter(existing => existing.id !== article.id)].slice(0, 24);
+      reading.activeArticleId = article.id;
+      reading.lastFetchedAt = new Date().toISOString();
+      reading.lastSource = plan.label;
+      reading.lastTopic = topic.type;
+      reading.remoteTitles = englishReadingRemoteTitleHistory([...(reading.remoteTitles || []), title]);
+      englishReadingState = { status: 'ready', message: '已从' + plan.label + '获取一篇新材料' };
+      save();
+      rerender();
+      showToast('已联网更新阅读材料：' + title, 'success');
+      return;
+    } catch (error) {
+      lastError = error instanceof Error && error.name === 'AbortError'
+        ? new Error('获取阅读材料超时，请稍后重试')
+        : (error instanceof Error ? error : lastError);
+      if (Date.now() >= refreshDeadline) break;
+    }
+  }
+  englishReadingState = { status: 'error', message: lastError.message || '网络暂不可用' };
+  rerender();
+  showToast('联网暂不可用，继续使用已缓存的阅读材料', 'warning');
+}
+
+function activeEnglishReadingArticle() {
+  const reading = DATA.learning.english.reading || {};
+  const articles = Array.isArray(reading.articles) ? reading.articles : [];
+  return articles.find(article => article.id === reading.activeArticleId) || articles[0] || null;
+}
+
+function selectEnglishReadingArticle(card, { scrollOnMobile = true } = {}) {
+  const id = String(card?.dataset?.englishReadingArticle || '').trim();
+  const reading = DATA?.learning?.english?.reading;
+  if (!id || !reading) return false;
+  const article = (Array.isArray(reading.articles) ? reading.articles : []).find(item => item.id === id);
+  if (!article) return false;
+  if (reading.activeArticleId !== id) {
+    reading.activeArticleId = id;
+    save();
+  }
+  rerender();
+  if (scrollOnMobile && typeof window !== 'undefined' && window.innerWidth <= 900) {
+    requestAnimationFrame(() => {
+      document.querySelector('.english-reading-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+  return true;
 }
 
 function shiftDateKey(dateKey, amount) {
@@ -809,7 +2495,7 @@ async function flushSave() {
         break;
       }
       if (result && result.conflict) {
-        handleConflict(result.remote);
+        handleConflict(result.remote, result.remoteVersion);
         setSaveState('error');
         break;
       }
@@ -862,7 +2548,7 @@ document.getElementById('syncIndicator').addEventListener('click', () => {
 });
 
 // --- Conflict resolution ---
-function handleConflict(remote) {
+function handleConflict(remote, remoteVersion) {
   if (conflictOpen) return;
   conflictOpen = true;
   const remoteTime = remote.meta && remote.meta.savedAt
@@ -882,10 +2568,10 @@ function handleConflict(remote) {
   );
   const loadRemote = () => {
     try {
-      DATA = migrateWorkspaceData(remote);
-      storage._lastRevision = (remote.meta && remote.meta.revision) || 0;
+      const normalized = loadWorkspaceSnapshot(remote);
+      if (Number.isInteger(remoteVersion) && remoteVersion >= 0) storage._apiVersion = remoteVersion;
       renderPage(currentPage);
-      setSaveState('saved');
+      if (normalized) save(); else setSaveState('saved');
       return true;
     } catch (error) {
       showToast('远端数据校验失败，已保留本地数据', 'error');
@@ -904,9 +2590,20 @@ function handleConflict(remote) {
   });
   document.getElementById('conflictKeepLocal').addEventListener('click', async () => {
     closeModal(); conflictOpen = false;
-    const r = await storage.write(DATA, { force: true });
-    setSaveState(r.ok ? 'saved' : 'error');
-    showToast(r.ok ? '已用本地数据覆盖远端' : '覆盖失败', r.ok ? 'warning' : 'error');
+    // The document API uses optimistic locking and has no blind-overwrite
+    // flag. The conflict payload includes the current remote version; adopt
+    // it before retrying so this explicit user choice performs one normal,
+    // versioned write instead of sending another stale 409 request.
+    if (Number.isInteger(remoteVersion) && remoteVersion >= 0) storage._apiVersion = remoteVersion;
+    const r = await storage.write(DATA);
+    if (r && r.conflict) {
+      handleConflict(r.remote, r.remoteVersion);
+      setSaveState('error');
+      showToast('远端在覆盖前再次更新，请重新选择处理方式', 'warning');
+      return;
+    }
+    setSaveState(r && r.ok ? 'saved' : 'error');
+    showToast(r && r.ok ? '已用本地数据覆盖远端' : '覆盖失败', r && r.ok ? 'warning' : 'error');
   });
 }
 
@@ -1068,6 +2765,22 @@ function migrateWorkspaceData(raw) {
   data.tasks.english = normalizeTaskList(data.tasks.english, today);
   data.tasks.comicStoryboard = normalizeTaskList(data.tasks.comicStoryboard, today);
   data.tasks.researchPapers = normalizeTaskList(data.tasks.researchPapers, today);
+  // Older snapshots only contain the original challenge object. Fill the
+  // focused IELTS modules here as well as at render time so imports and API
+  // conflicts are immediately safe to mutate.
+  if (data.learning && data.learning.english) {
+    const english = data.learning.english;
+    if (!english.profile) english.profile = cloneData(DEFAULT_DATA.learning.english.profile);
+    if (!english.challenge) english.challenge = cloneData(DEFAULT_DATA.learning.english.challenge);
+    if (!english.vocab) english.vocab = cloneData(DEFAULT_DATA.learning.english.vocab);
+    if (!english.listening) english.listening = cloneData(DEFAULT_DATA.learning.english.listening);
+    if (!english.reading) english.reading = cloneData(DEFAULT_DATA.learning.english.reading);
+    if (!english.writing) english.writing = cloneData(DEFAULT_DATA.learning.english.writing);
+    // Run the same focused IELTS normalizer used at runtime so imported,
+    // conflicted, and reset snapshots are safe before they reach a renderer.
+    ensureEnglishStudyState(data);
+  }
+  ensureCivilServiceState(data);
   const normalizedPlan = { morning: [], afternoon: [], evening: [] };
   ['morning', 'afternoon', 'evening'].forEach(slot => {
     normalizeTaskList(data.tasks.dailyPlan[slot], today, defaultPlanTimeForSlot(slot)).forEach(task => {
@@ -1091,6 +2804,15 @@ function migrateWorkspaceData(raw) {
   data.meta.schemaVersion = DATA_SCHEMA_VERSION;
   data.version = '4.0';
   return data;
+}
+
+// Loading a snapshot outside of boot (for example after reconnecting the API)
+// must follow the same migration path as initial startup.  Returning whether
+// the serialized payload changed lets callers persist only real upgrades.
+function loadWorkspaceSnapshot(raw) {
+  const before = JSON.stringify(raw);
+  DATA = migrateWorkspaceData(raw);
+  return before !== JSON.stringify(DATA);
 }
 
 function resetDoneFlags(list) {
@@ -2802,6 +4524,17 @@ function autoResizeResearchTextareas(root) {
 
 function afterPageRender() {
   requestAnimationFrame(() => autoResizeResearchTextareas(document.getElementById('mainContent')));
+  if (currentPage.startsWith('civil-')) {
+    requestAnimationFrame(() => {
+      const tabs = document.querySelector('.civil-module-tabs');
+      const activeTab = tabs && tabs.querySelector('.civil-module-tab.is-active');
+      if (activeTab) activeTab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+  }
+  // Entering either the English overview or the reading room is the daily
+  // refresh trigger.  The helper owns a session/date guard, so this lifecycle
+  // hook remains safe across React commits and ordinary rerenders.
+  maybeAutoRefreshEnglishReading();
   // The weather control lives in the persistent React top bar, so it must be
   // initialized regardless of which page is currently open.
   if (!weatherAutoRefreshStarted) {
@@ -6714,6 +8447,11 @@ function workspaceStatHTML(value, label, accent) {
 }
 
 function refreshDayElapsedProgress() {
+  if (DATA && DATA.settings && DATA.settings.lastActiveDate !== todayKey()) {
+    const changed = ensureTemporalState();
+    const vocabChanged = ensureEnglishStudyState();
+    if (changed || vocabChanged) { save(); rerender(); }
+  }
   if (currentPage !== 'daily-plan') return;
   document.querySelectorAll('.daily-plan-page .workspace-stat').forEach(stat => {
     const label = stat.querySelector('.workspace-stat-label');
@@ -6865,21 +8603,385 @@ function aiLearningPageHTML() {
     '<div class="study-main-grid"><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>本轮学习任务</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' + taskListHTML('tasks.aiLearn', tasks) + '</section><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>学习资源库</div><button class="card-btn" data-action="add-resource" title="添加资源" aria-label="添加资源">+</button></div>' + compactResourceListHTML(resources) + '</section></div></div>';
 }
 
+function englishModuleTabs(active) {
+  const tabs = [
+    ['english', '总览'],
+    ['english-vocab', '词汇记忆'],
+    ['english-listening', '听力训练'],
+    ['english-reading', '阅读精读'],
+    ['english-writing', '写作训练']
+  ];
+  return '<nav class="english-module-tabs" aria-label="英语学习模块" role="tablist">' + tabs.map(([id, label]) =>
+    '<button type="button" class="english-module-tab' + (active === id ? ' is-active' : '') + '" data-action="english-go-' + id + '" role="tab" aria-selected="' + (active === id) + '">' + escapeHTML(label) + '</button>'
+  ).join('') + '</nav>';
+}
+
+function englishSkillStatCard(action, accent, icon, title, value, target, unit, detail, progress, cadence) {
+  const safeProgress = Math.min(100, Math.max(0, Number(progress) || 0));
+  const progressLabel = Math.round(safeProgress) + '%';
+  const accessibleMetric = value + ' / ' + target + ' ' + unit;
+  return '<button type="button" class="english-skill-stat-card ' + accent + '" data-action="' + action + '" aria-label="打开' + escapeAttribute(title) + '，' + escapeAttribute(accessibleMetric) + '" style="--skill-progress:' + safeProgress + '">' +
+    '<span class="english-skill-stat-top"><span class="english-skill-stat-icon" aria-hidden="true">' + icon + '</span><strong>' + escapeHTML(title) + '</strong><span class="english-skill-stat-cadence">' + escapeHTML(cadence) + '</span></span>' +
+    '<span class="english-skill-stat-body"><span class="english-skill-stat-metric"><strong>' + escapeHTML(String(value)) + '</strong><span>/ ' + escapeHTML(String(target)) + '</span></span><span class="english-skill-stat-unit">' + escapeHTML(unit) + '</span></span>' +
+    '<span class="english-skill-stat-detail">' + escapeHTML(detail) + '</span>' +
+    '<span class="english-skill-stat-foot"><span class="english-skill-stat-progress" aria-hidden="true"><i style="width:' + safeProgress + '%"></i></span><span class="english-skill-stat-progress-label">' + progressLabel + '</span></span>' +
+  '</button>';
+}
+
+function englishRecentStatusHTML(history, metrics) {
+  const today = todayKey();
+  const dateKeys = Array.from({ length: 7 }, (_, index) => shiftDateKey(today, index - 6));
+  const recent = history.filter(entry => dateKeys.includes(entry.date || todayKey(new Date(entry.occurredAt || 0))));
+  const activeDates = new Set(recent.map(entry => entry.date || todayKey(new Date(entry.occurredAt || 0))));
+  const vocabRecent = recent.filter(entry => entry.module === 'vocab').reduce((total, entry) => {
+    const match = String(entry.detail || '').match(/熟悉\s*(\d+)/);
+    return total + (match ? Number(match[1]) || 0 : 0);
+  }, 0);
+  const listeningRecent = recent.filter(entry => entry.module === 'listening').length;
+  const readingRecent = recent.filter(entry => entry.module === 'reading').length;
+  const writingRecent = recent.filter(entry => entry.module === 'writing').length;
+  const completedPractices = listeningRecent + readingRecent + writingRecent;
+  const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+  const weeklyBars = dateKeys.map(key => {
+    const date = new Date(key + 'T00:00:00');
+    const dayEntries = recent.filter(entry => (entry.date || todayKey(new Date(entry.occurredAt || 0))) === key);
+    const vocabCount = dayEntries.filter(entry => entry.module === 'vocab').reduce((total, entry) => {
+      const match = String(entry.detail || '').match(/熟悉\s*(\d+)/);
+      return total + (match ? Number(match[1]) || 0 : 0);
+    }, 0);
+    const listeningCount = dayEntries.filter(entry => entry.module === 'listening').length;
+    const readingCount = dayEntries.filter(entry => entry.module === 'reading').length;
+    const writingCount = dayEntries.filter(entry => entry.module === 'writing').length;
+    const load = Math.min(4, Math.min(1, vocabCount / Math.max(1, metrics.vocabTarget)) + Math.min(1, listeningCount) + Math.min(1, readingCount / Math.max(1, metrics.readingTarget)) + Math.min(1, writingCount));
+    const height = dayEntries.length ? Math.max(10, Math.round(load / 4 * 100)) : 4;
+    const label = '周' + dayNames[date.getDay()];
+    const summary = label + '：熟悉 ' + vocabCount + ' 词，完成 ' + (listeningCount + readingCount + writingCount) + ' 项训练';
+    return '<span class="english-week-bar' + (dayEntries.length ? ' is-active' : '') + (key === today ? ' is-today' : '') + '" title="' + escapeAttribute(summary) + '" aria-label="' + escapeAttribute(summary) + '"><span><i style="height:' + height + '%"></i></span><small>' + label + '</small></span>';
+  }).join('');
+  const statusRow = (icon, name, summary, progressText, progress) => {
+    const safeProgress = Math.min(100, Math.max(0, Number(progress) || 0));
+    return '<div class="english-recent-module"><span class="english-recent-module-icon" aria-hidden="true">' + icon + '</span><span class="english-recent-module-copy"><strong>' + escapeHTML(name) + '</strong><span>' + escapeHTML(summary) + '</span></span><span class="english-recent-module-progress"><span><i style="width:' + safeProgress + '%"></i></span><small>' + escapeHTML(progressText) + '</small></span></div>';
+  };
+  return '<div class="english-recent-status-body"><div class="english-recent-rhythm"><div class="english-recent-rhythm-head"><span><small>学习活跃度</small><strong>' + activeDates.size + '<em>/ 7 天</em></strong></span><p>熟悉 ' + vocabRecent + ' 词 · 完成 ' + completedPractices + ' 项训练</p></div><div class="english-week-chart" role="img" aria-label="最近七天学习活跃度柱状图">' + weeklyBars + '</div></div><div class="english-recent-modules">' +
+    statusRow('Aa', '单词', '近 7 天熟悉 ' + vocabRecent + ' 词', '今日 ' + metrics.vocabValue + ' / ' + metrics.vocabTarget, metrics.vocabProgress) +
+    statusRow('◖)', '听力', '近 7 天完成 ' + listeningRecent + ' 组', '总进度 ' + metrics.listeningValue + ' / ' + metrics.listeningTarget, metrics.listeningProgress) +
+    statusRow('▤', '阅读', '近 7 天精读 ' + readingRecent + ' 篇', '今日 ' + metrics.readingValue + ' / ' + metrics.readingTarget, metrics.readingProgress) +
+    statusRow('✎', '写作', '近 7 天完成 ' + writingRecent + ' 篇', '本周 ' + metrics.writingValue + ' / ' + metrics.writingTarget, metrics.writingProgress) +
+  '</div></div>';
+}
+
 function englishLearningPageHTML() {
+  const englishStateChanged = ensureEnglishStudyState();
+  if (englishStateChanged) save();
   const english = DATA.learning.english;
-  const challenge = english.challenge || { current: 0, total: 100, streak: 0 };
+  const profile = english.profile || {};
+  const vocab = english.vocab || { dailyTarget: 100, words: [], bankVersion: 'IELTS Academic Core' };
   const tasks = DATA.tasks.english || [];
   const done = tasks.filter(task => task.done).length;
-  const total = Math.max(1, Number(challenge.total) || 100);
-  const current = Math.min(total, Math.max(0, Number(challenge.current) || 0));
-  const percent = Math.round(current / total * 100);
-  const circumference = 2 * Math.PI * 48;
-  const offset = circumference * (1 - percent / 100);
+  const vocabWords = Array.isArray(vocab.words) ? vocab.words : [];
+  const vocabTarget = Math.max(1, Number(vocab.dailyTarget) || 100);
+  const familiar = vocabWords.filter(word => word.familiar || word.status === 'familiar').length;
+  const learningCount = vocabWords.filter(word => !word.familiar && word.status === 'learning').length;
+  const vocabSeenCount = Array.isArray(vocab.seenIds) ? vocab.seenIds.length : 0;
+  const vocabProgress = Math.round(familiar / vocabTarget * 100);
+  const listening = english.listening || {};
+  const listeningCompleted = Math.max(0, Number(listening.completed) || 0);
+  const listeningTarget = Math.max(1, Number(listening.target) || 12);
+  const reading = english.reading || {};
+  const writing = english.writing || {};
+  const articles = Array.isArray(reading.articles) ? reading.articles : [];
+  const readingCompleted = Math.max(0, Number(reading.completed) || 0);
+  const readingDailyGoal = Math.max(1, Number(reading.dailyGoal) || 1);
+  const today = todayKey();
+  const listeningDailyGoal = 1;
+  const listeningToday = listening.lastCompletedDate === today ? 1 : 0;
+  const listeningProgress = Math.round(listeningToday / listeningDailyGoal * 100);
+  const readingToday = articles.filter(article => article.read && article.lastReadDate === today).length;
+  const readingProgress = Math.round(readingToday / readingDailyGoal * 100);
+  const readingTopics = new Set(articles.map(article => article.type).filter(Boolean)).size;
+  const writingCompleted = Math.max(0, Number(writing.completed) || 0);
+  const writingGoal = Math.max(1, Number(writing.weeklyGoal) || 2);
+  const writingDrafts = Array.isArray(writing.drafts) ? writing.drafts : [];
+  const writingPrompts = Array.isArray(writing.prompts) ? writing.prompts : [];
+  const writingProgress = Math.round(writingCompleted / writingGoal * 100);
+  const history = Array.isArray(english.history) ? english.history : [];
+  const activeArticle = articles.find(article => article.id === reading.activeArticleId) || articles[0];
   const nextTask = tasks.find(task => !task.done);
   return '<div class="workspace-page english-learning-page">' +
-    '<section class="workspace-hero"><div><div class="workspace-kicker">Language practice</div><div class="workspace-hero-title">' + commaTitleHTML('让英语练习成为稳定的每日节奏') + '</div><div class="workspace-hero-copy">挑战进度记录长期投入，今日任务承接具体动作。完成今日全部任务后，可以一键完成当天挑战。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="complete-english-day">完成今日挑战</button><button class="btn btn-outline btn-sm" data-action="open-palette">添加学习任务</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('今日任务完成度', calcTaskPercent(tasks), done + ' / ' + tasks.length + ' 项已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">下一项练习</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '今日任务已完成，可以记录挑战进度') + '</div></div></div></div></section>' +
-    '<div class="workspace-stat-strip">' + workspaceStatHTML('第 ' + current + ' 天', '挑战进度', true) + workspaceStatHTML(challenge.streak + ' 天', '连续练习', false) + workspaceStatHTML(done + '/' + tasks.length, '今日任务', false) + workspaceStatHTML(percent + '%', '百日挑战完成度', false) + '</div>' +
-    '<div class="study-main-grid"><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>100 天挑战</div><span class="card-tag">累计 ' + current + '/' + total + '</span></div><div class="english-challenge"><div class="english-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="english-ring-track" cx="60" cy="60" r="48" fill="none" stroke-width="9"></circle><circle class="english-ring-fill" cx="60" cy="60" r="48" fill="none" stroke-width="9" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"></circle></svg><div class="english-ring-center">' + percent + '%<small>挑战进度</small></div></div><div class="english-challenge-copy"><h3>' + current + ' / ' + total + ' 天</h3><p>已经连续练习 ' + challenge.streak + ' 天。维持短而稳定的输入与输出，比偶尔冲刺更重要。</p><button class="btn btn-outline btn-sm" data-action="complete-english-day">记录今天</button></div></div><div class="english-rhythm"><div class="english-rhythm-row"><div class="english-rhythm-day">输入</div><div class="english-rhythm-copy">精读、听力和词汇积累，构建可理解的语言材料。</div></div><div class="english-rhythm-row"><div class="english-rhythm-day">输出</div><div class="english-rhythm-copy">口语模仿或短写作，把当天输入转成可调用的表达。</div></div></div></section><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日练习</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' + taskListHTML('tasks.english', tasks) + '</section></div></div>';
+    englishModuleTabs('english') +
+    '<section class="workspace-hero english-overview-hero"><div><div class="workspace-kicker">IELTS Academic · Study overview</div><div class="workspace-hero-title">' + commaTitleHTML('让雅思备考，成为稳定的每日节奏') + '</div><div class="workspace-hero-copy">把每天的输入拆成词汇、听力、阅读和写作四个短练习。今天不追求一次学完，而是让每次练习都留下可复用的进步。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-vocab-open">开始今日 ' + escapeHTML(String(vocab.dailyTarget || 100)) + ' 词</button><button class="btn btn-outline btn-sm" data-action="english-reading-refresh">联网更新阅读</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('今日任务完成度', calcTaskPercent(tasks), done + ' / ' + tasks.length + ' 项已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">下一项练习</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '今日任务已完成，可以记录挑战进度') + '</div></div></div></div></section>' +
+    '<section class="study-card english-skill-dashboard" aria-label="单词、听力、阅读与写作学习统计"><div class="card-header"><div class="card-title"><span class="dot"></span>四项能力数据</div><span class="card-tag">IELTS · Band ' + escapeHTML(profile.targetBand || '7.0+') + '</span></div><div class="english-skill-stat-list">' +
+      englishSkillStatCard('english-vocab-open', 'is-vocab', 'Aa', '单词', familiar, vocabTarget, '今日熟悉', '复习 ' + learningCount + ' 词 · 已见 ' + vocabSeenCount + ' 词', vocabProgress, '今日') +
+      englishSkillStatCard('english-listening-open', 'is-listening', '◖)', '听力', listeningToday, listeningDailyGoal, '今日完成', '总进度 ' + listeningCompleted + ' / ' + listeningTarget + ' 组 · 连续 ' + (listening.streak || 0) + ' 天', listeningProgress, '今日') +
+      englishSkillStatCard('english-reading-open', 'is-reading', '▤', '阅读', readingToday, readingDailyGoal, '今日精读', '累计 ' + readingCompleted + ' 篇 · ' + readingTopics + ' 类主题', readingProgress, '今日') +
+      englishSkillStatCard('english-writing-open', 'is-writing', '✎', '写作', writingCompleted, writingGoal, '本周完成', '草稿 ' + writingDrafts.length + ' 份 · 待练 ' + writingPrompts.length + ' 题', writingProgress, '本周') +
+    '</div></section>' +
+    '<section class="study-card english-history-card"><div class="card-header"><div class="card-title"><span class="dot"></span>近 7 天学习状态</div><span class="card-tag">持续记录</span></div>' + englishRecentStatusHTML(history, { vocabValue: familiar, vocabTarget, vocabProgress, listeningValue: listeningCompleted, listeningTarget, listeningProgress: Math.round(listeningCompleted / listeningTarget * 100), readingValue: readingToday, readingTarget: readingDailyGoal, readingProgress, writingValue: writingCompleted, writingTarget: writingGoal, writingProgress }) + '</section>' +
+    '<section class="english-reading-spotlight study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日阅读 · 主题轮换</div><button class="card-btn" data-action="english-reading-open" title="打开阅读训练" aria-label="打开阅读训练">↗</button></div>' + (activeArticle ? '<div class="english-reading-spotlight-body"><div><span class="english-article-type">' + escapeHTML(activeArticle.type || '综合') + '</span><h3>' + escapeHTML(activeArticle.title) + '</h3><p>' + escapeHTML(activeArticle.excerpt) + '</p><div class="english-article-meta"><span>' + escapeHTML(activeArticle.source || '精选来源') + '</span><span>' + escapeHTML(activeArticle.level || 'Band 7.0') + '</span><span>' + escapeHTML(String(activeArticle.minutes || 12) + ' min') + '</span></div></div><button class="btn btn-outline btn-sm" data-action="english-reading-open">进入精读</button></div>' : emptyStateHTML('▤', '还没有阅读材料', '点击“联网更新阅读”获取今日文章')) + '</section>' +
+    '</div>';
+}
+
+function englishVocabWordRow(word) {
+  const familiar = Boolean(word.familiar || word.status === 'familiar');
+  const status = familiar ? '已熟悉' : word.status === 'learning' ? '复习中' : '待学习';
+  const statusClass = familiar ? 'is-familiar' : word.status === 'learning' ? 'is-learning' : 'is-new';
+  const phonetic = word.phoneticVerified && word.phonetic
+    ? '<span class="english-word-phonetic">' + escapeHTML(word.phonetic) + '</span>'
+    : '<span class="english-word-phonetic is-unverified">点击发音</span>';
+  return '<article class="english-word-row ' + statusClass + '" data-word-row="' + escapeAttribute(word.id) + '">' +
+    '<div class="english-word-index">' + String((word.order || 0) + 1).padStart(2, '0') + '</div>' +
+    '<div class="english-word-main"><div class="english-word-heading"><h3>' + escapeHTML(word.term) + '</h3>' + phonetic + '<span class="english-word-pos">' + escapeHTML(word.pos || '') + '</span><span class="english-word-band">' + escapeHTML('Band ' + (word.band || '7.0')) + '</span></div><p class="english-word-meaning">' + escapeHTML(word.meaning || '') + '</p>' + (word.example ? '<p class="english-word-example">' + escapeHTML(word.example) + '</p>' : '') + '</div>' +
+    '<div class="english-word-actions"><span class="english-word-status ' + statusClass + '">' + status + '</span><button type="button" class="english-word-icon" data-english-vocab-action="pronounce" data-word-id="' + escapeAttribute(word.id) + '" aria-label="播放 ' + escapeAttribute(word.term) + ' 发音" title="播放发音">◖)</button><button type="button" class="english-word-favorite ' + (word.favorite ? 'is-active' : '') + '" data-english-vocab-action="favorite" data-word-id="' + escapeAttribute(word.id) + '" aria-label="' + (word.favorite ? '取消收藏' : '收藏') + '" title="' + (word.favorite ? '取消收藏' : '收藏') + '">☆</button><button type="button" class="btn btn-outline btn-sm english-word-review" data-english-vocab-action="familiar" data-word-id="' + escapeAttribute(word.id) + '">' + (familiar ? '再练一次' : '熟悉了') + '</button></div>' +
+  '</article>';
+}
+
+function englishVocabPageHTML() {
+  const englishStateChanged = ensureEnglishStudyState();
+  if (englishStateChanged) save();
+  const vocab = DATA.learning.english.vocab;
+  const words = Array.isArray(vocab.words) ? vocab.words : [];
+  const familiarCount = words.filter(word => word.familiar).length;
+  const learningCount = words.filter(word => !word.familiar && word.status === 'learning').length;
+  const favoriteCount = words.filter(word => word.favorite).length;
+  const filters = [['all', '全部', words.length], ['new', '待学习', words.filter(word => !word.familiar && word.status === 'new').length], ['learning', '复习中', learningCount], ['familiar', '已熟悉', familiarCount], ['favorite', '收藏', favoriteCount]];
+  const filtered = words.filter(word => englishVocabFilter === 'all' || englishVocabFilter === 'favorite' ? (englishVocabFilter === 'all' || word.favorite) : englishVocabFilter === 'familiar' ? word.familiar : !word.familiar && word.status === englishVocabFilter);
+  const ordered = filtered.slice().sort((a, b) => Number(Boolean(a.familiar)) - Number(Boolean(b.familiar)) || (Number(a.order) || 0) - (Number(b.order) || 0));
+  const pageSize = 20;
+  const pageCount = Math.max(1, Math.ceil(ordered.length / pageSize));
+  englishVocabPage = Math.max(0, Math.min(englishVocabPage, pageCount - 1));
+  const pageWords = ordered.slice(englishVocabPage * pageSize, (englishVocabPage + 1) * pageSize);
+  return '<div class="workspace-page english-vocab-page">' + englishModuleTabs('english-vocab') +
+    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Vocabulary lab · ' + escapeHTML(vocab.bankVersion || 'IELTS Academic Core') + '</div><div class="workspace-hero-title">' + commaTitleHTML('每日 ' + String(vocab.dailyTarget || 100) + ' 词，先把最常用的雅思表达记牢') + '</div><div class="workspace-hero-copy">熟悉的词会自动下沉到列表底部；“复习中”保留在当前批次，直到你愿意再次确认。词库按 Band 6.5–8.0 分层，避免每天抽到不匹配的内容。</div></div><div class="workspace-hero-side english-vocab-hero-side"><div class="english-vocab-progress-head"><span>今日熟悉度</span><strong>' + familiarCount + ' / ' + (vocab.dailyTarget || 100) + '</strong></div><div class="english-linear-progress"><span style="width:' + Math.round(familiarCount / Math.max(1, vocab.dailyTarget || 100) * 100) + '%"></span></div><small>已学习 ' + (learningCount + familiarCount) + ' · 收藏 ' + favoriteCount + '</small></div></section>' +
+    '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML((vocab.dailyTarget || 100) + ' 词', '今日目标', true) + workspaceStatHTML(familiarCount, '已熟悉', false) + workspaceStatHTML(learningCount, '复习中', false) + workspaceStatHTML((vocab.seenIds || []).length, '词库已见', false) + '</div>' +
+    '<section class="english-vocab-toolbar"><div class="english-vocab-filters" role="tablist" aria-label="词汇筛选">' + filters.map(([id, label, count]) => '<button type="button" class="english-vocab-filter ' + (englishVocabFilter === id ? 'is-active' : '') + '" data-english-vocab-filter="' + id + '" role="tab" aria-selected="' + (englishVocabFilter === id) + '">' + label + '<b>' + count + '</b></button>').join('') + '</div><div class="english-vocab-toolbar-note"><span class="english-sync-dot ' + (englishReadingState.status === 'loading' ? 'is-loading' : '') + '"></span>每天自动生成 · 已按熟悉度排序</div></section>' +
+    '<section class="english-vocab-list study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日词汇 · 第 ' + (englishVocabPage + 1) + ' / ' + pageCount + ' 页</div><span class="card-tag">' + ordered.length + ' 词</span></div>' + (pageWords.length ? pageWords.map(englishVocabWordRow).join('') : emptyStateHTML('Aa', '没有匹配词汇', '换一个筛选条件试试')) + '<div class="english-vocab-pagination"><button type="button" class="btn btn-outline btn-sm" data-english-vocab-page="prev" ' + (englishVocabPage <= 0 ? 'disabled' : '') + '>← 上一页</button><span>第 ' + (englishVocabPage + 1) + ' / ' + pageCount + ' 页 · 每页 20 词</span><button type="button" class="btn btn-outline btn-sm" data-english-vocab-page="next" ' + (englishVocabPage >= pageCount - 1 ? 'disabled' : '') + '>下一页 →</button></div></section>' +
+  '</div>';
+}
+
+function englishListeningPageHTML() {
+  const englishStateChanged = ensureEnglishStudyState();
+  if (englishStateChanged) save();
+  const english = DATA.learning.english;
+  const listening = english.listening || { completed: 0, target: 12, streak: 0, queue: [] };
+  const queue = Array.isArray(listening.queue) ? listening.queue : [];
+  const percent = Math.round((Number(listening.completed) || 0) / Math.max(1, Number(listening.target) || 12) * 100);
+  return '<div class="workspace-page english-listening-page">' + englishModuleTabs('english-listening') +
+    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Listening studio · IELTS Academic</div><div class="workspace-hero-title">' + commaTitleHTML('把听力拆成可重复的场景训练') + '</div><div class="workspace-hero-copy">每次练习只聚焦一个任务：先听大意，再抓关键词，最后回看错题。完成一组后会自动解锁下一组材料。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-listening-start">开始下一组</button><button class="btn btn-outline btn-sm" data-action="english-listening-reset">重置本周进度</button></div></div><div class="workspace-hero-side"><div class="english-listening-score"><strong>' + (listening.completed || 0) + '</strong><span>/ ' + (listening.target || 12) + ' 组完成</span></div><div class="english-linear-progress"><span style="width:' + percent + '%"></span></div><small>连续练习 ' + (listening.streak || 0) + ' 天 · 建议每组 15 分钟</small></div></section>' +
+    '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML((listening.completed || 0) + '/' + (listening.target || 12), '本周组数', true) + workspaceStatHTML((listening.streak || 0) + ' 天', '连续练习', false) + workspaceStatHTML('15 min', '单组建议', false) + workspaceStatHTML('S3–S4', '当前重点', false) + '</div>' +
+    '<div class="english-listening-layout"><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>训练队列</div><span class="card-tag">按难度递进</span></div><div class="english-session-list">' + (queue.length ? queue.map((item, index) => '<article class="english-session-row ' + (item.status === 'locked' ? 'is-locked' : item.status === 'done' ? 'is-done' : 'is-next') + '"><span class="english-session-index">' + String(index + 1).padStart(2, '0') + '</span><div class="english-session-copy"><small>' + escapeHTML(item.source || '精选听力') + ' · ' + escapeHTML(item.level || 'Band 7.0') + '</small><h3>' + escapeHTML(item.title) + '</h3><p>' + escapeHTML(item.skill || '听力理解训练') + ' · ' + escapeHTML(item.duration || '10:00') + '</p></div><button type="button" class="btn ' + (item.status === 'locked' ? 'btn-ghost' : 'btn-outline') + ' btn-sm" data-english-listening-item="' + escapeAttribute(item.id) + '" ' + (item.status === 'locked' ? 'disabled' : '') + '>' + (item.status === 'done' ? '已完成' : item.status === 'locked' ? '未解锁' : '开始练习') + '</button></article>').join('') : emptyStateHTML('◖)', '暂无听力材料', '联网更新后会出现新的训练组')) + '</div></section><aside class="study-card english-listening-tips"><div class="card-header"><div class="card-title"><span class="dot"></span>本组策略</div></div><div class="english-tip-stack"><div><b>01 · 先听主旨</b><span>第一遍不暂停，只记录人物、地点和转折。</span></div><div><b>02 · 再抓信号词</b><span>留意 however、whereas、as a result 等连接。</span></div><div><b>03 · 最后复盘</b><span>把错题改写成一句完整英文，而不只记答案。</span></div></div></aside></div></div>';
+}
+
+function englishReadingArticleCard(article, active) {
+  const sourceLink = safeReadingUrl(article.url, article.title);
+  return '<article class="english-article-card ' + (active ? 'is-active' : '') + '" data-english-reading-article="' + escapeAttribute(article.id) + '" role="button" tabindex="0" aria-pressed="' + String(Boolean(active)) + '" aria-label="选择文章：' + escapeAttribute(article.title || '未命名文章') + '"><div class="english-article-card-top"><span class="english-article-type">' + escapeHTML(article.type || '综合') + '</span><span>' + escapeHTML(article.genre || '综合文章') + '</span><span>' + escapeHTML(article.level || 'Band 7.0') + '</span></div><h3>' + escapeHTML(article.title) + '</h3><p>' + escapeHTML(article.excerpt || '') + '</p><div class="english-article-meta"><span>' + escapeHTML(article.source || '精选来源') + '</span><span>' + escapeHTML(String(article.minutes || 12) + ' min') + '</span><span>' + escapeHTML(article.publishedAt || '') + '</span><a href="' + escapeAttribute(sourceLink) + '" target="_blank" rel="noopener noreferrer" data-reading-source-link="' + escapeAttribute(article.id) + '">阅读原文 ↗</a></div></article>';
+}
+
+function englishReadingPageHTML() {
+  const englishStateChanged = ensureEnglishStudyState();
+  if (englishStateChanged) save();
+  const english = DATA.learning.english;
+  const reading = english.reading || { articles: [], dailyGoal: 1, completed: 0 };
+  const articles = Array.isArray(reading.articles) ? reading.articles : [];
+  const active = articles.find(article => article.id === reading.activeArticleId) || articles[0];
+  // `completed` is durable history.  `article.read` only describes the
+  // current shelf, so the UI labels the two pieces separately.
+  const readCount = Math.max(0, Number(reading.completed) || 0);
+  const today = todayKey();
+  // Daily progress is based on an explicit reading action today, never on the
+  // all-time counter.  Older read flags without a timestamp remain visible as
+  // history but are deliberately not guessed as today's activity.
+  const todayReadCount = articles.filter(article => article.read && article.lastReadDate === today).length;
+  const dailyProgress = Math.min(100, Math.round(todayReadCount / Math.max(1, Number(reading.dailyGoal) || 1) * 100));
+  // The visible state is driven by the status so the success/error render
+  // produced inside the implementation is not kept disabled by the promise
+  // reference for one extra microtask.
+  const refreshBusy = englishReadingState.status === 'loading';
+  const freshnessStatus = englishReadingState.status === 'loading' ? '正在更新' : englishReadingState.status === 'error' ? '暂时离线' : '内容已就绪';
+  const freshnessDetail = englishReadingState.status === 'error'
+    ? (englishReadingState.message || '继续使用已缓存的阅读材料')
+    : (reading.lastFetchedAt ? '上次更新 ' + new Date(reading.lastFetchedAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '内置精选 + Wikimedia / Wikipedia');
+  const detailTitleTranslation = active ? englishReadingTitleTranslation(active) : '';
+  const detailHTML = active
+    ? '<div class="english-detail-kicker">' + escapeHTML(active.type || '综合') + ' · ' + escapeHTML(active.genre || '综合文章') + ' · ' + escapeHTML(active.source || '精选来源') + '</div><h2>' + escapeHTML(active.title) + '</h2>' + (detailTitleTranslation ? '<p class="english-reading-title-translation">' + escapeHTML(detailTitleTranslation) + '</p>' : '') + '<div class="english-detail-meta"><span>' + escapeHTML(active.level || 'Band 7.0') + '</span><span>' + escapeHTML(String(active.minutes || 12) + ' min') + '</span><span>' + escapeHTML((active.tags || []).join(' · ')) + '</span></div>' + englishReadingDetailStudyHTML(active) + '<div class="english-reading-annotation"><b>精读提示</b><span>先用 3 分钟写出每段主旨，再圈出因果、转折与比较关系；最后把 3 个词放进自己的句子。中文释义不在摘要中时，回到原文或词典核对。</span></div><div class="english-detail-actions"><button class="btn btn-primary btn-sm" data-action="english-reading-mark-read">' + (active.read ? '取消当前标记' : '标记为读完') + '</button><button class="btn btn-outline btn-sm" data-action="english-reading-save">' + (active.saved ? '已收藏' : '收藏文章') + '</button><a class="btn btn-ghost btn-sm" href="' + escapeAttribute(safeReadingUrl(active.url, active.title)) + '" target="_blank" rel="noopener noreferrer" data-reading-source-link="' + escapeAttribute(active.id) + '">阅读原文 ↗</a></div>'
+    : emptyStateHTML('▤', '选择一篇文章开始精读', '左侧会显示不同主题的 IELTS 难度材料');
+  return '<div class="workspace-page english-reading-page">' + englishModuleTabs('english-reading') +
+    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Reading studio · varied source rotation</div><div class="workspace-hero-title">' + commaTitleHTML('每天读一篇，主题可以大一点') + '</div><div class="workspace-hero-copy">文章会在科技、环境、文化、商业、心理与设计之间轮换，保持 IELTS Academic 的阅读密度，也让词汇和背景知识不局限在单一领域。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-reading-refresh"' + (refreshBusy ? ' disabled aria-disabled="true"' : '') + '>' + (refreshBusy ? '正在更新…' : '联网获取今日文章') + '</button><button class="btn btn-outline btn-sm" data-action="english-reading-mark-read">' + (active?.read ? '取消当前标记' : '标记当前读完') + '</button></div></div><div class="workspace-hero-side"><div class="english-reading-freshness"><span class="english-sync-dot ' + (englishReadingState.status === 'loading' ? 'is-loading' : '') + '"></span><strong>' + freshnessStatus + '</strong><small>' + escapeHTML(freshnessDetail) + '</small></div><div class="english-linear-progress"><span style="width:' + dailyProgress + '%"></span></div><small class="english-reading-progress-label">今日进度 ' + todayReadCount + ' / ' + (reading.dailyGoal || 1) + ' · 累计历史 ' + readCount + '</small></div></section>' +
+    '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML(reading.dailyGoal || 1, '今日目标', true) + workspaceStatHTML(readCount, '累计读完 · 历史', false) + workspaceStatHTML(articles.length, '当前文章', false) + workspaceStatHTML(new Set(articles.map(article => article.type).filter(Boolean)).size + ' 类', '主题覆盖', false) + '</div>' +
+    '<div class="english-reading-layout"><section class="study-card english-article-library"><div class="card-header"><div class="card-title"><span class="dot"></span>今日文章库</div><span class="card-tag">主题轮换 · 当前库</span></div><div class="english-article-list">' + (articles.length ? articles.map(article => englishReadingArticleCard(article, active && article.id === active.id)).join('') : emptyStateHTML('▤', '还没有文章', '点击联网获取今日材料')) + '</div></section><section class="study-card english-reading-detail">' + detailHTML + '</section></div>' +
+  '</div>';
+}
+
+function englishWritingPageHTML() {
+  const englishStateChanged = ensureEnglishStudyState();
+  if (englishStateChanged) save();
+  const english = DATA.learning.english;
+  const writing = english.writing || { prompts: [], drafts: [], weeklyGoal: 2, completed: 0 };
+  const prompts = Array.isArray(writing.prompts) ? writing.prompts : [];
+  const activePrompt = prompts.find(prompt => prompt.id === englishWritingPromptId) || prompts[0];
+  const drafts = Array.isArray(writing.drafts) ? writing.drafts : [];
+  const draft = activePrompt ? drafts.find(item => item.promptId === activePrompt.id) : null;
+  return '<div class="workspace-page english-writing-page">' + englishModuleTabs('english-writing') +
+    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Writing studio · Task 1 + Task 2</div><div class="workspace-hero-title">' + commaTitleHTML('把观点写清楚，再把语言写漂亮') + '</div><div class="workspace-hero-copy">每周保留两次完整输出：一次练结构，一次练语言。题目覆盖图表、观点、双边讨论和问题解决，写完后留下自评。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-writing-complete">完成本次写作</button><button class="btn btn-outline btn-sm" data-action="english-writing-new">换一道题</button></div></div><div class="workspace-hero-side"><div class="english-writing-score"><strong>' + (writing.completed || 0) + '</strong><span>/ ' + (writing.weeklyGoal || 2) + ' 本周完成</span></div><div class="english-linear-progress"><span style="width:' + Math.min(100, Math.round((writing.completed || 0) / Math.max(1, writing.weeklyGoal || 2) * 100)) + '%"></span></div><small>建议先写提纲，再进入限时练习</small></div></section>' +
+    '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML((writing.completed || 0) + '/' + (writing.weeklyGoal || 2), '本周目标', true) + workspaceStatHTML('40 min', 'Task 2 建议', false) + workspaceStatHTML('20 min', 'Task 1 建议', false) + workspaceStatHTML(drafts.length, '保留草稿', false) + '</div>' +
+    '<div class="english-writing-layout"><section class="study-card english-writing-prompts"><div class="card-header"><div class="card-title"><span class="dot"></span>题目队列</div><span class="card-tag">本周建议</span></div><div class="english-prompt-list">' + (prompts.length ? prompts.map(prompt => '<button type="button" class="english-prompt-row ' + (activePrompt && prompt.id === activePrompt.id ? 'is-active' : '') + '" data-english-writing-prompt="' + escapeAttribute(prompt.id) + '"><span class="english-prompt-type">' + escapeHTML(prompt.type || 'Writing') + '</span><span class="english-prompt-copy"><strong>' + escapeHTML(prompt.title) + '</strong><small>' + escapeHTML(prompt.focus || '') + ' · ' + escapeHTML(String(prompt.time || 30) + ' min') + '</small></span><i>→</i></button>').join('') : emptyStateHTML('✎', '暂无写作题目', '稍后会生成新的练习')) + '</div></section><section class="study-card english-writing-desk">' + (activePrompt ? '<div class="english-detail-kicker">' + escapeHTML(activePrompt.type || 'Writing') + ' · 结构训练</div><h2>' + escapeHTML(activePrompt.title) + '</h2><div class="english-writing-focus"><span>本题重点</span><b>' + escapeHTML(activePrompt.focus || '论证结构') + '</b><small>先写 3 句提纲，再进入正文。</small></div><textarea class="english-writing-draft" data-english-writing-draft="' + escapeAttribute(activePrompt.id) + '" placeholder="在这里写下你的提纲或第一版答案…">' + escapeHTML(draft ? draft.text : '') + '</textarea><div class="english-writing-desk-foot"><span>草稿会随输入自动保存到当前工作台</span><button class="btn btn-primary btn-sm" data-action="english-writing-save">保存草稿</button></div>' : emptyStateHTML('✎', '选择一道题开始写作', '左侧题目会保留你的练习轨迹')) + '</section></div>' +
+  '</div>';
+}
+
+// ========================================================================
+// CIVIL SERVICE STUDY
+// ========================================================================
+function ensureCivilServiceState(root = DATA) {
+  if (!root.learning) root.learning = {};
+  if (!root.learning.civilService) root.learning.civilService = cloneData(DEFAULT_DATA.learning.civilService);
+  const study = root.learning.civilService;
+  const defaults = DEFAULT_DATA.learning.civilService;
+  mergeDefaults(study, defaults);
+  study.profile.targetScore = Math.max(1, Math.min(100, Number(study.profile.targetScore) || defaults.profile.targetScore));
+  study.profile.dailyMinutes = Math.max(1, Math.min(1440, Number(study.profile.dailyMinutes) || defaults.profile.dailyMinutes));
+  study.weeklyGoal = Math.max(1, Math.min(100, Number(study.weeklyGoal) || defaults.weeklyGoal));
+  study.weeklyCompleted = Math.max(0, Number(study.weeklyCompleted) || 0);
+  study.streak = Math.max(0, Number(study.streak) || 0);
+  study.totalMinutes = Math.max(0, Number(study.totalMinutes) || 0);
+  study.studyHistory = (Array.isArray(study.studyHistory) ? study.studyHistory : []).filter(item => item && item.date).map(item => ({
+    date: String(item.date), minutes: Math.max(0, Number(item.minutes) || 0), completed: Math.max(0, Number(item.completed) || 0)
+  })).slice(-60);
+  study.subjects = (Array.isArray(study.subjects) ? study.subjects : []).filter(item => item && item.id).map(item => {
+    item.id = String(item.id);
+    item.title = String(item.title || '未命名科目');
+    item.icon = String(item.icon || '知');
+    item.description = String(item.description || '');
+    item.focus = String(item.focus || '基础训练');
+    item.progress = Math.max(0, Math.min(100, Number(item.progress) || 0));
+    item.tasks = (Array.isArray(item.tasks) ? item.tasks : []).filter(task => task && task.id).map(task => ({
+      ...task, id: String(task.id), title: String(task.title || '学习任务'), done: Boolean(task.done)
+    }));
+    item.weakPoints = Array.isArray(item.weakPoints) ? item.weakPoints.map(value => String(value)).filter(Boolean).slice(0, 4) : [];
+    item.note = String(item.note || '');
+    return item;
+  });
+  return study;
+}
+
+function civilServiceStudy() {
+  return ensureCivilServiceState(DATA);
+}
+
+function civilServiceSubject(subjectId) {
+  return civilServiceStudy().subjects.find(subject => subject.id === subjectId) || null;
+}
+
+function civilServiceStats() {
+  const study = civilServiceStudy();
+  const subjects = study.subjects;
+  const tasks = subjects.flatMap(subject => subject.tasks || []);
+  const done = tasks.filter(task => task.done).length;
+  const mastery = subjects.length ? Math.round(subjects.reduce((total, subject) => total + subject.progress, 0) / subjects.length) : 0;
+  const active = subjects.filter(subject => subject.progress < 60).length;
+  return { study, subjects, tasks, done, mastery, active, taskPercent: tasks.length ? Math.round(done / tasks.length * 100) : 0 };
+}
+
+function civilServiceRecordStudy(subjectId, minutes = 25) {
+  const study = civilServiceStudy();
+  const amount = Math.max(5, Math.min(240, Number(minutes) || 25));
+  const today = todayKey();
+  let record = study.studyHistory.find(item => item.date === today);
+  if (!record) {
+    record = { date: today, minutes: 0, completed: 0 };
+    study.studyHistory.push(record);
+  }
+  record.minutes += amount;
+  record.completed += 1;
+  study.studyHistory.sort((a, b) => a.date.localeCompare(b.date));
+  study.studyHistory = study.studyHistory.slice(-60);
+  study.totalMinutes += amount;
+  if (study.lastStudyDate !== today) {
+    study.streak = study.lastStudyDate === shiftDateKey(today, -1) ? Math.max(1, study.streak) + 1 : 1;
+    study.lastStudyDate = today;
+  }
+  study.weeklyCompleted += 1;
+  const subject = subjectId ? study.subjects.find(item => item.id === subjectId) : null;
+  if (subject) subject.progress = Math.min(100, subject.progress + 2);
+}
+
+function civilServiceToggleTask(subjectId, taskId) {
+  const subject = civilServiceSubject(subjectId);
+  const task = subject && subject.tasks.find(item => item.id === taskId);
+  if (!subject || !task) return;
+  task.done = !task.done;
+  if (task.done) {
+    task.completedAt = new Date().toISOString();
+    civilServiceRecordStudy(subjectId);
+  } else {
+    delete task.completedAt;
+    subject.progress = Math.max(0, subject.progress - 1);
+  }
+  save();
+  rerender();
+  showToast(task.done ? '已记录公考学习进展' : '已取消该项完成状态', 'success');
+}
+
+function civilServiceHistoryHTML() {
+  const study = civilServiceStudy();
+  const byDate = new Map(study.studyHistory.map(item => [item.date, item]));
+  const today = todayKey();
+  const cells = Array.from({ length: 14 }, (_, index) => {
+    const date = shiftDateKey(today, index - 13);
+    const item = byDate.get(date);
+    const level = !item || !item.minutes ? 0 : item.minutes >= 100 ? 3 : item.minutes >= 60 ? 2 : 1;
+    return '<span class="civil-history-cell level-' + level + '" title="' + escapeAttribute(date + ' · ' + (item?.minutes || 0) + ' 分钟') + '" aria-label="' + escapeAttribute(date + '学习' + (item?.minutes || 0) + '分钟') + '"></span>';
+  }).join('');
+  return '<div class="civil-history-wrap"><div class="civil-history-cells">' + cells + '</div><div class="civil-history-legend"><span>近 14 天学习节奏</span><span><i class="level-0"></i>未学习 <i class="level-1"></i>轻量 <i class="level-2"></i>标准 <i class="level-3"></i>深度</span></div></div>';
+}
+
+function civilServiceProgressChartHTML(subjects) {
+  const width = 720;
+  const baseline = 152;
+  const chartHeight = 112;
+  const barWidth = 48;
+  const gap = 33;
+  const bars = subjects.map((subject, index) => {
+    const x = 18 + index * (barWidth + gap);
+    const height = Math.max(2, Math.round(chartHeight * subject.progress / 100));
+    const y = baseline - height;
+    return '<g class="civil-chart-bar" data-civil-service-subject="' + escapeAttribute(subject.id) + '" role="button" tabindex="0" aria-label="打开' + escapeAttribute(subject.title) + '，掌握度 ' + subject.progress + '%"><title>' + escapeHTML(subject.title + '：' + subject.progress + '%') + '</title><rect x="' + x + '" y="' + y + '" width="' + barWidth + '" height="' + height + '" rx="8"></rect><text x="' + (x + barWidth / 2) + '" y="' + (y - 9) + '" text-anchor="middle">' + subject.progress + '%</text><text x="' + (x + barWidth / 2) + '" y="' + (baseline + 24) + '" text-anchor="middle">' + escapeHTML(subject.title.slice(0, 4)) + '</text></g>';
+  }).join('');
+  const mobileBars = subjects.map(subject => '<button type="button" class="civil-progress-mobile-row" data-civil-service-subject="' + escapeAttribute(subject.id) + '" aria-label="打开' + escapeAttribute(subject.title) + '，掌握度 ' + subject.progress + '%"><span><strong>' + escapeHTML(subject.title) + '</strong><b>' + subject.progress + '%</b></span><i><em style="width:' + subject.progress + '%"></em></i></button>').join('');
+  return '<div class="civil-progress-chart" role="img" aria-label="公考各科掌握度对比"><svg viewBox="0 0 ' + width + ' 205" preserveAspectRatio="none"><line x1="12" y1="' + baseline + '" x2="' + (width - 10) + '" y2="' + baseline + '"></line><line x1="12" y1="' + (baseline - chartHeight / 2) + '" x2="' + (width - 10) + '" y2="' + (baseline - chartHeight / 2) + '"></line><line x1="12" y1="' + (baseline - chartHeight) + '" x2="' + (width - 10) + '" y2="' + (baseline - chartHeight) + '"></line><text class="civil-chart-axis" x="' + (width - 11) + '" y="' + (baseline - chartHeight + 4) + '" text-anchor="end">100</text><text class="civil-chart-axis" x="' + (width - 11) + '" y="' + (baseline + 4) + '" text-anchor="end">0</text>' + bars + '</svg></div><div class="civil-progress-mobile" aria-label="公考各科掌握度对比">' + mobileBars + '</div>';
+}
+
+function civilServiceTabs(active) {
+  const tabs = [['civil-service', '总览'], ...civilServiceStudy().subjects.map(subject => [subject.id, subject.title])];
+  return '<nav class="civil-module-tabs" aria-label="公考学习模块" role="tablist">' + tabs.map(([id, label]) => '<button type="button" class="civil-module-tab' + (active === id ? ' is-active' : '') + '" data-action="civil-go-' + escapeAttribute(id) + '" role="tab" aria-selected="' + String(active === id) + '">' + escapeHTML(label) + '</button>').join('') + '</nav>';
+}
+
+function civilServiceOverviewPageHTML() {
+  const stats = civilServiceStats();
+  const weeklyPercent = Math.min(100, Math.round(stats.study.weeklyCompleted / Math.max(1, stats.study.weeklyGoal) * 100));
+  const nextSubject = stats.subjects.slice().sort((a, b) => a.progress - b.progress)[0];
+  const subjectCards = stats.subjects.map(subject => {
+    const done = (subject.tasks || []).filter(task => task.done).length;
+    return '<button type="button" class="civil-subject-card" data-civil-service-subject="' + escapeAttribute(subject.id) + '" aria-label="打开' + escapeAttribute(subject.title) + '"><span class="civil-subject-card-top"><i>' + escapeHTML(subject.icon) + '</i><strong>' + escapeHTML(subject.title) + '</strong><em>' + subject.progress + '%</em></span><span class="civil-subject-card-focus">' + escapeHTML(subject.focus) + '</span><span class="civil-subject-card-progress"><i style="width:' + subject.progress + '%"></i></span><span class="civil-subject-card-foot"><small>' + done + '/' + subject.tasks.length + ' 项训练已完成</small><b>进入科目 →</b></span></button>';
+  }).join('');
+  return '<div class="workspace-page civil-service-page">' + civilServiceTabs('civil-service') +
+    '<section class="workspace-hero civil-overview-hero"><div><div class="workspace-kicker">Civil service studio · 行测 + 申论</div><div class="workspace-hero-title">' + commaTitleHTML('把八个科目，推进成一条上岸路径') + '</div><div class="workspace-hero-copy">公考学习不只看刷题数量。这里把知识掌握、今日训练和持续投入放在同一张进度地图上，让你知道现在在哪里、下一步该补什么。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="civil-service-log-session">记录 25 分钟学习</button><button class="btn btn-outline btn-sm" data-action="civil-go-' + escapeAttribute(nextSubject ? nextSubject.id : 'civil-service') + '">优先补强 ' + escapeHTML(nextSubject ? nextSubject.title : '当前薄弱科目') + '</button></div></div><div class="workspace-hero-side"><div class="civil-overview-score"><span>综合掌握度</span><strong>' + stats.mastery + '%</strong><small>目标分数 ' + stats.study.profile.targetScore + ' · 每日建议 ' + stats.study.profile.dailyMinutes + ' 分钟</small></div><div class="english-linear-progress"><span style="width:' + stats.mastery + '%"></span></div><small>连续学习 ' + stats.study.streak + ' 天 · ' + (stats.active ? stats.active + ' 个科目值得优先补强' : '各科目均已进入稳定区间') + '</small></div></section>' +
+    '<div class="workspace-stat-strip civil-stat-strip">' + workspaceStatHTML(stats.mastery + '%', '综合掌握度', true) + workspaceStatHTML(stats.study.totalMinutes + ' min', '累计投入', false) + workspaceStatHTML(stats.study.weeklyCompleted + '/' + stats.study.weeklyGoal, '本周训练目标', false) + workspaceStatHTML(stats.done + '/' + stats.tasks.length, '科目任务完成', false) + '</div>' +
+    '<div class="civil-overview-grid"><section class="study-card civil-progress-card"><div class="card-header"><div class="card-title"><span class="dot"></span>八科掌握度地图</div><span class="card-tag">点击柱状图进入科目</span></div>' + civilServiceProgressChartHTML(stats.subjects) + '<div class="civil-chart-note"><span><i></i>掌握度基于阶段自评与训练记录</span><b>当前最低：' + escapeHTML(nextSubject ? nextSubject.title : '暂无') + ' · ' + (nextSubject?.progress || 0) + '%</b></div></section><section class="study-card civil-rhythm-card"><div class="card-header"><div class="card-title"><span class="dot"></span>学习节奏</div><span class="card-tag">持续比突击重要</span></div><div class="civil-weekly-progress"><div><span>本周目标</span><strong>' + stats.study.weeklyCompleted + ' / ' + stats.study.weeklyGoal + ' 次训练</strong></div><div class="workspace-progress-track"><div class="workspace-progress-fill" style="width:' + weeklyPercent + '%"></div></div></div>' + civilServiceHistoryHTML() + '<div class="civil-rhythm-summary"><span><b>' + stats.study.streak + '</b>天</span><small>当前连续学习</small><span><b>' + Math.round(stats.study.totalMinutes / 60 * 10) / 10 + '</b>小时</span><small>累计投入时长</small></div></section></div>' +
+    '<section class="civil-subject-section"><div class="civil-section-heading"><div><span>Subject map</span><h2>从薄弱项开始，逐科建立优势</h2></div><p>每个科目保留自己的训练清单和错题提醒；完成任务会自动更新总览进度。</p></div><div class="civil-subject-grid">' + subjectCards + '</div></section>' +
+    '</div>';
+}
+
+function civilServiceSubjectPageHTML(subjectId) {
+  const subject = civilServiceSubject(subjectId);
+  if (!subject) return civilServiceOverviewPageHTML();
+  const done = subject.tasks.filter(task => task.done).length;
+  const percent = subject.tasks.length ? Math.round(done / subject.tasks.length * 100) : 0;
+  const taskHTML = subject.tasks.length ? subject.tasks.map(task => '<button type="button" class="civil-task-row' + (task.done ? ' is-done' : '') + '" data-civil-task="' + escapeAttribute(task.id) + '" data-civil-subject="' + escapeAttribute(subject.id) + '" aria-pressed="' + String(task.done) + '"><span class="civil-task-check">' + (task.done ? '✓' : '') + '</span><span><strong>' + escapeHTML(task.title) + '</strong><small>' + (task.done ? '已完成 · 继续保持' : '待完成 · 完成后计入学习进展') + '</small></span><i>' + (task.done ? '已完成' : '完成') + '</i></button>').join('') : emptyStateHTML('□', '暂无训练任务', '稍后补充该科目的练习计划');
+  const weakHTML = (subject.weakPoints || []).map((point, index) => '<li><b>0' + (index + 1) + '</b><span>' + escapeHTML(point) + '</span></li>').join('');
+  return '<div class="workspace-page civil-service-page civil-subject-page">' + civilServiceTabs(subject.id) +
+    '<section class="workspace-hero civil-subject-hero"><div><button class="civil-back-link" type="button" data-action="civil-go-civil-service">← 返回公考总览</button><div class="workspace-kicker">Subject lab · ' + escapeHTML(subject.focus) + '</div><div class="workspace-hero-title">' + commaTitleHTML(subject.title + '，把方法练成反应') + '</div><div class="workspace-hero-copy">' + escapeHTML(subject.description) + '</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="civil-service-log-session">记录本次 25 分钟</button><button class="btn btn-outline btn-sm" data-action="civil-service-next-subject">切换下一科</button></div></div><div class="workspace-hero-side"><div class="civil-subject-score"><span>阶段掌握度</span><strong>' + subject.progress + '%</strong><small>' + done + ' / ' + subject.tasks.length + ' 项今日训练完成</small></div><div class="english-linear-progress"><span style="width:' + subject.progress + '%"></span></div><small>当前科目建议：先完成清单，再复盘薄弱点</small></div></section>' +
+    '<div class="workspace-stat-strip civil-stat-strip">' + workspaceStatHTML(subject.progress + '%', '阶段掌握度', true) + workspaceStatHTML(done + '/' + subject.tasks.length, '训练完成', false) + workspaceStatHTML(subject.focus.split(' · ')[0] || '基础', '当前重点', false) + workspaceStatHTML(civilServiceStudy().streak + ' 天', '连续学习', false) + '</div>' +
+    '<div class="civil-subject-layout"><section class="study-card civil-task-card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日训练清单</div><span class="card-tag">' + percent + '% 完成</span></div><div class="civil-task-list">' + taskHTML + '</div><div class="civil-task-progress"><div class="workspace-progress-head"><span>本组完成度</span><strong>' + percent + '%</strong></div><div class="workspace-progress-track"><div class="workspace-progress-fill" style="width:' + percent + '%"></div></div></div></section><aside class="study-card civil-weak-card"><div class="card-header"><div class="card-title"><span class="dot"></span>薄弱点提醒</div><span class="card-tag">复盘入口</span></div><ul class="civil-weak-list">' + (weakHTML || '<li><span>继续积累错题，系统会在这里形成提醒。</span></li>') + '</ul><label class="civil-note-label" for="civilNote-' + escapeAttribute(subject.id) + '">本次复盘笔记</label><textarea id="civilNote-' + escapeAttribute(subject.id) + '" class="civil-note-input" data-civil-notes="' + escapeAttribute(subject.id) + '" placeholder="记下一个易错点、一个方法或下一次训练安排…">' + escapeHTML(subject.note) + '</textarea><small class="civil-note-hint">输入会自动保存到当前工作台</small></aside></div>' +
+    '</div>';
 }
 
 // ========================================================================
@@ -7183,22 +9285,24 @@ const PAGES = {
   english: {
     title: '英语学习',
     render: () => {
-      const en = DATA.learning.english;
-      const tasks = DATA.tasks.english;
-      const done = tasks.filter(t => t.done).length;
-      return '<div class="card-grid">' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>100 天挑战</div><span class="card-tag">第 ' + en.challenge.current + ' 天</span></div>' +
-          ringHTML(Math.round(en.challenge.current / en.challenge.total * 100), '挑战进度', en.challenge.current + ' / ' + en.challenge.total + ' 天', '连续 ' + en.challenge.streak + ' 天') +
-        '</div>' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>今日任务</div><span class="card-tag">' + done + '/' + tasks.length + '</span></div>' +
-          barHTMLAuto('英语任务完成度', calcTaskPercent(tasks)) +
-          taskListHTML('tasks.english', tasks) +
-        '</div>' +
-      '</div>';
+      return englishLearningPageHTML();
     }
   },
+
+  'english-vocab': { title: '雅思词汇', render: englishVocabPageHTML },
+  'english-listening': { title: '雅思听力', render: englishListeningPageHTML },
+  'english-reading': { title: '雅思阅读', render: englishReadingPageHTML },
+  'english-writing': { title: '雅思写作', render: englishWritingPageHTML },
+
+  'civil-service': { title: '公考学习', render: civilServiceOverviewPageHTML },
+  'civil-quantity': { title: '数量关系', render: () => civilServiceSubjectPageHTML('quantity') },
+  'civil-logic': { title: '逻辑判断', render: () => civilServiceSubjectPageHTML('logic') },
+  'civil-analogy': { title: '类比推理', render: () => civilServiceSubjectPageHTML('analogy') },
+  'civil-graphic': { title: '图形推理', render: () => civilServiceSubjectPageHTML('graphic') },
+  'civil-data': { title: '资料分析', render: () => civilServiceSubjectPageHTML('data') },
+  'civil-general': { title: '常识', render: () => civilServiceSubjectPageHTML('general') },
+  'civil-politics': { title: '政治理论', render: () => civilServiceSubjectPageHTML('politics') },
+  'civil-essay': { title: '申论', render: () => civilServiceSubjectPageHTML('essay') },
 
   research: {
     title: '文献管理',
@@ -7413,11 +9517,15 @@ PAGES['daily-plan'].render = dailyPlanPageHTML;
 PAGES.fitness.render = fitnessPageHTML;
 PAGES['ai-learn'].render = aiLearningPageHTML;
 PAGES.english.render = englishLearningPageHTML;
+PAGES['english-vocab'].render = englishVocabPageHTML;
+PAGES['english-listening'].render = englishListeningPageHTML;
+PAGES['english-reading'].render = englishReadingPageHTML;
+PAGES['english-writing'].render = englishWritingPageHTML;
 
 // ========================================================================
 // PAGE RENDERING + NAVIGATION
 // ========================================================================
-const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'research', 'news', 'settings', 'research-inspiration', 'research-experiments', 'research-papers'];
+const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'civil-service', 'research', 'news', 'settings', 'research-inspiration', 'research-experiments', 'research-papers', 'english-vocab', 'english-listening', 'english-reading', 'english-writing', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic', 'civil-data', 'civil-general', 'civil-politics', 'civil-essay'];
 
 // Page-level titles and dates duplicate the persistent navigation and each
 // page's own content heading, so every workspace view uses the open canvas.
@@ -7445,8 +9553,10 @@ function renderPage(pageId, options = {}) {
   }
 
   document.querySelectorAll('.menu-item').forEach(m => {
-    m.classList.toggle('active', m.dataset.page === pageId);
-    if (m.dataset.page === pageId) m.setAttribute('aria-current', 'page');
+    const isEnglishChild = ['english-vocab', 'english-listening', 'english-reading', 'english-writing'].includes(pageId);
+    const isActive = m.dataset.page === pageId || (m.dataset.page === 'english' && isEnglishChild);
+    m.classList.toggle('active', isActive);
+    if (isActive) m.setAttribute('aria-current', 'page');
     else m.removeAttribute('aria-current');
   });
 
@@ -8297,10 +10407,116 @@ document.addEventListener('focusout', (e) => {
 document.addEventListener('click', (e) => {
   const t = e.target;
 
+  // Let the explicit source link open in a new tab without the delegated
+  // article-card handler immediately re-rendering the reading page.
+  if (t.closest?.('[data-reading-source-link]')) return;
+
   const planCalendarMonthShift = t.closest('[data-plan-calendar-month-shift]');
   if (planCalendarMonthShift) {
     dailyPlanCalendarMonth = shiftPlanCalendarMonth(dailyPlanCalendarMonth, Number(planCalendarMonthShift.dataset.planCalendarMonthShift) || 0);
     rerender();
+    return;
+  }
+
+  const englishVocabFilterButton = t.closest('[data-english-vocab-filter]');
+  if (englishVocabFilterButton) {
+    englishVocabFilter = englishVocabFilterButton.dataset.englishVocabFilter || 'all';
+    englishVocabPage = 0;
+    rerender();
+    return;
+  }
+
+  const englishVocabPageButton = t.closest('[data-english-vocab-page]');
+  if (englishVocabPageButton) {
+    englishVocabPage += englishVocabPageButton.dataset.englishVocabPage === 'next' ? 1 : -1;
+    rerender();
+    return;
+  }
+
+  const englishWordAction = t.closest('[data-english-vocab-action]');
+  if (englishWordAction) {
+    ensureEnglishStudyState();
+    const word = (DATA.learning.english.vocab.words || []).find(item => item.id === englishWordAction.dataset.wordId);
+    if (!word) return;
+    const action = englishWordAction.dataset.englishVocabAction;
+    if (action === 'favorite') {
+      word.favorite = !word.favorite;
+      const favorites = DATA.learning.english.vocab.favorites || [];
+      DATA.learning.english.vocab.favorites = word.favorite ? Array.from(new Set(favorites.concat(word.id))) : favorites.filter(id => id !== word.id);
+      save(); rerender();
+      showToast(word.favorite ? '已加入收藏' : '已取消收藏', 'success');
+    } else if (action === 'familiar') {
+      word.familiar = !word.familiar;
+      word.status = word.familiar ? 'familiar' : 'learning';
+      word.reviewCount = (Number(word.reviewCount) || 0) + 1;
+      word.lastReviewed = new Date().toISOString();
+      // Familiar words naturally sink to the end while preserving the order
+      // among the remaining words.
+      const words = DATA.learning.english.vocab.words || [];
+      words.forEach((item, index) => { if (!Number.isFinite(Number(item.order))) item.order = index; });
+      words.sort((a, b) => Number(Boolean(a.familiar)) - Number(Boolean(b.familiar)) || Number(a.order) - Number(b.order));
+      words.forEach((item, index) => { item.order = index; });
+      const familiarCount = words.filter(item => item.familiar).length;
+      recordEnglishHistory('vocab', '单词学习', '熟悉 ' + familiarCount + ' / ' + (DATA.learning.english.vocab.dailyTarget || 100) + ' 词', 'vocab:' + todayKey());
+      save(); rerender();
+      showToast(word.familiar ? '已标记熟悉，词汇下沉到列表底部' : '已放回复习队列', 'success');
+    } else if (action === 'pronounce') {
+      if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+        showToast('当前设备暂不支持发音播放', 'warning');
+        return;
+      }
+      try {
+        const speech = new SpeechSynthesisUtterance(word.term);
+        speech.lang = 'en-US';
+        window.speechSynthesis?.speak(speech);
+      } catch (_) {
+        showToast('当前设备暂不支持发音播放', 'warning');
+      }
+    }
+    return;
+  }
+
+  const englishListeningItem = t.closest('[data-english-listening-item]');
+  if (englishListeningItem) {
+    ensureEnglishStudyState();
+    const listening = DATA.learning.english.listening || {};
+    const item = (listening.queue || []).find(entry => entry.id === englishListeningItem.dataset.englishListeningItem);
+    if (!item || item.status === 'locked') return;
+    if (item.status === 'done') {
+      showToast('这组听力已经完成，可以再次复盘', 'success');
+      return;
+    }
+    if (recordEnglishListeningCompletion(item)) {
+      save(); rerender();
+      showToast('已完成一组听力练习，下一组已解锁', 'success');
+    }
+    return;
+  }
+
+  const englishReadingArticle = t.closest('[data-english-reading-article]');
+  if (englishReadingArticle) {
+    selectEnglishReadingArticle(englishReadingArticle);
+    return;
+  }
+
+  const englishWritingPrompt = t.closest('[data-english-writing-prompt]');
+  if (englishWritingPrompt) {
+    englishWritingPromptId = englishWritingPrompt.dataset.englishWritingPrompt || englishWritingPromptId;
+    rerender();
+    return;
+  }
+
+  const civilSubject = t.closest('[data-civil-service-subject]');
+  if (civilSubject) {
+    const subjectId = civilSubject.dataset.civilServiceSubject || '';
+    if (subjectId === 'civil-service') renderPage('civil-service');
+    else renderPage('civil-' + subjectId);
+    return;
+  }
+
+  const civilTask = t.closest('[data-civil-task][data-civil-subject]');
+  if (civilTask) {
+    civilServiceToggleTask(civilTask.dataset.civilSubject, civilTask.dataset.civilTask);
     return;
   }
 
@@ -8841,6 +11057,139 @@ document.addEventListener('click', (e) => {
 // ========================================================================
 function handleAction(action) {
   switch (action) {
+    case 'civil-go-civil-service':
+      renderPage('civil-service');
+      break;
+    case 'civil-go-quantity':
+    case 'civil-go-logic':
+    case 'civil-go-analogy':
+    case 'civil-go-graphic':
+    case 'civil-go-data':
+    case 'civil-go-general':
+    case 'civil-go-politics':
+    case 'civil-go-essay':
+      renderPage('civil-' + action.replace('civil-go-', ''));
+      break;
+    case 'civil-service-log-session': {
+      civilServiceRecordStudy(currentPage.startsWith('civil-') && currentPage !== 'civil-service' ? currentPage.replace('civil-', '') : '');
+      save();
+      rerender();
+      showToast('已记录 25 分钟公考学习', 'success');
+      break;
+    }
+    case 'civil-service-next-subject': {
+      const next = civilServiceStats().subjects.slice().sort((a, b) => a.progress - b.progress)[0];
+      if (next) renderPage('civil-' + next.id);
+      break;
+    }
+    case 'english-overview':
+      renderPage('english');
+      break;
+    case 'english-go-english':
+      renderPage('english');
+      break;
+    case 'english-go-english-vocab':
+    case 'english-go-english-listening':
+    case 'english-go-english-reading':
+    case 'english-go-english-writing':
+      renderPage(action.replace('english-go-', ''));
+      break;
+    case 'english-vocab-open':
+      renderPage('english-vocab');
+      break;
+    case 'english-listening-open':
+      renderPage('english-listening');
+      break;
+    case 'english-reading-open':
+      renderPage('english-reading');
+      break;
+    case 'english-writing-open':
+      renderPage('english-writing');
+      break;
+    case 'english-reading-refresh':
+      refreshEnglishReadingMaterials();
+      break;
+    case 'english-reading-mark-read': {
+      ensureEnglishStudyState();
+      const article = activeEnglishReadingArticle();
+      if (!article) break;
+      const reading = DATA.learning.english.reading;
+      article.read = !article.read;
+      // The number is a durable history.  Removing an item from the current
+      // shelf must not erase a session the learner has already recorded.
+      if (article.read) {
+        if (!article.readEver) {
+          reading.completed = Math.max(0, Number(reading.completed) || 0) + 1;
+          article.readEver = true;
+        }
+        article.lastReadDate = todayKey();
+        recordEnglishHistory('reading', '完成阅读', (article.title || '完成一篇精读') + (article.source ? ' · ' + article.source : ''), 'reading:' + article.id, article.id);
+      }
+      save(); rerender();
+      showToast(article.read ? '已记录阅读完成（累计历史 +1）' : '已取消当前文章标记，累计历史不变', 'success');
+      break;
+    }
+    case 'english-reading-save': {
+      const article = activeEnglishReadingArticle();
+      if (!article) break;
+      article.saved = !article.saved;
+      save(); rerender();
+      showToast(article.saved ? '文章已收藏' : '已取消收藏', 'success');
+      break;
+    }
+    case 'english-listening-start': {
+      ensureEnglishStudyState();
+      const listening = DATA.learning.english.listening;
+      const next = (listening.queue || []).find(item => item.status === 'next');
+      if (!next) { showToast('本周听力队列已完成', 'success'); break; }
+      if (recordEnglishListeningCompletion(next)) {
+        save(); rerender();
+        showToast('已完成一组听力练习，下一组已解锁', 'success');
+      }
+      break;
+    }
+    case 'english-listening-reset': {
+      ensureEnglishStudyState();
+      if (resetEnglishListeningProgress()) {
+        save(); rerender();
+        showToast('已重置本周听力进度', 'success');
+      }
+      break;
+    }
+    case 'english-writing-new': {
+      const prompts = DATA.learning.english.writing.prompts || [];
+      const currentIndex = Math.max(0, prompts.findIndex(item => item.id === englishWritingPromptId));
+      englishWritingPromptId = prompts[(currentIndex + 1) % Math.max(1, prompts.length)]?.id || englishWritingPromptId;
+      rerender();
+      break;
+    }
+    case 'english-writing-save': {
+      const input = document.querySelector('[data-english-writing-draft]');
+      if (!input) break;
+      const writing = DATA.learning.english.writing;
+      if (!Array.isArray(writing.drafts)) writing.drafts = [];
+      const promptId = input.dataset.englishWritingDraft;
+      const existing = writing.drafts.find(item => item.promptId === promptId);
+      if (existing) { existing.text = input.value; existing.updatedAt = new Date().toISOString(); }
+      else writing.drafts.push({ id: uid(), promptId, text: input.value, updatedAt: new Date().toISOString() });
+      save(); rerender();
+      showToast('草稿已保存', 'success');
+      break;
+    }
+    case 'english-writing-complete': {
+      ensureEnglishStudyState();
+      const input = document.querySelector('[data-english-writing-draft]');
+      const promptId = input?.dataset?.englishWritingDraft || englishWritingPromptId;
+      const result = recordEnglishWritingCompletion(promptId, input?.value || '');
+      if (!result.ok) {
+        const message = result.reason === 'empty' ? '请先写下非空草稿，再记录完成' : result.reason === 'duplicate' ? '这道题已经计入本周完成数' : result.reason === 'goal' ? '本周写作目标已完成' : '请先选择一道写作题';
+        showToast(message, 'warning');
+        break;
+      }
+      save(); rerender();
+      showToast('已记录本周写作完成', 'success');
+      break;
+    }
     case 'research-experiment-go-ideas':
       researchInspirationState.view = 'overview';
       renderPage('research-inspiration');
@@ -8873,10 +11222,13 @@ function handleAction(action) {
         try {
           const result = await storage.connectApi();
           if (result && result.data) {
-            DATA = mergeDefaults(result.data, DEFAULT_DATA);
+            // API snapshots may come from an older workspace schema. Run the
+            // same migration/IELTS normalizer used during initial boot so a
+            // newly opened English page never sees a partial module state.
+            const normalized = loadWorkspaceSnapshot(result.data);
             const purged = purgeTrash();
             applyTheme();
-            if (purged) save(); else setSaveState('saved');
+            if (normalized || purged) save(); else setSaveState('saved');
           }
           updateSyncIndicator();
           renderPage(currentPage);
@@ -8894,12 +11246,13 @@ function handleAction(action) {
         storage.connect().then((result) => {
           const applyFolderData = () => {
             let purged = 0;
+            let normalized = false;
             if (result && result.data) {
-              DATA = mergeDefaults(result.data, DEFAULT_DATA);
+              normalized = loadWorkspaceSnapshot(result.data);
               purged = purgeTrash();
               applyTheme();
             }
-            if (purged) save(); else setSaveState('saved');
+            if (normalized || purged) save(); else setSaveState('saved');
             renderPage(currentPage);
             showToast(result && result.loadedExisting ? '已切换到指定文件夹，并加载已有数据' : '已切换到指定文件夹，当前数据已写入 workspace.json', 'success');
           };
@@ -8927,12 +11280,14 @@ function handleAction(action) {
       showConfirm('切换到 SQLite', '当前文件夹中的 workspace.json 将覆盖 SQLite 中的工作区数据。建议先确认文件夹数据完整，再继续。', '覆盖并切换', async () => {
         try {
           const result = await storage.switchToApi();
+          let normalized = false;
+          let purged = 0;
           if (result && result.data) {
-            DATA = mergeDefaults(result.data, DEFAULT_DATA);
-            purgeTrash();
+            normalized = loadWorkspaceSnapshot(result.data);
+            purged = purgeTrash();
             applyTheme();
           }
-          setSaveState('saved');
+          if (normalized || purged) save(); else setSaveState('saved');
           renderPage(currentPage);
           showToast('已切换到 SQLite，文件夹数据已写入数据库', 'success');
         } catch (err) {
@@ -9534,6 +11889,24 @@ document.addEventListener('change', (e) => {
 
 // Research idea search: live filtering (input event, delegated)
 document.addEventListener('input', (e) => {
+  if (e.target.matches && e.target.matches('[data-civil-notes]')) {
+    const subject = civilServiceSubject(e.target.dataset.civilNotes);
+    if (subject) {
+      subject.note = e.target.value;
+      save();
+    }
+    return;
+  }
+  if (e.target.matches && e.target.matches('[data-english-writing-draft]')) {
+    const writing = DATA.learning.english.writing;
+    if (!Array.isArray(writing.drafts)) writing.drafts = [];
+    const promptId = e.target.dataset.englishWritingDraft;
+    const existing = writing.drafts.find(item => item.promptId === promptId);
+    if (existing) { existing.text = e.target.value; existing.updatedAt = new Date().toISOString(); }
+    else writing.drafts.push({ id: uid(), promptId, text: e.target.value, updatedAt: new Date().toISOString() });
+    save();
+    return;
+  }
   if (e.target.matches && e.target.matches('textarea[data-research-idea-stage-field], textarea[data-research-experiment-field], textarea[data-research-paper-field]')) {
     autoResizeResearchTextarea(e.target);
     if (e.target.matches('textarea[data-research-idea-stage-field]')) {
@@ -9719,6 +12092,19 @@ document.addEventListener('keydown', (e) => {
     quickAddResearchTodo();
     return;
   }
+  const englishReadingArticle = e.target.closest?.('[data-english-reading-article]');
+  if ((e.key === ' ' || e.key === 'Enter') && englishReadingArticle && !e.target.closest?.('[data-reading-source-link]')) {
+    e.preventDefault();
+    selectEnglishReadingArticle(englishReadingArticle);
+    return;
+  }
+  const civilSubject = e.target.closest?.('[data-civil-service-subject]');
+  if ((e.key === ' ' || e.key === 'Enter') && civilSubject) {
+    e.preventDefault();
+    const subjectId = civilSubject.dataset.civilServiceSubject || '';
+    renderPage(subjectId === 'civil-service' ? 'civil-service' : 'civil-' + subjectId);
+    return;
+  }
   if ((e.key === ' ' || e.key === 'Enter') && e.target.classList.contains('task-checkbox')) {
     e.preventDefault();
     toggleTask(e.target.dataset.path, e.target.dataset.id);
@@ -9758,9 +12144,12 @@ async function init() {
 
   const saved = await storage.read();
   let recoveredInvalidData = false;
+  let civilServiceStateChanged = false;
   if (saved) {
     try {
+      const civilServiceBefore = JSON.stringify(saved.learning?.civilService ?? null);
       DATA = migrateWorkspaceData(saved);
+      civilServiceStateChanged = civilServiceBefore !== JSON.stringify(DATA.learning.civilService);
     } catch (error) {
       console.warn('Saved workspace data invalid; starting from defaults:', error);
       DATA = migrateWorkspaceData(cloneData(DEFAULT_DATA));
@@ -9773,11 +12162,17 @@ async function init() {
     // workspace first, optimistic locking returns its document instead.
     const initialWrite = await storage.write(DATA);
     if (initialWrite && initialWrite.conflict && initialWrite.remote) {
+      const civilServiceBefore = JSON.stringify(initialWrite.remote.learning?.civilService ?? null);
       DATA = migrateWorkspaceData(initialWrite.remote);
+      civilServiceStateChanged = civilServiceBefore !== JSON.stringify(DATA.learning.civilService);
+      if (Number.isInteger(initialWrite.remoteVersion) && initialWrite.remoteVersion >= 0) {
+        storage._apiVersion = initialWrite.remoteVersion;
+      }
     }
   }
 
   // Housekeeping
+  const englishStateChanged = ensureEnglishStudyState();
   migrateFitnessData();
   const temporalChanged = ensureTemporalState();
   const prunedReadingLogs = pruneReadingLogs();
@@ -9786,7 +12181,7 @@ async function init() {
   recordWeeklyTrend();
   if (!DATA.meta) DATA.meta = { revision: 0, deviceId: DEVICE_ID, savedAt: '' };
 
-  if (prunedReadingLogs || purgedTrash || temporalChanged || recoveredInvalidData) save();
+  if (englishStateChanged || civilServiceStateChanged || prunedReadingLogs || purgedTrash || temporalChanged || recoveredInvalidData) save();
   applyTheme();
   updateSyncIndicator();
   renderPage(pageIdFromHash());

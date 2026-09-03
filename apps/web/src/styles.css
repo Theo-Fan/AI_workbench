@@ -606,9 +606,6 @@ body { font-family:"Inter",var(--workspace-cjk-font); }
 
 .main :is(
   .daily-plan-page,
-  .fitness-page,
-  .ai-learning-page,
-  .english-learning-page,
   .research-idea-page,
   .research-lab-page,
   .research-paper-page,
@@ -632,6 +629,51 @@ body { font-family:"Inter",var(--workspace-cjk-font); }
   --paper-accent-soft:var(--primary-soft);
   --story-accent:var(--primary);
   --story-soft:var(--primary-soft);
+}
+
+/* Life uses one warm palette across fitness and every learning surface. */
+.main :is(
+  .fitness-page,
+  .ai-learning-page,
+  .english-learning-page,
+  .english-vocab-page,
+  .english-listening-page,
+  .english-reading-page,
+  .english-writing-page,
+  .civil-service-page
+) {
+  --primary:#d97706;
+  --primary-hover:#b45309;
+  --primary-light:#fef3c7;
+  --primary-soft:#fffbeb;
+  --accent:#f59e0b;
+  --life-accent:var(--primary);
+  --life-soft:var(--primary-soft);
+  --english-accent:var(--primary);
+  --english-accent-strong:var(--primary-hover);
+  --english-accent-soft:var(--primary-soft);
+}
+
+[data-theme="dark"] .main :is(
+  .fitness-page,
+  .ai-learning-page,
+  .english-learning-page,
+  .english-vocab-page,
+  .english-listening-page,
+  .english-reading-page,
+  .english-writing-page,
+  .civil-service-page
+) {
+  --primary:#efb960;
+  --primary-hover:#f7d18d;
+  --primary-light:#4a351c;
+  --primary-soft:#302314;
+  --accent:#f2bf69;
+  --life-accent:var(--primary);
+  --life-soft:var(--primary-soft);
+  --english-accent:var(--primary);
+  --english-accent-strong:var(--primary-hover);
+  --english-accent-soft:var(--primary-soft);
 }
 
 .main :is(.workspace-page, .research-idea-page, .research-lab-page, .research-paper-page, .research-todo-page) {
@@ -1113,6 +1155,106 @@ body { font-family:"Inter",var(--workspace-cjk-font); }
 .weather-location-result { display:grid; grid-template-columns:34px minmax(0,1fr) auto; align-items:center; gap:10px; min-height:54px; padding:8px 10px; border:1px solid var(--border); border-radius:11px; background:transparent; color:var(--text-primary); text-align:left; cursor:pointer; }.weather-location-result:hover { border-color:color-mix(in srgb,var(--primary) 35%,var(--border)); background:var(--primary-soft); }.weather-location-result-pin { display:grid; width:32px; height:32px; place-items:center; border-radius:9px; background:color-mix(in srgb,var(--primary) 8%,transparent); color:var(--primary-hover); }.weather-location-result-pin svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.7; }.weather-location-result span:nth-child(2) { display:grid; min-width:0; gap:4px; }.weather-location-result strong { overflow:hidden; font-size:11px; text-overflow:ellipsis; white-space:nowrap; }.weather-location-result small { overflow:hidden; color:var(--text-tertiary); font-size:9px; text-overflow:ellipsis; white-space:nowrap; }.weather-location-result > b { color:var(--primary-hover); font-size:9px; }
 .weather-location-attribution { display:inline-block; margin-top:9px; color:var(--text-tertiary); font-size:8px; text-decoration:none; }.weather-location-attribution:hover { color:var(--primary-hover); }
 .weather-location-dialog .modal-actions { margin-top:14px; }
+
+/* Civil service study: a quiet brass learning surface that shares the
+   workspace's editorial hero, stat rail and study-card language. */
+.civil-service-page { --civil-accent:var(--life-accent); --civil-soft:var(--life-soft); }
+.civil-module-tabs { display:flex; width:max-content; max-width:100%; box-sizing:border-box; align-self:flex-start; flex-wrap:nowrap; gap:3px; margin:0 0 2px; padding:3px; overflow-x:auto; overscroll-behavior-inline:contain; border:1px solid var(--border); border-radius:12px; background:color-mix(in srgb,var(--card-bg) 78%,transparent); scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.civil-module-tabs::-webkit-scrollbar { display:none; }
+.civil-module-tab { flex:0 0 auto; min-height:31px; padding:0 11px; border:0; border-radius:8px; background:transparent; color:var(--text-tertiary); font:inherit; font-size:10px; font-weight:650; white-space:nowrap; cursor:pointer; transition:color .16s ease,background-color .16s ease; }
+.civil-module-tab:hover { color:var(--text-primary); background:color-mix(in srgb,var(--civil-accent) 7%,transparent); }
+.civil-module-tab.is-active { color:var(--civil-accent); background:var(--civil-soft); }
+.civil-overview-hero .workspace-hero-title, .civil-subject-hero .workspace-hero-title { max-width:700px; }
+.civil-overview-score, .civil-subject-score { display:grid; gap:5px; }
+.civil-overview-score span, .civil-subject-score span { color:var(--text-tertiary); font-size:10px; }
+.civil-overview-score strong, .civil-subject-score strong { color:var(--civil-accent); font:650 clamp(42px,5vw,64px)/.95 ui-serif,Georgia,"Songti SC",serif; letter-spacing:-.07em; }
+.civil-overview-score small, .civil-subject-score small { color:var(--text-secondary); font-size:10px; line-height:1.6; }
+.civil-stat-strip .workspace-stat.is-accent .workspace-stat-value { color:var(--civil-accent); }
+.civil-overview-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(300px,.85fr); gap:16px; }
+.civil-progress-card, .civil-rhythm-card { min-width:0; overflow:hidden; }
+.civil-progress-chart { margin:5px -3px 0; overflow:hidden; }
+.civil-progress-chart svg { display:block; width:100%; min-height:205px; overflow:visible; }
+.civil-progress-chart line { stroke:color-mix(in srgb,var(--border) 78%,transparent); stroke-dasharray:3 5; stroke-width:1; }
+.civil-progress-chart .civil-chart-axis { fill:var(--text-tertiary); font-size:10px; }
+.civil-chart-bar { cursor:pointer; outline:none; }
+.civil-chart-bar rect { fill:color-mix(in srgb,var(--civil-accent) 23%,var(--card-bg)); transition:fill .18s ease, transform .18s ease; transform-origin:center bottom; }
+.civil-chart-bar:hover rect, .civil-chart-bar:focus rect { fill:var(--civil-accent); }
+.civil-chart-bar text { fill:var(--text-secondary); font-size:10px; pointer-events:none; }
+.civil-chart-bar text:first-of-type { fill:var(--civil-accent); font-weight:700; }
+.civil-progress-mobile { display:none; }
+.civil-progress-mobile-row { display:grid; gap:7px; width:100%; min-height:48px; padding:8px 2px; border:0; border-bottom:1px solid color-mix(in srgb,var(--border) 76%,transparent); background:transparent; color:var(--text-primary); text-align:left; cursor:pointer; }
+.civil-progress-mobile-row:last-child { border-bottom:0; }
+.civil-progress-mobile-row > span { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.civil-progress-mobile-row strong { font-size:10px; font-weight:650; }
+.civil-progress-mobile-row b { color:var(--civil-accent); font-size:10px; }
+.civil-progress-mobile-row > i { display:block; height:6px; overflow:hidden; border-radius:99px; background:color-mix(in srgb,var(--civil-accent) 10%,var(--border)); }
+.civil-progress-mobile-row > i > em { display:block; height:100%; border-radius:inherit; background:var(--civil-accent); }
+.civil-chart-note { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; padding-top:10px; border-top:1px solid var(--border); color:var(--text-tertiary); font-size:9px; line-height:1.5; }
+.civil-chart-note span { display:inline-flex; align-items:center; gap:6px; }
+.civil-chart-note span i { width:7px; height:7px; border-radius:50%; background:var(--civil-accent); }
+.civil-chart-note b { color:var(--text-secondary); font-weight:600; }
+.civil-weekly-progress { display:grid; gap:9px; padding:3px 0 17px; border-bottom:1px solid var(--border); }
+.civil-weekly-progress > div:first-child { display:flex; align-items:baseline; justify-content:space-between; gap:10px; color:var(--text-tertiary); font-size:10px; }
+.civil-weekly-progress strong { color:var(--text-secondary); font-size:11px; }
+.civil-weekly-progress .workspace-progress-track { margin-top:0; }
+.civil-history-wrap { padding-top:18px; }
+.civil-history-cells { display:grid; grid-template-columns:repeat(14,minmax(12px,1fr)); gap:5px; }
+.civil-history-cell { aspect-ratio:1; min-width:0; border-radius:4px; background:color-mix(in srgb,var(--text-tertiary) 12%,transparent); }
+.civil-history-cell.level-1, .civil-history-legend i.level-1 { background:color-mix(in srgb,var(--civil-accent) 28%,var(--card-bg)); }
+.civil-history-cell.level-2, .civil-history-legend i.level-2 { background:color-mix(in srgb,var(--civil-accent) 58%,var(--card-bg)); }
+.civil-history-cell.level-3, .civil-history-legend i.level-3 { background:var(--civil-accent); }
+.civil-history-legend { display:flex; flex-wrap:wrap; justify-content:space-between; gap:7px; margin-top:9px; color:var(--text-tertiary); font-size:9px; }
+.civil-history-legend > span:last-child { display:inline-flex; align-items:center; gap:4px; }
+.civil-history-legend i { display:inline-block; width:8px; height:8px; border-radius:3px; background:color-mix(in srgb,var(--text-tertiary) 12%,transparent); }
+.civil-rhythm-summary { display:grid; grid-template-columns:auto 1fr auto 1fr; align-items:end; gap:5px 9px; margin-top:19px; }
+.civil-rhythm-summary span { color:var(--civil-accent); font-size:22px; font-weight:700; line-height:1; }
+.civil-rhythm-summary small { align-self:end; color:var(--text-tertiary); font-size:9px; }
+.civil-subject-section { padding-top:10px; }
+.civil-section-heading { display:flex; align-items:end; justify-content:space-between; gap:24px; margin:0 2px 14px; }
+.civil-section-heading > div { display:grid; gap:6px; }
+.civil-section-heading span { color:var(--civil-accent); font:700 9px/1 var(--workspace-interface-font); letter-spacing:.14em; text-transform:uppercase; }
+.civil-section-heading h2 { color:var(--text-primary); font:650 22px/1.2 ui-serif,Georgia,"Songti SC",serif; letter-spacing:-.045em; }
+.civil-section-heading p { max-width:380px; margin:0; color:var(--text-tertiary); font-size:10px; line-height:1.7; text-align:right; }
+.civil-subject-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.civil-subject-card { display:grid; gap:10px; min-width:0; padding:15px; border:1px solid var(--border); border-radius:14px; background:color-mix(in srgb,var(--card-bg) 90%,transparent); color:inherit; text-align:left; box-shadow:var(--shadow-sm); cursor:pointer; }
+.civil-subject-card:hover, .civil-subject-card:focus-visible { border-color:color-mix(in srgb,var(--civil-accent) 38%,var(--border)); background:color-mix(in srgb,var(--civil-soft) 38%,var(--card-bg)); transform:translateY(-1px); }
+.civil-subject-card-top { display:grid; grid-template-columns:27px minmax(0,1fr) auto; align-items:center; gap:8px; }
+.civil-subject-card-top i { display:grid; width:27px; height:27px; place-items:center; border-radius:8px; background:var(--civil-soft); color:var(--civil-accent); font-style:normal; font-size:12px; font-weight:750; }
+.civil-subject-card-top strong { overflow:hidden; color:var(--text-primary); font-size:12px; text-overflow:ellipsis; white-space:nowrap; }
+.civil-subject-card-top em { color:var(--civil-accent); font-size:12px; font-style:normal; font-weight:700; }
+.civil-subject-card-focus { min-height:30px; color:var(--text-tertiary); font-size:9px; line-height:1.6; }
+.civil-subject-card-progress { display:block; height:5px; overflow:hidden; border-radius:99px; background:color-mix(in srgb,var(--civil-accent) 10%,var(--border)); }
+.civil-subject-card-progress i { display:block; height:100%; border-radius:inherit; background:var(--civil-accent); }
+.civil-subject-card-foot { display:flex; align-items:center; justify-content:space-between; gap:6px; color:var(--text-tertiary); font-size:9px; }
+.civil-subject-card-foot b { color:var(--civil-accent); font-weight:650; white-space:nowrap; }
+.civil-back-link { display:inline-flex; min-height:28px; align-items:center; margin-bottom:4px; padding:0; color:var(--civil-accent); font:inherit; font-size:10px; font-weight:650; cursor:pointer; }
+.civil-back-link:hover { color:var(--primary-hover); }
+.civil-subject-layout { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr); gap:16px; }
+.civil-task-card, .civil-weak-card { min-width:0; overflow:hidden; }
+.civil-task-list { display:grid; gap:3px; }
+.civil-task-row { display:grid; grid-template-columns:28px minmax(0,1fr) auto; align-items:center; gap:10px; width:100%; min-height:56px; padding:8px 4px; border-bottom:1px solid color-mix(in srgb,var(--border) 76%,transparent); color:var(--text-primary); text-align:left; cursor:pointer; }
+.civil-task-row:last-child { border-bottom:0; }
+.civil-task-row:hover { background:color-mix(in srgb,var(--civil-soft) 48%,transparent); }
+.civil-task-check { display:grid; width:22px; height:22px; place-items:center; border:1px solid var(--border-strong); border-radius:7px; color:#fff; font-size:13px; font-weight:800; }
+.civil-task-row.is-done .civil-task-check { border-color:var(--civil-accent); background:var(--civil-accent); }
+.civil-task-row > span:nth-child(2) { display:grid; min-width:0; gap:4px; }
+.civil-task-row strong { overflow:hidden; font-size:11px; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+.civil-task-row small { color:var(--text-tertiary); font-size:9px; }
+.civil-task-row > i { color:var(--civil-accent); font-size:9px; font-style:normal; white-space:nowrap; }
+.civil-task-row.is-done strong { color:var(--text-tertiary); text-decoration:line-through; }
+.civil-task-progress { margin-top:15px; padding-top:14px; border-top:1px solid var(--border); }
+.civil-task-progress .workspace-progress-track { margin-top:8px; }
+.civil-weak-list { display:grid; gap:0; margin:0; padding:0; list-style:none; }
+.civil-weak-list li { display:grid; grid-template-columns:27px minmax(0,1fr); gap:9px; align-items:start; padding:12px 0; border-bottom:1px solid color-mix(in srgb,var(--border) 76%,transparent); color:var(--text-secondary); font-size:10px; line-height:1.65; }
+.civil-weak-list li:last-child { border-bottom:0; }
+.civil-weak-list b { color:var(--civil-accent); font-size:9px; }
+.civil-note-label { display:block; margin-top:15px; color:var(--text-secondary); font-size:10px; font-weight:650; }
+.civil-note-input { display:block; width:100%; min-height:104px; margin-top:8px; padding:11px 12px; resize:vertical; border:1px solid var(--border); border-radius:10px; background:color-mix(in srgb,var(--card-bg) 93%,var(--bg)); color:var(--text-primary); font:inherit; font-size:11px; line-height:1.7; }
+.civil-note-input:focus { border-color:color-mix(in srgb,var(--civil-accent) 55%,var(--border)); box-shadow:0 0 0 3px color-mix(in srgb,var(--civil-accent) 10%,transparent); }
+.civil-note-hint { display:block; margin-top:6px; color:var(--text-tertiary); font-size:9px; }
+@media (max-width:1050px) { .civil-subject-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:800px) { .civil-overview-grid, .civil-subject-layout { grid-template-columns:1fr; }.civil-section-heading { align-items:start; flex-direction:column; gap:8px; }.civil-section-heading p { max-width:520px; text-align:left; }.civil-overview-hero, .civil-subject-hero { grid-template-columns:1fr; gap:24px; }.civil-overview-hero .workspace-hero-side, .civil-subject-hero .workspace-hero-side { padding:16px 0 0; border-top:1px solid var(--border); border-left:0; } }
+@media (max-width:520px) { .civil-module-tabs { width:100%; }.civil-progress-chart { display:none; }.civil-progress-mobile { display:grid; padding:4px 0 2px; }.civil-subject-grid { grid-template-columns:1fr; }.civil-history-cells { gap:3px; }.civil-history-legend { display:grid; }.civil-rhythm-summary { grid-template-columns:auto 1fr; }.civil-rhythm-summary span:nth-of-type(2) { grid-column:1; }.civil-rhythm-summary small:nth-of-type(2) { grid-column:2; }.civil-task-row { grid-template-columns:26px minmax(0,1fr); }.civil-task-row > i { display:none; } }
 
 @keyframes weather-popover-in { from { opacity:0; transform:translateY(-7px) scale(.985); } to { opacity:1; transform:none; } }
 @keyframes weather-skeleton { to { background-position:-200% 0; } }

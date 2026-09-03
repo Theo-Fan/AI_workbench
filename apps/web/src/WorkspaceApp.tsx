@@ -30,7 +30,12 @@ function NavIcon({ children }: { children: ReactNode }) {
 }
 
 function MenuItem({ page, title, children, path }: { page: WorkspacePageId; title: string; children: ReactNode; path: ReactNode }) {
-  const active = useContext(ActivePageContext) === page;
+  const activePage = useContext(ActivePageContext);
+  // English is a parent destination: keep its sidebar item highlighted while
+  // one of the focused IELTS modules is open.
+  const active = activePage === page
+    || (page === 'english' && ['english-vocab', 'english-listening', 'english-reading', 'english-writing'].includes(activePage))
+    || (page === 'civil-service' && ['civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic', 'civil-data', 'civil-general', 'civil-politics', 'civil-essay'].includes(activePage));
   const navigate = () => window.__AI_WORKSPACE_RUNTIME__?.navigate(page);
   return <div
     className={`menu-item${active ? ' active' : ''}`}
@@ -98,7 +103,7 @@ function WorkspaceShell({ renderState, account, onRequestLogin, onSignOut, onUpd
     previousActivePage.current = activePage;
     const group = ['research', 'research-inspiration', 'research-experiments', 'research-papers'].includes(activePage)
       ? 'research'
-      : ['ai-learn', 'english'].includes(activePage)
+      : ['ai-learn', 'english', 'english-vocab', 'english-listening', 'english-reading', 'english-writing', 'civil-service', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic', 'civil-data', 'civil-general', 'civil-politics', 'civil-essay'].includes(activePage)
         ? 'learning'
         : ['inspiration', 'review', 'comic'].includes(activePage)
           ? 'creation'
@@ -163,9 +168,10 @@ function WorkspaceShell({ renderState, account, onRequestLogin, onSignOut, onUpd
           </MenuDisclosure>
           <div className="menu-section-label">生活</div>
           <MenuItem page="fitness" title="健身打卡" path={<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11" />}>健身打卡</MenuItem>
-          <MenuDisclosure title="学习" expanded={expandedMenus.includes('learning')} active={['ai-learn', 'english'].includes(activePage)} onToggle={() => setExpandedMenus(current => current.includes('learning') ? current.filter(item => item !== 'learning') : [...current, 'learning'])} path={<><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M12 2v3M8 12h.01M16 12h.01M9 16h6" /></>}>
+          <MenuDisclosure title="学习" expanded={expandedMenus.includes('learning')} active={['ai-learn', 'english', 'english-vocab', 'english-listening', 'english-reading', 'english-writing', 'civil-service', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic', 'civil-data', 'civil-general', 'civil-politics', 'civil-essay'].includes(activePage)} onToggle={() => setExpandedMenus(current => current.includes('learning') ? current.filter(item => item !== 'learning') : [...current, 'learning'])} path={<><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M12 2v3M8 12h.01M16 12h.01M9 16h6" /></>}>
             <MenuItem page="ai-learn" title="AI 学习" path={<><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M12 2v3M8 12h.01M16 12h.01M9 16h6" /></>}>AI 学习</MenuItem>
             <MenuItem page="english" title="英语学习" path={<><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></>}>英语学习</MenuItem>
+            <MenuItem page="civil-service" title="公考学习" path={<><path d="M5 4h14v16H5z" /><path d="M8 8h8M8 12h5M8 16h8" /></>}>公考学习</MenuItem>
           </MenuDisclosure>
           <div className="menu-section-label">资讯</div>
           <MenuItem page="news" title="新闻热点" path={<><path d="M4 5h16v14H4z" /><path d="M8 9h8M8 13h8M8 17h5" /></>}>新闻热点</MenuItem>

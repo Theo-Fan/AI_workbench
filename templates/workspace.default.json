@@ -139,7 +139,7 @@
       },
       {
         "id": "en2",
-        "text": "背单词 50 个",
+        "text": "背单词 100 个",
         "done": false
       },
       {
@@ -537,12 +537,351 @@
       ]
     },
     "english": {
+      "profile": {
+        "target": "IELTS Academic",
+        "targetBand": "7.0+",
+        "currentBand": "6.5",
+        "dailyMinutes": 75,
+        "examDate": ""
+      },
       "challenge": {
         "current": 28,
         "total": 100,
-        "streak": 12,
+        "streak": 0,
         "lastCompletedDate": ""
-      }
+      },
+      "vocab": {
+        "dailyTarget": 100,
+        "dailyDate": "",
+        "bankVersion": "IELTS Academic Core + Topic Bank · v2.0",
+        "words": [],
+        "seenIds": [],
+        "lastBatchIds": [],
+        "favorites": [],
+        "lastGeneratedAt": ""
+      },
+      "listening": {
+        "completed": 8,
+        "target": 12,
+        "streak": 0,
+        "lastCompletedDate": "",
+        "lastSyncedAt": "",
+        "queue": [
+          {
+            "id": "listen-1",
+            "title": "Urban farming and the future of food",
+            "source": "BBC Learning English",
+            "level": "Band 6.5–7.0",
+            "duration": "08:42",
+            "skill": "Section 3 · Note completion",
+            "status": "done"
+          },
+          {
+            "id": "listen-2",
+            "title": "How coral reefs adapt to warming oceans",
+            "source": "TED-Ed",
+            "level": "Band 7.0+",
+            "duration": "06:18",
+            "skill": "Section 4 · Summary completion",
+            "status": "done"
+          },
+          {
+            "id": "listen-3",
+            "title": "A conversation about creative routines",
+            "source": "NPR Life Kit",
+            "level": "Band 6.0–6.5",
+            "duration": "09:05",
+            "skill": "Section 2 · Multiple choice",
+            "status": "done"
+          },
+          {
+            "id": "listen-4",
+            "title": "Reading the signals in a changing climate",
+            "source": "BBC Learning English",
+            "level": "Band 7.0",
+            "duration": "07:36",
+            "skill": "Section 3 · Matching headings",
+            "status": "done"
+          },
+          {
+            "id": "listen-5",
+            "title": "The science of better sleep",
+            "source": "TED-Ed",
+            "level": "Band 7.0–7.5",
+            "duration": "08:11",
+            "skill": "Section 4 · Flow-chart completion",
+            "status": "done"
+          },
+          {
+            "id": "listen-6",
+            "title": "A campus project that changed its neighbourhood",
+            "source": "NPR Life Kit",
+            "level": "Band 6.5",
+            "duration": "09:24",
+            "skill": "Section 2 · Map labelling",
+            "status": "done"
+          },
+          {
+            "id": "listen-7",
+            "title": "Why some memories last longer than others",
+            "source": "BBC Learning English",
+            "level": "Band 7.0",
+            "duration": "06:54",
+            "skill": "Section 3 · Multiple choice",
+            "status": "done"
+          },
+          {
+            "id": "listen-8",
+            "title": "Designing cities for everyday movement",
+            "source": "TED-Ed",
+            "level": "Band 7.5",
+            "duration": "10:02",
+            "skill": "Section 4 · Note completion",
+            "status": "done"
+          },
+          {
+            "id": "listen-9",
+            "title": "How museums bring hidden histories to life",
+            "source": "NPR Life Kit",
+            "level": "Band 7.0",
+            "duration": "08:47",
+            "skill": "Section 2 · Form completion",
+            "status": "next"
+          },
+          {
+            "id": "listen-10",
+            "title": "The promise and limits of vertical forests",
+            "source": "BBC Learning English",
+            "level": "Band 7.5",
+            "duration": "07:58",
+            "skill": "Section 3 · Sentence completion",
+            "status": "locked"
+          },
+          {
+            "id": "listen-11",
+            "title": "When algorithms make everyday decisions",
+            "source": "TED-Ed",
+            "level": "Band 7.5–8.0",
+            "duration": "09:16",
+            "skill": "Section 4 · Summary completion",
+            "status": "locked"
+          },
+          {
+            "id": "listen-12",
+            "title": "A guide to negotiating across cultures",
+            "source": "NPR Life Kit",
+            "level": "Band 7.0",
+            "duration": "08:29",
+            "skill": "Section 2 · Matching information",
+            "status": "locked"
+          }
+        ]
+      },
+      "reading": {
+        "dailyGoal": 1,
+        "completed": 6,
+        "lastFetchedAt": "",
+        "lastSource": "",
+        "lastTopic": "",
+        "remoteTitles": [],
+        "activeArticleId": "article-1",
+        "articles": [
+          {
+            "id": "article-1",
+            "type": "科技与社会",
+            "source": "The Conversation",
+            "level": "Band 7.0",
+            "minutes": 12,
+            "title": "Why small AI tools are changing the way people learn",
+            "excerpt": "From language practice to research notes, narrowly focused AI tools are becoming everyday study partners. The most useful systems do not replace effort; they make feedback easier to reach.",
+            "tags": [
+              "technology",
+              "education"
+            ],
+            "url": "https://theconversation.com/",
+            "publishedAt": "2026-08-27",
+            "saved": true
+          },
+          {
+            "id": "article-2",
+            "type": "环境科学",
+            "source": "National Geographic",
+            "level": "Band 7.5",
+            "minutes": 15,
+            "title": "The quiet return of wetlands in crowded cities",
+            "excerpt": "Urban wetlands are being restored as living infrastructure. They reduce flood risk, cool neighbourhoods and create habitats without demanding more concrete.",
+            "tags": [
+              "environment",
+              "cities"
+            ],
+            "url": "https://www.nationalgeographic.com/",
+            "publishedAt": "2026-08-26",
+            "saved": false
+          },
+          {
+            "id": "article-3",
+            "type": "文化与历史",
+            "source": "Smithsonian Magazine",
+            "level": "Band 7.0",
+            "minutes": 10,
+            "title": "What old maps reveal about the way cities remember",
+            "excerpt": "Maps are often treated as neutral records, yet every border, label and blank space reflects a decision about what deserves to be seen.",
+            "tags": [
+              "culture",
+              "history"
+            ],
+            "url": "https://www.smithsonianmag.com/",
+            "publishedAt": "2026-08-25",
+            "saved": false
+          },
+          {
+            "id": "article-4",
+            "type": "商业与工作",
+            "source": "Harvard Business Review",
+            "level": "Band 7.5",
+            "minutes": 14,
+            "title": "The case for slower, more deliberate collaboration",
+            "excerpt": "Teams that leave room for reflection often make fewer reactive decisions. Deliberate collaboration is not a refusal to move quickly; it is a way to spend speed where it matters.",
+            "tags": [
+              "work",
+              "management"
+            ],
+            "url": "https://hbr.org/",
+            "publishedAt": "2026-08-24",
+            "saved": false
+          },
+          {
+            "id": "article-5",
+            "type": "心理与健康",
+            "source": "Scientific American",
+            "level": "Band 8.0",
+            "minutes": 13,
+            "title": "Why our attention needs a recovery rhythm",
+            "excerpt": "Attention is not an unlimited resource. Short periods of recovery can improve the quality of the next focused interval more reliably than a longer stretch of forced concentration.",
+            "tags": [
+              "health",
+              "psychology"
+            ],
+            "url": "https://www.scientificamerican.com/",
+            "publishedAt": "2026-08-23",
+            "saved": false
+          },
+          {
+            "id": "article-6",
+            "type": "艺术与设计",
+            "source": "The Guardian",
+            "level": "Band 7.0",
+            "minutes": 11,
+            "title": "How public spaces make room for unexpected encounters",
+            "excerpt": "Good public design does more than direct movement. It leaves enough ambiguity for people to pause, observe one another and invent their own use for a place.",
+            "tags": [
+              "design",
+              "culture"
+            ],
+            "url": "https://www.theguardian.com/",
+            "publishedAt": "2026-08-22",
+            "saved": false
+          }
+        ]
+      },
+      "writing": {
+        "weeklyGoal": 2,
+        "completed": 0,
+        "lastReviewedAt": "",
+        "completedPromptIds": [],
+        "prompts": [
+          {
+            "id": "writing-1",
+            "type": "Task 2 · Opinion",
+            "title": "Should cities charge drivers to enter busy centres?",
+            "focus": "观点展开 · 让步段",
+            "time": 40,
+            "status": "next"
+          },
+          {
+            "id": "writing-2",
+            "type": "Task 1 · Report",
+            "title": "The chart shows how households used energy in 2025",
+            "focus": "概述段 · 比较趋势",
+            "time": 20,
+            "status": "planned"
+          },
+          {
+            "id": "writing-3",
+            "type": "Task 2 · Discussion",
+            "title": "Is remote work a benefit or a barrier to career growth?",
+            "focus": "双边讨论 · 结论",
+            "time": 40,
+            "status": "planned"
+          }
+        ],
+        "drafts": []
+      },
+      "history": []
+    },
+    "civilService": {
+      "profile": {
+        "target": "国考 / 省考通用",
+        "targetDate": "",
+        "targetScore": 75,
+        "dailyMinutes": 120
+      },
+      "weeklyGoal": 10,
+      "weeklyCompleted": 5,
+      "streak": 4,
+      "lastStudyDate": "",
+      "totalMinutes": 720,
+      "studyHistory": [
+        { "date": "2026-08-28", "minutes": 80, "completed": 3 },
+        { "date": "2026-08-29", "minutes": 110, "completed": 5 },
+        { "date": "2026-08-30", "minutes": 45, "completed": 2 },
+        { "date": "2026-08-31", "minutes": 95, "completed": 4 },
+        { "date": "2026-09-01", "minutes": 120, "completed": 6 },
+        { "date": "2026-09-02", "minutes": 70, "completed": 3 },
+        { "date": "2026-09-03", "minutes": 0, "completed": 0 }
+      ],
+      "subjects": [
+        { "id": "quantity", "title": "数量关系", "icon": "∑", "description": "用结构化方法拆解数量题，稳定拿到可得分的中低难度题。", "focus": "比例 · 方程 · 工程 · 排列组合", "progress": 42, "tasks": [
+          { "id": "quantity-1", "title": "掌握比例与倍数的统一建模", "done": true },
+          { "id": "quantity-2", "title": "完成工程问题 10 题并整理错因", "done": false },
+          { "id": "quantity-3", "title": "限时训练：资料型数量题 15 分钟", "done": false }
+        ], "weakPoints": ["复杂行程问题容易在单位换算上失分", "排列组合需要先判断是否重复取用"] },
+        { "id": "logic", "title": "逻辑判断", "icon": "◇", "description": "建立论证、削弱、加强与翻译推理的稳定判别路径。", "focus": "论证 · 翻译 · 真假 · 分析", "progress": 56, "tasks": [
+          { "id": "logic-1", "title": "区分加强、削弱与解释型论证", "done": true },
+          { "id": "logic-2", "title": "完成翻译推理基础题 12 题", "done": true },
+          { "id": "logic-3", "title": "整理一页常见逻辑连接词", "done": false }
+        ], "weakPoints": ["论证题先找结论，再定位隐含前提", "分析推理优先画约束关系而不是凭直觉"] },
+        { "id": "analogy", "title": "类比推理", "icon": "≈", "description": "从词项关系、语义属性和造句验证三层完成快速匹配。", "focus": "逻辑关系 · 言语关系 · 经验常识", "progress": 61, "tasks": [
+          { "id": "analogy-1", "title": "复习种属、组成与对应关系", "done": true },
+          { "id": "analogy-2", "title": "完成成语与词语类比 20 题", "done": true },
+          { "id": "analogy-3", "title": "建立易混关系辨析卡片", "done": false }
+        ], "weakPoints": ["优先验证关系方向与强度", "成语类比不能只凭感情色彩判断"] },
+        { "id": "graphic", "title": "图形推理", "icon": "▦", "description": "形成位置、样式、数量和属性四层观察顺序，减少无效试探。", "focus": "位置 · 样式 · 数量 · 属性", "progress": 35, "tasks": [
+          { "id": "graphic-1", "title": "完成图形位置规律专项 15 题", "done": false },
+          { "id": "graphic-2", "title": "整理旋转、翻转与叠加规律", "done": true },
+          { "id": "graphic-3", "title": "限时完成一组立体图形题", "done": false }
+        ], "weakPoints": ["先看位置变化，再看元素数量", "立体截面题需要固定观察视角"] },
+        { "id": "data", "title": "资料分析", "icon": "%", "description": "练熟增长率、比重、平均数与比较大小，提升读表和速算效率。", "focus": "增长 · 比重 · 平均 · 速算", "progress": 68, "tasks": [
+          { "id": "data-1", "title": "复习增长量与增长率的互换", "done": true },
+          { "id": "data-2", "title": "完成一套图表材料并控制在 20 分钟", "done": true },
+          { "id": "data-3", "title": "整理十组常用速算技巧", "done": false }
+        ], "weakPoints": ["注意基期量与现期量的对应关系", "比较题先估算数量级再精算"] },
+        { "id": "general", "title": "常识", "icon": "知", "description": "围绕高频主题搭建知识框架，用碎片时间滚动补齐盲区。", "focus": "法律 · 经济 · 科技 · 人文", "progress": 47, "tasks": [
+          { "id": "general-1", "title": "复习宪法与行政法高频考点", "done": true },
+          { "id": "general-2", "title": "完成科技人文常识晨读 30 条", "done": false },
+          { "id": "general-3", "title": "把本周错题归入知识树", "done": false }
+        ], "weakPoints": ["常识需要持续滚动，不适合考前一次性突击", "法律题先抓主体、行为和责任"] },
+        { "id": "politics", "title": "政治理论", "icon": "政", "description": "把理论原理、时政表达与材料分析连接起来，形成可复述的知识链。", "focus": "理论 · 时政 · 党史 · 表达", "progress": 52, "tasks": [
+          { "id": "politics-1", "title": "梳理新时代党的创新理论框架", "done": true },
+          { "id": "politics-2", "title": "完成时政热点专题笔记", "done": false },
+          { "id": "politics-3", "title": "用自己的话复述三个核心概念", "done": false }
+        ], "weakPoints": ["理论表述要回到关键词和逻辑关系", "时政材料要同时记录背景、措施和意义"] },
+        { "id": "essay", "title": "申论", "icon": "文", "description": "从审题、概括到文章写作建立完整闭环，让每次练笔都留下可复用表达。", "focus": "审题 · 概括 · 对策 · 文章", "progress": 39, "tasks": [
+          { "id": "essay-1", "title": "完成一篇归纳概括并对照采分点", "done": true },
+          { "id": "essay-2", "title": "积累五组公共政策规范表达", "done": false },
+          { "id": "essay-3", "title": "完成大作文提纲：基层治理", "done": false }
+        ], "weakPoints": ["先拆题干任务，再回材料找对应信息", "文章论点要落到分论点、案例与对策"] }
+      ]
     },
     "research": {
       "current": {

@@ -1,6 +1,9 @@
 export const workspacePageIds = [
   'dashboard', 'daily-plan', 'research', 'research-inspiration',
   'research-experiments', 'research-papers', 'fitness', 'ai-learn', 'english',
+  'english-vocab', 'english-listening', 'english-reading', 'english-writing',
+  'civil-service', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic',
+  'civil-data', 'civil-general', 'civil-politics', 'civil-essay',
   'inspiration', 'review', 'comic', 'news', 'settings'
 ] as const;
 

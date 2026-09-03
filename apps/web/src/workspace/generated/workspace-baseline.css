@@ -3062,6 +3062,160 @@
   .english-learning-page .english-rhythm-row { min-height: 92px; grid-template-columns: 1fr; gap: 7px; padding: 14px; border: 1px solid color-mix(in srgb, var(--life-accent) 14%, var(--border)); border-radius: 12px; background: color-mix(in srgb, var(--life-soft) 48%, var(--card-bg)); }
   .english-learning-page .english-rhythm-day { color: var(--life-accent); }
 
+  /* IELTS learning studio ------------------------------------------------ */
+  .english-learning-page, .english-vocab-page, .english-listening-page, .english-reading-page, .english-writing-page {
+    --english-accent: #d97706;
+    --english-accent-strong: #b45309;
+    --english-accent-soft: #fffbeb;
+    --english-ink: #25233a;
+  }
+  .english-learning-page .english-module-tabs, .english-vocab-page .english-module-tabs, .english-listening-page .english-module-tabs, .english-reading-page .english-module-tabs, .english-writing-page .english-module-tabs {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 4px; border: 1px solid var(--border); border-radius: 12px; background: color-mix(in srgb, var(--card-bg) 86%, var(--english-accent-soft));
+  }
+  .english-module-tab { border: 0; border-radius: 8px; padding: 9px 14px; color: var(--text-secondary); background: transparent; font-size: var(--fs-small); cursor: pointer; transition: all .16s ease; }
+  .english-module-tab:hover { color: var(--english-accent-strong); background: color-mix(in srgb, var(--english-accent-soft) 68%, transparent); }
+  .english-module-tab.is-active { color: var(--english-accent-strong); background: var(--card-bg); box-shadow: 0 3px 10px color-mix(in srgb, var(--english-accent) 13%, transparent); font-weight: 700; }
+  .english-overview-hero { margin-top: 2px !important; }
+  .english-subpage-hero { margin-top: 2px !important; }
+  .english-back-link { display: inline-flex; border: 0; padding: 0; color: var(--english-accent-strong); background: transparent; font-size: var(--fs-small); cursor: pointer; }
+  .english-back-link:hover { text-decoration: underline; }
+  .english-stat-strip { --life-accent: var(--english-accent); }
+  .english-module-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .english-module-card { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 11px; min-height: 116px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; color: var(--text-primary); background: var(--card-bg); text-align: left; box-shadow: var(--shadow); cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+  .english-module-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--english-accent) 38%, var(--border)); box-shadow: 0 10px 24px color-mix(in srgb, var(--english-accent) 12%, transparent); }
+  .english-module-icon { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 11px; color: var(--english-accent-strong); background: var(--english-accent-soft); font-family: Georgia, serif; font-size: 19px; font-weight: 700; }
+  .english-module-copy { display: grid; gap: 4px; min-width: 0; }
+  .english-module-copy small { color: var(--text-muted); font-size: 10px; letter-spacing: .11em; text-transform: uppercase; }
+  .english-module-copy strong { overflow: hidden; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+  .english-module-copy span { overflow: hidden; color: var(--text-secondary); font-size: 12px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
+  .english-module-meta { display: grid; justify-items: end; gap: 5px; color: var(--english-accent-strong); white-space: nowrap; }
+  .english-module-meta b { font-size: 12px; }
+  .english-module-meta i { font-size: 17px; font-style: normal; opacity: .65; }
+  .english-overview-grid { align-items: start; }
+  .english-reading-spotlight { padding: 18px; }
+  .english-reading-spotlight-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 18px; padding: 4px 3px 2px; }
+  .english-reading-spotlight-body h3 { margin: 8px 0 7px; font-family: Georgia, 'Songti SC', serif; font-size: 21px; line-height: 1.3; }
+  .english-reading-spotlight-body p { max-width: 790px; color: var(--text-secondary); font-size: var(--fs-small); line-height: 1.7; }
+  .english-article-type { display: inline-flex; border-radius: 999px; padding: 4px 8px; color: var(--english-accent-strong); background: var(--english-accent-soft); font-size: 11px; font-weight: 700; }
+  .english-article-meta, .english-detail-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; color: var(--text-muted); font-size: 12px; }
+  .english-linear-progress { height: 8px; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--english-accent) 12%, var(--border)); }
+  .english-linear-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--english-accent), color-mix(in srgb, var(--english-accent) 70%, var(--accent))); transition: width .25s ease; }
+  .english-vocab-hero-side { min-width: 230px; }
+  .english-vocab-progress-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; color: var(--text-secondary); font-size: 12px; }
+  .english-vocab-progress-head strong { color: var(--english-accent-strong); font-size: 22px; }
+  .english-vocab-hero-side small, .english-listening-page .workspace-hero-side small, .english-writing-page .workspace-hero-side small { display: block; margin-top: 9px; color: var(--text-muted); font-size: 11px; }
+  .english-vocab-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 4px 2px; }
+  .english-vocab-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .english-vocab-filter { display: inline-flex; align-items: center; gap: 6px; border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; color: var(--text-secondary); background: transparent; font-size: 12px; cursor: pointer; }
+  .english-vocab-filter b { color: var(--text-muted); font-size: 11px; }
+  .english-vocab-filter:hover { color: var(--english-accent-strong); background: var(--english-accent-soft); }
+  .english-vocab-filter.is-active { border-color: color-mix(in srgb, var(--english-accent) 20%, var(--border)); color: var(--english-accent-strong); background: var(--english-accent-soft); font-weight: 700; }
+  .english-vocab-toolbar-note { display: flex; align-items: center; gap: 7px; color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+  .english-sync-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #4abf8a; box-shadow: 0 0 0 4px color-mix(in srgb, #4abf8a 14%, transparent); }
+  .english-sync-dot.is-loading { background: #e9a63b; animation: english-pulse 1s ease-in-out infinite; }
+  @keyframes english-pulse { 50% { opacity: .35; transform: scale(.75); } }
+  .english-vocab-list { padding: 18px; }
+  .english-word-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: start; gap: 14px; padding: 16px 4px; border-bottom: 1px solid var(--border); transition: background .16s ease, opacity .16s ease; }
+  .english-word-row:last-of-type { border-bottom: 0; }
+  .english-word-row:hover { border-radius: 10px; background: color-mix(in srgb, var(--english-accent-soft) 55%, var(--card-bg)); }
+  .english-word-row.is-familiar { opacity: 1; background: color-mix(in srgb, var(--success-soft) 42%, transparent); box-shadow: inset 2px 0 0 var(--success); }
+  .english-word-index { padding-top: 3px; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+  .english-word-main { min-width: 0; }
+  .english-word-heading { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .english-word-heading h3 { margin: 0; color: var(--english-ink); font-family: Georgia, 'Times New Roman', serif; font-size: 20px; letter-spacing: -.01em; }
+  .english-word-phonetic { color: var(--text-muted); font-size: 12px; }
+  .english-word-pos, .english-word-band { border-radius: 999px; padding: 3px 7px; background: var(--surface-muted, var(--bg)); color: var(--text-secondary); font-size: 10px; }
+  .english-word-band { color: var(--english-accent-strong); background: var(--english-accent-soft); }
+  .english-word-meaning { margin: 5px 0 0; color: var(--text-primary); font-size: 14px; }
+  .english-word-example { max-width: 760px; margin: 7px 0 0; color: var(--text-secondary); font-size: 12px; line-height: 1.55; }
+  .english-word-actions { display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding-top: 2px; }
+  .english-word-status { border-radius: 999px; padding: 4px 7px; font-size: 10px; white-space: nowrap; }
+  .english-word-status.is-new { color: #8c5b00; background: #fff4d8; }
+  .english-word-status.is-learning { color: #4966b2; background: #e9efff; }
+  .english-word-status.is-familiar { color: #277a5a; background: #e5f7ef; }
+  .english-word-icon, .english-word-favorite { width: 29px; height: 29px; border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); background: var(--card-bg); cursor: pointer; }
+  .english-word-icon:hover, .english-word-favorite:hover, .english-word-favorite.is-active { border-color: var(--english-accent); color: var(--english-accent-strong); background: var(--english-accent-soft); }
+  .english-word-favorite.is-active { font-size: 17px; }
+  .english-vocab-pagination { display: flex; align-items: center; justify-content: center; gap: 16px; padding-top: 18px; color: var(--text-muted); font-size: 12px; }
+  .english-listening-layout, .english-reading-layout, .english-writing-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: 16px; align-items: start; }
+  .english-session-list, .english-article-list, .english-prompt-list { display: grid; gap: 2px; }
+  .english-session-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 13px; padding: 16px 3px; border-bottom: 1px solid var(--border); }
+  .english-session-row:last-child { border-bottom: 0; }
+  .english-session-row.is-locked { opacity: .52; }
+  .english-session-index { color: var(--english-accent-strong); font-family: ui-monospace, monospace; font-size: 12px; }
+  .english-session-copy small, .english-prompt-type { color: var(--text-muted); font-size: 11px; }
+  .english-session-copy h3 { margin: 5px 0; font-size: 15px; }
+  .english-session-copy p { margin: 0; color: var(--text-secondary); font-size: 12px; }
+  .english-listening-tips { padding-bottom: 7px; }
+  .english-tip-stack { display: grid; gap: 0; }
+  .english-tip-stack > div { display: grid; gap: 5px; padding: 15px 3px; border-bottom: 1px solid var(--border); }
+  .english-tip-stack > div:last-child { border-bottom: 0; }
+  .english-tip-stack b { color: var(--english-accent-strong); font-size: 12px; }
+  .english-tip-stack span { color: var(--text-secondary); font-size: 12px; line-height: 1.55; }
+  .english-listening-score, .english-writing-score { display: flex; align-items: baseline; gap: 7px; margin-bottom: 10px; }
+  .english-listening-score strong, .english-writing-score strong { color: var(--english-accent-strong); font-size: 34px; line-height: 1; }
+  .english-listening-score span, .english-writing-score span { color: var(--text-secondary); font-size: 12px; }
+  .english-article-library, .english-writing-prompts { padding: 18px; }
+  .english-article-card { padding: 15px 4px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .16s ease, padding .16s ease; }
+  .english-article-card:last-child { border-bottom: 0; }
+  .english-article-card:hover, .english-article-card.is-active { border-radius: 10px; padding-left: 10px; padding-right: 10px; background: color-mix(in srgb, var(--english-accent-soft) 65%, var(--card-bg)); }
+  .english-article-card-top { display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 11px; }
+  .english-article-card h3 { margin: 9px 0 6px; font-family: Georgia, 'Songti SC', serif; font-size: 17px; line-height: 1.35; }
+  .english-article-card p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
+  .english-reading-detail, .english-writing-desk { min-height: 420px; padding: 24px; }
+  .english-detail-kicker { color: var(--english-accent-strong); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .english-reading-detail h2, .english-writing-desk h2 { margin: 10px 0 0; font-family: Georgia, 'Songti SC', serif; font-size: 26px; line-height: 1.3; }
+  .english-detail-excerpt { margin: 24px 0; color: var(--text-primary); font-family: Georgia, 'Songti SC', serif; font-size: 17px; line-height: 1.85; }
+  .english-reading-annotation { display: grid; gap: 6px; border-left: 3px solid var(--english-accent); padding: 12px 14px; background: var(--english-accent-soft); }
+  .english-reading-annotation b { color: var(--english-accent-strong); font-size: 12px; }
+  .english-reading-annotation span { color: var(--text-secondary); font-size: 12px; line-height: 1.65; }
+  .english-detail-actions { display: flex; gap: 8px; margin-top: 24px; }
+  .english-reading-freshness { display: grid; grid-template-columns: 10px 1fr; align-items: center; column-gap: 8px; row-gap: 5px; margin-bottom: 15px; }
+  .english-reading-freshness strong { font-size: 13px; }
+  .english-reading-freshness small { grid-column: 2; color: var(--text-muted); font-size: 11px; }
+  .english-reading-progress-label { display: block; margin-top: 8px; color: var(--text-tertiary); font-size: var(--fs-micro); }
+  .english-prompt-row { display: grid; grid-template-columns: 98px minmax(0, 1fr) 20px; align-items: center; gap: 10px; width: 100%; border: 0; border-bottom: 1px solid var(--border); padding: 15px 4px; color: var(--text-primary); background: transparent; text-align: left; cursor: pointer; }
+  .english-prompt-row:hover, .english-prompt-row.is-active { border-radius: 10px; background: var(--english-accent-soft); }
+  .english-prompt-row.is-active .english-prompt-type, .english-prompt-row.is-active > i { color: var(--english-accent-strong); }
+  .english-prompt-copy { display: grid; gap: 5px; min-width: 0; }
+  .english-prompt-copy strong { overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+  .english-prompt-copy small { color: var(--text-secondary); font-size: 11px; }
+  .english-prompt-row > i { color: var(--text-muted); font-style: normal; }
+  .english-writing-focus { display: grid; gap: 4px; margin-top: 22px; border-radius: 10px; padding: 13px 14px; background: var(--english-accent-soft); }
+  .english-writing-focus span { color: var(--text-muted); font-size: 11px; }
+  .english-writing-focus b { color: var(--english-accent-strong); font-size: 14px; }
+  .english-writing-focus small { color: var(--text-secondary); font-size: 11px; }
+  .english-writing-draft { display: block; width: 100%; min-height: 190px; resize: vertical; margin-top: 16px; border: 1px solid var(--border); border-radius: 10px; padding: 13px; color: var(--text-primary); background: var(--card-bg); font: inherit; font-size: 13px; line-height: 1.7; }
+  .english-writing-draft:focus { outline: 0; border-color: var(--english-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--english-accent) 13%, transparent); }
+  .english-writing-desk-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; color: var(--text-muted); font-size: 11px; }
+  .english-vocab-page, .english-listening-page, .english-reading-page, .english-writing-page { display: grid; gap: 16px; }
+  .english-vocab-page .workspace-hero, .english-listening-page .workspace-hero, .english-reading-page .workspace-hero, .english-writing-page .workspace-hero { position: relative; grid-template-columns: minmax(0, 1fr) minmax(285px, 350px); gap: 24px; margin: 0; padding: 26px; overflow: hidden; isolation: isolate; border-color: color-mix(in srgb, var(--english-accent) 17%, var(--border)); border-radius: 18px; background: linear-gradient(132deg, color-mix(in srgb, var(--english-accent) 10%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--english-accent-soft) 78%, var(--card-bg))); }
+  .english-vocab-page .workspace-hero::after, .english-listening-page .workspace-hero::after, .english-reading-page .workspace-hero::after, .english-writing-page .workspace-hero::after { position: absolute; z-index: -1; right: 4%; bottom: -94px; width: 230px; height: 230px; border: 40px solid color-mix(in srgb, var(--english-accent) 6%, transparent); border-radius: 50%; content: ''; pointer-events: none; }
+  .english-vocab-page .workspace-kicker, .english-listening-page .workspace-kicker, .english-reading-page .workspace-kicker, .english-writing-page .workspace-kicker { gap: 8px; color: var(--english-accent); letter-spacing: .12em; }
+  .english-vocab-page .workspace-kicker::before, .english-listening-page .workspace-kicker::before, .english-reading-page .workspace-kicker::before, .english-writing-page .workspace-kicker::before { width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
+  .english-vocab-page .workspace-hero-title, .english-listening-page .workspace-hero-title, .english-reading-page .workspace-hero-title, .english-writing-page .workspace-hero-title { max-width: 680px; margin-top: 9px; font-size: clamp(24px, 2.7vw, 34px); line-height: 1.3; letter-spacing: -.03em; }
+  .english-vocab-page .workspace-hero-copy, .english-listening-page .workspace-hero-copy, .english-reading-page .workspace-hero-copy, .english-writing-page .workspace-hero-copy { max-width: 700px; margin-top: 10px; font-size: var(--fs-small); line-height: 1.7; }
+  [data-theme="dark"] .english-learning-page, [data-theme="dark"] .english-vocab-page, [data-theme="dark"] .english-listening-page, [data-theme="dark"] .english-reading-page, [data-theme="dark"] .english-writing-page { --english-accent: #efb960; --english-accent-strong: #f7d18d; --english-accent-soft: #302314; --english-ink: #f7f3eb; }
+  [data-theme="dark"] .english-word-heading h3 { color: var(--english-ink); }
+  @media (max-width: 980px) {
+    .english-module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .english-listening-layout, .english-reading-layout, .english-writing-layout { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 680px) {
+    .english-module-grid { grid-template-columns: 1fr; }
+    .english-module-card { min-height: 100px; }
+    .english-vocab-toolbar { align-items: flex-start; flex-direction: column; }
+    .english-vocab-toolbar-note { white-space: normal; }
+    .english-word-row { grid-template-columns: 25px minmax(0, 1fr); }
+    .english-word-actions { grid-column: 2; justify-content: flex-start; flex-wrap: wrap; }
+    .english-reading-spotlight-body { grid-template-columns: 1fr; align-items: start; }
+    .english-session-row { grid-template-columns: 28px minmax(0, 1fr); }
+    .english-session-row > button { grid-column: 2; justify-self: start; }
+    .english-writing-desk-foot { align-items: flex-start; flex-direction: column; }
+    .english-vocab-page .workspace-hero, .english-listening-page .workspace-hero, .english-reading-page .workspace-hero, .english-writing-page .workspace-hero { grid-template-columns: 1fr; padding: 19px 18px; }
+    .english-vocab-page .workspace-hero-title, .english-listening-page .workspace-hero-title, .english-reading-page .workspace-hero-title, .english-writing-page .workspace-hero-title { font-size: 25px; }
+  }
+
   @media (min-width: 600px) {
     .fitness-page .fitness-layout { grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); }
     .ai-learning-page .study-main-grid, .english-learning-page .study-main-grid { grid-template-columns: minmax(0, 1fr) minmax(300px, .85fr); }
@@ -3286,6 +3440,22 @@
     .main { padding: 28px 28px 104px; }
   }
 
+  /* The refinement layer keeps a wide sidebar below 980px, so the generic
+     tablet icon-rail rule must not hide its labels. Without this override an
+     expanded sidebar shows an empty active pill at common laptop widths. */
+  @media (min-width: 768px) and (max-width: 979px) {
+    .sidebar { width: 224px; }
+    .sidebar-header { padding: 24px 20px 16px; justify-content: flex-start; }
+    .sidebar-header .title, .sidebar-header .subtitle,
+    .sync-indicator #syncText, .menu-section-label,
+    .theme-toggle .tt-label { display: block; }
+    .sync-indicator { margin: 0 12px 8px; padding: 8px 10px; justify-content: flex-start; }
+    .menu-scroll { overflow-y: auto; }
+    .menu-item { justify-content: flex-start; padding: 9px 10px; }
+    .menu-item .label { display: inline; }
+    .sidebar-footer { flex-direction: row; padding: 12px; }
+  }
+
   @media (max-width: 767px) {
     .main { padding: 64px 16px 92px; }
     .main-header { margin-bottom: 16px; min-height: 34px; }
@@ -3339,6 +3509,433 @@
 
   @media (min-width: 600px) and (max-width: 767px) {
     .english-learning-page .english-rhythm { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  /* ============================================================
+     IELTS ENGLISH MODULES
+     The overview and its four focused modules share the workspace card
+     language while each keeps a clear, task-oriented layout.
+     ============================================================ */
+  .english-learning-page, .english-vocab-page, .english-listening-page, .english-reading-page, .english-writing-page {
+    --primary: #d97706;
+    --primary-hover: #b45309;
+    --primary-light: #fef3c7;
+    --primary-soft: #fffbeb;
+    --accent: #f59e0b;
+    --life-accent: var(--primary);
+    --life-soft: var(--primary-soft);
+    --english-accent: var(--primary);
+    --english-accent-strong: var(--primary-hover);
+    --english-accent-soft: var(--primary-soft);
+    display: grid;
+    gap: 16px;
+  }
+  .english-module-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: max-content;
+    max-width: 100%;
+    padding: 4px;
+    overflow-x: auto;
+    border: 1px solid color-mix(in srgb, var(--life-accent) 13%, var(--border));
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--card-bg) 92%, var(--life-soft));
+    scrollbar-width: thin;
+  }
+  .english-module-tab {
+    min-height: 31px;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: var(--fs-caption);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color .16s ease, background .16s ease, transform .16s ease;
+  }
+  .english-module-tab:hover { color: var(--life-accent); background: color-mix(in srgb, var(--life-soft) 78%, var(--card-bg)); transform: translateY(-1px); }
+  .english-module-tab.is-active { color: var(--life-accent); background: var(--card-bg); box-shadow: 0 3px 10px color-mix(in srgb, var(--life-accent) 12%, transparent); }
+  .english-module-tab:focus-visible, .english-module-card:focus-visible, .english-prompt-row:focus-visible, .english-article-card:focus-visible { outline: 2px solid var(--life-accent); outline-offset: 2px; }
+  .english-overview-hero, .english-subpage-hero {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr) minmax(285px, 390px);
+    gap: 24px;
+    margin: 0;
+    padding: 26px;
+    overflow: hidden;
+    isolation: isolate;
+    border-color: color-mix(in srgb, var(--life-accent) 17%, var(--border));
+    border-radius: 18px;
+    background: linear-gradient(132deg, color-mix(in srgb, var(--life-accent) 12%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--life-soft) 78%, var(--card-bg)));
+  }
+  .english-overview-hero::after, .english-subpage-hero::after {
+    position: absolute;
+    z-index: -1;
+    right: 4%;
+    bottom: -94px;
+    width: 230px;
+    height: 230px;
+    border: 40px solid color-mix(in srgb, var(--life-accent) 6%, transparent);
+    border-radius: 50%;
+    content: '';
+    pointer-events: none;
+  }
+  .english-overview-hero .workspace-kicker, .english-subpage-hero .workspace-kicker { gap: 8px; color: var(--life-accent); letter-spacing: .12em; }
+  .english-overview-hero .workspace-kicker::before, .english-subpage-hero .workspace-kicker::before { width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
+  .english-overview-hero .workspace-hero-title, .english-subpage-hero .workspace-hero-title { max-width: 660px; margin-top: 9px; font-size: clamp(24px, 2.7vw, 34px); line-height: 1.3; letter-spacing: -.03em; }
+  .english-overview-hero .workspace-hero-copy, .english-subpage-hero .workspace-hero-copy { max-width: 650px; margin-top: 10px; font-size: var(--fs-small); }
+  .english-overview-hero .workspace-hero-side, .english-subpage-hero .workspace-hero-side { position: relative; z-index: 1; padding: 14px; border: 1px solid color-mix(in srgb, var(--life-accent) 15%, var(--border)); border-radius: 14px; background: color-mix(in srgb, var(--card-bg) 86%, var(--life-soft)); box-shadow: 0 8px 22px color-mix(in srgb, var(--life-accent) 7%, transparent); }
+  .english-overview-hero .workspace-progress-head, .english-subpage-hero .workspace-progress-head { color: var(--text-secondary); }
+  .english-overview-hero .workspace-progress-head strong, .english-subpage-hero .workspace-progress-head strong { color: var(--life-accent); }
+  .english-back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 14px; padding: 0; border: 0; background: transparent; color: var(--life-accent); font: inherit; font-size: var(--fs-caption); font-weight: var(--fw-semibold); cursor: pointer; }
+  .english-back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .english-linear-progress { height: 8px; overflow: hidden; border-radius: 99px; background: color-mix(in srgb, var(--life-soft) 88%, var(--border)); }
+  .english-linear-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--life-accent), color-mix(in srgb, var(--life-accent) 70%, var(--accent))); transition: width .35s ease; }
+  .english-overview-hero .workspace-next, .english-subpage-hero .workspace-next { border-color: color-mix(in srgb, var(--life-accent) 18%, var(--border)); background: color-mix(in srgb, var(--life-soft) 72%, var(--card-bg)); }
+  .english-overview-hero .workspace-next-mark, .english-subpage-hero .workspace-next-mark { border-color: var(--life-accent); }
+  .english-stat-strip { gap: 0; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--card-bg); box-shadow: var(--shadow); }
+  .english-stat-strip .workspace-stat { position: relative; padding: 15px 18px; border: 0; border-right: 1px solid var(--border); border-radius: 0; background: transparent; }
+  .english-stat-strip .workspace-stat:last-child { border-right: 0; }
+  .english-stat-strip .workspace-stat::before { position: absolute; top: 0; left: 18px; width: 22px; height: 2px; border-radius: 2px; background: var(--life-accent); content: ''; opacity: .75; }
+  .english-stat-strip .workspace-stat-value { color: var(--text-primary); font-size: 22px; }
+  .english-stat-strip .workspace-stat.is-accent .workspace-stat-value { color: var(--life-accent); }
+  .english-module-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .english-module-card { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr auto; gap: 13px; min-width: 0; min-height: 142px; padding: 17px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--life-accent) 16%, var(--border)); border-radius: var(--radius-lg); background: var(--card-bg); color: inherit; text-align: left; box-shadow: var(--shadow); cursor: pointer; transition: border-color .18s ease, box-shadow .18s ease, transform .18s cubic-bezier(.16,1,.3,1), background .18s ease; }
+  .english-module-card::after { position: absolute; right: -28px; bottom: -35px; width: 100px; height: 100px; border: 17px solid color-mix(in srgb, var(--life-accent) 7%, transparent); border-radius: 50%; content: ''; pointer-events: none; }
+  .english-module-card:hover { border-color: color-mix(in srgb, var(--life-accent) 42%, var(--border)); background: linear-gradient(145deg, color-mix(in srgb, var(--life-soft) 42%, var(--card-bg)), var(--card-bg)); box-shadow: 0 10px 24px color-mix(in srgb, var(--life-accent) 10%, transparent); transform: translateY(-2px); }
+  .english-module-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--life-soft); color: var(--life-accent); font-size: 16px; font-weight: var(--fw-bold); }
+  .english-module-copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; }
+  .english-module-copy small { color: var(--life-accent); font-size: 9px; font-weight: var(--fw-bold); letter-spacing: .12em; text-transform: uppercase; }
+  .english-module-copy strong { margin-top: 4px; color: var(--text-primary); font-size: 15px; line-height: 1.4; }
+  .english-module-copy > span { margin-top: 5px; color: var(--text-tertiary); font-size: var(--fs-micro); line-height: 1.55; }
+  .english-module-meta { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 9px; border-top: 1px solid var(--border); color: var(--life-accent); font-size: var(--fs-micro); }
+  .english-module-meta b { font-weight: var(--fw-bold); }
+  .english-module-meta i { font-size: 16px; font-style: normal; transition: transform .16s ease; }
+  .english-module-card:hover .english-module-meta i { transform: translate(2px, -2px); }
+  .english-overview-grid { align-items: stretch; }
+  .english-learning-page .english-module-tabs { margin-bottom: 0; }
+  .english-skill-dashboard { overflow: hidden; }
+  .english-skill-dashboard .card-header { margin: -18px -18px 0; padding: 16px 18px; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--life-soft) 30%, var(--card-bg)); }
+  .english-skill-stat-list { display: grid; grid-template-columns: repeat(4, minmax(205px, 1fr)); margin: 0 -18px -18px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+  .english-skill-stat-card { --skill-accent: var(--life-accent); --skill-soft: var(--life-soft); position: relative; display: grid; gap: 8px; min-width: 0; min-height: 140px; padding: 17px 18px 16px; overflow: hidden; scroll-snap-align: start; border: 0; border-right: 1px solid var(--border); background: var(--card-bg); color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .18s ease, box-shadow .18s ease; }
+  .english-skill-stat-card::before { position: absolute; top: 0; left: 18px; width: 24px; height: 2px; border-radius: 0 0 2px 2px; background: var(--skill-accent); content: ''; opacity: .68; }
+  .english-skill-stat-card:last-child { border-right: 0; }
+  .english-skill-stat-card:hover { z-index: 1; background: color-mix(in srgb, var(--skill-soft) 22%, var(--card-bg)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--skill-accent) 18%, var(--border)); }
+  .english-skill-stat-card:focus-visible { position: relative; z-index: 2; outline: 2px solid var(--skill-accent); outline-offset: -2px; }
+  .english-skill-stat-top, .english-skill-stat-body, .english-skill-stat-foot { position: relative; z-index: 1; display: flex; align-items: center; }
+  .english-skill-stat-top { gap: 9px; }
+  .english-skill-stat-top > strong { color: var(--text-primary); font-size: 14px; line-height: 1.35; }
+  .english-skill-stat-icon { display: grid; width: 28px; height: 28px; flex: 0 0 auto; place-items: center; border-radius: 8px; background: var(--skill-soft); color: var(--skill-accent); font-family: Georgia, 'Times New Roman', serif; font-size: 11px; font-weight: var(--fw-bold); }
+  .english-skill-stat-cadence { margin-left: auto; color: var(--text-tertiary); font-size: 9px; font-weight: var(--fw-semibold); }
+  .english-skill-stat-body { justify-content: space-between; gap: 12px; min-height: 34px; }
+  .english-skill-stat-metric { display: flex; align-items: baseline; gap: 7px; min-width: 0; }
+  .english-skill-stat-metric strong { color: var(--text-primary); font-family: Georgia, 'Songti SC', serif; font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .english-skill-stat-metric > span { color: var(--text-tertiary); font-family: Georgia, 'Songti SC', serif; font-size: 14px; font-weight: var(--fw-semibold); white-space: nowrap; }
+  .english-skill-stat-unit { margin-left: auto; color: var(--text-tertiary); font-size: 9px; white-space: nowrap; }
+  .english-skill-stat-detail { position: relative; z-index: 1; min-width: 0; overflow: hidden; color: var(--text-secondary); font-size: var(--fs-micro); line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
+  .english-skill-stat-foot { gap: 10px; }
+  .english-skill-stat-progress { display: block; height: 3px; flex: 1 1 auto; overflow: hidden; border-radius: 99px; background: color-mix(in srgb, var(--skill-soft) 72%, var(--border)); }
+  .english-skill-stat-progress i { display: block; height: 100%; border-radius: inherit; background: var(--skill-accent); }
+  .english-skill-stat-progress-label { min-width: 28px; color: var(--text-tertiary); font-size: 9px; font-weight: var(--fw-semibold); text-align: right; }
+  .english-history-card { overflow: hidden; }
+  .english-history-card .card-header { margin: -18px -18px 0; padding: 16px 18px; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--life-soft) 22%, var(--card-bg)); }
+  .english-recent-status-body { display: grid; grid-template-columns: minmax(330px, .95fr) minmax(0, 1.7fr); margin: 0 -18px -18px; }
+  .english-recent-rhythm { display: grid; grid-template-columns: minmax(135px, .65fr) minmax(190px, 1.2fr); align-items: end; gap: 24px; padding: 20px 22px; border-right: 1px solid var(--border); background: linear-gradient(145deg, color-mix(in srgb, var(--life-soft) 36%, var(--card-bg)), var(--card-bg)); }
+  .english-recent-rhythm-head { align-self: center; }
+  .english-recent-rhythm-head > span { display: grid; gap: 7px; }
+  .english-recent-rhythm-head small { color: var(--life-accent); font-size: 9px; font-weight: var(--fw-bold); letter-spacing: .08em; }
+  .english-recent-rhythm-head strong { color: var(--text-primary); font-family: Georgia, 'Songti SC', serif; font-size: 34px; line-height: 1; }
+  .english-recent-rhythm-head em { margin-left: 6px; color: var(--text-secondary); font-family: var(--workspace-interface-font, inherit); font-size: 11px; font-style: normal; font-weight: var(--fw-semibold); }
+  .english-recent-rhythm-head p { margin-top: 9px; color: var(--text-secondary); font-size: 9px; line-height: 1.55; white-space: nowrap; }
+  .english-week-chart { display: grid; height: 76px; grid-template-columns: repeat(7, minmax(16px, 1fr)); align-items: end; gap: 8px; }
+  .english-week-bar { display: grid; height: 100%; grid-template-rows: minmax(0, 1fr) auto; gap: 7px; color: var(--text-muted); }
+  .english-week-bar > span { position: relative; display: flex; height: 100%; align-items: flex-end; justify-content: center; overflow: hidden; border-radius: 5px 5px 2px 2px; background: color-mix(in srgb, var(--life-soft) 38%, var(--card-bg)); }
+  .english-week-bar i { display: block; width: 100%; min-height: 3px; border-radius: 4px 4px 2px 2px; background: color-mix(in srgb, var(--text-muted) 24%, var(--life-soft)); transition: height .22s ease; }
+  .english-week-bar small { font-size: 8px; text-align: center; white-space: nowrap; }
+  .english-week-bar.is-active { color: var(--text-secondary); }
+  .english-week-bar.is-active i { background: linear-gradient(180deg, color-mix(in srgb, var(--life-accent) 74%, #f4b65d), var(--life-accent)); }
+  .english-week-bar.is-today small { color: var(--life-accent); font-weight: var(--fw-bold); }
+  .english-recent-modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .english-recent-module { display: grid; grid-template-columns: 28px minmax(0, 1fr) minmax(88px, .7fr); align-items: center; gap: 10px; min-width: 0; padding: 16px 18px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .english-recent-module:nth-child(2n) { border-right: 0; }
+  .english-recent-module:nth-last-child(-n+2) { border-bottom: 0; }
+  .english-recent-module-icon { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 8px; background: var(--life-soft); color: var(--life-accent); font-family: Georgia, 'Times New Roman', serif; font-size: 10px; font-weight: var(--fw-bold); }
+  .english-recent-module-copy { display: grid; gap: 4px; min-width: 0; }
+  .english-recent-module-copy strong { color: var(--text-primary); font-size: var(--fs-caption); }
+  .english-recent-module-copy span { overflow: hidden; color: var(--text-tertiary); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+  .english-recent-module-progress { display: grid; gap: 6px; min-width: 0; }
+  .english-recent-module-progress > span { height: 3px; overflow: hidden; border-radius: 99px; background: color-mix(in srgb, var(--life-soft) 68%, var(--border)); }
+  .english-recent-module-progress i { display: block; height: 100%; border-radius: inherit; background: var(--life-accent); }
+  .english-recent-module-progress small { color: var(--text-tertiary); font-size: 8px; text-align: right; white-space: nowrap; }
+  .english-reading-spotlight { overflow: hidden; }
+  .english-reading-spotlight .card-header { margin: -18px -18px 14px; padding: 18px; border-bottom: 1px solid var(--border); background: linear-gradient(90deg, color-mix(in srgb, var(--life-soft) 72%, var(--card-bg)), var(--card-bg) 70%); }
+  .english-reading-spotlight-body { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; }
+  .english-reading-spotlight-body h3 { margin-top: 8px; color: var(--text-primary); font-size: 18px; line-height: 1.4; }
+  .english-reading-spotlight-body p { max-width: 72ch; margin-top: 7px; color: var(--text-secondary); font-size: var(--fs-caption); line-height: 1.7; }
+  .english-article-type { display: inline-flex; align-items: center; min-height: 22px; padding: 0 8px; border-radius: 6px; background: var(--life-soft); color: var(--life-accent); font-size: 10px; font-weight: var(--fw-bold); }
+  .english-article-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; color: var(--text-tertiary); font-size: var(--fs-micro); }
+
+  /* Vocabulary */
+  .english-vocab-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-width: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); box-shadow: var(--shadow-sm); }
+  .english-vocab-filters { display: flex; align-items: center; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+  .english-vocab-filter { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--text-secondary); font: inherit; font-size: var(--fs-caption); white-space: nowrap; cursor: pointer; }
+  .english-vocab-filter:hover { background: var(--primary-soft); color: var(--primary); }
+  .english-vocab-filter.is-active { background: var(--primary-soft); color: var(--primary); font-weight: var(--fw-semibold); }
+  .english-vocab-filter b { display: inline-grid; min-width: 20px; height: 19px; place-items: center; padding: 0 4px; border-radius: 99px; background: color-mix(in srgb, var(--text-tertiary) 13%, transparent); color: inherit; font-size: 10px; }
+  .english-vocab-toolbar-note { display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto; color: var(--text-tertiary); font-size: var(--fs-micro); white-space: nowrap; }
+  .english-sync-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+  .english-sync-dot.is-loading { background: var(--warning); box-shadow: 0 0 0 3px var(--warning-soft); animation: englishPulse 1.2s ease-in-out infinite; }
+  @keyframes englishPulse { 50% { opacity: .35; transform: scale(.78); } }
+  .english-vocab-list { overflow: hidden; padding: 18px; }
+  .english-vocab-list .card-header { margin-bottom: 6px; }
+  .english-word-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 13px; align-items: center; padding: 14px 8px; border-bottom: 1px solid var(--border); border-radius: 10px; transition: background .16s ease, transform .16s ease; }
+  .english-word-row:last-of-type { border-bottom: 0; }
+  .english-word-row:hover { background: color-mix(in srgb, var(--life-soft) 62%, var(--card-bg)); transform: translateX(2px); }
+  .english-word-row.is-familiar { opacity: 1; background: color-mix(in srgb, var(--success-soft) 42%, transparent); box-shadow: inset 2px 0 0 var(--success); }
+  .english-word-index { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--primary-soft); color: var(--primary); font-size: 10px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+  .english-word-main { min-width: 0; }
+  .english-word-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px 10px; }
+  .english-word-heading h3 { color: var(--text-primary); font-size: 16px; line-height: 1.3; }
+  .english-word-phonetic { color: var(--text-secondary); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--fs-micro); }
+  .english-word-pos, .english-word-band { padding: 2px 6px; border-radius: 5px; background: var(--neutral-soft); color: var(--text-tertiary); font-size: 10px; }
+  .english-word-band { color: var(--primary); background: var(--primary-soft); }
+  .english-word-meaning { margin-top: 5px; color: var(--text-secondary); font-size: var(--fs-caption); line-height: 1.5; }
+  .english-word-example { margin-top: 4px; color: var(--text-tertiary); font-size: var(--fs-micro); font-style: italic; line-height: 1.55; }
+  .english-word-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+  .english-word-status { padding: 4px 7px; border-radius: 6px; font-size: 10px; font-weight: var(--fw-semibold); white-space: nowrap; }
+  .english-word-status.is-new { background: var(--neutral-soft); color: var(--text-tertiary); }
+  .english-word-status.is-learning { background: var(--warning-soft); color: var(--warning-hover); }
+  .english-word-status.is-familiar { background: var(--success-soft); color: var(--success-hover); }
+  .english-word-icon, .english-word-favorite { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text-tertiary); font: inherit; font-size: 15px; cursor: pointer; transition: color .15s ease, border-color .15s ease, background .15s ease; }
+  .english-word-icon:hover, .english-word-favorite:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+  .english-word-favorite.is-active { border-color: color-mix(in srgb, var(--warning) 42%, var(--border)); color: var(--warning-hover); background: var(--warning-soft); }
+  .english-word-review { white-space: nowrap; }
+  .english-vocab-pagination { display: flex; align-items: center; justify-content: center; gap: 14px; padding-top: 16px; color: var(--text-tertiary); font-size: var(--fs-micro); }
+  .english-vocab-pagination button:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* Listening */
+  .english-listening-layout, .english-reading-layout, .english-writing-layout { display: grid; grid-template-columns: minmax(0, 1.22fr) minmax(300px, .78fr); gap: 14px; align-items: start; }
+  .english-listening-page .study-card, .english-reading-page .study-card, .english-writing-page .study-card { overflow: hidden; border-radius: var(--radius-lg); }
+  .english-listening-page .study-card .card-header, .english-reading-page .study-card .card-header, .english-writing-page .study-card .card-header { margin: -18px -18px 14px; padding: 18px; border-bottom: 1px solid var(--border); background: linear-gradient(90deg, color-mix(in srgb, var(--life-soft) 72%, var(--card-bg)), var(--card-bg) 70%); }
+  .english-session-list, .english-article-list, .english-prompt-list { display: grid; gap: 7px; }
+  .english-session-row { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 13px 8px; border: 1px solid transparent; border-radius: 10px; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
+  .english-session-row:hover { border-color: color-mix(in srgb, var(--life-accent) 18%, var(--border)); background: color-mix(in srgb, var(--life-soft) 54%, var(--card-bg)); transform: translateX(2px); }
+  .english-session-row.is-locked { opacity: .48; }
+  .english-session-row.is-done { background: color-mix(in srgb, var(--success-soft) 52%, var(--card-bg)); }
+  .english-session-index { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--primary-soft); color: var(--primary); font-size: 11px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+  .english-session-copy { min-width: 0; }
+  .english-session-copy small { color: var(--life-accent); font-size: 10px; font-weight: var(--fw-semibold); }
+  .english-session-copy h3 { margin-top: 4px; overflow: hidden; color: var(--text-primary); font-size: var(--fs-small); line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
+  .english-session-copy p { margin-top: 4px; color: var(--text-tertiary); font-size: var(--fs-micro); }
+  .english-listening-tips { align-self: stretch; }
+  .english-tip-stack { display: grid; gap: 8px; }
+  .english-tip-stack > div { display: grid; gap: 4px; padding: 12px; border: 1px solid color-mix(in srgb, var(--life-accent) 13%, var(--border)); border-radius: 10px; background: color-mix(in srgb, var(--life-soft) 44%, var(--card-bg)); }
+  .english-tip-stack b { color: var(--text-primary); font-size: var(--fs-caption); }
+  .english-tip-stack span { color: var(--text-secondary); font-size: var(--fs-micro); line-height: 1.55; }
+  .english-listening-score, .english-reading-freshness, .english-writing-score { display: flex; align-items: baseline; gap: 8px; }
+  .english-listening-score strong, .english-writing-score strong { color: var(--life-accent); font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .english-listening-score span, .english-writing-score span { color: var(--text-secondary); font-size: var(--fs-caption); }
+  .english-subpage-hero .english-linear-progress { margin-top: 5px; }
+  .english-subpage-hero .workspace-hero-side small { color: var(--text-tertiary); font-size: var(--fs-micro); line-height: 1.5; }
+
+  /* Reading */
+  .english-reading-layout { grid-template-columns: minmax(290px, .82fr) minmax(0, 1.18fr); }
+  .english-article-card { display: block; padding: 13px; border: 1px solid transparent; border-radius: 10px; background: color-mix(in srgb, var(--card-bg) 92%, var(--bg)); color: inherit; text-align: left; cursor: pointer; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
+  .english-article-card:hover { border-color: color-mix(in srgb, var(--life-accent) 22%, var(--border)); background: color-mix(in srgb, var(--life-soft) 52%, var(--card-bg)); transform: translateX(2px); }
+  .english-article-card.is-active { border-color: color-mix(in srgb, var(--life-accent) 42%, var(--border)); background: color-mix(in srgb, var(--life-soft) 74%, var(--card-bg)); box-shadow: inset 3px 0 0 var(--life-accent); }
+  .english-article-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--text-tertiary); font-size: 10px; }
+  .english-article-card h3 { margin-top: 9px; color: var(--text-primary); font-size: var(--fs-small); line-height: 1.45; }
+  .english-article-card p { display: -webkit-box; margin-top: 6px; overflow: hidden; color: var(--text-secondary); font-size: var(--fs-micro); line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+  .english-article-card .english-article-meta { margin-top: 9px; font-size: 10px; }
+  .english-reading-detail { min-height: 380px; }
+  .english-detail-kicker { color: var(--life-accent); font-size: 10px; font-weight: var(--fw-bold); letter-spacing: .08em; text-transform: uppercase; }
+  .english-reading-detail h2, .english-writing-desk h2 { margin-top: 9px; color: var(--text-primary); font-size: clamp(20px, 2.2vw, 28px); line-height: 1.4; letter-spacing: -.02em; }
+  .english-detail-meta { display: flex; flex-wrap: wrap; gap: 7px 14px; margin-top: 10px; color: var(--text-tertiary); font-size: var(--fs-micro); }
+  .english-detail-excerpt { margin-top: 22px; color: var(--text-secondary); font-size: 15px; line-height: 1.85; }
+  .english-reading-detail { scroll-margin-top: 18px; }
+  .english-reading-study { display: grid; gap: 13px; margin-top: 21px; }
+  .english-reading-passage { padding: 15px; border: 1px solid color-mix(in srgb, var(--life-accent) 16%, var(--border)); border-radius: 12px; background: linear-gradient(120deg, color-mix(in srgb, var(--life-soft) 42%, var(--card-bg)), var(--card-bg) 58%); }
+  .english-reading-study-heading, .english-reading-analysis-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .english-reading-study-heading > div { display: grid; gap: 3px; }
+  .english-reading-study-heading span { color: var(--life-accent); font-size: 9px; font-weight: var(--fw-bold); letter-spacing: .12em; text-transform: uppercase; }
+  .english-reading-study-heading h3 { margin: 0; color: var(--text-primary); font-family: Georgia, 'Songti SC', serif; font-size: 17px; line-height: 1.35; }
+  .english-reading-study-heading > small, .english-reading-analysis-heading small { color: var(--text-tertiary); font-size: 10px; line-height: 1.45; text-align: right; }
+  .english-reading-paragraphs { display: grid; margin-top: 12px; }
+  .english-reading-paragraph { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 11px; padding: 12px 0; border-top: 1px solid color-mix(in srgb, var(--border) 74%, transparent); }
+  .english-reading-paragraph:first-child { padding-top: 0; border-top: 0; }
+  .english-reading-paragraph:last-child { padding-bottom: 0; }
+  .english-reading-paragraph-number { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 7px; background: var(--card-bg); color: var(--life-accent); font-size: 10px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; box-shadow: 0 1px 3px color-mix(in srgb, var(--life-accent) 11%, transparent); }
+  .english-reading-paragraph p { margin: 0; color: var(--text-secondary); font-family: Georgia, 'Songti SC', serif; font-size: 14px; line-height: 1.82; }
+  .english-reading-analysis-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+  .english-reading-analysis, .english-reading-vocabulary { padding: 13px; border: 1px solid color-mix(in srgb, var(--life-accent) 12%, var(--border)); border-radius: 11px; background: color-mix(in srgb, var(--card-bg) 90%, var(--life-soft)); }
+  .english-reading-analysis-heading b { color: var(--text-primary); font-size: var(--fs-caption); }
+  .english-reading-structure { display: grid; gap: 8px; margin-top: 11px; }
+  .english-reading-structure-step { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 7px; align-items: start; }
+  .english-reading-structure-step > span { color: var(--life-accent); font-size: 10px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; line-height: 1.45; }
+  .english-reading-structure-step > div { display: grid; gap: 1px; }
+  .english-reading-structure-step b { color: var(--text-secondary); font-size: 11px; line-height: 1.45; }
+  .english-reading-structure-step small { color: var(--text-tertiary); font-size: 10px; line-height: 1.45; }
+  .english-reading-connector-list, .english-reading-vocabulary-list { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
+  .english-reading-connector { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 4px 7px; border-radius: 7px; background: var(--life-soft); color: var(--life-accent); }
+  .english-reading-connector b { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; font-weight: var(--fw-semibold); }
+  .english-reading-connector small { color: var(--text-secondary); font-size: 9px; }
+  .english-reading-vocabulary { background: linear-gradient(100deg, color-mix(in srgb, var(--life-soft) 58%, var(--card-bg)), var(--card-bg) 65%); }
+  .english-reading-vocabulary-term { display: inline-flex; align-items: center; min-height: 27px; max-width: 100%; padding: 4px 8px; overflow-wrap: anywhere; border: 1px solid color-mix(in srgb, var(--life-accent) 17%, var(--border)); border-radius: 7px; background: var(--card-bg); color: var(--text-primary); font-family: Georgia, 'Songti SC', serif; font-size: 12px; }
+  .english-reading-vocabulary > p { margin: 10px 0 0; color: var(--text-tertiary); font-size: 10px; line-height: 1.55; }
+  .english-reading-empty-tip { color: var(--text-tertiary); font-size: 10px; line-height: 1.55; }
+  .english-reading-annotation { display: grid; gap: 5px; margin-top: 22px; padding: 13px 14px; border-left: 3px solid var(--life-accent); border-radius: 0 10px 10px 0; background: var(--life-soft); }
+  .english-reading-annotation b { color: var(--life-accent); font-size: var(--fs-caption); }
+  .english-reading-annotation span { color: var(--text-secondary); font-size: var(--fs-caption); line-height: 1.65; }
+  .english-detail-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .english-reading-freshness { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 3px 8px; }
+  .english-reading-freshness .english-sync-dot { grid-row: span 2; }
+  .english-reading-freshness strong { color: var(--text-primary); font-size: var(--fs-caption); }
+  .english-reading-freshness small { color: var(--text-tertiary); font-size: var(--fs-micro); }
+
+  /* Editorial bilingual spread -----------------------------------------
+     The reference uses a magazine-like English column with a quiet Chinese
+     translation rail. Keep both columns aligned to the same paragraph index
+     so learners can compare sentence rhythm without losing the workspace
+     card language. */
+  .english-reading-title-translation { margin: 6px 0 0; color: var(--life-accent); font-family: 'Songti SC', Georgia, serif; font-size: 15px; font-weight: var(--fw-semibold); line-height: 1.55; }
+  .english-reading-bilingual { padding: 17px 18px 14px; border-color: color-mix(in srgb, var(--life-accent) 20%, var(--border)); background: linear-gradient(110deg, color-mix(in srgb, var(--card-bg) 95%, var(--life-soft)), color-mix(in srgb, var(--life-soft) 32%, var(--card-bg))); }
+  .english-reading-bilingual .english-reading-study-heading { padding-bottom: 12px; border-bottom: 1px solid color-mix(in srgb, var(--life-accent) 19%, var(--border)); }
+  .english-reading-bilingual-head { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(180px, .62fr); gap: 16px; margin: 11px 0 0 42px; padding: 0 0 7px; color: var(--text-tertiary); font-size: 9px; font-weight: var(--fw-bold); letter-spacing: .12em; text-transform: uppercase; }
+  .english-reading-bilingual-head span:last-child { padding-left: 16px; border-left: 1px solid color-mix(in srgb, var(--life-accent) 25%, var(--border)); }
+  .english-reading-bilingual .english-reading-paragraphs { margin-top: 0; }
+  .english-reading-bilingual-row { grid-template-columns: 30px minmax(0, 1.08fr) minmax(180px, .62fr); gap: 12px 16px; align-items: start; padding: 16px 0; }
+  .english-reading-bilingual-row:first-child { padding-top: 13px; }
+  .english-reading-bilingual-row:last-child { padding-bottom: 5px; }
+  .english-reading-paragraph-index { display: grid; justify-items: center; align-content: start; gap: 4px; }
+  .english-reading-paragraph-index small { color: var(--text-tertiary); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8px; letter-spacing: .05em; }
+  .english-reading-bilingual .english-reading-paragraph-number { width: 27px; height: 27px; border: 1px solid color-mix(in srgb, var(--life-accent) 22%, var(--border)); background: color-mix(in srgb, var(--life-soft) 72%, var(--card-bg)); color: var(--life-accent); }
+  .english-reading-english { min-width: 0; }
+  .english-reading-bilingual .english-reading-english p { color: var(--text-primary); font-size: 15px; line-height: 1.88; }
+  .english-reading-translation { min-width: 0; min-height: 100%; padding: 3px 0 2px 16px; border-left: 1px solid color-mix(in srgb, var(--life-accent) 23%, var(--border)); }
+  .english-reading-translation-label { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+  .english-reading-translation-label span { color: var(--life-accent); font-size: 9px; font-weight: var(--fw-bold); letter-spacing: .1em; text-transform: uppercase; }
+  .english-reading-translation-label small { padding: 2px 5px; border-radius: 4px; background: var(--life-soft); color: var(--life-accent); font-size: 9px; }
+  .english-reading-translation p { margin: 0; color: var(--text-secondary); font-family: 'Songti SC', 'STSong', Georgia, serif; font-size: 13px; line-height: 1.75; }
+  .english-reading-translation-note { display: block; margin-top: 8px; color: var(--text-tertiary); font-size: 9px; line-height: 1.5; }
+  .english-reading-translation.is-comprehension { padding-top: 7px; padding-bottom: 7px; border-left-style: dashed; }
+  .english-reading-translation.is-comprehension .english-reading-translation-label span { color: var(--text-tertiary); }
+  .english-reading-vocabulary-box { padding: 14px 15px 13px; }
+  .english-reading-vocabulary-box .english-reading-analysis-heading > div { display: grid; gap: 3px; }
+  .english-reading-vocabulary-box .english-reading-analysis-heading > div > span { color: var(--life-accent); font-size: 9px; font-weight: var(--fw-bold); letter-spacing: .12em; text-transform: uppercase; }
+  .english-reading-vocabulary-box .english-reading-analysis-heading > div > b { color: var(--text-primary); font-size: var(--fs-caption); }
+  .english-reading-vocabulary-box .english-reading-vocabulary-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 10px; }
+  .english-reading-vocabulary-box .english-reading-vocabulary-term { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 2px 7px; min-height: 0; padding: 8px 9px; }
+  .english-reading-vocabulary-box .english-reading-vocabulary-term b { overflow-wrap: anywhere; color: var(--text-primary); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+  .english-reading-vocabulary-box .english-reading-vocabulary-term small { color: var(--life-accent); font-size: 9px; }
+  .english-reading-vocabulary-box .english-reading-vocabulary-term em { grid-column: 1 / -1; color: var(--text-secondary); font-family: 'Songti SC', Georgia, serif; font-size: 11px; font-style: normal; line-height: 1.4; }
+
+  /* Writing */
+  .english-writing-layout { grid-template-columns: minmax(270px, .72fr) minmax(0, 1.28fr); }
+  .english-prompt-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 12px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: inherit; text-align: left; cursor: pointer; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
+  .english-prompt-row:hover { border-color: color-mix(in srgb, var(--life-accent) 20%, var(--border)); background: color-mix(in srgb, var(--life-soft) 55%, var(--card-bg)); transform: translateX(2px); }
+  .english-prompt-row.is-active { border-color: color-mix(in srgb, var(--life-accent) 38%, var(--border)); background: color-mix(in srgb, var(--life-soft) 76%, var(--card-bg)); box-shadow: inset 3px 0 0 var(--life-accent); }
+  .english-prompt-type { align-self: start; padding: 4px 6px; border-radius: 6px; background: var(--primary-soft); color: var(--primary); font-size: 9px; font-weight: var(--fw-bold); white-space: nowrap; }
+  .english-prompt-copy { display: grid; min-width: 0; gap: 4px; }
+  .english-prompt-copy strong { overflow: hidden; color: var(--text-primary); font-size: var(--fs-caption); line-height: 1.5; text-overflow: ellipsis; }
+  .english-prompt-copy small { color: var(--text-tertiary); font-size: 10px; }
+  .english-prompt-row > i { color: var(--life-accent); font-size: 16px; font-style: normal; }
+  .english-writing-desk { display: flex; min-height: 490px; flex-direction: column; }
+  .english-writing-focus { display: flex; flex-wrap: wrap; align-items: baseline; gap: 7px 10px; margin-top: 16px; padding: 11px 12px; border: 1px solid color-mix(in srgb, var(--life-accent) 15%, var(--border)); border-radius: 10px; background: color-mix(in srgb, var(--life-soft) 44%, var(--card-bg)); }
+  .english-writing-focus span { color: var(--text-tertiary); font-size: var(--fs-micro); }
+  .english-writing-focus b { color: var(--life-accent); font-size: var(--fs-caption); }
+  .english-writing-focus small { width: 100%; color: var(--text-secondary); font-size: var(--fs-micro); }
+  .english-writing-draft { flex: 1 1 auto; min-height: 245px; margin-top: 14px; padding: 14px; resize: vertical; border: 1px solid var(--border); border-radius: 10px; outline: 0; background: color-mix(in srgb, var(--card-bg) 94%, var(--bg)); color: var(--text-primary); font: inherit; font-size: 14px; line-height: 1.8; transition: border-color .16s ease, box-shadow .16s ease; }
+  .english-writing-draft::placeholder { color: var(--text-tertiary); }
+  .english-writing-draft:focus { border-color: var(--life-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--life-accent) 14%, transparent); }
+  .english-writing-desk-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; color: var(--text-tertiary); font-size: var(--fs-micro); }
+
+  [data-theme="dark"] .english-learning-page, [data-theme="dark"] .english-vocab-page, [data-theme="dark"] .english-listening-page, [data-theme="dark"] .english-reading-page, [data-theme="dark"] .english-writing-page {
+    --primary: #efb960;
+    --primary-hover: #f7d18d;
+    --primary-light: #4a351c;
+    --primary-soft: #302314;
+    --accent: #f2bf69;
+    --life-accent: var(--primary);
+    --life-soft: var(--primary-soft);
+    --english-accent: var(--primary);
+    --english-accent-strong: var(--primary-hover);
+    --english-accent-soft: var(--primary-soft);
+  }
+  [data-theme="dark"] .english-word-status.is-learning { color: #f7d18d; }
+  [data-theme="dark"] .english-word-status.is-familiar { color: #79d8ad; }
+
+  @media (max-width: 1120px) {
+    .english-module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .english-listening-layout, .english-reading-layout, .english-writing-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, .78fr); }
+  }
+  @media (max-width: 900px) {
+    .english-overview-hero, .english-subpage-hero { grid-template-columns: 1fr; }
+    .english-overview-hero .workspace-hero-side, .english-subpage-hero .workspace-hero-side { max-width: 460px; }
+    .english-listening-layout, .english-reading-layout, .english-writing-layout { grid-template-columns: 1fr; }
+    .english-listening-tips { align-self: auto; }
+  }
+  @media (max-width: 767px) {
+    .english-module-tabs { width: 100%; }
+    .english-module-tab { flex: 1 0 auto; }
+    .english-overview-hero, .english-subpage-hero { padding: 19px 18px; border-radius: 15px; }
+    .english-overview-hero::after, .english-subpage-hero::after { right: -58px; bottom: -112px; width: 190px; height: 190px; border-width: 32px; }
+    .english-overview-hero .workspace-hero-title, .english-subpage-hero .workspace-hero-title { font-size: 25px; }
+    .english-stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .english-stat-strip .workspace-stat { padding: 13px 14px; }
+    .english-stat-strip .workspace-stat:nth-child(2) { border-right: 0; }
+    .english-stat-strip .workspace-stat:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+    .english-stat-strip .workspace-stat::before { left: 14px; }
+    .english-module-grid { grid-template-columns: 1fr; }
+    .english-module-card { min-height: 126px; }
+    .english-skill-stat-list { grid-template-columns: repeat(4, minmax(245px, 1fr)); }
+    .english-skill-stat-card { min-height: 140px; }
+    .english-skill-stat-detail { white-space: normal; }
+    .english-recent-status-body { grid-template-columns: 1fr; }
+    .english-recent-rhythm { grid-template-columns: minmax(120px, .7fr) minmax(165px, 1.3fr); gap: 16px; border-right: 0; border-bottom: 1px solid var(--border); }
+    .english-recent-modules { grid-template-columns: 1fr; }
+    .english-recent-module { border-right: 0; border-bottom: 1px solid var(--border); }
+    .english-recent-module:nth-last-child(2) { border-bottom: 1px solid var(--border); }
+    .english-recent-module:last-child { border-bottom: 0; }
+    .english-reading-spotlight-body { align-items: stretch; flex-direction: column; }
+    .english-reading-detail { scroll-margin-top: 12px; }
+    .english-reading-study-heading, .english-reading-analysis-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+    .english-reading-study-heading > small, .english-reading-analysis-heading small { text-align: left; }
+    .english-reading-analysis-grid { grid-template-columns: 1fr; }
+    .english-reading-bilingual-head { grid-template-columns: minmax(0, 1fr) minmax(150px, .72fr); gap: 12px; margin-left: 39px; }
+    .english-reading-bilingual-row { grid-template-columns: 27px minmax(0, 1fr) minmax(150px, .72fr); gap: 11px 12px; }
+    .english-reading-translation { padding-left: 12px; }
+    .english-reading-vocabulary-box .english-reading-vocabulary-list { grid-template-columns: 1fr; }
+    .english-vocab-toolbar { align-items: stretch; flex-direction: column; }
+    .english-vocab-toolbar-note { justify-content: flex-end; }
+    .english-word-row { grid-template-columns: 28px minmax(0, 1fr); gap: 10px; }
+    .english-word-actions { grid-column: 2; justify-content: flex-start; flex-wrap: wrap; }
+    .english-word-status { order: 5; }
+    .english-word-example { max-width: 58ch; }
+    .english-vocab-pagination { flex-wrap: wrap; gap: 9px; }
+    .english-session-row { grid-template-columns: 28px minmax(0, 1fr); gap: 10px; }
+    .english-session-row > .btn { grid-column: 2; justify-self: start; }
+    .english-writing-desk { min-height: 430px; }
+    .english-writing-desk-foot { align-items: stretch; flex-direction: column; }
+    .english-writing-desk-foot .btn { align-self: flex-start; }
+  }
+  @media (max-width: 480px) {
+    .english-module-tab { padding-inline: 10px; }
+    .english-word-heading h3 { font-size: 15px; }
+    .english-word-actions .english-word-review { flex: 1 1 auto; }
+    .english-word-actions .english-word-review.btn { min-width: 92px; }
+    .english-prompt-row { grid-template-columns: 1fr auto; }
+    .english-prompt-type { grid-column: 1 / -1; justify-self: start; }
+    .english-prompt-row > i { grid-column: 2; grid-row: 2; }
+    .english-reading-bilingual-head { display: none; }
+    .english-reading-bilingual-row { grid-template-columns: 28px minmax(0, 1fr); gap: 8px 10px; }
+    .english-reading-translation { grid-column: 2; padding: 9px 0 0; border-top: 1px dashed color-mix(in srgb, var(--life-accent) 25%, var(--border)); border-left: 0; }
+    .english-reading-translation.is-comprehension { padding-top: 9px; }
+    .english-reading-bilingual .english-reading-english p { font-size: 14px; line-height: 1.8; }
+    .english-reading-translation p { font-size: 13px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
