@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 import { spawn, spawnSync } from 'node:child_process';
+import { delimiter, dirname } from 'node:path';
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+// `npm exec node@22` changes the current executable, but npm scripts spawned
+// from here otherwise fall back to the machine's default Node.js.  Keep every
+// child (tsx, Vite, native addons) on exactly the same runtime.
+const childEnv = {
+  ...process.env,
+  PATH: `${dirname(process.execPath)}${delimiter}${process.env.PATH || ''}`
+};
 const nodeMajor = Number.parseInt(process.versions.node.split('.')[0], 10);
 if (nodeMajor !== 22) {
   console.error(`项目固定使用 Node.js 22.x，当前为 ${process.versions.node}。请先执行 nvm use，或运行 npm run dev:node22。`);
@@ -27,12 +35,12 @@ async function assertPortsAvailable() {
 }
 
 await assertPortsAvailable();
-const contractsBuild = spawnSync(npmCommand, ['run', 'build', '-w', '@ai-workspace/contracts'], { stdio: 'inherit', shell: false });
+const contractsBuild = spawnSync(npmCommand, ['run', 'build', '-w', '@ai-workspace/contracts'], { stdio: 'inherit', shell: false, env: childEnv });
 if (contractsBuild.error) throw contractsBuild.error;
 if (contractsBuild.status !== 0) process.exit(contractsBuild.status || 1);
 const children = [
-  spawn(npmCommand, ['run', 'dev:api'], { stdio: 'inherit', shell: false }),
-  spawn(npmCommand, ['--workspace', 'apps/web', 'exec', 'vite', '--', '--host', '127.0.0.1'], { stdio: 'inherit', shell: false })
+  spawn(npmCommand, ['run', 'dev:api'], { stdio: 'inherit', shell: false, env: childEnv }),
+  spawn(npmCommand, ['--workspace', 'apps/web', 'exec', 'vite', '--', '--host', '127.0.0.1'], { stdio: 'inherit', shell: false, env: childEnv })
 ];
 let stopping = false;
 const stop = (code = 0) => {

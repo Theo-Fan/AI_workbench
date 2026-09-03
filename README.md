@@ -37,15 +37,16 @@ macOS 用户也可以直接双击 `start-workspace.command` 启动，双击 `sto
 
 ## 数据与备份
 
-- 运行数据位于 `data/workspace.db`，默认不会提交到 Git。
-- 首次启动会导入 `data/workspace.json`（如存在），否则写入 `templates/workspace.default.json` 示例数据。
+- macOS 双击启动器时，运行数据位于 iCloud Drive 的 `AA-VibeCoding-DATA/self_workbench/workspace.db`；代码仍保留在项目目录。
+- 首次启动会导入同一 iCloud 文件夹中的 `workspace.json`（如存在），否则写入 `templates/workspace.default.json` 示例数据。
+- 不要在两台设备上同时运行工作台；请先在一台设备停止服务并等待 iCloud 同步完成，再在另一台启动。
 - 可在工作台的数据管理页导出 JSON；也可创建 SQLite 备份：
 
 ```bash
 npm run db:backup
 ```
 
-备份文件保存在 `data/backups/`，自动保留最近 10 份。请勿将真实任务、笔记或健康记录提交到公开仓库，也不要用网盘同步正在使用的 SQLite 数据库文件。
+通过 macOS 双击启动器运行时，备份文件保存在 iCloud 的 `AA-VibeCoding-DATA/self_workbench/backups/`，自动保留最近 10 份。命令行直接运行时仍可通过 `WORKSPACE_DB_PATH`、`WORKSPACE_BACKUP_DIR` 和 `LEGACY_JSON_PATH` 指定位置。请勿将真实任务、笔记或健康记录提交到公开仓库。
 
 ## 常用操作
 
