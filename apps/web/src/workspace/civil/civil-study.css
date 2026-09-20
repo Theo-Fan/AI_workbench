@@ -1,0 +1,62 @@
+/* Civil service study — component styles only.
+   Page layout (hero, stat strip, study cards, section headings) comes from the
+   shared workspace baseline, same as AI 学习 / 英语学习. Keep this file scoped
+   to civil-specific components: filters, task rows extras, mistakes, sessions,
+   the next-focus strip and the modal dialogs. */
+
+/* Filter chips inside study cards */
+.civil-service-page .cs-filter { display:flex; gap:6px; margin:0 0 8px; flex-wrap:wrap; }
+.civil-service-page .cs-filter button { min-height:32px; padding:7px 12px; border:0; border-radius:7px; background:transparent; color:var(--text-secondary); font:inherit; font-size:11px; cursor:pointer; }
+.civil-service-page .cs-filter button.is-active { background:var(--civil-soft); color:var(--primary-hover); font-weight:650; }
+
+/* Task list extras (row shell lives in styles.css: .civil-task-row) */
+.cs-task-scroll { max-height:330px; overflow-y:auto; scrollbar-width:thin; }
+.cs-text-button { min-height:34px; padding:6px 8px; border:0; border-radius:5px; background:transparent; color:var(--text-secondary); font:inherit; font-size:11px; cursor:pointer; white-space:nowrap; }
+.cs-text-button:hover { background:var(--civil-soft); color:var(--primary-hover); }
+
+/* Next-focus strip inside the rhythm card */
+.civil-next-focus { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:16px; padding:13px 15px; border:1px solid color-mix(in srgb,var(--civil-accent) 16%,var(--border)); border-radius:12px; background:color-mix(in srgb,var(--civil-soft) 55%,var(--card-bg)); }
+.civil-next-focus strong { display:block; color:var(--text-primary); font-size:13px; font-weight:650; }
+.civil-next-focus small { display:block; margin-top:4px; color:var(--text-secondary); font-size:11px; line-height:1.6; }
+.civil-next-focus .btn { flex-shrink:0; }
+
+/* Mistake review list */
+.cs-review-list { max-height:480px; overflow-y:auto; scrollbar-width:thin; }
+.cs-mistake { padding:17px 2px; border-bottom:1px solid var(--border); }
+.cs-mistake:last-child { border-bottom:0; }
+.cs-mistake-meta { display:flex; justify-content:space-between; gap:10px; color:var(--civil-accent); font-size:11px; }
+.cs-mistake h3 { margin:11px 0; white-space:pre-wrap; overflow-wrap:anywhere; color:var(--text-primary); font-size:14px; font-weight:550; line-height:1.8; }
+.cs-mistake summary { padding:8px 0; color:var(--text-secondary); font-size:12px; cursor:pointer; }
+.cs-mistake details>p { margin:0 0 4px; padding:15px; white-space:pre-wrap; overflow-wrap:anywhere; border-radius:8px; background:color-mix(in srgb,var(--civil-accent) 5%,var(--card-bg)); color:var(--text-primary); font-size:13px; line-height:1.9; }
+.cs-review-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+
+/* Study session log */
+.cs-session { display:grid; grid-template-columns:32px minmax(0,1fr) auto auto; align-items:center; gap:12px; padding:14px 0; border-top:1px solid var(--border); }
+.cs-session-list>.cs-session:first-child { border-top:0; }
+.cs-session-icon { color:var(--civil-accent); font-size:20px; }
+.cs-session strong { display:block; color:var(--text-primary); font-size:13px; font-weight:550; }
+.cs-session small { display:block; margin-top:5px; color:var(--text-secondary); font-size:11px; line-height:1.7; overflow-wrap:anywhere; }
+.cs-session-numbers { text-align:right; }
+.cs-session-numbers strong small { display:inline; }
+
+/* Modal dialogs (记录学习 / 备考目标 / 任务 / 错题 / 自评) */
+.cs-dialog h2 { font-family:inherit; font-size:23px; }
+.cs-dialog>p { color:var(--text-secondary); line-height:1.8; font-size:13px; }
+.cs-dialog .btn-primary { background:var(--primary); border-color:var(--primary); color:#fff; }
+.cs-dialog .btn-primary:hover { background:var(--primary-hover); }
+.cs-dialog :is(input,select,textarea,button):focus-visible { outline:3px solid var(--primary); outline-offset:3px; }
+.cs-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:17px; margin-top:22px; }
+.cs-field { display:flex; flex-direction:column; min-width:0; gap:7px; font-size:12px; color:var(--text-secondary); }
+.cs-field input,.cs-field select,.cs-field textarea { box-sizing:border-box; width:100%; min-width:0; min-height:42px; padding:10px 11px; border:1px solid var(--border); border-radius:8px; background:var(--card-bg); color:var(--text-primary); font:inherit; font-size:13px; }
+.cs-field textarea { min-height:90px; resize:vertical; line-height:1.7; }
+.cs-full { grid-column:1/-1; }
+.cs-dialog .cs-form-error { color:#be453c; }
+.cs-dialog-actions { display:flex; justify-content:flex-end; gap:9px; margin-top:20px; }
+
+@media (max-width:520px) {
+  .cs-form-grid { grid-template-columns:1fr; }
+  .cs-mistake-meta { flex-wrap:wrap; }
+  .cs-session { grid-template-columns:minmax(0,1fr) auto auto; gap:8px; }
+  .cs-session-icon { display:none; }
+  .civil-next-focus { align-items:flex-start; flex-direction:column; }
+}

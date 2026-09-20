@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { App } from './App.js';
 import './styles.css';
+import './workspace/civil/civil-study.css';
 
 // This is the production client/server boundary. The compatibility HTML keeps
 // its historical same-origin/local fallback behaviour, while the React entry

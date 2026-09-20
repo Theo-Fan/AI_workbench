@@ -186,7 +186,7 @@ test('英语学习四个模块的完成动作都会写入持久化历史', () =>
   assert.match(runtime, /recordEnglishHistory\('writing'/);
 });
 
-test('公考学习包含完整八科、可持久化迁移和响应式总览', () => {
+test('公考学习包含八科入口、可持久化迁移和响应式工作区', () => {
   const runtime = read('apps/web/src/workspace/generated/workspaceRuntime.ts');
   const styles = read('apps/web/src/styles.css');
   const civilService = JSON.parse(read('templates/workspace.default.json')).learning.civilService;
@@ -195,8 +195,14 @@ test('公考学习包含完整八科、可持久化迁移和响应式总览', ()
   ]);
   assert.match(runtime, /ensureCivilServiceState\(data\)/);
   assert.match(runtime, /civilServiceStateChanged/);
-  assert.match(runtime, /const subject = subjectId \? study\.subjects\.find\(item => item\.id === subjectId\) : null/);
-  assert.match(runtime, /class="civil-progress-mobile"/);
+  assert.match(runtime, /recordSession\(study,/);
+  assert.match(runtime, /toggleStudyTask\(task,/);
+  assert.match(runtime, /class="civil-subject-grid"/);
+  assert.match(runtime, /workspace-hero civil-overview-hero/);
+  assert.match(runtime, /workspace-stat-strip/);
+  assert.match(runtime, /study-main-grid/);
   assert.match(styles, /\.civil-module-tabs \{ display:flex; width:max-content; max-width:100%/);
-  assert.match(styles, /@media \(max-width:520px\)[^{]*\{[^}]*\.civil-module-tabs \{ width:100%; \}[^}]*\.civil-progress-chart \{ display:none; \}[^}]*\.civil-progress-mobile \{ display:grid/);
+  const civilStyles = read('apps/web/src/workspace/civil/civil-study.css');
+  assert.match(civilStyles, /@media \(max-width:520px\)/);
+  assert.match(civilStyles, /\.civil-next-focus \{ align-items:flex-start; flex-direction:column; \}/);
 });

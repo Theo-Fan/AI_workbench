@@ -1,6 +1,7 @@
 // Standalone workspace runtime owned by the React frontend.
 // @ts-nocheck -- parity module; all public access is typed by runtimeBridge.ts.
 import type { RenderState, WorkspacePageId } from '../runtimeBridge.js';
+import { studyMetrics, recordSession, undoSession, toggleStudyTask, reviewMistake } from '../civil/studyModel.js';
 import { IELTS_DOWNLOADED_VOCABULARY_SOURCE } from './ieltsVocabularySource.js';
 
 let mounted = false;
@@ -195,7 +196,7 @@ const DEFAULT_DATA = {
       "vocab": {
         "dailyTarget": 100,
         "dailyDate": "",
-        "bankVersion": "IELTS Academic Core + Topic Bank · v2.0",
+        "bankVersion": "Academic Core + Topic Bank · v2.0",
         "words": [],
         "seenIds": [],
         "lastBatchIds": [],
@@ -466,7 +467,7 @@ function englishWordExample(term, pos) {
     prevalent: 'The survey found that the practice was prevalent among younger adults.',
     biodiversity: 'Protecting biodiversity requires connected habitats and careful monitoring.'
   };
-  return examples[word.toLowerCase()] || 'In IELTS texts, “' + word + '” often appears in discussions of evidence, policy or social change.';
+  return examples[word.toLowerCase()] || 'In academic texts, “' + word + '” often appears in discussions of evidence, policy or social change.';
 }
 
 const IELTS_WORD_BANK = [
@@ -545,7 +546,7 @@ const IELTS_WORD_BANK_EXTRA = 'accessibility|accommodate|accompany|accordingly|a
   id: 'ielts-extra-' + String(index + 1).padStart(3, '0'),
   term,
   pos: /tion$|ity$|ism$|ness$|ment$/.test(term) ? 'n.' : 'v./adj.',
-  meaning: '雅思高频表达：' + term,
+  meaning: '高频表达：' + term,
   band: index % 4 === 0 ? '7.5' : index % 3 === 0 ? '7.0' : '6.5',
   phonetic: '', phoneticVerified: false,
   example: englishWordExample(term, /tion$|ity$|ism$|ness$|ment$/.test(term) ? 'n.' : 'v./adj.')
@@ -682,7 +683,7 @@ const IELTS_DOWNLOADED_WORDS = IELTS_DOWNLOADED_VOCABULARY_SOURCE.map((entry, in
     id: 'ielts-source-' + String(index + 1).padStart(4, '0'),
     term,
     pos,
-    meaning: meaning || '雅思主题词汇：' + term,
+    meaning: meaning || '主题词汇：' + term,
     // The source is organised specifically around IELTS themes, rather than
     // claiming a potentially misleading single-word score for each item.
     band: '6.5–7.5',
@@ -1019,7 +1020,7 @@ function normalizeEnglishListeningState(english) {
     queue.push({
       ...entry,
       id,
-      title: String(entry.title || 'IELTS listening practice'),
+      title: String(entry.title || 'English listening practice'),
       source: String(entry.source || '精选听力'),
       level: String(entry.level || 'Band 7.0'),
       duration: String(entry.duration || '10:00'),
@@ -1075,7 +1076,7 @@ function normalizeEnglishWritingState(english) {
       ...prompt,
       id,
       type: String(prompt.type || 'Writing'),
-      title: String(prompt.title || 'IELTS writing practice'),
+      title: String(prompt.title || 'English writing practice'),
       focus: String(prompt.focus || '论证结构'),
       time: Math.max(1, Math.floor(Number(prompt.time) || 30)),
       status: ['next', 'planned', 'done'].includes(prompt.status) ? prompt.status : 'planned'
@@ -1297,8 +1298,8 @@ function ensureEnglishStudyState(root = DATA) {
   const target = Math.max(20, Math.min(100, Number(vocab.dailyTarget) || 100));
   vocab.dailyTarget = target;
   let changed = false;
-  if (!vocab.bankVersion || vocab.bankVersion === 'IELTS Academic Core · v1.0') {
-    vocab.bankVersion = 'IELTS Academic Core + Topic Bank · v2.0';
+  if (!vocab.bankVersion || vocab.bankVersion === 'IELTS Academic Core · v1.0' || vocab.bankVersion === 'IELTS Academic Core + Topic Bank · v2.0') {
+    vocab.bankVersion = 'Academic Core + Topic Bank · v2.0';
     changed = true;
   }
   // Keep the starter task aligned with the focused IELTS target while leaving
@@ -1447,18 +1448,18 @@ const ENGLISH_READING_REFRESH_TIMEOUT_MS = 30_000;
 // between science, society, history, culture and design.
 const IELTS_READING_LIBRARY_VERSION = 'IELTS Reading Library · v2.0';
 const IELTS_READING_OFFLINE_LIBRARY = [
-  { id: 'article-7', type: '科学与探索', genre: '科普说明', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'How citizen scientists help map the night sky', excerpt: 'Large surveys once belonged almost exclusively to professional observatories. Today, volunteers can classify images and report unusual objects through carefully designed online projects. Their contribution is valuable not because every observation is perfect, but because thousands of small observations can reveal patterns that a single research team might miss.', tags: ['science', 'participation'], url: 'https://en.wikipedia.org/wiki/Citizen_science', publishedAt: '2026-08-21', saved: false, read: false },
-  { id: 'article-8', type: '公共健康', genre: '证据报告', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'What wastewater can reveal about a city', excerpt: 'Wastewater monitoring gives public-health teams a population-level signal without asking every resident to complete a survey. Researchers examine chemical and biological traces, compare them over time and combine them with clinical data. The method cannot explain every individual case, yet it can provide an early warning when a health pattern is changing.', tags: ['health', 'evidence'], url: 'https://en.wikipedia.org/wiki/Wastewater-based_epidemiology', publishedAt: '2026-08-20', saved: false, read: false },
-  { id: 'article-9', type: '语言与文化', genre: '历史观察', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 11, title: 'Why languages keep borrowing words', excerpt: 'Borrowed words are often treated as signs of linguistic change rather than linguistic failure. Trade, migration, education and popular culture all create opportunities for one language to adopt a useful expression from another. Over time, speakers reshape the borrowed term so that it fits local sounds, grammar and social meaning.', tags: ['language', 'culture'], url: 'https://en.wikipedia.org/wiki/Loanword', publishedAt: '2026-08-19', saved: false, read: false },
-  { id: 'article-10', type: '商业与社会', genre: '学术导读', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 12, title: 'The quiet influence of default choices', excerpt: 'A default option can guide behaviour even when people remain free to choose something else. In workplaces, schools and digital services, the position of an option may reduce effort and make one path seem normal. Good policy therefore asks not only whether alternatives exist, but also whether they are visible and practical.', tags: ['economics', 'decision-making'], url: 'https://en.wikipedia.org/wiki/Default_effect', publishedAt: '2026-08-18', saved: false, read: false },
-  { id: 'article-11', type: '建筑与设计', genre: '案例研究', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 14, title: 'Designing buildings for a changing climate', excerpt: 'Climate-conscious architecture is more than adding a few efficient devices to a conventional building. Designers consider orientation, shade, ventilation, materials and the daily routines of occupants. A successful building can reduce energy demand while also making indoor spaces healthier and more comfortable.', tags: ['design', 'climate'], url: 'https://en.wikipedia.org/wiki/Sustainable_architecture', publishedAt: '2026-08-17', saved: false, read: false },
-  { id: 'article-12', type: '农业与食物', genre: '问题解决', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'Can rooftop farms feed a growing city?', excerpt: 'Rooftop gardens rarely replace rural agriculture, but they can shorten the distance between production and consumption. Their wider benefits may include insulation, storm-water management and opportunities for community education. The main constraints are structural safety, water access and the cost of maintaining a skilled workforce.', tags: ['food', 'cities'], url: 'https://en.wikipedia.org/wiki/Urban_agriculture', publishedAt: '2026-08-16', saved: false, read: false },
-  { id: 'article-13', type: '心理与艺术', genre: '跨学科文章', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'Why music can make places easier to remember', excerpt: 'Music links rhythm, emotion and attention, which may explain why a familiar song can bring back a detailed memory of a place. Researchers do not regard music as a universal memory switch; the effect depends on personal experience and context. Nevertheless, carefully chosen sound can support learning and orientation.', tags: ['psychology', 'arts'], url: 'https://en.wikipedia.org/wiki/Psychology_of_music', publishedAt: '2026-08-15', saved: false, read: false },
-  { id: 'article-14', type: '历史与贸易', genre: '历史叙事', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'The routes that moved more than goods', excerpt: 'Historic trade routes carried technologies, stories and social customs as well as spices, metals or textiles. Merchants depended on bridges between languages and legal traditions. The effects of a route could therefore continue long after its commercial importance had declined.', tags: ['history', 'migration'], url: 'https://en.wikipedia.org/wiki/Trade_route', publishedAt: '2026-08-14', saved: false, read: false },
-  { id: 'article-15', type: '科技与伦理', genre: '观点评论', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'When an algorithm decides what we notice', excerpt: 'Recommendation systems are built to rank information, yet ranking can gradually shape what users believe is important. Personalisation may save time, but it can also narrow the range of viewpoints encountered. Transparent explanations and deliberate opportunities to explore unfamiliar sources can make the trade-off easier to manage.', tags: ['technology', 'ethics'], url: 'https://en.wikipedia.org/wiki/Recommender_system', publishedAt: '2026-08-13', saved: false, read: false },
-  { id: 'article-16', type: '海洋与气候', genre: '科学说明', source: 'IELTS Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'The chemistry behind a warming sea', excerpt: 'As the ocean absorbs carbon dioxide, its chemistry changes gradually rather than all at once. The resulting shift in acidity can make it harder for some organisms to build shells, while other species may adapt or move. Understanding these different responses is essential when scientists estimate future ecosystem change.', tags: ['ocean', 'climate'], url: 'https://en.wikipedia.org/wiki/Ocean_acidification', publishedAt: '2026-08-12', saved: false, read: false },
-  { id: 'article-17', type: '教育与学习', genre: '研究摘要', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 11, title: 'The case for retrieval practice', excerpt: 'Trying to recall an idea is often more demanding than rereading it, but that effort can strengthen later access to the information. Effective retrieval practice is usually brief and spaced across several sessions. It works best when learners receive feedback and vary the context in which they use a concept.', tags: ['education', 'learning'], url: 'https://en.wikipedia.org/wiki/Testing_effect', publishedAt: '2026-08-11', saved: false, read: false },
-  { id: 'article-18', type: '人口与迁移', genre: '社会报告', source: 'IELTS Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'How migration reshapes regional food', excerpt: 'When people move, they bring recipes, ingredients and ways of organising meals. Local food cultures do not simply disappear or remain unchanged; they often develop through adaptation and exchange. Markets, restaurants and home kitchens each influence which new combinations become familiar.', tags: ['society', 'migration'], url: 'https://en.wikipedia.org/wiki/Food_culture', publishedAt: '2026-08-10', saved: false, read: false }
+  { id: 'article-7', type: '科学与探索', genre: '科普说明', source: 'Reading Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'How citizen scientists help map the night sky', excerpt: 'Large surveys once belonged almost exclusively to professional observatories. Today, volunteers can classify images and report unusual objects through carefully designed online projects. Their contribution is valuable not because every observation is perfect, but because thousands of small observations can reveal patterns that a single research team might miss.', tags: ['science', 'participation'], url: 'https://en.wikipedia.org/wiki/Citizen_science', publishedAt: '2026-08-21', saved: false, read: false },
+  { id: 'article-8', type: '公共健康', genre: '证据报告', source: 'Reading Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'What wastewater can reveal about a city', excerpt: 'Wastewater monitoring gives public-health teams a population-level signal without asking every resident to complete a survey. Researchers examine chemical and biological traces, compare them over time and combine them with clinical data. The method cannot explain every individual case, yet it can provide an early warning when a health pattern is changing.', tags: ['health', 'evidence'], url: 'https://en.wikipedia.org/wiki/Wastewater-based_epidemiology', publishedAt: '2026-08-20', saved: false, read: false },
+  { id: 'article-9', type: '语言与文化', genre: '历史观察', source: 'Reading Studio · curated primer', level: 'Band 7.0', minutes: 11, title: 'Why languages keep borrowing words', excerpt: 'Borrowed words are often treated as signs of linguistic change rather than linguistic failure. Trade, migration, education and popular culture all create opportunities for one language to adopt a useful expression from another. Over time, speakers reshape the borrowed term so that it fits local sounds, grammar and social meaning.', tags: ['language', 'culture'], url: 'https://en.wikipedia.org/wiki/Loanword', publishedAt: '2026-08-19', saved: false, read: false },
+  { id: 'article-10', type: '商业与社会', genre: '学术导读', source: 'Reading Studio · curated primer', level: 'Band 7.5', minutes: 12, title: 'The quiet influence of default choices', excerpt: 'A default option can guide behaviour even when people remain free to choose something else. In workplaces, schools and digital services, the position of an option may reduce effort and make one path seem normal. Good policy therefore asks not only whether alternatives exist, but also whether they are visible and practical.', tags: ['economics', 'decision-making'], url: 'https://en.wikipedia.org/wiki/Default_effect', publishedAt: '2026-08-18', saved: false, read: false },
+  { id: 'article-11', type: '建筑与设计', genre: '案例研究', source: 'Reading Studio · curated primer', level: 'Band 7.5', minutes: 14, title: 'Designing buildings for a changing climate', excerpt: 'Climate-conscious architecture is more than adding a few efficient devices to a conventional building. Designers consider orientation, shade, ventilation, materials and the daily routines of occupants. A successful building can reduce energy demand while also making indoor spaces healthier and more comfortable.', tags: ['design', 'climate'], url: 'https://en.wikipedia.org/wiki/Sustainable_architecture', publishedAt: '2026-08-17', saved: false, read: false },
+  { id: 'article-12', type: '农业与食物', genre: '问题解决', source: 'Reading Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'Can rooftop farms feed a growing city?', excerpt: 'Rooftop gardens rarely replace rural agriculture, but they can shorten the distance between production and consumption. Their wider benefits may include insulation, storm-water management and opportunities for community education. The main constraints are structural safety, water access and the cost of maintaining a skilled workforce.', tags: ['food', 'cities'], url: 'https://en.wikipedia.org/wiki/Urban_agriculture', publishedAt: '2026-08-16', saved: false, read: false },
+  { id: 'article-13', type: '心理与艺术', genre: '跨学科文章', source: 'Reading Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'Why music can make places easier to remember', excerpt: 'Music links rhythm, emotion and attention, which may explain why a familiar song can bring back a detailed memory of a place. Researchers do not regard music as a universal memory switch; the effect depends on personal experience and context. Nevertheless, carefully chosen sound can support learning and orientation.', tags: ['psychology', 'arts'], url: 'https://en.wikipedia.org/wiki/Psychology_of_music', publishedAt: '2026-08-15', saved: false, read: false },
+  { id: 'article-14', type: '历史与贸易', genre: '历史叙事', source: 'Reading Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'The routes that moved more than goods', excerpt: 'Historic trade routes carried technologies, stories and social customs as well as spices, metals or textiles. Merchants depended on bridges between languages and legal traditions. The effects of a route could therefore continue long after its commercial importance had declined.', tags: ['history', 'migration'], url: 'https://en.wikipedia.org/wiki/Trade_route', publishedAt: '2026-08-14', saved: false, read: false },
+  { id: 'article-15', type: '科技与伦理', genre: '观点评论', source: 'Reading Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'When an algorithm decides what we notice', excerpt: 'Recommendation systems are built to rank information, yet ranking can gradually shape what users believe is important. Personalisation may save time, but it can also narrow the range of viewpoints encountered. Transparent explanations and deliberate opportunities to explore unfamiliar sources can make the trade-off easier to manage.', tags: ['technology', 'ethics'], url: 'https://en.wikipedia.org/wiki/Recommender_system', publishedAt: '2026-08-13', saved: false, read: false },
+  { id: 'article-16', type: '海洋与气候', genre: '科学说明', source: 'Reading Studio · curated primer', level: 'Band 7.5', minutes: 13, title: 'The chemistry behind a warming sea', excerpt: 'As the ocean absorbs carbon dioxide, its chemistry changes gradually rather than all at once. The resulting shift in acidity can make it harder for some organisms to build shells, while other species may adapt or move. Understanding these different responses is essential when scientists estimate future ecosystem change.', tags: ['ocean', 'climate'], url: 'https://en.wikipedia.org/wiki/Ocean_acidification', publishedAt: '2026-08-12', saved: false, read: false },
+  { id: 'article-17', type: '教育与学习', genre: '研究摘要', source: 'Reading Studio · curated primer', level: 'Band 7.0', minutes: 11, title: 'The case for retrieval practice', excerpt: 'Trying to recall an idea is often more demanding than rereading it, but that effort can strengthen later access to the information. Effective retrieval practice is usually brief and spaced across several sessions. It works best when learners receive feedback and vary the context in which they use a concept.', tags: ['education', 'learning'], url: 'https://en.wikipedia.org/wiki/Testing_effect', publishedAt: '2026-08-11', saved: false, read: false },
+  { id: 'article-18', type: '人口与迁移', genre: '社会报告', source: 'Reading Studio · curated primer', level: 'Band 7.0', minutes: 12, title: 'How migration reshapes regional food', excerpt: 'When people move, they bring recipes, ingredients and ways of organising meals. Local food cultures do not simply disappear or remain unchanged; they often develop through adaptation and exchange. Markets, restaurants and home kitchens each influence which new combinations become familiar.', tags: ['society', 'migration'], url: 'https://en.wikipedia.org/wiki/Food_culture', publishedAt: '2026-08-10', saved: false, read: false }
 ];
 
 function safeReadingUrl(value, title = '') {
@@ -1825,7 +1826,7 @@ function englishReadingVocabularyReview(article, limit = 4) {
     const bankWord = IELTS_DAILY_VOCABULARY_BANK.find(word => englishWordTermKey(word.term) === key) || IELTS_WORD_BANK.find(word => englishWordTermKey(word.term) === key);
     const rawMeaning = String(bankWord?.meaning || '').replace(/^英文释义：/, '').trim();
     const fallback = ENGLISH_READING_GLOSS[key] || ENGLISH_READING_GLOSS[key.replace(/s$/, '')] || '';
-    const meaning = fallback || (rawMeaning && !rawMeaning.startsWith('雅思高频表达') ? rawMeaning.split(/[。.;]/)[0].slice(0, 42) : '') || '回到原文核对语境';
+    const meaning = fallback || (rawMeaning && !rawMeaning.startsWith('高频表达') ? rawMeaning.split(/[。.;]/)[0].slice(0, 42) : '') || '回到原文核对语境';
     return { term, meaning, pos: String(bankWord?.pos || '').trim() };
   });
 }
@@ -2133,7 +2134,7 @@ async function refreshEnglishReadingMaterialsImpl() {
           candidate._detail = payload;
         }
       }
-      if (!candidate) throw new Error(plan.label + ' 没有合适的 IELTS 材料');
+      if (!candidate) throw new Error(plan.label + ' 没有合适的英语材料');
       const title = String(candidate.title || '').trim();
       const extract = String(candidate._extract || '').trim();
       // Search results inherit the selected rotation topic. A random fallback
@@ -8675,7 +8676,7 @@ function englishLearningPageHTML() {
   if (englishStateChanged) save();
   const english = DATA.learning.english;
   const profile = english.profile || {};
-  const vocab = english.vocab || { dailyTarget: 100, words: [], bankVersion: 'IELTS Academic Core' };
+  const vocab = english.vocab || { dailyTarget: 100, words: [], bankVersion: 'Academic Core + Topic Bank' };
   const tasks = DATA.tasks.english || [];
   const done = tasks.filter(task => task.done).length;
   const vocabWords = Array.isArray(vocab.words) ? vocab.words : [];
@@ -8709,8 +8710,8 @@ function englishLearningPageHTML() {
   const nextTask = tasks.find(task => !task.done);
   return '<div class="workspace-page english-learning-page">' +
     englishModuleTabs('english') +
-    '<section class="workspace-hero english-overview-hero"><div><div class="workspace-kicker">IELTS Academic · Study overview</div><div class="workspace-hero-title">' + commaTitleHTML('让雅思备考，成为稳定的每日节奏') + '</div><div class="workspace-hero-copy">把每天的输入拆成词汇、听力、阅读和写作四个短练习。今天不追求一次学完，而是让每次练习都留下可复用的进步。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-vocab-open">开始今日 ' + escapeHTML(String(vocab.dailyTarget || 100)) + ' 词</button><button class="btn btn-outline btn-sm" data-action="english-reading-refresh">联网更新阅读</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('今日任务完成度', calcTaskPercent(tasks), done + ' / ' + tasks.length + ' 项已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">下一项练习</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '今日任务已完成，可以记录挑战进度') + '</div></div></div></div></section>' +
-    '<section class="study-card english-skill-dashboard" aria-label="单词、听力、阅读与写作学习统计"><div class="card-header"><div class="card-title"><span class="dot"></span>四项能力数据</div><span class="card-tag">IELTS · Band ' + escapeHTML(profile.targetBand || '7.0+') + '</span></div><div class="english-skill-stat-list">' +
+    '<section class="workspace-hero english-overview-hero"><div><div class="workspace-kicker">English Learning · Study overview</div><div class="workspace-hero-title">' + commaTitleHTML('让英语学习，成为稳定的每日节奏') + '</div><div class="workspace-hero-copy">把每天的输入拆成词汇、听力、阅读和写作四个短练习。今天不追求一次学完，而是让每次练习都留下可复用的进步。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-vocab-open">开始今日 ' + escapeHTML(String(vocab.dailyTarget || 100)) + ' 词</button><button class="btn btn-outline btn-sm" data-action="english-reading-refresh">联网更新阅读</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('今日任务完成度', calcTaskPercent(tasks), done + ' / ' + tasks.length + ' 项已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">下一项练习</div><div class="workspace-next-title">' + escapeHTML(nextTask ? nextTask.text : '今日任务已完成，可以记录挑战进度') + '</div></div></div></div></section>' +
+    '<section class="study-card english-skill-dashboard" aria-label="单词、听力、阅读与写作学习统计"><div class="card-header"><div class="card-title"><span class="dot"></span>四项能力数据</div><span class="card-tag">目标 Band ' + escapeHTML(profile.targetBand || '7.0+') + '</span></div><div class="english-skill-stat-list">' +
       englishSkillStatCard('english-vocab-open', 'is-vocab', 'Aa', '单词', familiar, vocabTarget, '今日熟悉', '复习 ' + learningCount + ' 词 · 已见 ' + vocabSeenCount + ' 词', vocabProgress, '今日') +
       englishSkillStatCard('english-listening-open', 'is-listening', '◖)', '听力', listeningToday, listeningDailyGoal, '今日完成', '总进度 ' + listeningCompleted + ' / ' + listeningTarget + ' 组 · 连续 ' + (listening.streak || 0) + ' 天', listeningProgress, '今日') +
       englishSkillStatCard('english-reading-open', 'is-reading', '▤', '阅读', readingToday, readingDailyGoal, '今日精读', '累计 ' + readingCompleted + ' 篇 · ' + readingTopics + ' 类主题', readingProgress, '今日') +
@@ -8751,7 +8752,7 @@ function englishVocabPageHTML() {
   englishVocabPage = Math.max(0, Math.min(englishVocabPage, pageCount - 1));
   const pageWords = ordered.slice(englishVocabPage * pageSize, (englishVocabPage + 1) * pageSize);
   return '<div class="workspace-page english-vocab-page">' + englishModuleTabs('english-vocab') +
-    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Vocabulary lab · ' + escapeHTML(vocab.bankVersion || 'IELTS Academic Core') + '</div><div class="workspace-hero-title">' + commaTitleHTML('每日 ' + String(vocab.dailyTarget || 100) + ' 词，先把最常用的雅思表达记牢') + '</div><div class="workspace-hero-copy">熟悉的词会自动下沉到列表底部；“复习中”保留在当前批次，直到你愿意再次确认。词库按 Band 6.5–8.0 分层，避免每天抽到不匹配的内容。</div></div><div class="workspace-hero-side english-vocab-hero-side"><div class="english-vocab-progress-head"><span>今日熟悉度</span><strong>' + familiarCount + ' / ' + (vocab.dailyTarget || 100) + '</strong></div><div class="english-linear-progress"><span style="width:' + Math.round(familiarCount / Math.max(1, vocab.dailyTarget || 100) * 100) + '%"></span></div><small>已学习 ' + (learningCount + familiarCount) + ' · 收藏 ' + favoriteCount + '</small></div></section>' +
+    '<section class="workspace-hero english-subpage-hero"><div><nav class="english-hero-nav" aria-label="返回导航"><button class="english-back-link" type="button" data-action="english-overview">← 英语总览</button><div class="workspace-kicker">Vocabulary lab · ' + escapeHTML(vocab.bankVersion || 'Academic Core + Topic Bank') + '</div></nav><div class="workspace-hero-title">' + commaTitleHTML('每日 ' + String(vocab.dailyTarget || 100) + ' 词，先把最常用的表达记牢') + '</div><div class="workspace-hero-copy">熟悉的词会自动下沉到列表底部；“复习中”保留在当前批次，直到你愿意再次确认。词库按难度与主题分层，避免每天抽到不匹配的内容。</div></div><div class="workspace-hero-side english-vocab-hero-side"><div class="english-vocab-progress-head"><span>今日熟悉度</span><strong>' + familiarCount + ' / ' + (vocab.dailyTarget || 100) + '</strong></div><div class="english-linear-progress"><span style="width:' + Math.round(familiarCount / Math.max(1, vocab.dailyTarget || 100) * 100) + '%"></span></div><small>已学习 ' + (learningCount + familiarCount) + ' · 收藏 ' + favoriteCount + '</small></div></section>' +
     '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML((vocab.dailyTarget || 100) + ' 词', '今日目标', true) + workspaceStatHTML(familiarCount, '已熟悉', false) + workspaceStatHTML(learningCount, '复习中', false) + workspaceStatHTML((vocab.seenIds || []).length, '词库已见', false) + '</div>' +
     '<section class="english-vocab-toolbar"><div class="english-vocab-filters" role="tablist" aria-label="词汇筛选">' + filters.map(([id, label, count]) => '<button type="button" class="english-vocab-filter ' + (englishVocabFilter === id ? 'is-active' : '') + '" data-english-vocab-filter="' + id + '" role="tab" aria-selected="' + (englishVocabFilter === id) + '">' + label + '<b>' + count + '</b></button>').join('') + '</div><div class="english-vocab-toolbar-note"><span class="english-sync-dot ' + (englishReadingState.status === 'loading' ? 'is-loading' : '') + '"></span>每天自动生成 · 已按熟悉度排序</div></section>' +
     '<section class="english-vocab-list study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日词汇 · 第 ' + (englishVocabPage + 1) + ' / ' + pageCount + ' 页</div><span class="card-tag">' + ordered.length + ' 词</span></div>' + (pageWords.length ? pageWords.map(englishVocabWordRow).join('') : emptyStateHTML('Aa', '没有匹配词汇', '换一个筛选条件试试')) + '<div class="english-vocab-pagination"><button type="button" class="btn btn-outline btn-sm" data-english-vocab-page="prev" ' + (englishVocabPage <= 0 ? 'disabled' : '') + '>← 上一页</button><span>第 ' + (englishVocabPage + 1) + ' / ' + pageCount + ' 页 · 每页 20 词</span><button type="button" class="btn btn-outline btn-sm" data-english-vocab-page="next" ' + (englishVocabPage >= pageCount - 1 ? 'disabled' : '') + '>下一页 →</button></div></section>' +
@@ -8766,7 +8767,7 @@ function englishListeningPageHTML() {
   const queue = Array.isArray(listening.queue) ? listening.queue : [];
   const percent = Math.round((Number(listening.completed) || 0) / Math.max(1, Number(listening.target) || 12) * 100);
   return '<div class="workspace-page english-listening-page">' + englishModuleTabs('english-listening') +
-    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Listening studio · IELTS Academic</div><div class="workspace-hero-title">' + commaTitleHTML('把听力拆成可重复的场景训练') + '</div><div class="workspace-hero-copy">每次练习只聚焦一个任务：先听大意，再抓关键词，最后回看错题。完成一组后会自动解锁下一组材料。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-listening-start">开始下一组</button><button class="btn btn-outline btn-sm" data-action="english-listening-reset">重置本周进度</button></div></div><div class="workspace-hero-side"><div class="english-listening-score"><strong>' + (listening.completed || 0) + '</strong><span>/ ' + (listening.target || 12) + ' 组完成</span></div><div class="english-linear-progress"><span style="width:' + percent + '%"></span></div><small>连续练习 ' + (listening.streak || 0) + ' 天 · 建议每组 15 分钟</small></div></section>' +
+    '<section class="workspace-hero english-subpage-hero"><div><nav class="english-hero-nav" aria-label="返回导航"><button class="english-back-link" type="button" data-action="english-overview">← 英语总览</button><div class="workspace-kicker">Listening studio · Scene-based practice</div></nav><div class="workspace-hero-title">' + commaTitleHTML('把听力拆成可重复的场景训练') + '</div><div class="workspace-hero-copy">每次练习只聚焦一个任务：先听大意，再抓关键词，最后回看错题。完成一组后会自动解锁下一组材料。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-listening-start">开始下一组</button><button class="btn btn-outline btn-sm" data-action="english-listening-reset">重置本周进度</button></div></div><div class="workspace-hero-side"><div class="english-listening-score"><strong>' + (listening.completed || 0) + '</strong><span>/ ' + (listening.target || 12) + ' 组完成</span></div><div class="english-linear-progress"><span style="width:' + percent + '%"></span></div><small>连续练习 ' + (listening.streak || 0) + ' 天 · 建议每组 15 分钟</small></div></section>' +
     '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML((listening.completed || 0) + '/' + (listening.target || 12), '本周组数', true) + workspaceStatHTML((listening.streak || 0) + ' 天', '连续练习', false) + workspaceStatHTML('15 min', '单组建议', false) + workspaceStatHTML('S3–S4', '当前重点', false) + '</div>' +
     '<div class="english-listening-layout"><section class="study-card"><div class="card-header"><div class="card-title"><span class="dot"></span>训练队列</div><span class="card-tag">按难度递进</span></div><div class="english-session-list">' + (queue.length ? queue.map((item, index) => '<article class="english-session-row ' + (item.status === 'locked' ? 'is-locked' : item.status === 'done' ? 'is-done' : 'is-next') + '"><span class="english-session-index">' + String(index + 1).padStart(2, '0') + '</span><div class="english-session-copy"><small>' + escapeHTML(item.source || '精选听力') + ' · ' + escapeHTML(item.level || 'Band 7.0') + '</small><h3>' + escapeHTML(item.title) + '</h3><p>' + escapeHTML(item.skill || '听力理解训练') + ' · ' + escapeHTML(item.duration || '10:00') + '</p></div><button type="button" class="btn ' + (item.status === 'locked' ? 'btn-ghost' : 'btn-outline') + ' btn-sm" data-english-listening-item="' + escapeAttribute(item.id) + '" ' + (item.status === 'locked' ? 'disabled' : '') + '>' + (item.status === 'done' ? '已完成' : item.status === 'locked' ? '未解锁' : '开始练习') + '</button></article>').join('') : emptyStateHTML('◖)', '暂无听力材料', '联网更新后会出现新的训练组')) + '</div></section><aside class="study-card english-listening-tips"><div class="card-header"><div class="card-title"><span class="dot"></span>本组策略</div></div><div class="english-tip-stack"><div><b>01 · 先听主旨</b><span>第一遍不暂停，只记录人物、地点和转折。</span></div><div><b>02 · 再抓信号词</b><span>留意 however、whereas、as a result 等连接。</span></div><div><b>03 · 最后复盘</b><span>把错题改写成一句完整英文，而不只记答案。</span></div></div></aside></div></div>';
 }
@@ -8803,9 +8804,9 @@ function englishReadingPageHTML() {
   const detailTitleTranslation = active ? englishReadingTitleTranslation(active) : '';
   const detailHTML = active
     ? '<div class="english-detail-kicker">' + escapeHTML(active.type || '综合') + ' · ' + escapeHTML(active.genre || '综合文章') + ' · ' + escapeHTML(active.source || '精选来源') + '</div><h2>' + escapeHTML(active.title) + '</h2>' + (detailTitleTranslation ? '<p class="english-reading-title-translation">' + escapeHTML(detailTitleTranslation) + '</p>' : '') + '<div class="english-detail-meta"><span>' + escapeHTML(active.level || 'Band 7.0') + '</span><span>' + escapeHTML(String(active.minutes || 12) + ' min') + '</span><span>' + escapeHTML((active.tags || []).join(' · ')) + '</span></div>' + englishReadingDetailStudyHTML(active) + '<div class="english-reading-annotation"><b>精读提示</b><span>先用 3 分钟写出每段主旨，再圈出因果、转折与比较关系；最后把 3 个词放进自己的句子。中文释义不在摘要中时，回到原文或词典核对。</span></div><div class="english-detail-actions"><button class="btn btn-primary btn-sm" data-action="english-reading-mark-read">' + (active.read ? '取消当前标记' : '标记为读完') + '</button><button class="btn btn-outline btn-sm" data-action="english-reading-save">' + (active.saved ? '已收藏' : '收藏文章') + '</button><a class="btn btn-ghost btn-sm" href="' + escapeAttribute(safeReadingUrl(active.url, active.title)) + '" target="_blank" rel="noopener noreferrer" data-reading-source-link="' + escapeAttribute(active.id) + '">阅读原文 ↗</a></div>'
-    : emptyStateHTML('▤', '选择一篇文章开始精读', '左侧会显示不同主题的 IELTS 难度材料');
+    : emptyStateHTML('▤', '选择一篇文章开始精读', '左侧会显示不同主题的学术难度材料');
   return '<div class="workspace-page english-reading-page">' + englishModuleTabs('english-reading') +
-    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Reading studio · varied source rotation</div><div class="workspace-hero-title">' + commaTitleHTML('每天读一篇，主题可以大一点') + '</div><div class="workspace-hero-copy">文章会在科技、环境、文化、商业、心理与设计之间轮换，保持 IELTS Academic 的阅读密度，也让词汇和背景知识不局限在单一领域。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-reading-refresh"' + (refreshBusy ? ' disabled aria-disabled="true"' : '') + '>' + (refreshBusy ? '正在更新…' : '联网获取今日文章') + '</button><button class="btn btn-outline btn-sm" data-action="english-reading-mark-read">' + (active?.read ? '取消当前标记' : '标记当前读完') + '</button></div></div><div class="workspace-hero-side"><div class="english-reading-freshness"><span class="english-sync-dot ' + (englishReadingState.status === 'loading' ? 'is-loading' : '') + '"></span><strong>' + freshnessStatus + '</strong><small>' + escapeHTML(freshnessDetail) + '</small></div><div class="english-linear-progress"><span style="width:' + dailyProgress + '%"></span></div><small class="english-reading-progress-label">今日进度 ' + todayReadCount + ' / ' + (reading.dailyGoal || 1) + ' · 累计历史 ' + readCount + '</small></div></section>' +
+    '<section class="workspace-hero english-subpage-hero"><div><nav class="english-hero-nav" aria-label="返回导航"><button class="english-back-link" type="button" data-action="english-overview">← 英语总览</button><div class="workspace-kicker">Reading studio · varied source rotation</div></nav><div class="workspace-hero-title">' + commaTitleHTML('每天读一篇，主题可以大一点') + '</div><div class="workspace-hero-copy">文章会在科技、环境、文化、商业、心理与设计之间轮换，保持学术英语的阅读密度，也让词汇和背景知识不局限在单一领域。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-reading-refresh"' + (refreshBusy ? ' disabled aria-disabled="true"' : '') + '>' + (refreshBusy ? '正在更新…' : '联网获取今日文章') + '</button><button class="btn btn-outline btn-sm" data-action="english-reading-mark-read">' + (active?.read ? '取消当前标记' : '标记当前读完') + '</button></div></div><div class="workspace-hero-side"><div class="english-reading-freshness"><span class="english-sync-dot ' + (englishReadingState.status === 'loading' ? 'is-loading' : '') + '"></span><strong>' + freshnessStatus + '</strong><small>' + escapeHTML(freshnessDetail) + '</small></div><div class="english-linear-progress"><span style="width:' + dailyProgress + '%"></span></div><small class="english-reading-progress-label">今日进度 ' + todayReadCount + ' / ' + (reading.dailyGoal || 1) + ' · 累计历史 ' + readCount + '</small></div></section>' +
     '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML(reading.dailyGoal || 1, '今日目标', true) + workspaceStatHTML(readCount, '累计读完 · 历史', false) + workspaceStatHTML(articles.length, '当前文章', false) + workspaceStatHTML(new Set(articles.map(article => article.type).filter(Boolean)).size + ' 类', '主题覆盖', false) + '</div>' +
     '<div class="english-reading-layout"><section class="study-card english-article-library"><div class="card-header"><div class="card-title"><span class="dot"></span>今日文章库</div><span class="card-tag">主题轮换 · 当前库</span></div><div class="english-article-list">' + (articles.length ? articles.map(article => englishReadingArticleCard(article, active && article.id === active.id)).join('') : emptyStateHTML('▤', '还没有文章', '点击联网获取今日材料')) + '</div></section><section class="study-card english-reading-detail">' + detailHTML + '</section></div>' +
   '</div>';
@@ -8821,7 +8822,7 @@ function englishWritingPageHTML() {
   const drafts = Array.isArray(writing.drafts) ? writing.drafts : [];
   const draft = activePrompt ? drafts.find(item => item.promptId === activePrompt.id) : null;
   return '<div class="workspace-page english-writing-page">' + englishModuleTabs('english-writing') +
-    '<section class="workspace-hero english-subpage-hero"><div><button class="english-back-link" type="button" data-action="english-overview">← 返回英语总览</button><div class="workspace-kicker">Writing studio · Task 1 + Task 2</div><div class="workspace-hero-title">' + commaTitleHTML('把观点写清楚，再把语言写漂亮') + '</div><div class="workspace-hero-copy">每周保留两次完整输出：一次练结构，一次练语言。题目覆盖图表、观点、双边讨论和问题解决，写完后留下自评。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-writing-complete">完成本次写作</button><button class="btn btn-outline btn-sm" data-action="english-writing-new">换一道题</button></div></div><div class="workspace-hero-side"><div class="english-writing-score"><strong>' + (writing.completed || 0) + '</strong><span>/ ' + (writing.weeklyGoal || 2) + ' 本周完成</span></div><div class="english-linear-progress"><span style="width:' + Math.min(100, Math.round((writing.completed || 0) / Math.max(1, writing.weeklyGoal || 2) * 100)) + '%"></span></div><small>建议先写提纲，再进入限时练习</small></div></section>' +
+    '<section class="workspace-hero english-subpage-hero"><div><nav class="english-hero-nav" aria-label="返回导航"><button class="english-back-link" type="button" data-action="english-overview">← 英语总览</button><div class="workspace-kicker">Writing studio · Task 1 + Task 2</div></nav><div class="workspace-hero-title">' + commaTitleHTML('把观点写清楚，再把语言写漂亮') + '</div><div class="workspace-hero-copy">每周保留两次完整输出：一次练结构，一次练语言。题目覆盖图表、观点、双边讨论和问题解决，写完后留下自评。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="english-writing-complete">完成本次写作</button><button class="btn btn-outline btn-sm" data-action="english-writing-new">换一道题</button></div></div><div class="workspace-hero-side"><div class="english-writing-score"><strong>' + (writing.completed || 0) + '</strong><span>/ ' + (writing.weeklyGoal || 2) + ' 本周完成</span></div><div class="english-linear-progress"><span style="width:' + Math.min(100, Math.round((writing.completed || 0) / Math.max(1, writing.weeklyGoal || 2) * 100)) + '%"></span></div><small>建议先写提纲，再进入限时练习</small></div></section>' +
     '<div class="workspace-stat-strip english-stat-strip">' + workspaceStatHTML((writing.completed || 0) + '/' + (writing.weeklyGoal || 2), '本周目标', true) + workspaceStatHTML('40 min', 'Task 2 建议', false) + workspaceStatHTML('20 min', 'Task 1 建议', false) + workspaceStatHTML(drafts.length, '保留草稿', false) + '</div>' +
     '<div class="english-writing-layout"><section class="study-card english-writing-prompts"><div class="card-header"><div class="card-title"><span class="dot"></span>题目队列</div><span class="card-tag">本周建议</span></div><div class="english-prompt-list">' + (prompts.length ? prompts.map(prompt => '<button type="button" class="english-prompt-row ' + (activePrompt && prompt.id === activePrompt.id ? 'is-active' : '') + '" data-english-writing-prompt="' + escapeAttribute(prompt.id) + '"><span class="english-prompt-type">' + escapeHTML(prompt.type || 'Writing') + '</span><span class="english-prompt-copy"><strong>' + escapeHTML(prompt.title) + '</strong><small>' + escapeHTML(prompt.focus || '') + ' · ' + escapeHTML(String(prompt.time || 30) + ' min') + '</small></span><i>→</i></button>').join('') : emptyStateHTML('✎', '暂无写作题目', '稍后会生成新的练习')) + '</div></section><section class="study-card english-writing-desk">' + (activePrompt ? '<div class="english-detail-kicker">' + escapeHTML(activePrompt.type || 'Writing') + ' · 结构训练</div><h2>' + escapeHTML(activePrompt.title) + '</h2><div class="english-writing-focus"><span>本题重点</span><b>' + escapeHTML(activePrompt.focus || '论证结构') + '</b><small>先写 3 句提纲，再进入正文。</small></div><textarea class="english-writing-draft" data-english-writing-draft="' + escapeAttribute(activePrompt.id) + '" placeholder="在这里写下你的提纲或第一版答案…">' + escapeHTML(draft ? draft.text : '') + '</textarea><div class="english-writing-desk-foot"><span>草稿会随输入自动保存到当前工作台</span><button class="btn btn-primary btn-sm" data-action="english-writing-save">保存草稿</button></div>' : emptyStateHTML('✎', '选择一道题开始写作', '左侧题目会保留你的练习轨迹')) + '</section></div>' +
   '</div>';
@@ -8839,6 +8840,8 @@ function ensureCivilServiceState(root = DATA) {
   study.profile.targetScore = Math.max(1, Math.min(100, Number(study.profile.targetScore) || defaults.profile.targetScore));
   study.profile.dailyMinutes = Math.max(1, Math.min(1440, Number(study.profile.dailyMinutes) || defaults.profile.dailyMinutes));
   study.weeklyGoal = Math.max(1, Math.min(100, Number(study.weeklyGoal) || defaults.weeklyGoal));
+  study.sessions = Array.isArray(study.sessions) ? study.sessions : [];
+  study.mistakes = Array.isArray(study.mistakes) ? study.mistakes : [];
   study.weeklyCompleted = Math.max(0, Number(study.weeklyCompleted) || 0);
   study.streak = Math.max(0, Number(study.streak) || 0);
   study.totalMinutes = Math.max(0, Number(study.totalMinutes) || 0);
@@ -8880,44 +8883,12 @@ function civilServiceStats() {
   return { study, subjects, tasks, done, mastery, active, taskPercent: tasks.length ? Math.round(done / tasks.length * 100) : 0 };
 }
 
-function civilServiceRecordStudy(subjectId, minutes = 25) {
-  const study = civilServiceStudy();
-  const amount = Math.max(5, Math.min(240, Number(minutes) || 25));
-  const today = todayKey();
-  let record = study.studyHistory.find(item => item.date === today);
-  if (!record) {
-    record = { date: today, minutes: 0, completed: 0 };
-    study.studyHistory.push(record);
-  }
-  record.minutes += amount;
-  record.completed += 1;
-  study.studyHistory.sort((a, b) => a.date.localeCompare(b.date));
-  study.studyHistory = study.studyHistory.slice(-60);
-  study.totalMinutes += amount;
-  if (study.lastStudyDate !== today) {
-    study.streak = study.lastStudyDate === shiftDateKey(today, -1) ? Math.max(1, study.streak) + 1 : 1;
-    study.lastStudyDate = today;
-  }
-  study.weeklyCompleted += 1;
-  const subject = subjectId ? study.subjects.find(item => item.id === subjectId) : null;
-  if (subject) subject.progress = Math.min(100, subject.progress + 2);
-}
-
 function civilServiceToggleTask(subjectId, taskId) {
-  const subject = civilServiceSubject(subjectId);
-  const task = subject && subject.tasks.find(item => item.id === taskId);
-  if (!subject || !task) return;
-  task.done = !task.done;
-  if (task.done) {
-    task.completedAt = new Date().toISOString();
-    civilServiceRecordStudy(subjectId);
-  } else {
-    delete task.completedAt;
-    subject.progress = Math.max(0, subject.progress - 1);
-  }
-  save();
-  rerender();
-  showToast(task.done ? '已记录公考学习进展' : '已取消该项完成状态', 'success');
+  const task = civilServiceSubject(subjectId)?.tasks.find(item => item.id === taskId);
+  if (!task) return;
+  toggleStudyTask(task, new Date().toISOString());
+  save(); rerender();
+  showToast(task.done ? '训练任务已完成' : '已取消完成', 'success');
 }
 
 function civilServiceHistoryHTML() {
@@ -8933,55 +8904,158 @@ function civilServiceHistoryHTML() {
   return '<div class="civil-history-wrap"><div class="civil-history-cells">' + cells + '</div><div class="civil-history-legend"><span>近 14 天学习节奏</span><span><i class="level-0"></i>未学习 <i class="level-1"></i>轻量 <i class="level-2"></i>标准 <i class="level-3"></i>深度</span></div></div>';
 }
 
-function civilServiceProgressChartHTML(subjects) {
-  const width = 720;
-  const baseline = 152;
-  const chartHeight = 112;
-  const barWidth = 48;
-  const gap = 33;
-  const bars = subjects.map((subject, index) => {
-    const x = 18 + index * (barWidth + gap);
-    const height = Math.max(2, Math.round(chartHeight * subject.progress / 100));
-    const y = baseline - height;
-    return '<g class="civil-chart-bar" data-civil-service-subject="' + escapeAttribute(subject.id) + '" role="button" tabindex="0" aria-label="打开' + escapeAttribute(subject.title) + '，掌握度 ' + subject.progress + '%"><title>' + escapeHTML(subject.title + '：' + subject.progress + '%') + '</title><rect x="' + x + '" y="' + y + '" width="' + barWidth + '" height="' + height + '" rx="8"></rect><text x="' + (x + barWidth / 2) + '" y="' + (y - 9) + '" text-anchor="middle">' + subject.progress + '%</text><text x="' + (x + barWidth / 2) + '" y="' + (baseline + 24) + '" text-anchor="middle">' + escapeHTML(subject.title.slice(0, 4)) + '</text></g>';
-  }).join('');
-  const mobileBars = subjects.map(subject => '<button type="button" class="civil-progress-mobile-row" data-civil-service-subject="' + escapeAttribute(subject.id) + '" aria-label="打开' + escapeAttribute(subject.title) + '，掌握度 ' + subject.progress + '%"><span><strong>' + escapeHTML(subject.title) + '</strong><b>' + subject.progress + '%</b></span><i><em style="width:' + subject.progress + '%"></em></i></button>').join('');
-  return '<div class="civil-progress-chart" role="img" aria-label="公考各科掌握度对比"><svg viewBox="0 0 ' + width + ' 205" preserveAspectRatio="none"><line x1="12" y1="' + baseline + '" x2="' + (width - 10) + '" y2="' + baseline + '"></line><line x1="12" y1="' + (baseline - chartHeight / 2) + '" x2="' + (width - 10) + '" y2="' + (baseline - chartHeight / 2) + '"></line><line x1="12" y1="' + (baseline - chartHeight) + '" x2="' + (width - 10) + '" y2="' + (baseline - chartHeight) + '"></line><text class="civil-chart-axis" x="' + (width - 11) + '" y="' + (baseline - chartHeight + 4) + '" text-anchor="end">100</text><text class="civil-chart-axis" x="' + (width - 11) + '" y="' + (baseline + 4) + '" text-anchor="end">0</text>' + bars + '</svg></div><div class="civil-progress-mobile" aria-label="公考各科掌握度对比">' + mobileBars + '</div>';
-}
-
 function civilServiceTabs(active) {
   const tabs = [['civil-service', '总览'], ...civilServiceStudy().subjects.map(subject => [subject.id, subject.title])];
   return '<nav class="civil-module-tabs" aria-label="公考学习模块" role="tablist">' + tabs.map(([id, label]) => '<button type="button" class="civil-module-tab' + (active === id ? ' is-active' : '') + '" data-action="civil-go-' + escapeAttribute(id) + '" role="tab" aria-selected="' + String(active === id) + '">' + escapeHTML(label) + '</button>').join('') + '</nav>';
 }
 
+let civilTaskFilter = 'pending';
+let civilReviewFilter = 'due';
+
+function civilCurrentSubject() {
+  return currentPage !== 'civil-service' && currentPage.startsWith('civil-') ? currentPage.replace('civil-', '') : '';
+}
+
+function civilButton(action, label, primary = false, extra = '') {
+  return '<button type="button" class="btn ' + (primary ? 'btn-primary' : 'btn-outline') + ' btn-sm" data-action="' + action + '" ' + extra + '>' + label + '</button>';
+}
+
+function civilCardHeader(title, right = '') {
+  return '<div class="card-header"><div class="card-title"><span class="dot"></span>' + title + '</div>' + right + '</div>';
+}
+
+function civilCardBtn(action, label, title) {
+  return '<button type="button" class="card-btn" data-action="' + action + '" title="' + escapeAttribute(title || label) + '" aria-label="' + escapeAttribute(title || label) + '">' + label + '</button>';
+}
+
+function civilSubjectOptions(selected) {
+  return civilServiceStudy().subjects.map(s => '<option value="' + escapeAttribute(s.id) + '"' + (s.id === selected ? ' selected' : '') + '>' + escapeHTML(s.title) + '</option>').join('');
+}
+
+function civilField(label, name, type, value, attrs = '') {
+  return '<label class="cs-field"><span>' + label + '</span><input name="' + name + '" type="' + type + '" value="' + escapeAttribute(String(value ?? '')) + '" ' + attrs + '></label>';
+}
+
+function civilForm(title, description, fields, onSubmit) {
+  showModal('<form id="civilForm" class="cs-dialog"><h2 class="modal-title">' + title + '</h2><p>' + description + '</p><div class="cs-form-grid">' + fields + '</div><p class="cs-form-error" id="civilFormError" role="alert"></p><div class="cs-dialog-actions"><button type="button" id="civilCancel" class="btn btn-outline">取消</button><button type="submit" class="btn btn-primary">保存</button></div></form>');
+  document.getElementById('civilCancel').addEventListener('click', closeModal);
+  document.getElementById('civilForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (!form.reportValidity()) return;
+    try {
+      onSubmit(Object.fromEntries(new FormData(form)));
+      closeModal(); save(); rerender(); showToast('已保存', 'success');
+    } catch (error) {
+      document.getElementById('civilFormError').textContent = error.message;
+    }
+  });
+}
+
+function civilGoalDialog() {
+  const study = civilServiceStudy();
+  civilForm('设置备考目标', '考试日期由你填写；倒计时将按这个日期计算。',
+    civilField('目标考试', 'target', 'text', study.profile.target, 'maxlength="80" required') +
+    civilField('考试日期（选填）', 'targetDate', 'date', study.profile.targetDate) +
+    civilField('目标分数（百分制）', 'targetScore', 'number', study.profile.targetScore, 'min="1" max="100" required') +
+    civilField('每日学习 / 分钟', 'dailyMinutes', 'number', study.profile.dailyMinutes, 'min="1" max="1440" required') +
+    civilField('每周练习 / 次', 'weeklyGoal', 'number', study.weeklyGoal, 'min="1" max="100" required'), value => {
+      study.profile = { ...study.profile, target: value.target.trim(), targetDate: value.targetDate, targetScore: Number(value.targetScore), dailyMinutes: Number(value.dailyMinutes) };
+      study.weeklyGoal = Number(value.weeklyGoal);
+    });
+}
+
+function civilLogDialog() {
+  const study = civilServiceStudy();
+  civilForm('记录一次学习', '填写实际投入。题数可留为 0，适用于听课、申论练笔与复盘。',
+    '<label class="cs-field"><span>学习科目</span><select name="subjectId">' + civilSubjectOptions(civilCurrentSubject()) + '</select></label>' +
+    civilField('实际时长 / 分钟', 'minutes', 'number', 25, 'min="1" max="1440" required') +
+    civilField('练习题数', 'questions', 'number', 0, 'min="0" max="1000" required') +
+    civilField('正确题数', 'correct', 'number', 0, 'min="0" max="1000" required') +
+    '<label class="cs-field cs-full"><span>练习内容（选填）</span><textarea name="note" maxlength="1000" placeholder="例如：资料分析增长率专项，重点复盘估算方法"></textarea></label>', value => {
+      recordSession(study, { id: uid(), date: todayKey(), subjectId: value.subjectId, minutes: Number(value.minutes), questions: Number(value.questions), correct: Number(value.correct), note: value.note.trim() });
+    });
+}
+
+function civilTaskDialog(subjectId = civilCurrentSubject(), taskId = '') {
+  const subject = civilServiceSubject(subjectId);
+  const task = subject?.tasks.find(t => t.id === taskId);
+  civilForm(task ? '编辑训练任务' : '添加训练任务', '把训练写成一个可以完成的动作。未设置日期的任务会保留在待办中。',
+    '<label class="cs-field"><span>所属科目</span><select name="subjectId"' + (task ? ' disabled' : '') + '>' + civilSubjectOptions(subjectId) + '</select></label>' +
+    civilField('计划日期（选填）', 'dueDate', 'date', task?.dueDate || todayKey()) +
+    '<label class="cs-field cs-full"><span>训练内容</span><input name="title" value="' + escapeAttribute(task?.title || '') + '" maxlength="200" required placeholder="例如：完成 20 道图形推理并归纳规律"></label>', value => {
+      if (!value.title.trim()) throw new Error('请填写训练内容');
+      if (task) Object.assign(civilServiceSubject(subjectId).tasks.find(item => item.id === taskId), { title: value.title.trim(), dueDate: value.dueDate });
+      else civilServiceSubject(value.subjectId).tasks.push({ id: uid(), title: value.title.trim(), dueDate: value.dueDate, done: false });
+    });
+}
+
+function civilMistakeDialog() {
+  civilForm('收录错题', '留下题目或来源，以及出错原因。保存后进入今日复习队列。',
+    '<label class="cs-field"><span>所属科目</span><select name="subjectId">' + civilSubjectOptions(civilCurrentSubject()) + '</select></label>' +
+    '<label class="cs-field"><span>错因</span><select name="reason"><option>知识点不熟</option><option>方法不熟</option><option>审题遗漏</option><option>计算失误</option><option>时间不足</option></select></label>' +
+    '<label class="cs-field cs-full"><span>题目 / 来源</span><textarea name="title" maxlength="2000" required placeholder="粘贴题干，或填写试卷名称与题号"></textarea></label>' +
+    '<label class="cs-field cs-full"><span>正确思路</span><textarea name="answer" maxlength="4000" required placeholder="写下关键步骤，复习时先回忆再展开核对"></textarea></label>', value => {
+      if (!value.title.trim() || !value.answer.trim()) throw new Error('请填写题目与正确思路');
+      civilServiceStudy().mistakes.push({ id: uid(), ...value, title: value.title.trim(), answer: value.answer.trim(), nextReview: todayKey(), reviewStep: -1, createdAt: todayKey() });
+    });
+}
+
+function civilTaskListHTML(subjectId = '') {
+  const subjects = civilServiceStudy().subjects.filter(s => !subjectId || s.id === subjectId);
+  let tasks = subjects.flatMap(s => s.tasks.map(task => ({ task, subject: s })));
+  if (civilTaskFilter !== 'all') tasks = tasks.filter(({ task }) => civilTaskFilter === 'done' ? task.done : !task.done);
+  tasks.sort((a, b) => Number(a.task.done) - Number(b.task.done) || (a.task.dueDate || '9999').localeCompare(b.task.dueDate || '9999'));
+  const filters = [['pending', '待完成'], ['done', '已完成'], ['all', '全部']].map(([id, name]) => '<button type="button" data-action="civil-task-filter" data-filter="' + id + '" aria-pressed="' + (civilTaskFilter === id) + '" class="' + (civilTaskFilter === id ? 'is-active' : '') + '">' + name + '</button>').join('');
+  return '<div class="cs-filter" aria-label="筛选训练任务">' + filters + '</div><div class="civil-task-list cs-task-scroll">' + (tasks.length ? tasks.map(({ task, subject }) => {
+    const dateLabel = task.dueDate ? (task.dueDate < todayKey() && !task.done ? '已逾期 · ' : task.dueDate === todayKey() ? '今天 · ' : '计划 · ') + task.dueDate : '未设日期';
+    return '<div class="civil-task-row' + (task.done ? ' is-done' : '') + '"><button type="button" class="civil-task-check" data-civil-task="' + escapeAttribute(task.id) + '" data-civil-subject="' + escapeAttribute(subject.id) + '" aria-label="' + escapeAttribute((task.done ? '取消完成：' : '完成：') + task.title) + '" aria-pressed="' + task.done + '">' + (task.done ? '✓' : '') + '</button><span><strong>' + escapeHTML(task.title) + '</strong><small>' + escapeHTML(subject.title + ' · ' + dateLabel) + '</small></span><i>' + (task.done ? '已完成' : '待完成') + '</i><button type="button" class="cs-text-button" data-action="civil-edit-task" data-subject="' + escapeAttribute(subject.id) + '" data-id="' + escapeAttribute(task.id) + '" aria-label="编辑：' + escapeAttribute(task.title) + '">编辑</button></div>';
+  }).join('') : emptyStateHTML('✓', civilTaskFilter === 'done' ? '还没有已完成的训练' : '清单已清空，准备好下一步', '可以添加专项训练，也可以从错题复习开始')) + '</div><p class="civil-note-hint">勾选只更新任务状态；学习时长与题数请通过「记录学习」填写。</p>';
+}
+
+function civilReviewHTML(subjectId = '') {
+  const all = civilServiceStudy().mistakes.filter(m => !subjectId || m.subjectId === subjectId);
+  const due = all.filter(m => m.nextReview <= todayKey());
+  const items = (civilReviewFilter === 'all' ? all : due).slice().sort((a, b) => a.nextReview.localeCompare(b.nextReview));
+  return '<section class="study-card civil-review-card">' + civilCardHeader('错题复习', civilCardBtn('civil-add-mistake', '+', '收录错题')) +
+    '<div class="cs-filter"><button type="button" data-action="civil-review-filter" data-filter="due" class="' + (civilReviewFilter === 'due' ? 'is-active' : '') + '" aria-pressed="' + (civilReviewFilter === 'due') + '">待复习 ' + due.length + '</button><button type="button" data-action="civil-review-filter" data-filter="all" class="' + (civilReviewFilter === 'all' ? 'is-active' : '') + '" aria-pressed="' + (civilReviewFilter === 'all') + '">全部 ' + all.length + '</button></div><div class="cs-review-list">' + (items.length ? items.map(m => '<article class="cs-mistake"><div class="cs-mistake-meta"><span>' + escapeHTML(civilServiceSubject(m.subjectId)?.title || '综合') + ' · ' + escapeHTML(m.reason) + '</span><span>' + (m.nextReview <= todayKey() ? '待复习' : '下次 ' + escapeHTML(m.nextReview)) + '</span></div><h3>' + escapeHTML(m.title) + '</h3><details><summary>回忆后，展开正确思路</summary><p>' + escapeHTML(m.answer) + '</p>' + (m.nextReview <= todayKey() ? '<div class="cs-review-actions">' + civilButton('civil-review-again', '还需巩固', false, 'data-id="' + escapeAttribute(m.id) + '"') + civilButton('civil-review-good', '已掌握，安排下次', true, 'data-id="' + escapeAttribute(m.id) + '"') + '</div>' : '') + '</details></article>').join('') : emptyStateHTML('↺', all.length ? '今天的复习已完成' : '把每次失误，变成下次的得分', all.length ? '切换「全部」查看后续复习安排。' : '收录第一道错题，开始积累自己的解题方法。')) + '</div></section>';
+}
+
+function civilSessionsHTML(subjectId = '') {
+  const items = civilServiceStudy().sessions.filter(r => !r.voided && (!subjectId || r.subjectId === subjectId)).slice(-8).reverse();
+  return '<section class="study-card">' + civilCardHeader('最近学习记录', '<span class="card-tag">近 8 次 · 按题数加权</span>') + '<div class="cs-session-list">' + (items.length ? items.map(r => '<div class="cs-session"><span class="cs-session-icon">↗</span><div><strong>' + escapeHTML(civilServiceSubject(r.subjectId)?.title || '综合') + '</strong><small>' + escapeHTML(r.date + (r.note ? ' · ' + r.note : '')) + '</small></div><div class="cs-session-numbers"><strong>' + r.minutes + ' <small>min</small></strong><small>' + (r.questions ? r.correct + '/' + r.questions + ' 题正确' : '非刷题学习') + '</small></div><button type="button" class="cs-text-button" data-action="civil-undo-session" data-id="' + escapeAttribute(r.id) + '" aria-label="撤销' + escapeAttribute(r.date) + '的学习记录">撤销</button></div>').join('') : emptyStateHTML('↗', '暂无详细记录', '历史学习时长仍保留，记录一次学习后会显示在这里')) + '</div></section>';
+}
+
 function civilServiceOverviewPageHTML() {
   const stats = civilServiceStats();
-  const weeklyPercent = Math.min(100, Math.round(stats.study.weeklyCompleted / Math.max(1, stats.study.weeklyGoal) * 100));
-  const nextSubject = stats.subjects.slice().sort((a, b) => a.progress - b.progress)[0];
-  const subjectCards = stats.subjects.map(subject => {
-    const done = (subject.tasks || []).filter(task => task.done).length;
-    return '<button type="button" class="civil-subject-card" data-civil-service-subject="' + escapeAttribute(subject.id) + '" aria-label="打开' + escapeAttribute(subject.title) + '"><span class="civil-subject-card-top"><i>' + escapeHTML(subject.icon) + '</i><strong>' + escapeHTML(subject.title) + '</strong><em>' + subject.progress + '%</em></span><span class="civil-subject-card-focus">' + escapeHTML(subject.focus) + '</span><span class="civil-subject-card-progress"><i style="width:' + subject.progress + '%"></i></span><span class="civil-subject-card-foot"><small>' + done + '/' + subject.tasks.length + ' 项训练已完成</small><b>进入科目 →</b></span></button>';
-  }).join('');
+  const study = stats.study;
+  const m = studyMetrics(study, todayKey());
+  const next = stats.subjects.slice().sort((a, b) => a.progress - b.progress)[0];
+  const dailyPercent = Math.min(100, Math.round(m.todayMinutes / study.profile.dailyMinutes * 100));
+  const countdownTitle = m.daysLeft === null
+    ? '设置考试日期，让每一天都有方向'
+    : (m.daysLeft < 0 ? '目标日期已过 ' + Math.abs(m.daysLeft) + ' 天' : m.daysLeft === 0 ? '今天就是目标日' : '还剩 ' + m.daysLeft + ' 天') + ' · 目标 ' + study.profile.targetScore + ' 分';
+  const cards = stats.subjects.map(s => '<button type="button" class="civil-subject-card" data-civil-service-subject="' + escapeAttribute(s.id) + '"><div class="civil-subject-card-top"><i>' + escapeHTML(s.icon) + '</i><strong>' + escapeHTML(s.title) + '</strong><em>' + s.progress + '%</em></div><p class="civil-subject-card-focus">' + escapeHTML(s.focus) + '</p><span class="civil-subject-card-progress"><i style="width:' + s.progress + '%"></i></span><div class="civil-subject-card-foot"><span>' + s.tasks.filter(t => !t.done).length + ' 项待办</span><b>进入学习 ↗</b></div></button>').join('');
+  const rhythmCard = '<section class="study-card civil-rhythm-card">' + civilCardHeader('保持学习节奏', '<span class="card-tag">近 14 天</span>') +
+    '<div class="civil-next-focus"><div><strong>' + escapeHTML(next?.title || '开始专项训练') + '</strong><small>' + (next ? '当前阶段自评 ' + next.progress + '%，可以从这一科的待办与薄弱点开始。' : '选择科目，建立你的训练计划。') + '</small></div>' + civilButton('civil-go-' + (next?.id || 'civil-service'), '进入专项 →', true) + '</div>' +
+    civilServiceHistoryHTML() +
+    '<div class="civil-rhythm-summary"><span>' + m.streak + '</span><small>连续学习 / 天</small><span>' + (Math.round(study.totalMinutes / 60 * 10) / 10) + '</span><small>累计投入 / 小时</small></div></section>';
   return '<div class="workspace-page civil-service-page">' + civilServiceTabs('civil-service') +
-    '<section class="workspace-hero civil-overview-hero"><div><div class="workspace-kicker">Civil service studio · 行测 + 申论</div><div class="workspace-hero-title">' + commaTitleHTML('把八个科目，推进成一条上岸路径') + '</div><div class="workspace-hero-copy">公考学习不只看刷题数量。这里把知识掌握、今日训练和持续投入放在同一张进度地图上，让你知道现在在哪里、下一步该补什么。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="civil-service-log-session">记录 25 分钟学习</button><button class="btn btn-outline btn-sm" data-action="civil-go-' + escapeAttribute(nextSubject ? nextSubject.id : 'civil-service') + '">优先补强 ' + escapeHTML(nextSubject ? nextSubject.title : '当前薄弱科目') + '</button></div></div><div class="workspace-hero-side"><div class="civil-overview-score"><span>综合掌握度</span><strong>' + stats.mastery + '%</strong><small>目标分数 ' + stats.study.profile.targetScore + ' · 每日建议 ' + stats.study.profile.dailyMinutes + ' 分钟</small></div><div class="english-linear-progress"><span style="width:' + stats.mastery + '%"></span></div><small>连续学习 ' + stats.study.streak + ' 天 · ' + (stats.active ? stats.active + ' 个科目值得优先补强' : '各科目均已进入稳定区间') + '</small></div></section>' +
-    '<div class="workspace-stat-strip civil-stat-strip">' + workspaceStatHTML(stats.mastery + '%', '综合掌握度', true) + workspaceStatHTML(stats.study.totalMinutes + ' min', '累计投入', false) + workspaceStatHTML(stats.study.weeklyCompleted + '/' + stats.study.weeklyGoal, '本周训练目标', false) + workspaceStatHTML(stats.done + '/' + stats.tasks.length, '科目任务完成', false) + '</div>' +
-    '<div class="civil-overview-grid"><section class="study-card civil-progress-card"><div class="card-header"><div class="card-title"><span class="dot"></span>八科掌握度地图</div><span class="card-tag">点击柱状图进入科目</span></div>' + civilServiceProgressChartHTML(stats.subjects) + '<div class="civil-chart-note"><span><i></i>掌握度基于阶段自评与训练记录</span><b>当前最低：' + escapeHTML(nextSubject ? nextSubject.title : '暂无') + ' · ' + (nextSubject?.progress || 0) + '%</b></div></section><section class="study-card civil-rhythm-card"><div class="card-header"><div class="card-title"><span class="dot"></span>学习节奏</div><span class="card-tag">持续比突击重要</span></div><div class="civil-weekly-progress"><div><span>本周目标</span><strong>' + stats.study.weeklyCompleted + ' / ' + stats.study.weeklyGoal + ' 次训练</strong></div><div class="workspace-progress-track"><div class="workspace-progress-fill" style="width:' + weeklyPercent + '%"></div></div></div>' + civilServiceHistoryHTML() + '<div class="civil-rhythm-summary"><span><b>' + stats.study.streak + '</b>天</span><small>当前连续学习</small><span><b>' + Math.round(stats.study.totalMinutes / 60 * 10) / 10 + '</b>小时</span><small>累计投入时长</small></div></section></div>' +
-    '<section class="civil-subject-section"><div class="civil-section-heading"><div><span>Subject map</span><h2>从薄弱项开始，逐科建立优势</h2></div><p>每个科目保留自己的训练清单和错题提醒；完成任务会自动更新总览进度。</p></div><div class="civil-subject-grid">' + subjectCards + '</div></section>' +
-    '</div>';
+    '<section class="workspace-hero civil-overview-hero"><div><div class="workspace-kicker">CIVIL SERVICE · 备考工作区</div><div class="workspace-hero-title">' + commaTitleHTML('每一次练习，都向目标靠近') + '</div><div class="workspace-hero-copy">安排训练、记录进步，把薄弱点逐个攻克。倒计时、正确率与错题复习都汇总在这一页。</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="civil-service-log-session">＋ 记录学习</button><button class="btn btn-outline btn-sm" data-action="civil-goals">设置备考目标</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('今日学习完成度', dailyPercent, m.todayMinutes + ' / ' + study.profile.dailyMinutes + ' 分钟') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">' + escapeHTML(study.profile.target || '目标考试') + (study.profile.targetDate ? ' · ' + escapeHTML(study.profile.targetDate) : '') + '</div><div class="workspace-next-title">' + escapeHTML(countdownTitle) + '</div></div></div></div></section>' +
+    '<div class="workspace-stat-strip">' + workspaceStatHTML(m.todayMinutes + ' / ' + study.profile.dailyMinutes + ' min', '今日学习', true) + workspaceStatHTML(m.weeklyCompleted + ' / ' + study.weeklyGoal + ' 次', '本周练习', false) + workspaceStatHTML(m.accuracy === null ? '—' : m.accuracy + '%', '练习正确率', false) + workspaceStatHTML(m.due.length + ' 道', '待复习错题', false) + '</div>' +
+    '<div class="study-main-grid"><section class="study-card civil-task-card">' + civilCardHeader('训练计划', civilCardBtn('civil-add-task', '+', '添加任务')) + civilTaskListHTML() + '</section>' + rhythmCard + '</div>' +
+    '<section class="civil-subject-section"><div class="workspace-section-heading"><h2>专项学习</h2><span>' + stats.subjects.length + ' 个学习模块 · 独立清单 · 阶段自评 · 错题复盘</span></div><div class="civil-subject-grid">' + cards + '</div></section>' +
+    civilReviewHTML() + civilSessionsHTML() + '</div>';
 }
 
 function civilServiceSubjectPageHTML(subjectId) {
   const subject = civilServiceSubject(subjectId);
   if (!subject) return civilServiceOverviewPageHTML();
-  const done = subject.tasks.filter(task => task.done).length;
-  const percent = subject.tasks.length ? Math.round(done / subject.tasks.length * 100) : 0;
-  const taskHTML = subject.tasks.length ? subject.tasks.map(task => '<button type="button" class="civil-task-row' + (task.done ? ' is-done' : '') + '" data-civil-task="' + escapeAttribute(task.id) + '" data-civil-subject="' + escapeAttribute(subject.id) + '" aria-pressed="' + String(task.done) + '"><span class="civil-task-check">' + (task.done ? '✓' : '') + '</span><span><strong>' + escapeHTML(task.title) + '</strong><small>' + (task.done ? '已完成 · 继续保持' : '待完成 · 完成后计入学习进展') + '</small></span><i>' + (task.done ? '已完成' : '完成') + '</i></button>').join('') : emptyStateHTML('□', '暂无训练任务', '稍后补充该科目的练习计划');
-  const weakHTML = (subject.weakPoints || []).map((point, index) => '<li><b>0' + (index + 1) + '</b><span>' + escapeHTML(point) + '</span></li>').join('');
-  return '<div class="workspace-page civil-service-page civil-subject-page">' + civilServiceTabs(subject.id) +
-    '<section class="workspace-hero civil-subject-hero"><div><button class="civil-back-link" type="button" data-action="civil-go-civil-service">← 返回公考总览</button><div class="workspace-kicker">Subject lab · ' + escapeHTML(subject.focus) + '</div><div class="workspace-hero-title">' + commaTitleHTML(subject.title + '，把方法练成反应') + '</div><div class="workspace-hero-copy">' + escapeHTML(subject.description) + '</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="civil-service-log-session">记录本次 25 分钟</button><button class="btn btn-outline btn-sm" data-action="civil-service-next-subject">切换下一科</button></div></div><div class="workspace-hero-side"><div class="civil-subject-score"><span>阶段掌握度</span><strong>' + subject.progress + '%</strong><small>' + done + ' / ' + subject.tasks.length + ' 项今日训练完成</small></div><div class="english-linear-progress"><span style="width:' + subject.progress + '%"></span></div><small>当前科目建议：先完成清单，再复盘薄弱点</small></div></section>' +
-    '<div class="workspace-stat-strip civil-stat-strip">' + workspaceStatHTML(subject.progress + '%', '阶段掌握度', true) + workspaceStatHTML(done + '/' + subject.tasks.length, '训练完成', false) + workspaceStatHTML(subject.focus.split(' · ')[0] || '基础', '当前重点', false) + workspaceStatHTML(civilServiceStudy().streak + ' 天', '连续学习', false) + '</div>' +
-    '<div class="civil-subject-layout"><section class="study-card civil-task-card"><div class="card-header"><div class="card-title"><span class="dot"></span>今日训练清单</div><span class="card-tag">' + percent + '% 完成</span></div><div class="civil-task-list">' + taskHTML + '</div><div class="civil-task-progress"><div class="workspace-progress-head"><span>本组完成度</span><strong>' + percent + '%</strong></div><div class="workspace-progress-track"><div class="workspace-progress-fill" style="width:' + percent + '%"></div></div></div></section><aside class="study-card civil-weak-card"><div class="card-header"><div class="card-title"><span class="dot"></span>薄弱点提醒</div><span class="card-tag">复盘入口</span></div><ul class="civil-weak-list">' + (weakHTML || '<li><span>继续积累错题，系统会在这里形成提醒。</span></li>') + '</ul><label class="civil-note-label" for="civilNote-' + escapeAttribute(subject.id) + '">本次复盘笔记</label><textarea id="civilNote-' + escapeAttribute(subject.id) + '" class="civil-note-input" data-civil-notes="' + escapeAttribute(subject.id) + '" placeholder="记下一个易错点、一个方法或下一次训练安排…">' + escapeHTML(subject.note) + '</textarea><small class="civil-note-hint">输入会自动保存到当前工作台</small></aside></div>' +
-    '</div>';
+  const done = subject.tasks.filter(t => t.done).length;
+  return '<div class="workspace-page civil-service-page">' + civilServiceTabs(subjectId) +
+    '<section class="workspace-hero civil-subject-hero"><div><nav class="civil-hero-nav" aria-label="返回导航"><button class="civil-back-link" type="button" data-action="civil-go-civil-service">← 备考总览</button><div class="workspace-kicker">专项训练 · ' + escapeHTML(subject.focus) + '</div></nav><div class="workspace-hero-title">' + escapeHTML(subject.title) + '</div><div class="workspace-hero-copy">' + escapeHTML(subject.description) + '</div><div class="workspace-hero-actions"><button class="btn btn-primary btn-sm" data-action="civil-service-log-session">＋ 记录学习</button><button class="btn btn-outline btn-sm" data-action="civil-add-mistake">收录错题</button><button class="btn btn-outline btn-sm" data-action="civil-assess">更新自评</button></div></div><div class="workspace-hero-side">' + workspaceProgressHTML('阶段自评', subject.progress, done + ' / ' + subject.tasks.length + ' 项任务已完成') + '<div class="workspace-next"><div class="workspace-next-mark"></div><div><div class="workspace-next-label">当前薄弱点</div><div class="workspace-next-title">' + escapeHTML(subject.weakPoints[0] || '暂无记录，可以在复盘笔记中补充') + '</div></div></div></div></section>' +
+    '<div class="study-main-grid"><section class="study-card civil-task-card">' + civilCardHeader('专项训练计划', civilCardBtn('civil-add-task', '+', '添加任务')) + civilTaskListHTML(subjectId) + '</section><section class="study-card civil-notes">' + civilCardHeader('方法与复盘', '<span class="card-tag">自动保存</span>') + '<ul class="civil-weak-list">' + subject.weakPoints.map((p, i) => '<li><b>0' + (i + 1) + '</b><span>' + escapeHTML(p) + '</span></li>').join('') + '</ul><label class="civil-note-label" for="civilNote-' + escapeAttribute(subjectId) + '">我的复盘笔记</label><textarea id="civilNote-' + escapeAttribute(subjectId) + '" class="civil-note-input" data-civil-notes="' + escapeAttribute(subjectId) + '" placeholder="错在哪里？更好的方法是什么？下次如何验证？">' + escapeHTML(subject.note) + '</textarea><small class="civil-note-hint">自动保存 · 可随时继续补充</small></section></div>' +
+    civilReviewHTML(subjectId) + civilSessionsHTML(subjectId) + '</div>';
 }
 
 // ========================================================================
@@ -9289,10 +9363,10 @@ const PAGES = {
     }
   },
 
-  'english-vocab': { title: '雅思词汇', render: englishVocabPageHTML },
-  'english-listening': { title: '雅思听力', render: englishListeningPageHTML },
-  'english-reading': { title: '雅思阅读', render: englishReadingPageHTML },
-  'english-writing': { title: '雅思写作', render: englishWritingPageHTML },
+  'english-vocab': { title: '词汇记忆', render: englishVocabPageHTML },
+  'english-listening': { title: '听力训练', render: englishListeningPageHTML },
+  'english-reading': { title: '阅读精读', render: englishReadingPageHTML },
+  'english-writing': { title: '写作训练', render: englishWritingPageHTML },
 
   'civil-service': { title: '公考学习', render: civilServiceOverviewPageHTML },
   'civil-quantity': { title: '数量关系', render: () => civilServiceSubjectPageHTML('quantity') },
@@ -11024,7 +11098,7 @@ document.addEventListener('click', (e) => {
   // --- Settings / other action buttons ---
   const actionBtn = t.closest('[data-action]');
   if (actionBtn) {
-    handleAction(actionBtn.dataset.action);
+    handleAction(actionBtn.dataset.action, actionBtn.dataset);
     return;
   }
 
@@ -11055,7 +11129,7 @@ document.addEventListener('click', (e) => {
 // ========================================================================
 // ACTION DISPATCH
 // ========================================================================
-function handleAction(action) {
+function handleAction(action, actionData = {}) {
   switch (action) {
     case 'civil-go-civil-service':
       renderPage('civil-service');
@@ -11070,11 +11144,25 @@ function handleAction(action) {
     case 'civil-go-essay':
       renderPage('civil-' + action.replace('civil-go-', ''));
       break;
-    case 'civil-service-log-session': {
-      civilServiceRecordStudy(currentPage.startsWith('civil-') && currentPage !== 'civil-service' ? currentPage.replace('civil-', '') : '');
-      save();
-      rerender();
-      showToast('已记录 25 分钟公考学习', 'success');
+    case 'civil-service-log-session': civilLogDialog(); break;
+    case 'civil-goals': civilGoalDialog(); break;
+    case 'civil-add-task': civilTaskDialog(); break;
+    case 'civil-edit-task': civilTaskDialog(actionData.subject, actionData.id); break;
+    case 'civil-add-mistake': civilMistakeDialog(); break;
+    case 'civil-task-filter': civilTaskFilter = actionData.filter; rerender(); break;
+    case 'civil-review-filter': civilReviewFilter = actionData.filter; rerender(); break;
+    case 'civil-assess': {
+      const subject = civilServiceSubject(civilCurrentSubject());
+      if (subject) civilForm('更新阶段自评', '根据近期练习评估自己的掌握情况。记录时长不会自动提高自评。', civilField('阶段掌握 / %', 'progress', 'number', subject.progress, 'min="0" max="100" required'), value => { subject.progress = Number(value.progress); });
+      break;
+    }
+    case 'civil-undo-session':
+      if (undoSession(civilServiceStudy(), actionData.id)) { save(); rerender(); showToast('记录已撤销，统计已同步扣回', 'success'); }
+      break;
+    case 'civil-review-again':
+    case 'civil-review-good': {
+      const mistake = civilServiceStudy().mistakes.find(m => m.id === actionData.id);
+      if (mistake && reviewMistake(mistake, action === 'civil-review-good', todayKey())) { save(); rerender(); showToast('下次复习：' + mistake.nextReview, 'success'); }
       break;
     }
     case 'civil-service-next-subject': {

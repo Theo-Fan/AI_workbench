@@ -1159,11 +1159,11 @@ body { font-family:"Inter",var(--workspace-cjk-font); }
 /* Civil service study: a quiet brass learning surface that shares the
    workspace's editorial hero, stat rail and study-card language. */
 .civil-service-page { --civil-accent:var(--life-accent); --civil-soft:var(--life-soft); }
-.civil-module-tabs { display:flex; width:max-content; max-width:100%; box-sizing:border-box; align-self:flex-start; flex-wrap:nowrap; gap:3px; margin:0 0 2px; padding:3px; overflow-x:auto; overscroll-behavior-inline:contain; border:1px solid var(--border); border-radius:12px; background:color-mix(in srgb,var(--card-bg) 78%,transparent); scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.civil-module-tabs { display:flex; width:max-content; max-width:100%; box-sizing:border-box; align-items:center; align-self:flex-start; flex-wrap:wrap; gap:6px; margin:0 0 2px; padding:4px; overflow-x:auto; overscroll-behavior-inline:contain; border:1px solid var(--border); border-radius:12px; background:color-mix(in srgb,var(--card-bg) 86%,var(--civil-soft)); scrollbar-width:none; -webkit-overflow-scrolling:touch; }
 .civil-module-tabs::-webkit-scrollbar { display:none; }
-.civil-module-tab { flex:0 0 auto; min-height:31px; padding:0 11px; border:0; border-radius:8px; background:transparent; color:var(--text-tertiary); font:inherit; font-size:10px; font-weight:650; white-space:nowrap; cursor:pointer; transition:color .16s ease,background-color .16s ease; }
-.civil-module-tab:hover { color:var(--text-primary); background:color-mix(in srgb,var(--civil-accent) 7%,transparent); }
-.civil-module-tab.is-active { color:var(--civil-accent); background:var(--civil-soft); }
+.civil-module-tab { flex:0 0 auto; padding:9px 14px; border:0; border-radius:8px; background:transparent; color:var(--text-secondary); font:inherit; font-size:var(--fs-small); white-space:nowrap; cursor:pointer; transition:all .16s ease; }
+.civil-module-tab:hover { color:var(--primary-hover); background:color-mix(in srgb,var(--civil-soft) 68%,transparent); }
+.civil-module-tab.is-active { color:var(--primary-hover); background:var(--card-bg); box-shadow:0 3px 10px color-mix(in srgb,var(--civil-accent) 13%,transparent); font-weight:700; }
 .civil-overview-hero .workspace-hero-title, .civil-subject-hero .workspace-hero-title { max-width:700px; }
 .civil-overview-score, .civil-subject-score { display:grid; gap:5px; }
 .civil-overview-score span, .civil-subject-score span { color:var(--text-tertiary); font-size:10px; }
@@ -1227,12 +1227,13 @@ body { font-family:"Inter",var(--workspace-cjk-font); }
 .civil-subject-card-progress i { display:block; height:100%; border-radius:inherit; background:var(--civil-accent); }
 .civil-subject-card-foot { display:flex; align-items:center; justify-content:space-between; gap:6px; color:var(--text-tertiary); font-size:9px; }
 .civil-subject-card-foot b { color:var(--civil-accent); font-weight:650; white-space:nowrap; }
-.civil-back-link { display:inline-flex; min-height:28px; align-items:center; margin-bottom:4px; padding:0; color:var(--civil-accent); font:inherit; font-size:10px; font-weight:650; cursor:pointer; }
-.civil-back-link:hover { color:var(--primary-hover); }
+.civil-hero-nav { display:flex; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:14px; }
+.civil-back-link { display:inline-flex; align-items:center; gap:6px; padding:6px 13px; border:1px solid color-mix(in srgb,var(--civil-accent) 24%,var(--border)); border-radius:999px; background:color-mix(in srgb,var(--card-bg) 78%,transparent); color:var(--civil-accent); font:inherit; font-size:var(--fs-caption); font-weight:650; cursor:pointer; transition:background-color .16s ease,border-color .16s ease,color .16s ease; }
+.civil-back-link:hover { background:var(--civil-soft); border-color:color-mix(in srgb,var(--civil-accent) 42%,var(--border)); }
 .civil-subject-layout { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr); gap:16px; }
 .civil-task-card, .civil-weak-card { min-width:0; overflow:hidden; }
 .civil-task-list { display:grid; gap:3px; }
-.civil-task-row { display:grid; grid-template-columns:28px minmax(0,1fr) auto; align-items:center; gap:10px; width:100%; min-height:56px; padding:8px 4px; border-bottom:1px solid color-mix(in srgb,var(--border) 76%,transparent); color:var(--text-primary); text-align:left; cursor:pointer; }
+.civil-task-row { display:grid; grid-template-columns:28px minmax(0,1fr) auto auto; align-items:center; gap:10px; width:100%; min-height:56px; padding:8px 4px; border-bottom:1px solid color-mix(in srgb,var(--border) 76%,transparent); color:var(--text-primary); text-align:left; }
 .civil-task-row:last-child { border-bottom:0; }
 .civil-task-row:hover { background:color-mix(in srgb,var(--civil-soft) 48%,transparent); }
 .civil-task-check { display:grid; width:22px; height:22px; place-items:center; border:1px solid var(--border-strong); border-radius:7px; color:#fff; font-size:13px; font-weight:800; }
@@ -1254,7 +1255,7 @@ body { font-family:"Inter",var(--workspace-cjk-font); }
 .civil-note-hint { display:block; margin-top:6px; color:var(--text-tertiary); font-size:9px; }
 @media (max-width:1050px) { .civil-subject-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:800px) { .civil-overview-grid, .civil-subject-layout { grid-template-columns:1fr; }.civil-section-heading { align-items:start; flex-direction:column; gap:8px; }.civil-section-heading p { max-width:520px; text-align:left; }.civil-overview-hero, .civil-subject-hero { grid-template-columns:1fr; gap:24px; }.civil-overview-hero .workspace-hero-side, .civil-subject-hero .workspace-hero-side { padding:16px 0 0; border-top:1px solid var(--border); border-left:0; } }
-@media (max-width:520px) { .civil-module-tabs { width:100%; }.civil-progress-chart { display:none; }.civil-progress-mobile { display:grid; padding:4px 0 2px; }.civil-subject-grid { grid-template-columns:1fr; }.civil-history-cells { gap:3px; }.civil-history-legend { display:grid; }.civil-rhythm-summary { grid-template-columns:auto 1fr; }.civil-rhythm-summary span:nth-of-type(2) { grid-column:1; }.civil-rhythm-summary small:nth-of-type(2) { grid-column:2; }.civil-task-row { grid-template-columns:26px minmax(0,1fr); }.civil-task-row > i { display:none; } }
+@media (max-width:520px) { .civil-module-tabs { width:100%; }.civil-progress-chart { display:none; }.civil-progress-mobile { display:grid; padding:4px 0 2px; }.civil-subject-grid { grid-template-columns:1fr; }.civil-history-cells { gap:3px; }.civil-history-legend { display:grid; }.civil-rhythm-summary { grid-template-columns:auto 1fr; }.civil-rhythm-summary span:nth-of-type(2) { grid-column:1; }.civil-rhythm-summary small:nth-of-type(2) { grid-column:2; }.civil-task-row { grid-template-columns:26px minmax(0,1fr) auto; }.civil-task-row > i { display:none; } }
 
 @keyframes weather-popover-in { from { opacity:0; transform:translateY(-7px) scale(.985); } to { opacity:1; transform:none; } }
 @keyframes weather-skeleton { to { background-position:-200% 0; } }

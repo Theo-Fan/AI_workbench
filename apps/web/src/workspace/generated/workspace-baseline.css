@@ -3032,28 +3032,28 @@
   .fitness-page { --primary: #0f9b8e; --primary-hover: #0b8075; --primary-light: #d5f5ef; --primary-soft: #ecfdf8; --accent: #34bfae; }
   .ai-learning-page { --primary: #2563eb; --primary-hover: #1d4ed8; --primary-light: #dbeafe; --primary-soft: #eff6ff; --accent: #6366f1; }
   .english-learning-page { --primary: #d97706; --primary-hover: #b45309; --primary-light: #fef3c7; --primary-soft: #fffbeb; --accent: #f59e0b; }
-  .fitness-page, .ai-learning-page, .english-learning-page { display: grid; gap: 16px; --life-accent: var(--primary); --life-soft: var(--primary-soft); }
+  .fitness-page, .ai-learning-page, .english-learning-page, .civil-service-page { display: grid; gap: 16px; --life-accent: var(--primary); --life-soft: var(--primary-soft); }
   .fitness-page .workspace-hero { position: relative; grid-template-columns: minmax(0, 1fr) minmax(420px, .95fr); gap: 24px; margin: 0; padding: 26px; overflow: hidden; isolation: isolate; border-color: color-mix(in srgb, var(--life-accent) 17%, var(--border)); border-radius: 18px; background: linear-gradient(132deg, color-mix(in srgb, var(--life-accent) 12%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--life-soft) 78%, var(--card-bg))); }
-  .ai-learning-page .workspace-hero, .english-learning-page .workspace-hero { position: relative; grid-template-columns: minmax(0, 1fr) minmax(285px, 390px); gap: 24px; margin: 0; padding: 26px; overflow: hidden; isolation: isolate; border-color: color-mix(in srgb, var(--life-accent) 17%, var(--border)); border-radius: 18px; background: linear-gradient(132deg, color-mix(in srgb, var(--life-accent) 12%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--life-soft) 78%, var(--card-bg))); }
+  .ai-learning-page .workspace-hero, .english-learning-page .workspace-hero, .civil-service-page .workspace-hero { position: relative; grid-template-columns: minmax(0, 1fr) minmax(285px, 390px); gap: 24px; margin: 0; padding: 26px; overflow: hidden; isolation: isolate; border-color: color-mix(in srgb, var(--life-accent) 17%, var(--border)); border-radius: 18px; background: linear-gradient(132deg, color-mix(in srgb, var(--life-accent) 12%, var(--card-bg)), var(--card-bg) 57%, color-mix(in srgb, var(--life-soft) 78%, var(--card-bg))); }
   @media (max-width: 1000px) {
     .fitness-page .workspace-hero { grid-template-columns: 1fr; }
     .fitness-page .fitness-hero-side { max-width: none; }
   }
   .fitness-page .workspace-hero::after, .ai-learning-page .workspace-hero::after, .english-learning-page .workspace-hero::after { position: absolute; z-index: -1; right: 4%; bottom: -94px; width: 230px; height: 230px; border: 40px solid color-mix(in srgb, var(--life-accent) 6%, transparent); border-radius: 50%; content: ''; pointer-events: none; }
-  .fitness-page .workspace-kicker, .ai-learning-page .workspace-kicker, .english-learning-page .workspace-kicker { gap: 8px; color: var(--life-accent); letter-spacing: .12em; }
-  .fitness-page .workspace-kicker::before, .ai-learning-page .workspace-kicker::before, .english-learning-page .workspace-kicker::before { width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
-  .fitness-page .workspace-hero-title, .ai-learning-page .workspace-hero-title, .english-learning-page .workspace-hero-title { max-width: 660px; margin-top: 9px; font-size: clamp(24px, 2.7vw, 34px); line-height: 1.3; letter-spacing: -.03em; }
-  .fitness-page .workspace-hero-copy, .ai-learning-page .workspace-hero-copy, .english-learning-page .workspace-hero-copy { max-width: 650px; margin-top: 10px; font-size: var(--fs-small); }
-  .fitness-page .workspace-hero-side, .ai-learning-page .workspace-hero-side, .english-learning-page .workspace-hero-side { position: relative; z-index: 1; padding: 14px; border: 1px solid color-mix(in srgb, var(--life-accent) 15%, var(--border)); border-radius: 14px; background: color-mix(in srgb, var(--card-bg) 86%, var(--life-soft)); box-shadow: 0 8px 22px color-mix(in srgb, var(--life-accent) 7%, transparent); }
-  .fitness-page .workspace-stat-strip, .ai-learning-page .workspace-stat-strip, .english-learning-page .workspace-stat-strip { gap: 0; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--card-bg); box-shadow: var(--shadow); }
-  .fitness-page .workspace-stat, .ai-learning-page .workspace-stat, .english-learning-page .workspace-stat { position: relative; padding: 15px 18px; border: 0; border-right: 1px solid var(--border); border-radius: 0; background: transparent; }
-  .fitness-page .workspace-stat:last-child, .ai-learning-page .workspace-stat:last-child, .english-learning-page .workspace-stat:last-child { border-right: 0; }
-  .fitness-page .workspace-stat::before, .ai-learning-page .workspace-stat::before, .english-learning-page .workspace-stat::before { position: absolute; top: 0; left: 18px; width: 22px; height: 2px; border-radius: 2px; background: var(--life-accent); content: ''; opacity: .75; }
-  .fitness-page .workspace-stat-value, .ai-learning-page .workspace-stat-value, .english-learning-page .workspace-stat-value { color: var(--text-primary); font-size: 22px; }
-  .fitness-page .workspace-stat-label, .ai-learning-page .workspace-stat-label, .english-learning-page .workspace-stat-label { margin-top: 7px; font-size: var(--fs-micro); }
-  .fitness-page .workspace-task-card, .fitness-page .study-card, .ai-learning-page .study-card, .english-learning-page .study-card { overflow: hidden; border-radius: var(--radius-lg); }
+  .fitness-page .workspace-kicker, .ai-learning-page .workspace-kicker, .english-learning-page .workspace-kicker, .civil-service-page .workspace-kicker { gap: 8px; color: var(--life-accent); letter-spacing: .12em; }
+  .fitness-page .workspace-kicker::before, .ai-learning-page .workspace-kicker::before, .english-learning-page .workspace-kicker::before, .civil-service-page .workspace-kicker::before { width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
+  .fitness-page .workspace-hero-title, .ai-learning-page .workspace-hero-title, .english-learning-page .workspace-hero-title, .civil-service-page .workspace-hero-title { max-width: 660px; margin-top: 9px; font-size: clamp(24px, 2.7vw, 34px); line-height: 1.3; letter-spacing: -.03em; }
+  .fitness-page .workspace-hero-copy, .ai-learning-page .workspace-hero-copy, .english-learning-page .workspace-hero-copy, .civil-service-page .workspace-hero-copy { max-width: 650px; margin-top: 10px; font-size: var(--fs-small); }
+  .fitness-page .workspace-hero-side, .ai-learning-page .workspace-hero-side, .english-learning-page .workspace-hero-side, .civil-service-page .workspace-hero-side { position: relative; z-index: 1; padding: 14px; border: 1px solid color-mix(in srgb, var(--life-accent) 15%, var(--border)); border-radius: 14px; background: color-mix(in srgb, var(--card-bg) 86%, var(--life-soft)); box-shadow: 0 8px 22px color-mix(in srgb, var(--life-accent) 7%, transparent); }
+  .fitness-page .workspace-stat-strip, .ai-learning-page .workspace-stat-strip, .english-learning-page .workspace-stat-strip, .civil-service-page .workspace-stat-strip { gap: 0; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--card-bg); box-shadow: var(--shadow); }
+  .fitness-page .workspace-stat, .ai-learning-page .workspace-stat, .english-learning-page .workspace-stat, .civil-service-page .workspace-stat { position: relative; padding: 15px 18px; border: 0; border-right: 1px solid var(--border); border-radius: 0; background: transparent; }
+  .fitness-page .workspace-stat:last-child, .ai-learning-page .workspace-stat:last-child, .english-learning-page .workspace-stat:last-child, .civil-service-page .workspace-stat:last-child { border-right: 0; }
+  .fitness-page .workspace-stat::before, .ai-learning-page .workspace-stat::before, .english-learning-page .workspace-stat::before, .civil-service-page .workspace-stat::before { position: absolute; top: 0; left: 18px; width: 22px; height: 2px; border-radius: 2px; background: var(--life-accent); content: ''; opacity: .75; }
+  .fitness-page .workspace-stat-value, .ai-learning-page .workspace-stat-value, .english-learning-page .workspace-stat-value, .civil-service-page .workspace-stat-value { color: var(--text-primary); font-size: 22px; }
+  .fitness-page .workspace-stat-label, .ai-learning-page .workspace-stat-label, .english-learning-page .workspace-stat-label, .civil-service-page .workspace-stat-label { margin-top: 7px; font-size: var(--fs-micro); }
+  .fitness-page .workspace-task-card, .fitness-page .study-card, .ai-learning-page .study-card, .english-learning-page .study-card, .civil-service-page .study-card { overflow: hidden; border-radius: var(--radius-lg); }
   .fitness-page .workspace-task-card .card-header, .ai-learning-page .study-card .card-header, .english-learning-page .study-card .card-header { margin: -18px -18px 14px; padding: 18px; border-bottom: 1px solid var(--border); background: linear-gradient(90deg, color-mix(in srgb, var(--life-soft) 72%, var(--card-bg)), var(--card-bg) 70%); }
-  .fitness-page .card-title .dot, .ai-learning-page .card-title .dot, .english-learning-page .card-title .dot { background: var(--life-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--life-accent) 11%, transparent); }
+  .fitness-page .card-title .dot, .ai-learning-page .card-title .dot, .english-learning-page .card-title .dot, .civil-service-page .card-title .dot { background: var(--life-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--life-accent) 11%, transparent); }
   .fitness-page .fit-plan-row:hover, .fitness-page .fit-log-row:hover, .ai-learning-page .study-resource:hover, .english-learning-page .english-rhythm-row:hover { background: color-mix(in srgb, var(--life-soft) 65%, var(--card-bg)); }
   .fitness-page .fit-plan-row, .fitness-page .fit-log-row, .ai-learning-page .study-resource, .english-learning-page .english-rhythm-row { padding-left: 8px; padding-right: 8px; border-radius: 9px; transition: background .16s ease, transform .16s cubic-bezier(.16,1,.3,1); }
   .fitness-page .fit-plan-row:hover, .fitness-page .fit-log-row:hover, .ai-learning-page .study-resource:hover, .english-learning-page .english-rhythm-row:hover { transform: translateX(2px); }
@@ -3077,8 +3077,9 @@
   .english-module-tab.is-active { color: var(--english-accent-strong); background: var(--card-bg); box-shadow: 0 3px 10px color-mix(in srgb, var(--english-accent) 13%, transparent); font-weight: 700; }
   .english-overview-hero { margin-top: 2px !important; }
   .english-subpage-hero { margin-top: 2px !important; }
-  .english-back-link { display: inline-flex; border: 0; padding: 0; color: var(--english-accent-strong); background: transparent; font-size: var(--fs-small); cursor: pointer; }
-  .english-back-link:hover { text-decoration: underline; }
+  .english-back-link { display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; border: 1px solid color-mix(in srgb, var(--english-accent) 24%, var(--border)); border-radius: 999px; background: color-mix(in srgb, var(--card-bg) 78%, transparent); color: var(--english-accent); font: inherit; font-size: var(--fs-caption); font-weight: 650; cursor: pointer; transition: background-color .16s ease, border-color .16s ease, color .16s ease; }
+  .english-back-link:hover { background: color-mix(in srgb, var(--english-accent) 8%, var(--card-bg)); border-color: color-mix(in srgb, var(--english-accent) 42%, var(--border)); }
+  .english-hero-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
   .english-stat-strip { --life-accent: var(--english-accent); }
   .english-module-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
   .english-module-card { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 11px; min-height: 116px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; color: var(--text-primary); background: var(--card-bg); text-align: left; box-shadow: var(--shadow); cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
@@ -3218,7 +3219,7 @@
 
   @media (min-width: 600px) {
     .fitness-page .fitness-layout { grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); }
-    .ai-learning-page .study-main-grid, .english-learning-page .study-main-grid { grid-template-columns: minmax(0, 1fr) minmax(300px, .85fr); }
+    .ai-learning-page .study-main-grid, .english-learning-page .study-main-grid, .civil-service-page .study-main-grid { grid-template-columns: minmax(0, 1fr) minmax(300px, .85fr); }
   }
 
   /* Daily plan is the personal operating rhythm, styled as a focused workspace. */
@@ -3494,7 +3495,7 @@
     .daily-plan-page .workspace-stat:nth-child(2) { border-right: 0; }
     .fitness-page .workspace-stat:nth-child(-n+2), .ai-learning-page .workspace-stat:nth-child(-n+2), .english-learning-page .workspace-stat:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
     .daily-plan-page .workspace-stat:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
-    .fitness-page .workspace-task-card .card-header, .ai-learning-page .study-card .card-header, .english-learning-page .study-card .card-header { margin: -16px -16px 14px; padding: 16px; }
+    .fitness-page .workspace-task-card .card-header, .ai-learning-page .study-card .card-header, .english-learning-page .study-card .card-header, .civil-service-page .study-card .card-header { margin: -16px -16px 14px; padding: 16px; }
     .daily-plan-page .workspace-task-card .card-header { margin: -16px -16px 14px; padding: 16px; }
     .research-lab-head::after, .research-paper-hero::after { right: -58px; bottom: -112px; width: 190px; height: 190px; border-width: 32px; }
     .research-lab-head--narrative h2, .research-paper-hero--narrative h2 { font-size: 25px; }
@@ -3591,8 +3592,9 @@
   .english-overview-hero .workspace-hero-side, .english-subpage-hero .workspace-hero-side { position: relative; z-index: 1; padding: 14px; border: 1px solid color-mix(in srgb, var(--life-accent) 15%, var(--border)); border-radius: 14px; background: color-mix(in srgb, var(--card-bg) 86%, var(--life-soft)); box-shadow: 0 8px 22px color-mix(in srgb, var(--life-accent) 7%, transparent); }
   .english-overview-hero .workspace-progress-head, .english-subpage-hero .workspace-progress-head { color: var(--text-secondary); }
   .english-overview-hero .workspace-progress-head strong, .english-subpage-hero .workspace-progress-head strong { color: var(--life-accent); }
-  .english-back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 14px; padding: 0; border: 0; background: transparent; color: var(--life-accent); font: inherit; font-size: var(--fs-caption); font-weight: var(--fw-semibold); cursor: pointer; }
-  .english-back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .english-back-link { display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; border: 1px solid color-mix(in srgb, var(--english-accent) 24%, var(--border)); border-radius: 999px; background: color-mix(in srgb, var(--card-bg) 78%, transparent); color: var(--english-accent); font: inherit; font-size: var(--fs-caption); font-weight: 650; cursor: pointer; transition: background-color .16s ease, border-color .16s ease, color .16s ease; }
+  .english-back-link:hover { background: color-mix(in srgb, var(--english-accent) 8%, var(--card-bg)); border-color: color-mix(in srgb, var(--english-accent) 42%, var(--border)); }
+  .english-hero-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
   .english-linear-progress { height: 8px; overflow: hidden; border-radius: 99px; background: color-mix(in srgb, var(--life-soft) 88%, var(--border)); }
   .english-linear-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--life-accent), color-mix(in srgb, var(--life-accent) 70%, var(--accent))); transition: width .35s ease; }
   .english-overview-hero .workspace-next, .english-subpage-hero .workspace-next { border-color: color-mix(in srgb, var(--life-accent) 18%, var(--border)); background: color-mix(in srgb, var(--life-soft) 72%, var(--card-bg)); }
