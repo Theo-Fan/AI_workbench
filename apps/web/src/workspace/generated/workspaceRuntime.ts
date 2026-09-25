@@ -132,6 +132,16 @@ const DEFAULT_DATA = {
       { "id": "fl5", "date": "2026-07-31", "typeId": "ft-run", "duration": 24, "calories": 205, "note": "晨跑 3km" }
     ]
   },
+  "contentStudio": {
+    "weeklyTarget": 4,
+    "projects": [
+      { "id": "cp1", "title": "AI 工具测评：5 款神器横评", "platform": "公众号", "format": "深度图文", "status": "published", "dueDate": "2026-09-18", "hook": "用同一组真实任务，测试 5 款工具到底谁更省时间", "sourceUrl": "", "createdAt": "2026-09-12T09:00:00.000Z", "updatedAt": "2026-09-18T12:00:00.000Z" },
+      { "id": "cp2", "title": "AI 创作者的一天", "platform": "小红书", "format": "图文", "status": "drafting", "dueDate": "2026-09-22", "hook": "把高效创作拆成可复制的 6 个时间块", "sourceUrl": "", "createdAt": "2026-09-17T08:30:00.000Z", "updatedAt": "2026-09-20T07:30:00.000Z" },
+      { "id": "cp3", "title": "AI 漫剧：灵感来了", "platform": "抖音", "format": "短视频", "status": "review", "dueDate": "2026-09-21", "hook": "当 AI 也遇到创作卡壳，会发生什么？", "sourceUrl": "", "createdAt": "2026-09-15T10:00:00.000Z", "updatedAt": "2026-09-20T10:00:00.000Z" },
+      { "id": "cp4", "title": "AI Agent 入门实战", "platform": "B站", "format": "教程视频", "status": "scheduled", "dueDate": "2026-09-24", "hook": "不用复杂框架，30 分钟跑通第一个 Agent", "sourceUrl": "", "createdAt": "2026-09-16T06:00:00.000Z", "updatedAt": "2026-09-19T11:00:00.000Z" },
+      { "id": "cp5", "title": "创作者时间管理术", "platform": "全平台", "format": "选题", "status": "idea", "dueDate": "", "hook": "为什么更长的待办清单，反而让创作变慢", "sourceUrl": "", "createdAt": "2026-09-20T05:00:00.000Z", "updatedAt": "2026-09-20T05:00:00.000Z" }
+    ]
+  },
   "inspirations": {
     "ideas": [
       { "id": "i1", "title": "AI 辅助科研工作流全攻略", "desc": "从文献检索到论文写作，一套完整流程" },
@@ -411,25 +421,6 @@ const DEFAULT_DATA = {
     "good": "连续 5 天更新内容，选题质量提升明显",
     "improve": "科研文献阅读偏少，下周需增加投入",
     "focus": "AI 漫剧系列上线 + 英语打卡满 30 天"
-  },
-  "news": {
-    "tech": [
-      { "id": "n1", "title": "🔥 GPT-5 发布引发行业讨论", "desc": "多模态能力大幅提升，推理成本下降 40%" },
-      { "id": "n2", "title": "🔥 国产大模型百花齐放", "desc": "多家厂商发布开源模型，性能逼近 GPT-4" },
-      { "id": "n3", "title": "📈 AI Agent 商业化加速", "desc": "多家创业公司获得大额融资" }
-    ],
-    "creation": [
-      { "id": "cn1", "title": "📰 短剧市场持续增长", "desc": "AI 生成内容占比提升，创作门槛降低" },
-      { "id": "cn2", "title": "📰 知识付费回暖", "desc": "AI 学习类课程需求旺盛" },
-      { "id": "cn3", "title": "📰 内容平台算法更新", "desc": "推荐机制更注重完播率和互动" }
-    ],
-    "hotlist": [
-      { "id": "h1", "title": "1. AI 编程助手普及", "desc": "开发者使用率突破 60%" },
-      { "id": "h2", "title": "2. 终身学习理念走红", "desc": "\"学习如何学习\"成热门话题" },
-      { "id": "h3", "title": "3. 数字健康关注升温", "desc": "屏幕时间管理工具需求增长" },
-      { "id": "h4", "title": "4. AI 绘画版权争议", "desc": "行业规范逐步建立中" },
-      { "id": "h5", "title": "5. 远程办公常态化", "desc": "混合办公模式成为主流" }
-    ]
   }
 };
 
@@ -833,6 +824,18 @@ let activeReadingLogTags = [];
 let literatureView = 'overview';
 let englishVocabFilter = 'all';
 let englishVocabPage = 0;
+let contentProjectFilter = 'all';
+let newsFeedState = {
+  status: 'idle',
+  message: '',
+  items: [],
+  sources: [],
+  sync: { status: 'idle', lastSyncedAt: null, nextSyncAt: null, intervalHours: 5, due: true },
+  category: 'all',
+  query: '',
+  autoRefreshAttempted: false
+};
+let newsFeedRequest = null;
 let englishReadingState = { status: 'idle', message: '' };
 // Keep one reading refresh in flight at a time.  The refresh traverses a
 // search result and several summary endpoints, so a second click must not
@@ -2716,7 +2719,7 @@ function validateWorkspaceData(candidate) {
   const arrayPaths = [
     ['tasks', 'dashboard'], ['tasks', 'aiLearn'], ['tasks', 'english'], ['tasks', 'comicStoryboard'], ['tasks', 'researchPapers'],
     ['tasks', 'dailyPlan', 'morning'], ['tasks', 'dailyPlan', 'afternoon'], ['tasks', 'dailyPlan', 'evening'],
-    ['checkins', 'daily'], ['fitness', 'plan'], ['fitness', 'logs'], ['trash']
+    ['checkins', 'daily'], ['fitness', 'plan'], ['fitness', 'logs'], ['contentStudio', 'projects'], ['trash']
   ];
   for (const parts of arrayPaths) {
     let value = candidate;
@@ -2748,7 +2751,20 @@ function normalizeTaskList(list, date = todayKey(), defaultTime = '') {
 
 function migrateWorkspaceData(raw) {
   validateWorkspaceData(raw);
+  const hadContentStudio = isPlainObject(raw.contentStudio) && Array.isArray(raw.contentStudio.projects);
   const data = mergeDefaults(cloneData(raw), DEFAULT_DATA);
+  if (!hadContentStudio) {
+    const now = new Date().toISOString();
+    const migratedProjects = (Array.isArray(data.inspirations?.ideas) ? data.inspirations.ideas : []).slice(0, 4).map(idea => ({
+      id: 'content-' + String(idea.id || uid()), title: String(idea.title || '').trim(), platform: '待定平台', format: '选题', status: 'idea', dueDate: '',
+      hook: String(idea.desc || ''), sourceUrl: String(idea.sourceUrl || ''), createdAt: idea.createdAt || now, updatedAt: idea.updatedAt || now
+    })).filter(project => project.title);
+    if (data.comic?.current?.title) migratedProjects.unshift({
+      id: 'content-comic-current', title: String(data.comic.current.title), platform: '短视频平台', format: 'AI 漫剧', status: 'drafting', dueDate: '',
+      hook: '继续完成当前分镜与制作任务', sourceUrl: '', createdAt: now, updatedAt: now
+    });
+    data.contentStudio = { weeklyTarget: 4, projects: migratedProjects };
+  }
   if (data.learning && data.learning.research && Array.isArray(data.learning.research.readingLogs)) {
     data.learning.research.readingLogs = data.learning.research.readingLogs.map(log => ({
       ...log,
@@ -2766,6 +2782,23 @@ function migrateWorkspaceData(raw) {
   data.tasks.english = normalizeTaskList(data.tasks.english, today);
   data.tasks.comicStoryboard = normalizeTaskList(data.tasks.comicStoryboard, today);
   data.tasks.researchPapers = normalizeTaskList(data.tasks.researchPapers, today);
+  data.contentStudio.projects = (Array.isArray(data.contentStudio.projects) ? data.contentStudio.projects : []).map(project => {
+    if (!isPlainObject(project) || !String(project.title || '').trim()) return null;
+    const status = CONTENT_STAGE_ORDER.includes(project.status) ? project.status : 'idea';
+    return {
+      ...project,
+      id: String(project.id || uid()),
+      title: String(project.title).trim(),
+      platform: String(project.platform || '待定平台'),
+      format: String(project.format || '内容'),
+      status,
+      dueDate: String(project.dueDate || ''),
+      hook: String(project.hook || ''),
+      sourceUrl: String(project.sourceUrl || ''),
+      createdAt: project.createdAt || new Date().toISOString(),
+      updatedAt: project.updatedAt || project.createdAt || new Date().toISOString()
+    };
+  }).filter(Boolean);
   // Older snapshots only contain the original challenge object. Fill the
   // focused IELTS modules here as well as at render time so imports and API
   // conflicts are immediately safe to mutate.
@@ -4525,6 +4558,7 @@ function autoResizeResearchTextareas(root) {
 
 function afterPageRender() {
   requestAnimationFrame(() => autoResizeResearchTextareas(document.getElementById('mainContent')));
+  if (currentPage === 'news' && newsFeedState.status === 'idle') void loadNewsFeed();
   if (currentPage.startsWith('civil-')) {
     requestAnimationFrame(() => {
       const tabs = document.querySelector('.civil-module-tabs');
@@ -9065,6 +9099,133 @@ function secondaryPageHeroHTML(eyebrow, title, copy) {
   return '<section class="secondary-page-hero"><div class="secondary-page-eyebrow">' + escapeHTML(eyebrow) + '</div><h2>' + commaTitleHTML(title) + '</h2><p>' + escapeHTML(copy) + '</p></section>';
 }
 
+const CONTENT_STAGE_ORDER = ['idea', 'drafting', 'review', 'scheduled', 'published'];
+const CONTENT_STAGE_LABELS = { idea: '选题池', drafting: '制作中', review: '待审核', scheduled: '待发布', published: '已发布' };
+
+function contentProjects() {
+  if (!DATA.contentStudio || !Array.isArray(DATA.contentStudio.projects)) DATA.contentStudio = { weeklyTarget: 4, projects: [] };
+  return DATA.contentStudio.projects;
+}
+
+function contentProjectCardHTML(project) {
+  const stageIndex = Math.max(0, CONTENT_STAGE_ORDER.indexOf(project.status));
+  const nextStage = CONTENT_STAGE_ORDER[Math.min(CONTENT_STAGE_ORDER.length - 1, stageIndex + 1)];
+  const due = project.dueDate ? '<span>计划 ' + escapeHTML(project.dueDate) + '</span>' : '<span>未排期</span>';
+  return '<article class="content-project-card" data-content-status="' + escapeAttribute(project.status) + '">' +
+    '<div class="content-project-card-top"><span class="content-platform">' + escapeHTML(project.platform || '待定平台') + '</span><button type="button" class="content-icon-button" data-action="content-project-delete" data-id="' + escapeAttribute(project.id) + '" aria-label="删除' + escapeAttribute(project.title) + '">×</button></div>' +
+    '<h4>' + escapeHTML(project.title) + '</h4><p>' + escapeHTML(project.hook || '补充一句能让受众停下来的核心钩子。') + '</p>' +
+    '<div class="content-project-meta"><span>' + escapeHTML(project.format || '内容') + '</span>' + due + '</div>' +
+    (project.status === 'published'
+      ? '<button type="button" class="content-project-next is-complete" data-action="content-go-review">去复盘数据 ↗</button>'
+      : '<button type="button" class="content-project-next" data-action="content-project-stage" data-id="' + escapeAttribute(project.id) + '" data-stage="' + escapeAttribute(nextStage) + '">推进到' + escapeHTML(CONTENT_STAGE_LABELS[nextStage]) + ' →</button>') +
+  '</article>';
+}
+
+function creationPageHTML() {
+  const projects = contentProjects();
+  const visibleProjects = contentProjectFilter === 'all' ? projects : projects.filter(project => project.status === contentProjectFilter);
+  const active = projects.filter(project => !['idea', 'published'].includes(project.status)).length;
+  const published = projects.filter(project => project.status === 'published').length;
+  const scheduled = projects.filter(project => project.status === 'scheduled').length;
+  const dueSoon = projects.filter(project => project.dueDate && project.status !== 'published').sort((a, b) => a.dueDate.localeCompare(b.dueDate)).slice(0, 3);
+  const tabs = [['all', '全部'], ...CONTENT_STAGE_ORDER.map(stage => [stage, CONTENT_STAGE_LABELS[stage]])]
+    .map(([id, label]) => '<button type="button" class="content-filter' + (contentProjectFilter === id ? ' is-active' : '') + '" data-action="content-filter" data-filter="' + id + '">' + label + '</button>').join('');
+  const visibleStages = contentProjectFilter === 'all' ? CONTENT_STAGE_ORDER : [contentProjectFilter];
+  const columns = visibleStages.map(stage => {
+    const stageProjects = visibleProjects.filter(project => project.status === stage);
+    return '<section class="content-pipeline-column"><header><span>' + escapeHTML(CONTENT_STAGE_LABELS[stage]) + '</span><b>' + stageProjects.length + '</b></header><div class="content-pipeline-list">' +
+      (stageProjects.length ? stageProjects.map(contentProjectCardHTML).join('') : '<div class="content-column-empty">暂无内容</div>') + '</div></section>';
+  }).join('');
+  const scheduleHTML = dueSoon.length ? dueSoon.map(project => '<div class="content-schedule-row"><time>' + escapeHTML(project.dueDate.slice(5).replace('-', '/')) + '</time><span><strong>' + escapeHTML(project.title) + '</strong><small>' + escapeHTML((project.platform || '待定平台') + ' · ' + (project.format || '内容')) + '</small></span><i>' + escapeHTML(CONTENT_STAGE_LABELS[project.status] || project.status) + '</i></div>').join('') : emptyStateHTML('↗', '近期没有待发布内容', '从选题池挑一个方向开始推进');
+  return '<div class="creation-page">' +
+    '<section class="content-hero"><div><div class="secondary-page-eyebrow">CONTENT STUDIO</div><h2>' + commaTitleHTML('从一个好选题，到一次有复利的发布') + '</h2><p>把灵感、制作、审核、排期和复盘放进同一条创作流水线。</p><div class="content-hero-actions"><button type="button" class="btn btn-primary btn-sm" data-action="content-new-project">＋ 新建内容</button><button type="button" class="btn btn-outline btn-sm" data-action="content-go-news">从热点找选题</button></div></div><div class="content-hero-focus"><small>本周创作目标</small><strong>' + published + ' <em>/ ' + (DATA.contentStudio.weeklyTarget || 4) + '</em></strong><span><i style="width:' + Math.min(100, Math.round(published / Math.max(1, DATA.contentStudio.weeklyTarget || 4) * 100)) + '%"></i></span><p>' + (active ? active + ' 个内容正在推进' : '当前没有制作中的内容') + '</p></div></section>' +
+    '<section class="content-stat-rail"><div><small>创作中</small><strong>' + active + '</strong><span>保持一次只推进关键内容</span></div><div><small>待发布</small><strong>' + scheduled + '</strong><span>检查封面、标题与发布时间</span></div><div><small>选题储备</small><strong>' + DATA.inspirations.ideas.length + '</strong><span>热点可一键转入选题库</span></div><div><small>已发布</small><strong>' + published + '</strong><span>发布后及时记录表现</span></div></section>' +
+    '<div class="content-section-heading"><div><span>// CREATION FLOW</span><h3>创作流水线</h3></div><div class="content-filters" role="group" aria-label="筛选创作状态">' + tabs + '</div></div>' +
+    '<div class="content-pipeline' + (contentProjectFilter === 'all' ? '' : ' is-filtered') + '">' + columns + '</div>' +
+    '<div class="content-lower-grid"><section class="content-panel"><div class="content-panel-head"><div><span>UP NEXT</span><h3>近期排期</h3></div><button type="button" data-action="content-new-project">新增</button></div>' + scheduleHTML + '</section>' +
+    '<section class="content-panel content-insight-panel"><div class="content-panel-head"><div><span>EDITOR NOTE</span><h3>下一步建议</h3></div></div><blockquote>先让选题通过“受众明确、价值具体、表达有差异”三项检查，再进入制作。热点带来时效，稳定的方法论带来长期价值。</blockquote><div class="content-insight-actions"><button type="button" data-action="content-go-inspiration">整理选题库 →</button><button type="button" data-action="content-go-review">查看内容复盘 →</button></div></section></div>' +
+  '</div>';
+}
+
+function relativeNewsTime(value) {
+  const time = Date.parse(value || '');
+  if (!Number.isFinite(time)) return '时间未知';
+  const minutes = Math.max(0, Math.round((Date.now() - time) / 60000));
+  if (minutes < 60) return minutes + ' 分钟前';
+  if (minutes < 1440) return Math.round(minutes / 60) + ' 小时前';
+  return Math.round(minutes / 1440) + ' 天前';
+}
+
+function formatNewsHeat(value) {
+  const score = Number(value) || 0;
+  if (score >= 100000000) return (score / 100000000).toFixed(1) + ' 亿';
+  if (score >= 10000) return (score / 10000).toFixed(score >= 100000 ? 0 : 1) + ' 万';
+  return score ? score.toLocaleString('zh-CN') : '—';
+}
+
+function newsItemHTML(item) {
+  const categoryLabel = item.category === 'hot' ? '实时热榜' : item.category === 'tech' ? '科技动态' : '创作趋势';
+  return '<article class="news-feed-item">' +
+    (item.imageUrl ? '<a class="news-feed-cover" href="' + escapeAttribute(item.url) + '" target="_blank" rel="noopener noreferrer" aria-label="查看原文"><img src="' + escapeAttribute(item.imageUrl) + '" alt="" loading="lazy"></a>' : '<div class="news-rank">' + (item.rank ? String(item.rank).padStart(2, '0') : '•') + '</div>') +
+    '<div class="news-feed-body"><div class="news-feed-meta"><span class="news-source-badge" data-source="' + escapeAttribute(item.sourceId) + '">' + escapeHTML(item.sourceName) + '</span><span>' + categoryLabel + '</span><span>' + relativeNewsTime(item.publishedAt || item.fetchedAt) + '</span></div>' +
+    '<h3><a href="' + escapeAttribute(item.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(item.title) + '</a></h3><p>' + escapeHTML(item.summary || '暂无摘要，点击查看来源内容。') + '</p>' +
+    '<div class="news-feed-actions"><span>热度 <b>' + formatNewsHeat(item.hotScore) + '</b></span><a href="' + escapeAttribute(item.url) + '" target="_blank" rel="noopener noreferrer">查看来源 ↗</a><button type="button" data-action="news-to-idea" data-id="' + escapeAttribute(item.id) + '">转为选题 ＋</button></div></div>' +
+  '</article>';
+}
+
+function newsPageHTML() {
+  const state = newsFeedState;
+  const query = state.query.trim().toLowerCase();
+  const items = state.items.filter(item => (state.category === 'all' || item.category === state.category) && (!query || (item.title + ' ' + item.summary + ' ' + item.sourceName).toLowerCase().includes(query)));
+  const healthy = state.sources.filter(source => source.status === 'healthy').length;
+  const lastSync = state.sync.lastSyncedAt ? new Date(state.sync.lastSyncedAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '尚未同步';
+  const nextSync = state.sync.nextSyncAt ? new Date(state.sync.nextSyncAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '服务恢复后自动重试';
+  const tabs = [['all', '全部'], ['hot', '实时热榜'], ['tech', '科技动态'], ['creation', '创作趋势']].map(([id, label]) => '<button type="button" class="news-filter' + (state.category === id ? ' is-active' : '') + '" data-action="news-filter" data-filter="' + id + '">' + label + '<span>' + state.items.filter(item => id === 'all' || item.category === id).length + '</span></button>').join('');
+  const sourceHealth = state.sources.length ? state.sources.map(source => '<div class="news-source-row"><i class="is-' + escapeAttribute(source.status) + '"></i><span><strong>' + escapeHTML(source.name) + '</strong><small>' + (source.status === 'healthy' ? source.itemCount + ' 条 · ' + relativeNewsTime(source.lastSuccessAt) : escapeHTML(source.error || '等待首次同步')) + '</small></span><em>' + (source.status === 'healthy' ? '正常' : source.status === 'degraded' ? '降级' : '等待') + '</em></div>').join('') : '<div class="news-source-row"><i></i><span><strong>等待服务响应</strong><small>正在读取来源状态</small></span></div>';
+  let feedHTML = '';
+  if (state.status === 'loading' && !state.items.length) feedHTML = '<div class="news-loading"><span></span><strong>正在汇聚最新信号</strong><p>抖音热榜、Hacker News 与哔哩哔哩热门将分别更新。</p></div>';
+  else if (state.status === 'error' && !state.items.length) feedHTML = '<div class="news-loading is-error"><strong>暂时无法读取新闻服务</strong><p>' + escapeHTML(state.message || '请检查 API 服务后重试。') + '</p><button type="button" class="btn btn-outline btn-sm" data-action="news-retry">重新连接</button></div>';
+  else feedHTML = items.length ? items.map(newsItemHTML).join('') : '<div class="news-loading"><strong>没有匹配的资讯</strong><p>换一个分类或搜索词试试。</p></div>';
+  return '<div class="news-page"><section class="news-hero"><div><div class="secondary-page-eyebrow">SIGNALS & TRENDS</div><h2>' + commaTitleHTML('从信息噪音里，找到值得创作的信号') + '</h2><p>聚合平台热点、科技动态与创作趋势，每 5 小时自动更新；来源故障不会清空最近一次成功数据。</p><div class="news-hero-status"><span class="news-live-dot"></span><strong>' + (state.status === 'refreshing' ? '正在刷新' : healthy + ' / ' + Math.max(state.sources.length, 3) + ' 个来源在线') + '</strong><span>上次更新 ' + escapeHTML(lastSync) + '</span></div></div><div class="news-hero-actions"><button type="button" class="btn btn-primary btn-sm" data-action="news-refresh"' + (state.status === 'refreshing' ? ' disabled' : '') + '>' + (state.status === 'refreshing' ? '更新中…' : '↻ 立即刷新') + '</button><small>下次自动更新<br><strong>' + escapeHTML(nextSync) + '</strong></small></div></section>' +
+    '<section class="news-stat-rail"><div><small>当前信号</small><strong>' + state.items.length + '</strong><span>去重后的有效条目</span></div><div><small>平台来源</small><strong>' + healthy + '/' + Math.max(state.sources.length, 3) + '</strong><span>来源独立失败隔离</span></div><div><small>热榜主题</small><strong>' + state.items.filter(item => item.category === 'hot').length + '</strong><span>适合时效型内容</span></div><div><small>更新频率</small><strong>' + (state.sync.intervalHours || 5) + 'h</strong><span>服务端自动抓取</span></div></section>' +
+    '<div class="news-toolbar"><div class="news-filters" role="group" aria-label="新闻分类">' + tabs + '</div><label class="news-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m15.5 15.5 4.4 4.4"></path></svg><input type="search" data-news-search value="' + escapeAttribute(state.query) + '" placeholder="搜索标题、摘要或来源" aria-label="搜索新闻"></label></div>' +
+    '<div class="news-layout"><main class="news-feed" aria-live="polite">' + (state.status === 'error' && state.items.length ? '<div class="news-inline-warning">更新失败，当前展示最近一次成功数据。' + escapeHTML(state.message) + '</div>' : '') + feedHTML + '</main><aside class="news-sidebar"><section class="news-side-card"><div class="news-side-head"><span>来源状态</span><small>自动监测</small></div>' + sourceHealth + '</section><section class="news-side-card news-method-card"><div class="news-side-head"><span>选题判断</span><small>3 步</small></div><ol><li><b>01</b><span>它和你的受众有什么关系？</span></li><li><b>02</b><span>你能提供什么新证据或新视角？</span></li><li><b>03</b><span>热度过去后，内容还成立吗？</span></li></ol><button type="button" data-action="content-go-creation">进入创作流水线 →</button></section></aside></div></div>';
+}
+
+async function loadNewsFeed(options = {}) {
+  if (newsFeedRequest) return newsFeedRequest;
+  newsFeedState.status = options.refresh ? 'refreshing' : 'loading';
+  newsFeedState.message = '';
+  rerender();
+  newsFeedRequest = (async () => {
+    try {
+      if (options.refresh) {
+        const refreshResponse = await workspaceApiFetch(workspaceApiUrl('/api/v1/workspaces/default/news/refresh'), { method: 'POST', headers: { Accept: 'application/json' } });
+        if (!refreshResponse.ok) throw new Error('新闻刷新失败');
+      }
+      const response = await workspaceApiFetch(workspaceApiUrl('/api/v1/workspaces/default/news'), { headers: { Accept: 'application/json' } });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || !body.data) throw new Error(body.error?.message || '新闻服务暂不可用');
+      newsFeedState.items = Array.isArray(body.data.items) ? body.data.items : [];
+      newsFeedState.sources = Array.isArray(body.data.sources) ? body.data.sources : [];
+      newsFeedState.sync = body.data.sync || newsFeedState.sync;
+      newsFeedState.status = 'ready';
+      if (!options.refresh && body.data.sync?.due && !newsFeedState.autoRefreshAttempted) {
+        newsFeedState.autoRefreshAttempted = true;
+        newsFeedRequest = null;
+        return loadNewsFeed({ refresh: true });
+      }
+    } catch (error) {
+      newsFeedState.status = 'error';
+      newsFeedState.message = error instanceof Error ? error.message : '新闻服务暂不可用';
+    } finally {
+      newsFeedRequest = null;
+      if (currentPage === 'news') rerender();
+    }
+  })();
+  return newsFeedRequest;
+}
+
 const PAGES = {
   dashboard: {
     title: '仪表盘',
@@ -9243,11 +9404,16 @@ const PAGES = {
     }
   },
 
+  creation: {
+    title: '创作总览',
+    render: () => creationPageHTML()
+  },
+
   inspiration: {
     title: '选题灵感',
     render: () => {
       const ins = DATA.inspirations;
-      return secondaryPageHeroHTML('Content Discovery', '把零散想法，整理成值得创作的方向', '收集正在发生的变化，也保留那些还不成熟、但值得继续追问的念头。') + '<div class="card-grid">' +
+      return '<div class="creation-detail-page inspiration-page">' + secondaryPageHeroHTML('Content Discovery', '把零散想法，整理成值得创作的方向', '收集正在发生的变化，也保留那些还不成熟、但值得继续追问的念头。') + '<div class="content-detail-nav"><button type="button" data-action="content-go-creation">← 创作总览</button><button type="button" data-action="content-go-news">从热点补充选题 →</button></div><div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>本周灵感库</div><span class="card-tag">' + ins.ideas.length + ' 条</span></div>' +
           inspireListHTML('inspirations.ideas', ins.ideas) +
@@ -9260,7 +9426,7 @@ const PAGES = {
           '<div class="card-header"><div class="card-title"><span class="dot"></span>灵感来源</div><span class="card-tag">渠道</span></div>' +
           inspireListHTML('inspirations.sources', ins.sources) +
         '</div>' +
-      '</div>';
+      '</div></div>';
     }
   },
 
@@ -9269,7 +9435,7 @@ const PAGES = {
     render: () => {
       const rv = DATA.review;
       const all = countAllTasks();
-      return secondaryPageHeroHTML('Creative Review', '让每一次发布，都沉淀为下一次判断', '用真实反馈校准方向，把有效的方法留下，把不再适用的做法及时放下。') + '<div class="card-grid">' +
+      return '<div class="creation-detail-page review-page">' + secondaryPageHeroHTML('Creative Review', '让每一次发布，都沉淀为下一次判断', '用真实反馈校准方向，把有效的方法留下，把不再适用的做法及时放下。') + '<div class="content-detail-nav"><button type="button" data-action="content-go-creation">← 创作总览</button><span>发布后 24–72 小时完成第一次复盘</span></div><div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>上周数据概览</div><span class="card-tag">第' + rv.week + '周</span></div>' +
           '<div class="stat-row" style="margin-top:0;">' +
@@ -9299,7 +9465,7 @@ const PAGES = {
           '<div class="inspire-item"><div class="inspire-title">❌ 停止做</div><div class="inspire-desc" contenteditable="true" data-review-action="stop">' + escapeHTML(rv.actions.stop) + '</div></div>' +
           '<div class="clear-done-row"><button class="clear-done-btn" data-action="gen-weekly-draft">✨ 自动生成本周小结</button></div>' +
         '</div>' +
-      '</div>';
+      '</div></div>';
     }
   },
 
@@ -9309,7 +9475,7 @@ const PAGES = {
       const cm = DATA.comic;
       const sb = DATA.tasks.comicStoryboard;
       const sbDone = sb.filter(t => t.done).length;
-      return secondaryPageHeroHTML('Visual Storytelling', '把故事拆成可推进的画面与节奏', '从主题、分镜到发布记录，让每一段创作都有清晰的下一步。') + '<div class="card-grid">' +
+      return '<div class="creation-detail-page comic-page">' + secondaryPageHeroHTML('Visual Storytelling', '把故事拆成可推进的画面与节奏', '从主题、分镜到发布记录，让每一段创作都有清晰的下一步。') + '<div class="content-detail-nav"><button type="button" data-action="content-go-creation">← 创作总览</button><span>脚本 → 分镜 → 生成 → 剪辑 → 发布</span></div><div class="card-grid">' +
         '<div class="card">' +
           '<div class="card-header"><div class="card-title"><span class="dot"></span>当前制作</div><span class="card-tag">进行中</span></div>' +
           '<div class="inspire-item">' +
@@ -9329,7 +9495,7 @@ const PAGES = {
           '</div>' +
           simpleListHTML('comic.published', cm.published, '🎬', '暂无已发布剧集') +
         '</div>' +
-      '</div>';
+      '</div></div>';
     }
   },
 
@@ -9462,23 +9628,7 @@ const PAGES = {
 
   news: {
     title: '新闻热点',
-    render: () => {
-      const n = DATA.news;
-      return secondaryPageHeroHTML('Signals and Trends', '从每日信息流里，留下真正值得跟进的信号', '区分短暂热度与长期变化，让资讯服务于研究、学习与创作。') + '<div class="card-grid">' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>科技动态</div><span class="card-tag">' + n.tech.length + ' 条</span></div>' +
-          inspireListHTML('news.tech', n.tech) +
-        '</div>' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>创作资讯</div><span class="card-tag">' + n.creation.length + ' 条</span></div>' +
-          inspireListHTML('news.creation', n.creation) +
-        '</div>' +
-        '<div class="card">' +
-          '<div class="card-header"><div class="card-title"><span class="dot"></span>热榜趋势</div><span class="card-tag">TOP ' + n.hotlist.length + '</span></div>' +
-          inspireListHTML('news.hotlist', n.hotlist) +
-        '</div>' +
-      '</div>';
-    }
+    render: () => newsPageHTML()
   },
 
   settings: {
@@ -9599,7 +9749,7 @@ PAGES['english-writing'].render = englishWritingPageHTML;
 // ========================================================================
 // PAGE RENDERING + NAVIGATION
 // ========================================================================
-const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'civil-service', 'research', 'news', 'settings', 'research-inspiration', 'research-experiments', 'research-papers', 'english-vocab', 'english-listening', 'english-reading', 'english-writing', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic', 'civil-data', 'civil-general', 'civil-politics', 'civil-essay'];
+const PAGE_ORDER = ['dashboard', 'daily-plan', 'fitness', 'creation', 'inspiration', 'review', 'comic', 'ai-learn', 'english', 'civil-service', 'research', 'news', 'settings', 'research-inspiration', 'research-experiments', 'research-papers', 'english-vocab', 'english-listening', 'english-reading', 'english-writing', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic', 'civil-data', 'civil-general', 'civil-politics', 'civil-essay'];
 
 // Page-level titles and dates duplicate the persistent navigation and each
 // page's own content heading, so every workspace view uses the open canvas.
@@ -10095,19 +10245,24 @@ function buildPaletteIndex() {
       });
     }
   }
-  // Inspirations + news
+  // Inspirations + creation projects + live news
   const inspGroups = [
-    ['inspirations.ideas', '灵感'], ['inspirations.trends', '趋势'], ['inspirations.sources', '来源'],
-    ['news.tech', '科技'], ['news.creation', '创作'], ['news.hotlist', '热榜']
+    ['inspirations.ideas', '灵感'], ['inspirations.trends', '趋势'], ['inspirations.sources', '来源']
   ];
   for (const [path, label] of inspGroups) {
     const arr = getNestedData(path) || [];
     for (const i of arr) {
       items.push({
         type: 'inspire', icon: '💡', text: i.title, meta: label,
-        run: () => renderPage(path.startsWith('news') ? 'news' : 'inspiration')
+        run: () => renderPage('inspiration')
       });
     }
+  }
+  for (const project of contentProjects()) {
+    items.push({ type: 'content', icon: '✦', text: project.title, meta: CONTENT_STAGE_LABELS[project.status] || '创作', run: () => renderPage('creation') });
+  }
+  for (const news of newsFeedState.items) {
+    items.push({ type: 'news', icon: '↗', text: news.title, meta: news.sourceName, run: () => renderPage('news') });
   }
   return items;
 }
@@ -11131,6 +11286,70 @@ document.addEventListener('click', (e) => {
 // ========================================================================
 function handleAction(action, actionData = {}) {
   switch (action) {
+    case 'content-go-creation': renderPage('creation'); break;
+    case 'content-go-inspiration': renderPage('inspiration'); break;
+    case 'content-go-review': renderPage('review'); break;
+    case 'content-go-news': renderPage('news'); break;
+    case 'content-filter':
+      contentProjectFilter = actionData.filter || 'all';
+      rerender();
+      break;
+    case 'content-new-project':
+      showAddModal('新建创作项目', [
+        { label: '内容标题', placeholder: '一句话说清楚要创作什么' },
+        { label: '发布平台', placeholder: '如：公众号 / 抖音 / B站' },
+        { label: '内容形式', placeholder: '如：深度图文 / 短视频' },
+        { label: '核心钩子', placeholder: '受众为什么要停下来？' }
+      ], values => {
+        const now = new Date().toISOString();
+        contentProjects().unshift({ id: uid(), title: values[0], platform: values[1] || '待定平台', format: values[2] || '内容', status: 'idea', dueDate: '', hook: values[3] || '', sourceUrl: '', createdAt: now, updatedAt: now });
+        save(); rerender(); showToast('已加入创作流水线', 'success');
+      });
+      break;
+    case 'content-project-stage': {
+      const project = contentProjects().find(item => item.id === actionData.id);
+      if (project && CONTENT_STAGE_ORDER.includes(actionData.stage)) {
+        project.status = actionData.stage;
+        project.updatedAt = new Date().toISOString();
+        save(); rerender(); showToast('已推进到“' + CONTENT_STAGE_LABELS[project.status] + '”', 'success');
+      }
+      break;
+    }
+    case 'content-project-delete': {
+      const project = contentProjects().find(item => item.id === actionData.id);
+      if (project) showConfirm('移除创作项目', '将“' + escapeHTML(project.title) + '”从创作流水线移除。', '移除', () => {
+        DATA.contentStudio.projects = contentProjects().filter(item => item.id !== project.id);
+        save(); rerender(); showToast('已移除', 'success');
+      });
+      break;
+    }
+    case 'news-filter':
+      newsFeedState.category = actionData.filter || 'all';
+      rerender();
+      break;
+    case 'news-refresh':
+      newsFeedState.autoRefreshAttempted = true;
+      void loadNewsFeed({ refresh: true });
+      break;
+    case 'news-retry':
+      newsFeedState.status = 'idle';
+      void loadNewsFeed();
+      break;
+    case 'news-to-idea': {
+      const item = newsFeedState.items.find(entry => entry.id === actionData.id);
+      if (!item) break;
+      const duplicate = DATA.inspirations.ideas.find(idea => idea.sourceNewsId === item.id || idea.title === item.title);
+      if (duplicate) {
+        showToast('这个信号已经在选题库中', 'warning');
+        break;
+      }
+      const now = new Date().toISOString();
+      DATA.inspirations.ideas.unshift({ id: uid(), title: item.title, desc: item.summary || ('来自 ' + item.sourceName), sourceNewsId: item.id, sourceUrl: item.url, sourceName: item.sourceName, createdAt: now, updatedAt: now });
+      contentProjects().unshift({ id: uid(), title: item.title, platform: item.sourceId === 'douyin-hot' ? '抖音' : '待定平台', format: '热点选题', status: 'idea', dueDate: '', hook: item.summary || '', sourceUrl: item.url, sourceNewsId: item.id, createdAt: now, updatedAt: now });
+      save(); rerender();
+      showToast('已转为选题并加入创作流水线', 'success', { actionLabel: '查看', onAction: () => renderPage('creation') });
+      break;
+    }
     case 'civil-go-civil-service':
       renderPage('civil-service');
       break;
@@ -11977,6 +12196,16 @@ document.addEventListener('change', (e) => {
 
 // Research idea search: live filtering (input event, delegated)
 document.addEventListener('input', (e) => {
+  if (e.target.matches && e.target.matches('[data-news-search]')) {
+    newsFeedState.query = e.target.value;
+    const caret = e.target.selectionStart;
+    rerender();
+    requestAnimationFrame(() => {
+      const next = document.querySelector('[data-news-search]');
+      if (next) { next.focus(); next.setSelectionRange(caret, caret); }
+    });
+    return;
+  }
   if (e.target.matches && e.target.matches('[data-civil-notes]')) {
     const subject = civilServiceSubject(e.target.dataset.civilNotes);
     if (subject) {

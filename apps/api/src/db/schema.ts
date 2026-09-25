@@ -95,6 +95,49 @@ export function ensureSchema(database: Database.Database) {
       metadata_json TEXT NOT NULL DEFAULT '{}', created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
     );
     CREATE INDEX IF NOT EXISTS idx_content_items_workspace_kind ON content_items(workspace_id, kind, group_name, deleted_at);
+    CREATE TABLE IF NOT EXISTS news_items (
+      id TEXT PRIMARY KEY,
+      workspace_id TEXT NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+      source_id TEXT NOT NULL,
+      external_id TEXT NOT NULL,
+      category TEXT NOT NULL CHECK (category IN ('tech', 'creation', 'hot')),
+      title TEXT NOT NULL,
+      summary TEXT NOT NULL DEFAULT '',
+      url TEXT NOT NULL,
+      source_name TEXT NOT NULL,
+      author TEXT NOT NULL DEFAULT '',
+      image_url TEXT NOT NULL DEFAULT '',
+      published_at TEXT,
+      fetched_at TEXT NOT NULL,
+      hot_score INTEGER NOT NULL DEFAULT 0,
+      rank INTEGER NOT NULL DEFAULT 0,
+      active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
+      metadata_json TEXT NOT NULL DEFAULT '{}',
+      UNIQUE(workspace_id, source_id, external_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_news_items_feed ON news_items(workspace_id, active, category, fetched_at DESC, rank);
+    CREATE TABLE IF NOT EXISTS news_source_status (
+      workspace_id TEXT NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+      source_id TEXT NOT NULL,
+      source_name TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'idle' CHECK (status IN ('idle', 'refreshing', 'healthy', 'degraded')),
+      last_attempt_at TEXT,
+      last_success_at TEXT,
+      item_count INTEGER NOT NULL DEFAULT 0,
+      error_message TEXT NOT NULL DEFAULT '',
+      PRIMARY KEY(workspace_id, source_id)
+    );
+    CREATE TABLE IF NOT EXISTS news_refresh_runs (
+      id TEXT PRIMARY KEY,
+      workspace_id TEXT NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+      trigger_type TEXT NOT NULL CHECK (trigger_type IN ('startup', 'schedule', 'manual')),
+      status TEXT NOT NULL CHECK (status IN ('running', 'success', 'partial', 'failed')),
+      started_at TEXT NOT NULL,
+      completed_at TEXT,
+      item_count INTEGER NOT NULL DEFAULT 0,
+      error_json TEXT NOT NULL DEFAULT '[]'
+    );
+    CREATE INDEX IF NOT EXISTS idx_news_refresh_runs_workspace_started ON news_refresh_runs(workspace_id, started_at DESC);
     CREATE TABLE IF NOT EXISTS workspace_documents (
       workspace_id TEXT NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE, document_key TEXT NOT NULL,
       data_json TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(workspace_id, document_key)

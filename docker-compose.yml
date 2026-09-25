@@ -24,6 +24,7 @@ services:
       LOG_LEVEL: info
       API_BODY_LIMIT_BYTES: 26214400
       API_REQUEST_TIMEOUT_MS: 30000
+      NEWS_REFRESH_INTERVAL_HOURS: 5
     volumes: ["./data:/data"]
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]

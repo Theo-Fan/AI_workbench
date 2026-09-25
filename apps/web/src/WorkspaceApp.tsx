@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import type { ReactNode } from 'react';
 import './workspace/generated/workspace-baseline.css';
 import './workspace/generated/dashboard-v2.css';
+import './workspace/content-studio.css';
 import { PageSurface } from './workspace/PageSurface.js';
 import { mountGeneratedWorkspaceRuntime } from './workspace/generated/workspaceRuntime.js';
 import type { RenderState, WorkspacePageId } from './workspace/runtimeBridge.js';
@@ -57,7 +58,8 @@ function MenuItem({ page, title, children, path }: { page: WorkspacePageId; titl
 }
 
 function HeaderNavItem({ page, children }: { page: WorkspacePageId; children: ReactNode }) {
-  const active = useContext(ActivePageContext) === page;
+  const activePage = useContext(ActivePageContext);
+  const active = activePage === page || (page === 'creation' && ['inspiration', 'review', 'comic'].includes(activePage));
   const navigate = () => window.__AI_WORKSPACE_RUNTIME__?.navigate(page);
   return <button className={`topbar-nav-item${active ? ' active' : ''}`} type="button" onClick={navigate}>{children}</button>;
 }
@@ -105,7 +107,7 @@ function WorkspaceShell({ renderState, account, onRequestLogin, onSignOut, onUpd
       ? 'research'
       : ['ai-learn', 'english', 'english-vocab', 'english-listening', 'english-reading', 'english-writing', 'civil-service', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic', 'civil-data', 'civil-general', 'civil-politics', 'civil-essay'].includes(activePage)
         ? 'learning'
-        : ['inspiration', 'review', 'comic'].includes(activePage)
+        : ['creation', 'inspiration', 'review', 'comic'].includes(activePage)
           ? 'creation'
           : null;
     if (group) setExpandedMenus(current => current.includes(group) ? current : [...current, group]);
@@ -134,7 +136,7 @@ function WorkspaceShell({ renderState, account, onRequestLogin, onSignOut, onUpd
         <HeaderNavItem page="dashboard">仪表盘</HeaderNavItem>
         <HeaderNavItem page="daily-plan">任务规划</HeaderNavItem>
         <HeaderNavItem page="research">科研</HeaderNavItem>
-        <HeaderNavItem page="comic">创作</HeaderNavItem>
+        <HeaderNavItem page="creation">创作</HeaderNavItem>
       </nav>
       <div className="topbar-actions">
         <div className="topbar-weather-slot" id="globalDashboardWeather" aria-live="polite"></div>
@@ -161,7 +163,8 @@ function WorkspaceShell({ renderState, account, onRequestLogin, onSignOut, onUpd
             <MenuItem page="research-experiments" title="实验验证" path={<><path d="M9 3h6M10 3v6.2l-4.7 8.1A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.2-3.7L14 9.2V3" /><path d="M8.5 14h7" /></>}>实验验证</MenuItem>
             <MenuItem page="research-papers" title="写作投稿" path={<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12V8Z" /><path d="M14 2v6h6M8 13h8M8 17h6" /></>}>写作投稿</MenuItem>
           </MenuDisclosure>
-          <MenuDisclosure title="内容创作" expanded={expandedMenus.includes('creation')} active={['inspiration', 'review', 'comic'].includes(activePage)} onToggle={() => setExpandedMenus(current => current.includes('creation') ? current.filter(item => item !== 'creation') : [...current, 'creation'])} path={<><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z" /><path d="m19 16-.8 2.2L16 19l2.2.8L19 22l.8-2.2L22 19l-2.2-.8Z" /></>}>
+          <MenuDisclosure title="内容创作" expanded={expandedMenus.includes('creation')} active={['creation', 'inspiration', 'review', 'comic'].includes(activePage)} onToggle={() => setExpandedMenus(current => current.includes('creation') ? current.filter(item => item !== 'creation') : [...current, 'creation'])} path={<><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z" /><path d="m19 16-.8 2.2L16 19l2.2.8L19 22l.8-2.2L22 19l-2.2-.8Z" /></>}>
+            <MenuItem page="creation" title="创作总览" path={<><rect x="4" y="4" width="7" height="7" rx="1" /><rect x="13" y="4" width="7" height="7" rx="1" /><rect x="4" y="13" width="7" height="7" rx="1" /><rect x="13" y="13" width="7" height="7" rx="1" /></>}>创作总览</MenuItem>
             <MenuItem page="inspiration" title="选题灵感" path={<><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z" /><path d="m19 16-.8 2.2L16 19l2.2.8L19 22l.8-2.2L22 19l-2.2-.8Z" /></>}>选题灵感</MenuItem>
             <MenuItem page="review" title="内容复盘" path={<><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4V2h6v2m-6 9 2 2 4-4m-6 7h6" /></>}>内容复盘</MenuItem>
             <MenuItem page="comic" title="AI 漫剧" path={<><path d="M4 5h16v14H4zM4 10h16M7 5l3 5m2-5 3 5m2-5 3 5m-11 4 5 3-5 3Z" /></>}>AI 漫剧</MenuItem>

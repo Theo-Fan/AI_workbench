@@ -161,6 +161,10 @@ export function syncNormalizedTablesFromDocument(
     }
   };
   for (const group of ['ideas', 'trends', 'sources']) addContent(arrayAt(data, `inspirations.${group}`), 'inspiration', group);
+  addContent(arrayAt(data, 'contentStudio.projects'), 'content_project', '', item => ({
+    platform: optionalString(item.platform), format: optionalString(item.format), status: optionalString(item.status, 'idea'),
+    dueDate: optionalString(item.dueDate), hook: optionalString(item.hook), sourceUrl: optionalString(item.sourceUrl), sourceNewsId: optionalString(item.sourceNewsId)
+  }));
   addContent(arrayAt(data, 'review.topContent'), 'review_top', '', item => ({ rank: optionalString(item.rank) }));
   addContent(arrayAt(data, 'comic.published'), 'comic_published', '');
   for (const group of ['tech', 'creation', 'hotlist']) addContent(arrayAt(data, `news.${group}`), 'news', group);

@@ -60,6 +60,11 @@ test('API 应用工厂可独立注入请求并返回统一错误协议', async (
     assert.equal(missingWorkspace.statusCode, 404);
     assert.equal(missingWorkspace.json().error.code, 'WORKSPACE_NOT_FOUND');
 
+    const news = await app.inject({ method: 'GET', url: '/api/v1/workspaces/default/news?q=AI&category=all' });
+    assert.equal(news.statusCode, 200);
+    assert.deepEqual(news.json().data.items, []);
+    assert.equal(news.json().data.sync.intervalHours, 5);
+
     const ready = await app.inject({ method: 'GET', url: '/ready' });
     assert.equal(ready.statusCode, 200);
     assert.equal(ready.json().status, 'ready');

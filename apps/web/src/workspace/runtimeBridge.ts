@@ -4,7 +4,7 @@ export const workspacePageIds = [
   'english-vocab', 'english-listening', 'english-reading', 'english-writing',
   'civil-service', 'civil-quantity', 'civil-logic', 'civil-analogy', 'civil-graphic',
   'civil-data', 'civil-general', 'civil-politics', 'civil-essay',
-  'inspiration', 'review', 'comic', 'news', 'settings'
+  'creation', 'inspiration', 'review', 'comic', 'news', 'settings'
 ] as const;
 
 export type WorkspacePageId = typeof workspacePageIds[number];

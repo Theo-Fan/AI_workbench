@@ -17,6 +17,7 @@ import { dataProtectionRoutes } from './modules/data-protection/data.route.js';
 import { workspaceDocumentRoutes } from './modules/workspace-document/document.route.js';
 import { weatherRoutes } from './modules/weather/weather.route.js';
 import { ccfddlRoutes } from './modules/research/ccfddl.route.js';
+import { newsRoutes } from './modules/news/news.route.js';
 import { workspaceIdFrom, assertWorkspaceExists } from './modules/shared/request.js';
 
 export type BuildAppOptions = {
@@ -89,6 +90,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   await app.register(workspaceDocumentRoutes);
   await app.register(weatherRoutes);
   await app.register(ccfddlRoutes);
+  await app.register(newsRoutes);
 
   app.addHook('onClose', async () => {
     // The default process connection is owned by the app factory. Injected

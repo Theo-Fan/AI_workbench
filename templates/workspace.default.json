@@ -386,6 +386,16 @@
       }
     ]
   },
+  "contentStudio": {
+    "weeklyTarget": 4,
+    "projects": [
+      { "id": "cp1", "title": "AI 工具测评：5 款神器横评", "platform": "公众号", "format": "深度图文", "status": "published", "dueDate": "2026-09-18", "hook": "用同一组真实任务，测试 5 款工具到底谁更省时间", "sourceUrl": "", "createdAt": "2026-09-12T09:00:00.000Z", "updatedAt": "2026-09-18T12:00:00.000Z" },
+      { "id": "cp2", "title": "AI 创作者的一天", "platform": "小红书", "format": "图文", "status": "drafting", "dueDate": "2026-09-22", "hook": "把高效创作拆成可复制的 6 个时间块", "sourceUrl": "", "createdAt": "2026-09-17T08:30:00.000Z", "updatedAt": "2026-09-20T07:30:00.000Z" },
+      { "id": "cp3", "title": "AI 漫剧：灵感来了", "platform": "抖音", "format": "短视频", "status": "review", "dueDate": "2026-09-21", "hook": "当 AI 也遇到创作卡壳，会发生什么？", "sourceUrl": "", "createdAt": "2026-09-15T10:00:00.000Z", "updatedAt": "2026-09-20T10:00:00.000Z" },
+      { "id": "cp4", "title": "AI Agent 入门实战", "platform": "B站", "format": "教程视频", "status": "scheduled", "dueDate": "2026-09-24", "hook": "不用复杂框架，30 分钟跑通第一个 Agent", "sourceUrl": "", "createdAt": "2026-09-16T06:00:00.000Z", "updatedAt": "2026-09-19T11:00:00.000Z" },
+      { "id": "cp5", "title": "创作者时间管理术", "platform": "全平台", "format": "选题", "status": "idea", "dueDate": "", "hook": "为什么更长的待办清单，反而让创作变慢", "sourceUrl": "", "createdAt": "2026-09-20T05:00:00.000Z", "updatedAt": "2026-09-20T05:00:00.000Z" }
+    ]
+  },
   "inspirations": {
     "ideas": [
       {
@@ -1067,68 +1077,5 @@
     "good": "连续 5 天更新内容，选题质量提升明显",
     "improve": "科研文献阅读偏少，下周需增加投入",
     "focus": "AI 漫剧系列上线 + 英语打卡满 30 天"
-  },
-  "news": {
-    "tech": [
-      {
-        "id": "n1",
-        "title": "🔥 GPT-5 发布引发行业讨论",
-        "desc": "多模态能力大幅提升，推理成本下降 40%"
-      },
-      {
-        "id": "n2",
-        "title": "🔥 国产大模型百花齐放",
-        "desc": "多家厂商发布开源模型，性能逼近 GPT-4"
-      },
-      {
-        "id": "n3",
-        "title": "📈 AI Agent 商业化加速",
-        "desc": "多家创业公司获得大额融资"
-      }
-    ],
-    "creation": [
-      {
-        "id": "cn1",
-        "title": "📰 短剧市场持续增长",
-        "desc": "AI 生成内容占比提升，创作门槛降低"
-      },
-      {
-        "id": "cn2",
-        "title": "📰 知识付费回暖",
-        "desc": "AI 学习类课程需求旺盛"
-      },
-      {
-        "id": "cn3",
-        "title": "📰 内容平台算法更新",
-        "desc": "推荐机制更注重完播率和互动"
-      }
-    ],
-    "hotlist": [
-      {
-        "id": "h1",
-        "title": "1. AI 编程助手普及",
-        "desc": "开发者使用率突破 60%"
-      },
-      {
-        "id": "h2",
-        "title": "2. 终身学习理念走红",
-        "desc": "\"学习如何学习\"成热门话题"
-      },
-      {
-        "id": "h3",
-        "title": "3. 数字健康关注升温",
-        "desc": "屏幕时间管理工具需求增长"
-      },
-      {
-        "id": "h4",
-        "title": "4. AI 绘画版权争议",
-        "desc": "行业规范逐步建立中"
-      },
-      {
-        "id": "h5",
-        "title": "5. 远程办公常态化",
-        "desc": "混合办公模式成为主流"
-      }
-    ]
   }
 }

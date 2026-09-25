@@ -60,6 +60,33 @@ export const updateWorkspaceDocumentSchema = z.object({
   data: z.record(z.string(), z.unknown()),
   expectedVersion: z.number().int().nonnegative()
 });
+export const newsCategorySchema = z.enum(['tech', 'creation', 'hot']);
+export const newsItemSchema = z.object({
+  id: z.string().min(1),
+  sourceId: z.string().min(1),
+  sourceName: z.string().min(1),
+  category: newsCategorySchema,
+  title: z.string().min(1),
+  summary: z.string(),
+  url: z.string().url(),
+  author: z.string(),
+  imageUrl: z.string(),
+  publishedAt: z.string().datetime().nullable(),
+  fetchedAt: z.string().datetime(),
+  hotScore: z.number().nonnegative(),
+  rank: z.number().int().nonnegative(),
+  metadata: z.record(z.string(), z.unknown()),
+});
+export const newsSourceStatusSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  category: newsCategorySchema,
+  status: z.enum(['idle', 'refreshing', 'healthy', 'degraded']),
+  lastAttemptAt: z.string().datetime().nullable(),
+  lastSuccessAt: z.string().datetime().nullable(),
+  itemCount: z.number().int().nonnegative(),
+  error: z.string(),
+});
 export const fitnessTypeSchema = z.object({ id: z.string(), icon: z.string(), name: z.string(), unit: z.string() });
 export const fitnessPlanSchema = z.object({ id: z.string(), workspaceId: z.string(), day: z.string(), typeId: z.string(), target: z.string(), done: z.boolean(), version: z.number().int().nonnegative() });
 export const workoutLogSchema = z.object({ id: z.string(), workspaceId: z.string(), date: z.string().date(), typeId: z.string(), duration: z.number().nonnegative(), calories: z.number().nonnegative(), note: z.string(), createdAt: z.string().datetime() });
@@ -74,3 +101,6 @@ export type UpdateWorkspaceDocumentInput = z.infer<typeof updateWorkspaceDocumen
 export type FitnessType = z.infer<typeof fitnessTypeSchema>;
 export type FitnessPlan = z.infer<typeof fitnessPlanSchema>;
 export type WorkoutLog = z.infer<typeof workoutLogSchema>;
+export type NewsCategory = z.infer<typeof newsCategorySchema>;
+export type NewsItem = z.infer<typeof newsItemSchema>;
+export type NewsSourceStatus = z.infer<typeof newsSourceStatusSchema>;

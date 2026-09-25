@@ -12,6 +12,7 @@ const envSchema = z.object({
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
   API_BODY_LIMIT_BYTES: z.coerce.number().int().min(64 * 1024).max(50 * 1024 * 1024).optional(),
   API_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(0).max(300_000).optional(),
+  NEWS_REFRESH_INTERVAL_HOURS: z.coerce.number().min(0.25).max(168).optional(),
 });
 
 const env = envSchema.parse(process.env);
@@ -30,6 +31,7 @@ export type AppConfig = {
   logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent';
   bodyLimitBytes: number;
   requestTimeoutMs: number;
+  newsRefreshIntervalMs: number;
 };
 
 export const config: AppConfig = {
@@ -42,4 +44,5 @@ export const config: AppConfig = {
   // Legacy snapshots are capped at 20 MiB; leave headroom for JSON overhead.
   bodyLimitBytes: env.API_BODY_LIMIT_BYTES || 25 * 1024 * 1024,
   requestTimeoutMs: env.API_REQUEST_TIMEOUT_MS ?? 30_000,
+  newsRefreshIntervalMs: (env.NEWS_REFRESH_INTERVAL_HOURS || 5) * 60 * 60 * 1000,
 };

@@ -49,7 +49,8 @@ test('工作台页面由独立 React 入口承载', () => {
   const vite = read('apps/web/vite.config.ts');
   const routeBlock = bridge.match(/workspacePageIds\s*=\s*\[([\s\S]*?)\]\s*as const/)?.[1] || '';
   const pageIds = routeBlock.match(/'[^']+'/g) || [];
-  assert.equal(pageIds.length, 27);
+  assert.equal(pageIds.length, 28);
+  assert.ok(pageIds.includes("'creation'"));
   assert.ok(pageIds.includes("'english-vocab'"));
   assert.ok(pageIds.includes("'english-listening'"));
   assert.ok(pageIds.includes("'english-reading'"));
@@ -205,4 +206,23 @@ test('公考学习包含八科入口、可持久化迁移和响应式工作区',
   const civilStyles = read('apps/web/src/workspace/civil/civil-study.css');
   assert.match(civilStyles, /@media \(max-width:520px\)/);
   assert.match(civilStyles, /\.civil-next-focus \{ align-items:flex-start; flex-direction:column; \}/);
+});
+
+test('内容创作与新闻热点形成服务端抓取到转选题的闭环', () => {
+  const runtime = read('apps/web/src/workspace/generated/workspaceRuntime.ts');
+  const shell = read('apps/web/src/WorkspaceApp.tsx');
+  const styles = read('apps/web/src/workspace/content-studio.css');
+  const app = read('apps/api/src/app.ts');
+  const server = read('apps/api/src/server.ts');
+  const schema = read('apps/api/src/db/schema.ts');
+  assert.match(shell, /HeaderNavItem page="creation"/);
+  assert.match(runtime, /function creationPageHTML\(\)/);
+  assert.match(runtime, /data-action="news-to-idea"/);
+  assert.match(runtime, /loadNewsFeed\(\{ refresh: true \}\)/);
+  assert.match(styles, /\.content-pipeline/);
+  assert.match(styles, /\.news-layout/);
+  assert.match(app, /app\.register\(newsRoutes\)/);
+  assert.match(server, /startNewsScheduler\(app\)/);
+  assert.match(schema, /CREATE TABLE IF NOT EXISTS news_items/);
+  assert.match(schema, /CREATE TABLE IF NOT EXISTS news_refresh_runs/);
 });
